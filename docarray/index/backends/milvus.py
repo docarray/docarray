@@ -142,8 +142,8 @@ class MilvusDocumentIndex(BaseDocIndex, Generic[TSchema]):
         , while inheriting other schema properties from the indexer's schema.
 
         !!! note
-            Milvus framework currently only supports a single vector column, and multiple vector
-             columns are not supported.
+            Milvus framework currently only supports a single vector column, and only one vector
+            column can store in the schema (others are stored in the serialized data)
         """
 
         if not utility.has_collection(self._db_config.collection_name):
@@ -179,6 +179,10 @@ class MilvusDocumentIndex(BaseDocIndex, Generic[TSchema]):
                     )
                     for column_name, info in self._column_infos.items()
                     if column_name != "id"
+                    and (
+                        info.db_type == DataType.FLOAT_VECTOR
+                        and column_name == self._db_config.index_name
+                    )
                 ]
             )
             self._logger.info("Collection has been created")
@@ -262,15 +266,20 @@ class MilvusDocumentIndex(BaseDocIndex, Generic[TSchema]):
         """
 
         docs = self._validate_docs(docs)
-        entities = [[] for _ in range(len(self._column_infos.items()) + 1)]
+        entities = [[] for _ in range(len(self._collection.schema))]
 
         for i in range(len(docs)):
             entities[0].append(docs[i].to_base64(**self._db_config.serialize_config))
-            for j, (column_name, info) in enumerate(self._column_infos.items()):
+            entity_index = 1
+            for column_name, info in self._column_infos.items():
                 column_value = docs[i].__getattr__(column_name)
                 if info.db_type == DataType.FLOAT_VECTOR:
+                    if column_name != self._db_config.index_name:
+                        continue
                     column_value = self._to_numpy(column_value)
-                entities[j + 1].append(column_value)
+
+                entities[entity_index].append(column_value)
+                entity_index += 1
 
         self._collection.insert(entities)
         self._collection.flush()
