@@ -224,7 +224,7 @@ class MilvusDocumentIndex(BaseDocIndex, Generic[TSchema]):
 
         if not vector_columns_exist:
             raise ValueError(
-                "No vector columns found. Ensure that one column is of a vector type"
+                "No vector columns found. Ensure that at least one column is of a vector type"
             )
 
         for column_name, info in self._column_infos.items():
@@ -276,7 +276,7 @@ class MilvusDocumentIndex(BaseDocIndex, Generic[TSchema]):
                 if info.db_type == DataType.FLOAT_VECTOR:
                     if column_name != self._db_config.index_name:
                         continue
-                    column_value = self._to_numpy(column_value)
+                    column_value = self._map_embedding(column_value)
 
                 entities[entity_index].append(column_value)
                 entity_index += 1
@@ -489,6 +489,24 @@ class MilvusDocumentIndex(BaseDocIndex, Generic[TSchema]):
         :return: a Milvus expression that is always true for that primary key
         """
         return f'({primary_key} in ["1"]) or ({primary_key} not in ["1"])'
+
+    def _map_embedding(self, embedding: Optional[AnyTensor]) -> AnyTensor:
+        """
+        Milvus exclusively supports one-dimensional vectors. If multi-dimensional
+        vectors are provided, they will be automatically flattened to ensure compatibility.
+
+        :param embedding: The original raw embedding, which can be in the form of a TensorFlow or PyTorch tensor.
+        :return embedding: A one-dimensional numpy array representing the flattened version of the original embedding.
+        """
+
+        if embedding is not None:
+            embedding = self._to_numpy(embedding)
+
+            if embedding.ndim > 1:
+                embedding = np.asarray(embedding).squeeze()
+        else:
+            embedding = np.zeros(self._config.n_dim)
+        return embedding
 
     def __contains__(self, item) -> bool:
         self._check_loaded()
