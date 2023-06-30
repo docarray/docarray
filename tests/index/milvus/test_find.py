@@ -135,3 +135,26 @@ def test_contain():
     index_docs_new = [SimpleDoc(tens=np.zeros(10)) for _ in range(10)]
     for doc in index_docs_new:
         assert (doc in index) is False
+
+
+@pytest.mark.parametrize('space', ['cosine', 'l2', 'ip'])
+def test_find_flat_schema(space):
+    class FlatSchema(BaseDoc):
+        tens_one: NdArray[10] = Field(space=space)
+        tens_two: NdArray[50] = Field(space=space)
+
+    index = MilvusDocumentIndex[FlatSchema](index_name="tens_one")
+
+    index_docs = [
+        FlatDoc(tens_one=np.zeros(10), tens_two=np.zeros(50)) for _ in range(10)
+    ]
+    index_docs.append(FlatDoc(tens_one=np.zeros(10), tens_two=np.ones(50)))
+    index_docs.append(FlatDoc(tens_one=np.ones(10), tens_two=np.zeros(50)))
+    index.index(index_docs)
+
+    query = FlatDoc(tens_one=np.ones(10), tens_two=np.ones(50))
+
+    # find on tens_one
+    docs, scores = index.find(query, search_field='tens_one', limit=5)
+    assert len(docs) == 5
+    assert len(scores) == 5
