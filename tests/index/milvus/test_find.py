@@ -158,3 +158,54 @@ def test_find_flat_schema(space):
     docs, scores = index.find(query, search_field='tens_one', limit=5)
     assert len(docs) == 5
     assert len(scores) == 5
+
+
+def test_find_nested_schema():
+    class SimpleDoc(BaseDoc):
+        tens: NdArray[10]  # type: ignore[valid-type]
+
+    class NestedDoc(BaseDoc):
+        d: SimpleDoc
+        tens: NdArray[10]  # type: ignore[valid-type]
+
+    class DeepNestedDoc(BaseDoc):
+        d: NestedDoc
+        tens: NdArray[10]
+
+    index = MilvusDocumentIndex[DeepNestedDoc](index_name="tens")
+
+    index_docs = [
+        DeepNestedDoc(
+            d=NestedDoc(d=SimpleDoc(tens=np.zeros(10)), tens=np.zeros(10)),
+            tens=np.zeros(10),
+        )
+        for _ in range(10)
+    ]
+    index_docs.append(
+        DeepNestedDoc(
+            d=NestedDoc(d=SimpleDoc(tens=np.ones(10)), tens=np.zeros(10)),
+            tens=np.zeros(10),
+        )
+    )
+    index_docs.append(
+        DeepNestedDoc(
+            d=NestedDoc(d=SimpleDoc(tens=np.zeros(10)), tens=np.ones(10)),
+            tens=np.zeros(10),
+        )
+    )
+    index_docs.append(
+        DeepNestedDoc(
+            d=NestedDoc(d=SimpleDoc(tens=np.zeros(10)), tens=np.zeros(10)),
+            tens=np.ones(10),
+        )
+    )
+    index.index(index_docs)
+
+    query = DeepNestedDoc(
+        d=NestedDoc(d=SimpleDoc(tens=np.ones(10)), tens=np.ones(10)), tens=np.ones(10)
+    )
+
+    # find on root level (only support one level now)
+    docs, scores = index.find(query, search_field='tens', limit=5)
+    assert len(docs) == 5
+    assert len(scores) == 5

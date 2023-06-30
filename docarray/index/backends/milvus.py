@@ -127,7 +127,7 @@ class MilvusDocumentIndex(BaseDocIndex, Generic[TSchema]):
         }
 
         if issubclass(python_type, ID):
-            return DataType.INT64  # Primary key must be int64
+            return DataType.VARCHAR
 
         for py_type, db_type in type_map.items():
             if safe_issubclass(python_type, py_type):
@@ -179,10 +179,10 @@ class MilvusDocumentIndex(BaseDocIndex, Generic[TSchema]):
                     )
                     for column_name, info in self._column_infos.items()
                     if column_name != "id"
-                    and (
+                    and not (
                         info.db_type == DataType.FLOAT_VECTOR
-                        and column_name == self._db_config.index_name
-                    )
+                        and column_name != self._db_config.index_name
+                    )  # Only store one vector field in column
                 ]
             )
             self._logger.info("Collection has been created")
@@ -265,6 +265,11 @@ class MilvusDocumentIndex(BaseDocIndex, Generic[TSchema]):
         :param docs: Documents to index.
         """
 
+        n_docs = 1 if isinstance(docs, BaseDoc) else len(docs)
+        self._logger.debug(f'Indexing {n_docs} documents')
+        docs_validated = self._validate_docs(docs)
+        self._update_subindex_data(docs_validated)
+
         docs = self._validate_docs(docs)
         entities = [[] for _ in range(len(self._collection.schema))]
 
@@ -272,7 +277,7 @@ class MilvusDocumentIndex(BaseDocIndex, Generic[TSchema]):
             entities[0].append(docs[i].to_base64(**self._db_config.serialize_config))
             entity_index = 1
             for column_name, info in self._column_infos.items():
-                column_value = docs[i].__getattr__(column_name)
+                column_value = self._get_values_by_column([docs[i]], column_name)[0]
                 if info.db_type == DataType.FLOAT_VECTOR:
                     if column_name != self._db_config.index_name:
                         continue
