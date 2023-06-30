@@ -5,6 +5,7 @@ from pydantic import Field
 from docarray import BaseDoc, DocList
 from docarray.index import MilvusDocumentIndex
 from docarray.typing import NdArray, TorchTensor
+from tests.index.milvus.fixtures import start_storage  # noqa: F401
 
 pytestmark = [pytest.mark.slow, pytest.mark.index]
 

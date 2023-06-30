@@ -4,6 +4,7 @@ from pydantic import Field
 from docarray import BaseDoc
 from docarray.index import MilvusDocumentIndex
 from docarray.typing import NdArray
+from tests.index.milvus.fixtures import start_storage  # noqa: F401
 
 
 class SimpleDoc(BaseDoc):
