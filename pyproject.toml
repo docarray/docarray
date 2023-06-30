@@ -75,6 +75,7 @@ torch = ["torch"]
 web = ["fastapi"]
 qdrant = ["qdrant-client"]
 weaviate = ["weaviate-client"]
+pymilvus = ["pymilvus"]
 
 # all
 full = ["protobuf", "lz4", "pandas", "pillow", "types-pillow", "av", "pydub", "trimesh"]
