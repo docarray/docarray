@@ -6,6 +6,7 @@ from typing import (
     ItemsView,
     Iterable,
     MutableMapping,
+    NamedTuple,
     Optional,
     Type,
     TypeVar,
@@ -24,6 +25,13 @@ IndexIterType = Union[slice, Iterable[int], Iterable[bool], None]
 
 
 T = TypeVar('T', bound='ColumnStorage')
+
+
+class ColumnsJsonCompatible(NamedTuple):
+    tensor_columns: Dict[str, Any]
+    doc_columns: Dict[str, Any]
+    docs_vec_columns: Dict[str, Any]
+    any_columns: Dict[str, Any]
 
 
 class ColumnStorage:
@@ -91,6 +99,25 @@ class ColumnStorage:
             self.tensor_type,
         )
 
+    def columns_json_compatible(self) -> ColumnsJsonCompatible:
+        tens_cols = {
+            key: value._docarray_to_json_compatible() if value is not None else value
+            for key, value in self.tensor_columns.items()
+        }
+        doc_cols = {
+            key: value._docarray_to_json_compatible() if value is not None else value
+            for key, value in self.doc_columns.items()
+        }
+        doc_vec_cols = {
+            key: [vec._docarray_to_json_compatible() for vec in value]
+            if value is not None
+            else value
+            for key, value in self.docs_vec_columns.items()
+        }
+        return ColumnsJsonCompatible(
+            tens_cols, doc_cols, doc_vec_cols, self.any_columns
+        )
+
     def __eq__(self, other: Any) -> bool:
         if not isinstance(other, ColumnStorage):
             return False
@@ -102,7 +129,15 @@ class ColumnStorage:
             for key_self in col_map_self.keys():
                 if key_self == 'id':
                     continue
-                if col_map_self[key_self] != col_map_other[key_self]:
+
+                val1, val2 = col_map_self[key_self], col_map_other[key_self]
+                if isinstance(val1, AbstractTensor):
+                    values_are_equal = val1.get_comp_backend().equal(val1, val2)
+                elif isinstance(val2, AbstractTensor):
+                    values_are_equal = val2.get_comp_backend().equal(val1, val2)
+                else:
+                    values_are_equal = val1 == val2
+                if not values_are_equal:
                     return False
         return True
 
@@ -137,6 +172,11 @@ class ColumnStorageView(dict, MutableMapping[str, Any]):
         if col is None:
             return None
         return col[self.index]
+
+    def __reduce__(self):
+        # implementing __reduce__ to solve a pickle issue when subclassing dict
+        # see here: https://stackoverflow.com/questions/21144845/how-can-i-unpickle-a-subclass-of-dict-that-validates-with-setitem-in-pytho
+        return (ColumnStorageView, (self.index, self.storage))
 
     def __setitem__(self, name, value) -> None:
         if self.storage.columns[name] is None:

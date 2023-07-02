@@ -384,7 +384,7 @@ When indexing documents, your implementation should behave in the following way:
 - Every field in the Document is mapped to a column in the database
 - This includes the `id` field, which is mapped to the primary key of the database (if your backend has such a concept)
 - The configuration of that column can be found in `self._column_infos[field_name].config`
-- In DocArray v1, we used to store a serialized representation of every document. This is not needed anymore, as every row in your database table should fully represent a single indexed document.
+- In DocArray <=0.21, we used to store a serialized representation of every document. This is not needed anymore, as every row in your database table should fully represent a single indexed document.
 
 To handle nested documents, the public `index()` method already flattens every incoming document for you.
 This means that `_index()` already receives a flattened representation of the data, and you don't need to worry about that.

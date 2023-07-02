@@ -2,7 +2,7 @@
 
 If you are using DocArray v<0.30.0, you will be familiar with its [dataclass API](https://docarray.jina.ai/fundamentals/dataclass/).
 
-_DocArray v2 is that idea, taken seriously._ Every document is created through a dataclass-like interface,
+_DocArray >=0.30 is that idea, taken seriously._ Every document is created through a dataclass-like interface,
 courtesy of [Pydantic](https://pydantic-docs.helpmanual.io/usage/models/).
 
 This gives the following advantages:
@@ -33,7 +33,7 @@ and additional `chunks` and `matches`.
 - In v2 we have the [`LegacyDocument`][docarray.documents.legacy.LegacyDocument] class, 
   which extends `BaseDoc` while following the same schema as v1's `Document`.
   The `LegacyDocument` can be useful to start migrating your codebase from v1 to v2. 
-  Nevertheless, the API is not fully compatible with DocArray v1 `Document`.
+  Nevertheless, the API is not fully compatible with DocArray <=0.21 `Document`.
   Indeed, none of the methods associated with `Document` are present. 
   Only the schema of the data is similar.
 
@@ -100,7 +100,7 @@ book_titles = docs.title  # returns a list[str]
 ## Changes to Document Store
 
 In v2 the `Document Store` has been renamed to [`DocIndex`](user_guide/storing/docindex.md) and can be used for fast retrieval using vector similarity. 
-DocArray v2 `DocIndex` supports:
+DocArray >=0.30 `DocIndex` supports:
 
 - [Weaviate](https://weaviate.io/)
 - [Qdrant](https://qdrant.tech/)

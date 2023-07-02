@@ -306,6 +306,12 @@ class DocList(
         """
         return super().from_protobuf(pb_msg)
 
+    @classmethod
+    def _get_proto_class(cls: Type[T]):
+        from docarray.proto import DocListProto
+
+        return DocListProto
+
     @overload
     def __getitem__(self, item: SupportsIndex) -> T_doc:
         ...

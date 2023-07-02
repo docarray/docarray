@@ -73,7 +73,7 @@ def test_proto_all_types_proto3():
         embedding=np.zeros((100, 1)),
         any_url='http://jina.ai',
         image_url='http://jina.ai/bla.jpg',
-        text_url='http://jina.ai',
+        text_url='http://jina.ai/file.txt',
         mesh_url='http://jina.ai/mesh.obj',
         point_cloud_url='http://jina.ai/mesh.obj',
     )
