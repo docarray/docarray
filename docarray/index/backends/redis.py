@@ -23,6 +23,7 @@ import json
 import numpy as np
 from numpy import ndarray
 
+from docarray.array import AnyDocArray
 from docarray.index.backends.helper import _collect_query_args
 from docarray import BaseDoc, DocList
 from docarray.index.abstract import (
@@ -72,17 +73,19 @@ VALID_TEXT_SCORERS = [
 class RedisDocumentIndex(BaseDocIndex, Generic[TSchema]):
     def __init__(self, db_config=None, **kwargs):
         """Initialize RedisDocumentIndex"""
+        if db_config is not None and getattr(db_config, 'index_name'):
+            self._index_name = db_config.index_name
+        elif kwargs.get('index_name'):
+            self._index_name = kwargs.get('index_name')
+        else:
+            self._index_name = 'index_name__' + self._random_name()
+
+
         super().__init__(db_config=db_config, **kwargs)
         self._db_config = cast(RedisDocumentIndex.DBConfig, self._db_config)
 
         self._runtime_config: RedisDocumentIndex.RuntimeConfig = cast(
             RedisDocumentIndex.RuntimeConfig, self._runtime_config
-        )
-
-        self._index_name = (
-            self._db_config.index_name
-            if self._db_config.index_name
-            else 'index_name__' + self._random_name()
         )
         self._prefix = self._index_name + ':'
         self._text_scorer = self._db_config.text_scorer
@@ -107,7 +110,9 @@ class RedisDocumentIndex(BaseDocIndex, Generic[TSchema]):
         if not self._check_index_exists(self._index_name):
             schema = []
             for column, info in self._column_infos.items():
-                if info.db_type == VectorField:
+                if issubclass(info.docarray_type, AnyDocArray):
+                    continue
+                elif info.db_type == VectorField:
                     space = info.config.get('space') or info.config.get('distance')
                     if not space or space.upper() not in VALID_DISTANCES:
                         raise ValueError(
@@ -170,6 +175,17 @@ class RedisDocumentIndex(BaseDocIndex, Generic[TSchema]):
             return False
         self._logger.info(f'Index {index_name} already exists')
         return True
+
+    @property
+    def index_name(self):
+        return self._index_name
+
+    @property
+    def out_schema(self) -> Type[BaseDoc]:
+        """Return the real schema of the index."""
+        if self._is_subindex:
+            return self._ori_schema
+        return cast(Type[BaseDoc], self._schema)
 
     class QueryBuilder(BaseDocIndex.QueryBuilder):
         def __init__(self, query: Optional[List[Tuple[str, Dict]]] = None):
@@ -317,6 +333,7 @@ class RedisDocumentIndex(BaseDocIndex, Generic[TSchema]):
         :param column_to_data: A dictionary where each key is a column and each value is a generator.
         :return: A list of document ids that have been indexed.
         """
+        self._index_subindex(column_to_data)
         ids: List[str] = []
         for items in self._generate_items(
             column_to_data, self._runtime_config.batch_size
@@ -513,6 +530,15 @@ class RedisDocumentIndex(BaseDocIndex, Generic[TSchema]):
         for query in filter_queries:
             results.append(self._filter(filter_query=query, limit=limit))
         return results
+
+    def _filter_by_parent_id(self, id: str) -> Optional[List[str]]:
+        """Filter the ids of the subindex documents given id of root document.
+
+        :param id: the root document id to filter by
+        :return: a list of ids of the subindex documents
+        """
+        docs = self._filter(filter_query=f'@parent_id:"{id}"', limit=self.num_docs())
+        return [doc['id'] for doc in docs]
 
     def _text_search(
         self, query: str, limit: int, search_field: str = ''
