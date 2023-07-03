@@ -4480,7 +4480,7 @@ containing the points' color information (<code>PointsAndColors.colors</code>)</
 <div class="language-python highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kn">from</span> <span class="nn">docarray.documents</span> <span class="kn">import</span> <span class="n">TextDoc</span>
 </span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>
 </span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="c1"># use it directly</span>
-</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="n">txt_doc</span> <span class="o">=</span> <span class="n">TextDoc</span><span class="p">(</span><span class="n">url</span><span class="o">=</span><span class="s1">'http://www.jina.ai/'</span><span class="p">)</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="n">txt_doc</span> <span class="o">=</span> <span class="n">TextDoc</span><span class="p">(</span><span class="n">url</span><span class="o">=</span><span class="s1">'https://www.gutenberg.org/files/1065/1065-0.txt'</span><span class="p">)</span>
 </span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="n">txt_doc</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="n">txt_doc</span><span class="o">.</span><span class="n">url</span><span class="o">.</span><span class="n">load</span><span class="p">()</span>
 </span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="c1"># model = MyEmbeddingModel()</span>
 </span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="c1"># txt_doc.embedding = model(txt_doc.text)</span>
@@ -4501,7 +4501,7 @@ containing the points' color information (<code>PointsAndColors.colors</code>)</
 </span><span id="__span-2-8"><a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a>    <span class="n">second_embedding</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">AnyEmbedding</span><span class="p">]</span>
 </span><span id="__span-2-9"><a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a>
 </span><span id="__span-2-10"><a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a>
-</span><span id="__span-2-11"><a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a><span class="n">txt_doc</span> <span class="o">=</span> <span class="n">MyText</span><span class="p">(</span><span class="n">url</span><span class="o">=</span><span class="s1">'http://www.jina.ai/'</span><span class="p">)</span>
+</span><span id="__span-2-11"><a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a><span class="n">txt_doc</span> <span class="o">=</span> <span class="n">MyText</span><span class="p">(</span><span class="n">url</span><span class="o">=</span><span class="s1">'https://www.gutenberg.org/files/1065/1065-0.txt'</span><span class="p">)</span>
 </span><span id="__span-2-12"><a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a><span class="n">txt_doc</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="n">txt_doc</span><span class="o">.</span><span class="n">url</span><span class="o">.</span><span class="n">load</span><span class="p">()</span>
 </span><span id="__span-2-13"><a id="__codelineno-2-13" name="__codelineno-2-13" href="#__codelineno-2-13"></a><span class="c1"># model = MyEmbeddingModel()</span>
 </span><span id="__span-2-14"><a id="__codelineno-2-14" name="__codelineno-2-14" href="#__codelineno-2-14"></a><span class="c1"># txt_doc.embedding = model(txt_doc.text)</span>
@@ -4537,8 +4537,8 @@ excluding <code>id</code>. When compared against a str, it will check the equali
 of the <code>text</code> attribute against the given string.</p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="kn">from</span> <span class="nn">docarray.documents</span> <span class="kn">import</span> <span class="n">TextDoc</span>
 </span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>
-</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="n">doc</span> <span class="o">=</span> <span class="n">TextDoc</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s1">'This is the main text'</span><span class="p">,</span> <span class="n">url</span><span class="o">=</span><span class="s1">'exampleurl.com'</span><span class="p">)</span>
-</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="n">doc2</span> <span class="o">=</span> <span class="n">TextDoc</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s1">'This is the main text'</span><span class="p">,</span> <span class="n">url</span><span class="o">=</span><span class="s1">'exampleurl.com'</span><span class="p">)</span>
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="n">doc</span> <span class="o">=</span> <span class="n">TextDoc</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s1">'This is the main text'</span><span class="p">,</span> <span class="n">url</span><span class="o">=</span><span class="s1">'exampleurl.com/file'</span><span class="p">)</span>
+</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="n">doc2</span> <span class="o">=</span> <span class="n">TextDoc</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s1">'This is the main text'</span><span class="p">,</span> <span class="n">url</span><span class="o">=</span><span class="s1">'exampleurl.com/file'</span><span class="p">)</span>
 </span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a>
 </span><span id="__span-4-6"><a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a><span class="n">doc</span> <span class="o">==</span> <span class="s1">'This is the main text'</span>  <span class="c1"># True</span>
 </span><span id="__span-4-7"><a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a><span class="n">doc</span> <span class="o">==</span> <span class="n">doc2</span>  <span class="c1"># True</span>
@@ -4706,7 +4706,7 @@ of the <code>text</code> attribute against the given string.</p>
 </span><span id="__span-0-24"><a id="__codelineno-0-24" name="__codelineno-0-24"></a><span class="sd">    from docarray.documents import TextDoc</span>
 </span><span id="__span-0-25"><a id="__codelineno-0-25" name="__codelineno-0-25"></a>
 </span><span id="__span-0-26"><a id="__codelineno-0-26" name="__codelineno-0-26"></a><span class="sd">    # use it directly</span>
-</span><span id="__span-0-27"><a id="__codelineno-0-27" name="__codelineno-0-27"></a><span class="sd">    txt_doc = TextDoc(url='http://www.jina.ai/')</span>
+</span><span id="__span-0-27"><a id="__codelineno-0-27" name="__codelineno-0-27"></a><span class="sd">    txt_doc = TextDoc(url='https://www.gutenberg.org/files/1065/1065-0.txt')</span>
 </span><span id="__span-0-28"><a id="__codelineno-0-28" name="__codelineno-0-28"></a><span class="sd">    txt_doc.text = txt_doc.url.load()</span>
 </span><span id="__span-0-29"><a id="__codelineno-0-29" name="__codelineno-0-29"></a><span class="sd">    # model = MyEmbeddingModel()</span>
 </span><span id="__span-0-30"><a id="__codelineno-0-30" name="__codelineno-0-30"></a><span class="sd">    # txt_doc.embedding = model(txt_doc.text)</span>
@@ -4733,7 +4733,7 @@ of the <code>text</code> attribute against the given string.</p>
 </span><span id="__span-0-51"><a id="__codelineno-0-51" name="__codelineno-0-51"></a><span class="sd">        second_embedding: Optional[AnyEmbedding]</span>
 </span><span id="__span-0-52"><a id="__codelineno-0-52" name="__codelineno-0-52"></a>
 </span><span id="__span-0-53"><a id="__codelineno-0-53" name="__codelineno-0-53"></a>
-</span><span id="__span-0-54"><a id="__codelineno-0-54" name="__codelineno-0-54"></a><span class="sd">    txt_doc = MyText(url='http://www.jina.ai/')</span>
+</span><span id="__span-0-54"><a id="__codelineno-0-54" name="__codelineno-0-54"></a><span class="sd">    txt_doc = MyText(url='https://www.gutenberg.org/files/1065/1065-0.txt')</span>
 </span><span id="__span-0-55"><a id="__codelineno-0-55" name="__codelineno-0-55"></a><span class="sd">    txt_doc.text = txt_doc.url.load()</span>
 </span><span id="__span-0-56"><a id="__codelineno-0-56" name="__codelineno-0-56"></a><span class="sd">    # model = MyEmbeddingModel()</span>
 </span><span id="__span-0-57"><a id="__codelineno-0-57" name="__codelineno-0-57"></a><span class="sd">    # txt_doc.embedding = model(txt_doc.text)</span>
@@ -4775,8 +4775,8 @@ of the <code>text</code> attribute against the given string.</p>
 </span><span id="__span-0-93"><a id="__codelineno-0-93" name="__codelineno-0-93"></a><span class="sd">    ```python</span>
 </span><span id="__span-0-94"><a id="__codelineno-0-94" name="__codelineno-0-94"></a><span class="sd">    from docarray.documents import TextDoc</span>
 </span><span id="__span-0-95"><a id="__codelineno-0-95" name="__codelineno-0-95"></a>
-</span><span id="__span-0-96"><a id="__codelineno-0-96" name="__codelineno-0-96"></a><span class="sd">    doc = TextDoc(text='This is the main text', url='exampleurl.com')</span>
-</span><span id="__span-0-97"><a id="__codelineno-0-97" name="__codelineno-0-97"></a><span class="sd">    doc2 = TextDoc(text='This is the main text', url='exampleurl.com')</span>
+</span><span id="__span-0-96"><a id="__codelineno-0-96" name="__codelineno-0-96"></a><span class="sd">    doc = TextDoc(text='This is the main text', url='exampleurl.com/file')</span>
+</span><span id="__span-0-97"><a id="__codelineno-0-97" name="__codelineno-0-97"></a><span class="sd">    doc2 = TextDoc(text='This is the main text', url='exampleurl.com/file')</span>
 </span><span id="__span-0-98"><a id="__codelineno-0-98" name="__codelineno-0-98"></a>
 </span><span id="__span-0-99"><a id="__codelineno-0-99" name="__codelineno-0-99"></a><span class="sd">    doc == 'This is the main text'  # True</span>
 </span><span id="__span-0-100"><a id="__codelineno-0-100" name="__codelineno-0-100"></a><span class="sd">    doc == doc2  # True</span>
@@ -9465,7 +9465,7 @@ containing the points' color information (<code>PointsAndColors.colors</code>)</
 <div class="language-python highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kn">from</span> <span class="nn">docarray.documents</span> <span class="kn">import</span> <span class="n">TextDoc</span>
 </span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>
 </span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="c1"># use it directly</span>
-</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="n">txt_doc</span> <span class="o">=</span> <span class="n">TextDoc</span><span class="p">(</span><span class="n">url</span><span class="o">=</span><span class="s1">'http://www.jina.ai/'</span><span class="p">)</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="n">txt_doc</span> <span class="o">=</span> <span class="n">TextDoc</span><span class="p">(</span><span class="n">url</span><span class="o">=</span><span class="s1">'https://www.gutenberg.org/files/1065/1065-0.txt'</span><span class="p">)</span>
 </span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="n">txt_doc</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="n">txt_doc</span><span class="o">.</span><span class="n">url</span><span class="o">.</span><span class="n">load</span><span class="p">()</span>
 </span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="c1"># model = MyEmbeddingModel()</span>
 </span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="c1"># txt_doc.embedding = model(txt_doc.text)</span>
@@ -9486,7 +9486,7 @@ containing the points' color information (<code>PointsAndColors.colors</code>)</
 </span><span id="__span-2-8"><a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a>    <span class="n">second_embedding</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">AnyEmbedding</span><span class="p">]</span>
 </span><span id="__span-2-9"><a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a>
 </span><span id="__span-2-10"><a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a>
-</span><span id="__span-2-11"><a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a><span class="n">txt_doc</span> <span class="o">=</span> <span class="n">MyText</span><span class="p">(</span><span class="n">url</span><span class="o">=</span><span class="s1">'http://www.jina.ai/'</span><span class="p">)</span>
+</span><span id="__span-2-11"><a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a><span class="n">txt_doc</span> <span class="o">=</span> <span class="n">MyText</span><span class="p">(</span><span class="n">url</span><span class="o">=</span><span class="s1">'https://www.gutenberg.org/files/1065/1065-0.txt'</span><span class="p">)</span>
 </span><span id="__span-2-12"><a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a><span class="n">txt_doc</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="n">txt_doc</span><span class="o">.</span><span class="n">url</span><span class="o">.</span><span class="n">load</span><span class="p">()</span>
 </span><span id="__span-2-13"><a id="__codelineno-2-13" name="__codelineno-2-13" href="#__codelineno-2-13"></a><span class="c1"># model = MyEmbeddingModel()</span>
 </span><span id="__span-2-14"><a id="__codelineno-2-14" name="__codelineno-2-14" href="#__codelineno-2-14"></a><span class="c1"># txt_doc.embedding = model(txt_doc.text)</span>
@@ -9522,8 +9522,8 @@ excluding <code>id</code>. When compared against a str, it will check the equali
 of the <code>text</code> attribute against the given string.</p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="kn">from</span> <span class="nn">docarray.documents</span> <span class="kn">import</span> <span class="n">TextDoc</span>
 </span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>
-</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="n">doc</span> <span class="o">=</span> <span class="n">TextDoc</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s1">'This is the main text'</span><span class="p">,</span> <span class="n">url</span><span class="o">=</span><span class="s1">'exampleurl.com'</span><span class="p">)</span>
-</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="n">doc2</span> <span class="o">=</span> <span class="n">TextDoc</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s1">'This is the main text'</span><span class="p">,</span> <span class="n">url</span><span class="o">=</span><span class="s1">'exampleurl.com'</span><span class="p">)</span>
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="n">doc</span> <span class="o">=</span> <span class="n">TextDoc</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s1">'This is the main text'</span><span class="p">,</span> <span class="n">url</span><span class="o">=</span><span class="s1">'exampleurl.com/file'</span><span class="p">)</span>
+</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="n">doc2</span> <span class="o">=</span> <span class="n">TextDoc</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s1">'This is the main text'</span><span class="p">,</span> <span class="n">url</span><span class="o">=</span><span class="s1">'exampleurl.com/file'</span><span class="p">)</span>
 </span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a>
 </span><span id="__span-4-6"><a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a><span class="n">doc</span> <span class="o">==</span> <span class="s1">'This is the main text'</span>  <span class="c1"># True</span>
 </span><span id="__span-4-7"><a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a><span class="n">doc</span> <span class="o">==</span> <span class="n">doc2</span>  <span class="c1"># True</span>
@@ -9691,7 +9691,7 @@ of the <code>text</code> attribute against the given string.</p>
 </span><span id="__span-0-24"><a id="__codelineno-0-24" name="__codelineno-0-24"></a><span class="sd">    from docarray.documents import TextDoc</span>
 </span><span id="__span-0-25"><a id="__codelineno-0-25" name="__codelineno-0-25"></a>
 </span><span id="__span-0-26"><a id="__codelineno-0-26" name="__codelineno-0-26"></a><span class="sd">    # use it directly</span>
-</span><span id="__span-0-27"><a id="__codelineno-0-27" name="__codelineno-0-27"></a><span class="sd">    txt_doc = TextDoc(url='http://www.jina.ai/')</span>
+</span><span id="__span-0-27"><a id="__codelineno-0-27" name="__codelineno-0-27"></a><span class="sd">    txt_doc = TextDoc(url='https://www.gutenberg.org/files/1065/1065-0.txt')</span>
 </span><span id="__span-0-28"><a id="__codelineno-0-28" name="__codelineno-0-28"></a><span class="sd">    txt_doc.text = txt_doc.url.load()</span>
 </span><span id="__span-0-29"><a id="__codelineno-0-29" name="__codelineno-0-29"></a><span class="sd">    # model = MyEmbeddingModel()</span>
 </span><span id="__span-0-30"><a id="__codelineno-0-30" name="__codelineno-0-30"></a><span class="sd">    # txt_doc.embedding = model(txt_doc.text)</span>
@@ -9718,7 +9718,7 @@ of the <code>text</code> attribute against the given string.</p>
 </span><span id="__span-0-51"><a id="__codelineno-0-51" name="__codelineno-0-51"></a><span class="sd">        second_embedding: Optional[AnyEmbedding]</span>
 </span><span id="__span-0-52"><a id="__codelineno-0-52" name="__codelineno-0-52"></a>
 </span><span id="__span-0-53"><a id="__codelineno-0-53" name="__codelineno-0-53"></a>
-</span><span id="__span-0-54"><a id="__codelineno-0-54" name="__codelineno-0-54"></a><span class="sd">    txt_doc = MyText(url='http://www.jina.ai/')</span>
+</span><span id="__span-0-54"><a id="__codelineno-0-54" name="__codelineno-0-54"></a><span class="sd">    txt_doc = MyText(url='https://www.gutenberg.org/files/1065/1065-0.txt')</span>
 </span><span id="__span-0-55"><a id="__codelineno-0-55" name="__codelineno-0-55"></a><span class="sd">    txt_doc.text = txt_doc.url.load()</span>
 </span><span id="__span-0-56"><a id="__codelineno-0-56" name="__codelineno-0-56"></a><span class="sd">    # model = MyEmbeddingModel()</span>
 </span><span id="__span-0-57"><a id="__codelineno-0-57" name="__codelineno-0-57"></a><span class="sd">    # txt_doc.embedding = model(txt_doc.text)</span>
@@ -9760,8 +9760,8 @@ of the <code>text</code> attribute against the given string.</p>
 </span><span id="__span-0-93"><a id="__codelineno-0-93" name="__codelineno-0-93"></a><span class="sd">    ```python</span>
 </span><span id="__span-0-94"><a id="__codelineno-0-94" name="__codelineno-0-94"></a><span class="sd">    from docarray.documents import TextDoc</span>
 </span><span id="__span-0-95"><a id="__codelineno-0-95" name="__codelineno-0-95"></a>
-</span><span id="__span-0-96"><a id="__codelineno-0-96" name="__codelineno-0-96"></a><span class="sd">    doc = TextDoc(text='This is the main text', url='exampleurl.com')</span>
-</span><span id="__span-0-97"><a id="__codelineno-0-97" name="__codelineno-0-97"></a><span class="sd">    doc2 = TextDoc(text='This is the main text', url='exampleurl.com')</span>
+</span><span id="__span-0-96"><a id="__codelineno-0-96" name="__codelineno-0-96"></a><span class="sd">    doc = TextDoc(text='This is the main text', url='exampleurl.com/file')</span>
+</span><span id="__span-0-97"><a id="__codelineno-0-97" name="__codelineno-0-97"></a><span class="sd">    doc2 = TextDoc(text='This is the main text', url='exampleurl.com/file')</span>
 </span><span id="__span-0-98"><a id="__codelineno-0-98" name="__codelineno-0-98"></a>
 </span><span id="__span-0-99"><a id="__codelineno-0-99" name="__codelineno-0-99"></a><span class="sd">    doc == 'This is the main text'  # True</span>
 </span><span id="__span-0-100"><a id="__codelineno-0-100" name="__codelineno-0-100"></a><span class="sd">    doc == doc2  # True</span>
