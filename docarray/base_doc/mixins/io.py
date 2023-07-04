@@ -146,7 +146,9 @@ class IOMixin(Iterable[Tuple[str, Any]]):
         return self.to_bytes()
 
     def to_bytes(
-        self, protocol: Literal['pickle', 'protobuf'], compress: Optional[str] = None
+        self,
+        protocol: Literal['protobuf', 'pickle'] = 'protobuf',
+        compress: Optional[str] = None,
     ) -> bytes:
         """Serialize itself into bytes.
 
@@ -173,7 +175,7 @@ class IOMixin(Iterable[Tuple[str, Any]]):
     def from_bytes(
         cls: Type[T],
         data: bytes,
-        protocol: Literal['pickle', 'protobuf'],
+        protocol: Literal['protobuf', 'pickle'] = 'protobuf',
         compress: Optional[str] = None,
     ) -> T:
         """Build Document object from binary bytes
@@ -199,7 +201,9 @@ class IOMixin(Iterable[Tuple[str, Any]]):
             )
 
     def to_base64(
-        self, protocol: Literal['pickle', 'protobuf'], compress: Optional[str] = None
+        self,
+        protocol: Literal['protobuf', 'pickle'] = 'protobuf',
+        compress: Optional[str] = None,
     ) -> str:
         """Serialize a Document object into as base64 string
 
@@ -213,7 +217,7 @@ class IOMixin(Iterable[Tuple[str, Any]]):
     def from_base64(
         cls: Type[T],
         data: str,
-        protocol: Literal['pickle', 'protobuf'] = 'pickle',
+        protocol: Literal['protobuf', 'pickle'] = 'protobuf',
         compress: Optional[str] = None,
     ) -> T:
         """Build Document object from binary bytes
