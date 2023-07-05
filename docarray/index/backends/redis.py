@@ -43,6 +43,7 @@ if TYPE_CHECKING:
         NumericField,
         TextField,
         VectorField,
+        TagField,
     )
     from redis.commands.search.indexDefinition import IndexDefinition, IndexType  # type: ignore[import]
 else:
@@ -52,6 +53,7 @@ else:
         NumericField,
         TextField,
         VectorField,
+        TagField,
     )
     from redis.commands.search.indexDefinition import IndexDefinition, IndexType
     from redis.commands.search.query import Query
@@ -79,7 +81,6 @@ class RedisDocumentIndex(BaseDocIndex, Generic[TSchema]):
             self._index_name = kwargs.get('index_name')
         else:
             self._index_name = 'index_name__' + self._random_name()
-
 
         super().__init__(db_config=db_config, **kwargs)
         self._db_config = cast(RedisDocumentIndex.DBConfig, self._db_config)
@@ -146,6 +147,8 @@ class RedisDocumentIndex(BaseDocIndex, Generic[TSchema]):
                             as_name=column,
                         )
                     )
+                elif column in ['id', 'parent_id']:
+                    schema.append(TagField('$.' + column, as_name=column))
                 else:
                     schema.append(info.db_type('$.' + column, as_name=column))
 
@@ -537,7 +540,7 @@ class RedisDocumentIndex(BaseDocIndex, Generic[TSchema]):
         :param id: the root document id to filter by
         :return: a list of ids of the subindex documents
         """
-        docs = self._filter(filter_query=f'@parent_id:"{id}"', limit=self.num_docs())
+        docs = self._filter(filter_query=f'@parent_id:{{{id}}}', limit=self.num_docs())
         return [doc['id'] for doc in docs]
 
     def _text_search(

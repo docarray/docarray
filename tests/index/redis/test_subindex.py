@@ -79,6 +79,7 @@ def data():
     ]
     return my_docs
 
+
 def test_subindex_init(index):
     assert isinstance(index._subindices['docs'], RedisDocumentIndex)
     assert isinstance(index._subindices['list_docs'], RedisDocumentIndex)
@@ -86,12 +87,14 @@ def test_subindex_init(index):
         index._subindices['list_docs']._subindices['docs'], RedisDocumentIndex
     )
 
+
 def test_subindex_index(index, data):
     index.index(data)
     assert index.num_docs() == 5
     assert index._subindices['docs'].num_docs() == 25
     assert index._subindices['list_docs'].num_docs() == 25
     assert index._subindices['list_docs']._subindices['docs'].num_docs() == 125
+
 
 def test_subindex_get(index, data):
     index.index(data)
@@ -157,3 +160,36 @@ def test_subindex_contain(index, data):
     # Empty index
     empty_index = RedisDocumentIndex[MyDoc](host='localhost')
     assert empty_doc not in empty_index
+
+
+def test_find_subindex(index, data):
+    index.index(data)
+    # root level
+    query = np.ones((30,))
+    with pytest.raises(ValueError):
+        _, _ = index.find_subindex(query, subindex='', search_field='my_tens', limit=5)
+
+    # sub level
+    query = np.ones((10,))
+    root_docs, docs, scores = index.find_subindex(
+        query, subindex='docs', search_field='simple_tens', limit=5
+    )
+    assert type(root_docs[0]) == MyDoc
+    assert type(docs[0]) == SimpleDoc
+    assert len(scores) == 5
+    for root_doc, doc in zip(root_docs, docs):
+        assert np.allclose(doc.simple_tens, np.ones(10))
+        assert root_doc.id == f'{doc.id.split("_")[-2]}'
+
+    # sub sub level
+    query = np.ones((10,))
+    root_docs, docs, scores = index.find_subindex(
+        query, subindex='list_docs__docs', search_field='simple_tens', limit=5
+    )
+    assert len(docs) == 5
+    assert len(scores) == 5
+    assert type(root_docs[0]) == MyDoc
+    assert type(docs[0]) == SimpleDoc
+    for root_doc, doc in zip(root_docs, docs):
+        assert np.allclose(doc.simple_tens, np.ones(10))
+        assert root_doc.id == f'{doc.id.split("_")[-3]}'

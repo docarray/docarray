@@ -29,7 +29,7 @@ def test_configure_index():
         title: str
         year: int
 
-    types = {'id': 'TEXT', 'tens': 'VECTOR', 'title': 'TEXT', 'year': 'NUMERIC'}
+    types = {'id': 'TAG', 'tens': 'VECTOR', 'title': 'TEXT', 'year': 'NUMERIC'}
     index = RedisDocumentIndex[Schema](host='localhost')
 
     attr_bytes = index._client.ft(index._index_name).info()['attributes']
