@@ -578,7 +578,7 @@ class BaseDocIndex(ABC, Generic[TSchema]):
         self._logger.debug(f'Executing `filter` for the query {filter_query}')
         docs = self._filter(filter_query, limit=limit, **kwargs)
 
-        if isinstance(docs, List):
+        if isinstance(docs, List) and not isinstance(docs, DocList):
             docs = self._dict_list_to_docarray(docs)
 
         return docs
@@ -656,7 +656,7 @@ class BaseDocIndex(ABC, Generic[TSchema]):
             query_text, search_field=search_field, limit=limit, **kwargs
         )
 
-        if isinstance(docs, List):
+        if isinstance(docs, List) and not isinstance(docs, DocList):
             docs = self._dict_list_to_docarray(docs)
 
         return FindResult(documents=docs, scores=scores)
