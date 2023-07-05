@@ -349,7 +349,7 @@ This is useful for:
 - :mag: **Neural search** applications
 - :bulb: **Recommender systems**
 
-Currently, Document Indexes support **[Weaviate](https://weaviate.io/)**, **[Qdrant](https://qdrant.tech/)**, **[ElasticSearch](https://www.elastic.co/)**, **[Redis](https://redis.io/)**, and **[HNSWLib](https://github.com/nmslib/hnswlib)**, with more to come!
+Currently, Document Indexes support **[Weaviate](https://weaviate.io/)**, **[Qdrant](https://qdrant.tech/)**, **[ElasticSearch](https://www.elastic.co/)**,  **[Redis](https://redis.io/)**, and **[HNSWLib](https://github.com/nmslib/hnswlib)**, with more to come!
 
 The Document Index interface lets you index and retrieve Documents from multiple vector databases, all with the same user interface.
 
