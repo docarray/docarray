@@ -1,17 +1,3 @@
----
-jupyter:
-  jupytext:
-    text_representation:
-      extension: .md
-      format_name: markdown
-      format_version: '1.3'
-      jupytext_version: 1.14.5
-  kernelspec:
-    display_name: Python 3 (ipykernel)
-    language: python
-    name: python3
----
-
 # Weaviate Document Index
 
 !!! note "Install dependencies"
@@ -24,15 +10,42 @@ jupyter:
 This is the user guide for the [WeaviateDocumentIndex][docarray.index.backends.weaviate.WeaviateDocumentIndex],
 focusing on special features and configurations of Weaviate.
 
-For general usage of a Document Index, see the [general user guide](./docindex.md).
 
-# 1. Start Weaviate service
+## Basic Usage
+```python
+from docarray import BaseDoc, DocList
+from docarray.index import WeaviateDocumentIndex
+from docarray.typing import NdArray
+from pydantic import Field
+import numpy as np
+
+# Define the document schema.
+class MyDoc(BaseDoc):
+    title: str 
+    embedding: NdArray[128] = Field(is_embedding=True)
+
+# Create dummy documents.
+docs = DocList[MyDoc](MyDoc(title=f'title #{i}', embedding=np.random.rand(128)) for i in range(10))
+
+# Initialize a new WeaviateDocumentIndex instance and add the documents to the index.
+doc_index = WeaviateDocumentIndex[MyDoc]()
+doc_index.index(docs)
+
+# Perform a vector search.
+query = np.ones(128)
+retrieved_docs = doc_index.find(query, limit=10)
+```
+
+
+## Initialize
+
+
+### Start Weaviate service
 
 To use [WeaviateDocumentIndex][docarray.index.backends.weaviate.WeaviateDocumentIndex], DocArray needs to hook into a running Weaviate service.
 There are multiple ways to start a Weaviate instance, depending on your use case.
 
-<!-- #region -->
-## 1.1. Options - Overview
+#### Options - Overview
 
 | Instance type | General use case | Configurability | Notes | 
 | ----- | ----- | ----- | ----- | 
@@ -41,15 +54,15 @@ There are multiple ways to start a Weaviate instance, depending on your use case
 | **Docker-Compose** | Development | Yes | **Recommended for development + customizability** |
 | **Kubernetes** | Production | Yes |  |
 
-## 1.2. Instantiation instructions
+### Instantiation instructions
 
-### 1.2.1. WCS (managed instance)
+#### WCS (managed instance)
 
 Go to the [WCS console](https://console.weaviate.cloud) and create an instance using the visual interface, following [this guide](https://weaviate.io/developers/wcs/guides/create-instance). 
 
 Weaviate instances on WCS come pre-configured, so no further configuration is required.
 
-### 1.2.2. Docker-Compose (self-managed)
+#### Docker-Compose (self-managed)
 
 Get a configuration file (`docker-compose.yaml`). You can build it using [this interface](https://weaviate.io/developers/weaviate/installation/docker-compose), or download it directly with:
 
@@ -58,14 +71,12 @@ curl -o docker-compose.yml "https://configuration.weaviate.io/v2/docker-compose/
 ```
 
 Where `v<WEAVIATE_VERSION>` is the actual version, such as `v1.18.3`.
-<!-- #endregion -->
 
 ```bash
 curl -o docker-compose.yml "https://configuration.weaviate.io/v2/docker-compose/docker-compose.yml?modules=standalone&runtime=docker-compose&weaviate_version=v1.18.3"
 ```
 
-<!-- #region -->
-#### 1.2.2.1 Start up Weaviate with Docker-Compose
+##### Start up Weaviate with Docker-Compose
 
 Then you can start up Weaviate by running from a shell:
 
@@ -73,7 +84,7 @@ Then you can start up Weaviate by running from a shell:
 docker-compose up -d
 ```
 
-#### 1.2.2.2 Shut down Weaviate
+##### Shut down Weaviate
 
 Then you can shut down Weaviate by running from a shell:
 
@@ -86,14 +97,12 @@ docker-compose down
 Unless data persistence or backups are set up, shutting down the Docker instance will remove all its data. 
 
 See documentation on [Persistent volume](https://weaviate.io/developers/weaviate/installation/docker-compose#persistent-volume) and [Backups](https://weaviate.io/developers/weaviate/configuration/backups) to prevent this if persistence is desired.
-<!-- #endregion -->
 
 ```bash
 docker-compose up -d
 ```
 
-<!-- #region -->
-### 1.2.3. Embedded Weaviate (from the application)
+#### Embedded Weaviate (from the application)
 
 With Embedded Weaviate, Weaviate database server can be launched from the client, using:
 
@@ -103,7 +112,7 @@ from docarray.index.backends.weaviate import EmbeddedOptions
 embedded_options = EmbeddedOptions()
 ```
 
-## 1.3. Authentication
+### Authentication
 
 Weaviate offers [multiple authentication options](https://weaviate.io/developers/weaviate/configuration/authentication), as well as [authorization options](https://weaviate.io/developers/weaviate/configuration/authorization). 
 
@@ -116,9 +125,8 @@ With DocArray, you can use any of:
 To access a Weaviate instance. In general, **Weaviate recommends using API-key based authentication** for balance between security and ease of use. You can create, for example, read-only keys to distribute to certain users, while providing read/write keys to administrators.
 
 See below for examples of connection to Weaviate for each scenario.
-<!-- #endregion -->
 
-## 1.4. Connect to Weaviate
+### Connect to Weaviate
 
 ```python
 from docarray.index.backends.weaviate import WeaviateDocumentIndex
@@ -126,7 +134,6 @@ from docarray.index.backends.weaviate import WeaviateDocumentIndex
 
 ### Public instance
 
-<!-- #region -->
 If using Embedded Weaviate:
 
 ```python
@@ -136,7 +143,6 @@ dbconfig = WeaviateDocumentIndex.DBConfig(embedded_options=EmbeddedOptions())
 ```
 
 For all other options:
-<!-- #endregion -->
 
 ```python
 dbconfig = WeaviateDocumentIndex.DBConfig(
@@ -144,8 +150,7 @@ dbconfig = WeaviateDocumentIndex.DBConfig(
 )  # Replace with your endpoint)
 ```
 
-<!-- #region -->
-### OIDC with username + password
+#### OIDC with username + password
 
 To authenticate against a Weaviate instance with OIDC username & password:
 
@@ -156,7 +161,6 @@ dbconfig = WeaviateDocumentIndex.DBConfig(
     host="http://localhost:8080",  # Replace with your endpoint
 )
 ```
-<!-- #endregion -->
 
 ```python
 # dbconfig = WeaviateDocumentIndex.DBConfig(
@@ -166,8 +170,7 @@ dbconfig = WeaviateDocumentIndex.DBConfig(
 # )
 ```
 
-<!-- #region -->
-### API key-based authentication
+#### API key-based authentication
 
 To authenticate against a Weaviate instance an API key:
 
@@ -177,106 +180,8 @@ dbconfig = WeaviateDocumentIndex.DBConfig(
     host="http://localhost:8080",  # Replace with your endpoint
 )
 ```
-<!-- #endregion -->
 
-
-<!-- #region -->
-# 2. Configure Weaviate
-
-## 2.1. Overview
-
-**WCS instances come pre-configured**, and as such additional settings are not configurable outside of those chosen at creation, such as whether to enable authentication.
-
-For other cases, such as **Docker-Compose deployment**, its settings can be modified through the configuration file, such as the `docker-compose.yaml` file. 
-
-Some of the more commonly used settings include:
-
-- [Persistent volume](https://weaviate.io/developers/weaviate/installation/docker-compose#persistent-volume): Set up data persistence so that data from inside the Docker container is not lost on shutdown
-- [Enabling a multi-node setup](https://weaviate.io/developers/weaviate/installation/docker-compose#multi-node-setup)
-- [Backups](https://weaviate.io/developers/weaviate/configuration/backups)
-- [Authentication (server-side)](https://weaviate.io/developers/weaviate/configuration/authentication)
-- [Modules enabled](https://weaviate.io/developers/weaviate/configuration/modules#enable-modules)
-
-And a list of environment variables is [available on this page](https://weaviate.io/developers/weaviate/config-refs/env-vars).
-
-## 2.2. DocArray instantiation configuration options
-
-Additionally, you can specify the below settings when you instantiate a configuration object in DocArray.
-
-| name | type | explanation | default                                                                | example |
-| ---- | ---- | ----------- |------------------------------------------------------------------------| ------- |
-| **Category: General** |
-| host | str | Weaviate instance url | http://localhost:8080                                                  |
-| **Category: Authentication** |
-| username | str | Username known to the specified authentication provider (e.g. WCS) | None                                                                   | `jp@weaviate.io` |
-| password | str | Corresponding password | None                                                                   | `p@ssw0rd` |
-| auth_api_key | str | API key known to the Weaviate instance | None                                                                   | `mys3cretk3y` | 
-| **Category: Data schema** |
-| index_name | str | Class name to use to store the document| The document class name, e.g. `MyDoc` for `WeaviateDocumentIndex[MyDoc]` | `Document` |
-| **Category: Embedded Weaviate** |
-| embedded_options| EmbeddedOptions | Options for embedded weaviate | None                                                                   |
-
-The type `EmbeddedOptions` can be specified as described [here](https://weaviate.io/developers/weaviate/installation/embedded#embedded-options)
-
-## 2.3. Runtime configuration
-
-Weaviate strongly recommends using batches to perform bulk operations such as importing data, as it will significantly impact performance. You can specify a batch configuration as in the below example, and pass it on as runtime configuration.
-
-```python
-batch_config = {
-    "batch_size": 20,
-    "dynamic": False,
-    "timeout_retries": 3,
-    "num_workers": 1,
-}
-
-runtimeconfig = WeaviateDocumentIndex.RuntimeConfig(batch_config=batch_config)
-
-dbconfig = WeaviateDocumentIndex.DBConfig(
-    host="http://localhost:8080"
-)  # Replace with your endpoint and/or auth settings
-store = WeaviateDocumentIndex[Document](db_config=dbconfig)
-store.configure(runtimeconfig)  # Batch settings being passed on
-```
-
-| name | type | explanation | default |
-| ---- | ---- | ----------- | ------- |
-| batch_config | Dict[str, Any] | dictionary to configure the weaviate client's batching logic | see below |
-
-Read more: 
-
-- Weaviate [docs on batching with the Python client](https://weaviate.io/developers/weaviate/client-libraries/python#batching)
-<!-- #endregion -->
-
-<!-- #region -->
-## 3. Available column types
-
-Python data types are mapped to Weaviate type according to the below conventions.
-
-| Python type | Weaviate type |
-| ----------- | ------------- |
-| docarray.typing.ID | string |
-| str | text |
-| int | int |
-| float | number |
-| bool | boolean |
-| np.ndarray | number[] |
-| AbstractTensor | number[] |
-| bytes | blob |
-
-You can override this default mapping by passing a `col_type` to the `Field` of a schema. 
-
-For example to map `str` to `string` you can:
-
-```python
-class StringDoc(BaseDoc):
-    text: str = Field(col_type="string")
-```
-
-A list of available Weaviate data types [is here](https://weaviate.io/developers/weaviate/config-refs/datatypes).
-<!-- #endregion -->
-
-## 4. Adding example data
+## Index
 
 Putting it together, we can add data below using Weaviate as the Document Index:
 
@@ -330,7 +235,7 @@ store.configure(runtimeconfig)  # Batch settings being passed on
 store.index(docs)
 ```
 
-### 4.1. Notes
+### Notes
 
 - To use vector search, you need to specify `is_embedding` for exactly one field.
     - This is because Weaviate is configured to allow one vector per data object.
@@ -340,50 +245,53 @@ store.index(docs)
 - It is possible to create a schema without specifying `is_embedding` for any field. 
     - This will however mean that the document will not be vectorized and cannot be searched using vector search. 
 
-## 5. Query Builder/Hybrid Search
 
-### 5.1. Text search
-
-To perform a text search, follow the below syntax. 
-
-This will perform a text search for the word "hello" in the field "text" and return the first two results:
-
-```python
-q = store.build_query().text_search("world", search_field="text").limit(2).build()
-
-docs = store.execute_query(q)
-docs
-```
-
-### 5.2. Vector similarity search
+## Vector Search
 
 To perform a vector similarity search, follow the below syntax. 
 
 This will perform a vector similarity search for the vector [1, 2] and return the first two results:
 
 ```python
-q = store.build_query().find([1, 2]).limit(2).build()
-
-docs = store.execute_query(q)
-docs
+docs = store.find([1, 2], limit=2)
 ```
 
-### 5.3. Hybrid search
+## Filter
+
+To perform filtering, follow the below syntax. 
+
+This will perform a filtering on the field `text`:
+```python
+docs = store.filter({"path": ["text"], "operator": "Equal", "valueText": "Hello world"})
+```
+
+
+## Text search
+
+To perform a text search, follow the below syntax. 
+
+This will perform a text search for the word "hello" in the field "text" and return the first two results:
+
+```python
+docs = store.text_search("world", search_field="text", limit=2)
+```
+
+
+## Hybrid search
 
 To perform a hybrid search, follow the below syntax. 
 
 This will perform a hybrid search for the word "hello" and the vector [1, 2] and return the first two results:
 
-**Note**: Hybrid search searches through the object vector and all fields. Accordingly, the `search_field` keyword it will have no effect. 
+**Note**: Hybrid search searches through the object vector and all fields. Accordingly, the `search_field` keyword will have no effect. 
 
 ```python
 q = store.build_query().text_search("world").find([1, 2]).limit(2).build()
 
 docs = store.execute_query(q)
-docs
 ```
 
-### 5.4. GraphQL query
+### GraphQL query
 
 You can also perform a raw GraphQL query using any syntax as you might natively in Weaviate. This allows you to run any of the full range of queries that you might wish to.
 
@@ -409,30 +317,343 @@ Note that running a raw GraphQL query will return Weaviate-type responses, rathe
 
 You can find the documentation for [Weaviate's GraphQL API here](https://weaviate.io/developers/weaviate/api/graphql).
 
-<!-- #region -->
-## 6. Other notes
+## Access Documents
 
-### 6.1. DocArray IDs vs Weaviate IDs
+To retrieve a document from a Document Index, you don't necessarily need to perform a fancy search.
 
-As you saw earlier, the `id` field is a special field that is used to identify a document in `BaseDoc`.
+You can also access data by the `id` that was assigned to each document:
 
 ```python
-Document(
-    text="Hello world", embedding=np.array([1, 2]), file=np.random.rand(100), id="1"
-),
+# prepare some data
+data = DocList[MyDoc](
+    MyDoc(embedding=np.random.rand(128), text=f'query {i}') for i in range(3)
+)
+
+# remember the Document ids and index the data
+ids = data.id
+store.index(data)
+
+# access the Documents by id
+doc = store[ids[0]]  # get by single id
+docs = store[ids]  # get by list of ids
 ```
 
-This is not the same as Weaviate's own `id`, which is a reserved keyword and can't be used as a field name. 
 
-Accordingly, the DocArray document id is stored internally in Weaviate as `docarrayid`.
-<!-- #endregion -->
+## Delete Documents
 
-## 7. Shut down Weaviate instance
+In the same way you can access Documents by id, you can also delete them:
 
-```bash
-docker-compose down
+```python
+# prepare some data
+data = DocList[MyDoc](
+    MyDoc(embedding=np.random.rand(128), text=f'query {i}') for i in range(3)
+)
+
+# remember the Document ids and index the data
+ids = data.id
+store.index(data)
+
+# access the Documents by id
+del store[ids[0]]  # del by single id
+del store[ids[1:]]  # del by list of ids
 ```
 
------
------
------
+## Configuration
+
+### Overview
+
+**WCS instances come pre-configured**, and as such additional settings are not configurable outside of those chosen at creation, such as whether to enable authentication.
+
+For other cases, such as **Docker-Compose deployment**, its settings can be modified through the configuration file, such as the `docker-compose.yaml` file. 
+
+Some of the more commonly used settings include:
+
+- [Persistent volume](https://weaviate.io/developers/weaviate/installation/docker-compose#persistent-volume): Set up data persistence so that data from inside the Docker container is not lost on shutdown
+- [Enabling a multi-node setup](https://weaviate.io/developers/weaviate/installation/docker-compose#multi-node-setup)
+- [Backups](https://weaviate.io/developers/weaviate/configuration/backups)
+- [Authentication (server-side)](https://weaviate.io/developers/weaviate/configuration/authentication)
+- [Modules enabled](https://weaviate.io/developers/weaviate/configuration/modules#enable-modules)
+
+And a list of environment variables is [available on this page](https://weaviate.io/developers/weaviate/config-refs/env-vars).
+
+### DocArray instantiation configuration options
+
+Additionally, you can specify the below settings when you instantiate a configuration object in DocArray.
+
+| name | type | explanation | default                                                                | example |
+| ---- | ---- | ----------- |------------------------------------------------------------------------| ------- |
+| **Category: General** |
+| host | str | Weaviate instance url | http://localhost:8080                                                  |
+| **Category: Authentication** |
+| username | str | Username known to the specified authentication provider (e.g. WCS) | None                                                                   | `jp@weaviate.io` |
+| password | str | Corresponding password | None                                                                   | `p@ssw0rd` |
+| auth_api_key | str | API key known to the Weaviate instance | None                                                                   | `mys3cretk3y` | 
+| **Category: Data schema** |
+| index_name | str | Class name to use to store the document| The document class name, e.g. `MyDoc` for `WeaviateDocumentIndex[MyDoc]` | `Document` |
+| **Category: Embedded Weaviate** |
+| embedded_options| EmbeddedOptions | Options for embedded weaviate | None                                                                   |
+
+The type `EmbeddedOptions` can be specified as described [here](https://weaviate.io/developers/weaviate/installation/embedded#embedded-options)
+
+### Runtime configuration
+
+Weaviate strongly recommends using batches to perform bulk operations such as importing data, as it will significantly impact performance. You can specify a batch configuration as in the below example, and pass it on as runtime configuration.
+
+```python
+batch_config = {
+    "batch_size": 20,
+    "dynamic": False,
+    "timeout_retries": 3,
+    "num_workers": 1,
+}
+
+runtimeconfig = WeaviateDocumentIndex.RuntimeConfig(batch_config=batch_config)
+
+dbconfig = WeaviateDocumentIndex.DBConfig(
+    host="http://localhost:8080"
+)  # Replace with your endpoint and/or auth settings
+store = WeaviateDocumentIndex[Document](db_config=dbconfig)
+store.configure(runtimeconfig)  # Batch settings being passed on
+```
+
+| name | type | explanation | default |
+| ---- | ---- | ----------- | ------- |
+| batch_config | Dict[str, Any] | dictionary to configure the weaviate client's batching logic | see below |
+
+Read more: 
+
+- Weaviate [docs on batching with the Python client](https://weaviate.io/developers/weaviate/client-libraries/python#batching)
+
+
+### Available column types
+
+Python data types are mapped to Weaviate type according to the below conventions.
+
+| Python type | Weaviate type |
+| ----------- | ------------- |
+| docarray.typing.ID | string |
+| str | text |
+| int | int |
+| float | number |
+| bool | boolean |
+| np.ndarray | number[] |
+| AbstractTensor | number[] |
+| bytes | blob |
+
+You can override this default mapping by passing a `col_type` to the `Field` of a schema. 
+
+For example to map `str` to `string` you can:
+
+```python
+class StringDoc(BaseDoc):
+    text: str = Field(col_type="string")
+```
+
+A list of available Weaviate data types [is here](https://weaviate.io/developers/weaviate/config-refs/datatypes).
+
+
+## Nested data
+
+The examples above all operate on a simple schema: All fields in `MyDoc` have "basic" types, such as `str` or `NdArray`.
+
+**Index nested data:**
+
+It is, however, also possible to represent nested Documents and store them in a Document Index.
+
+In the following example you can see a complex schema that contains nested Documents.
+The `YouTubeVideoDoc` contains a `VideoDoc` and an `ImageDoc`, alongside some "basic" fields:
+
+```python
+from docarray.typing import ImageUrl, VideoUrl, AnyTensor
+
+
+# define a nested schema
+class ImageDoc(BaseDoc):
+    url: ImageUrl
+    tensor: AnyTensor = Field(space='cosine', dim=64)
+
+
+class VideoDoc(BaseDoc):
+    url: VideoUrl
+    tensor: AnyTensor = Field(space='cosine', dim=128, is_embedding=True)
+
+
+class YouTubeVideoDoc(BaseDoc):
+    title: str
+    description: str
+    thumbnail: ImageDoc
+    video: VideoDoc
+    tensor: AnyTensor = Field(space='cosine', dim=256)
+
+
+# create a Document Index
+doc_index = WeaviateDocumentIndex[YouTubeVideoDoc]()
+
+# create some data
+index_docs = [
+    YouTubeVideoDoc(
+        title=f'video {i+1}',
+        description=f'this is video from author {10*i}',
+        thumbnail=ImageDoc(url=f'http://example.ai/images/{i}', tensor=np.ones(64)),
+        video=VideoDoc(url=f'http://example.ai/videos/{i}', tensor=np.ones(128)),
+        tensor=np.ones(256),
+    )
+    for i in range(8)
+]
+
+# index the Documents
+doc_index.index(index_docs)
+```
+
+**Search nested data:**
+
+You can perform search on any nesting level by using the dunder operator to specify the field defined in the nested data.
+
+In the following example, you can see how to perform vector search on the `tensor` field of the `video` field:
+
+```python
+# create a query Document
+query_doc = YouTubeVideoDoc(
+    title=f'video query',
+    description=f'this is a query video',
+    thumbnail=ImageDoc(url=f'http://example.ai/images/1024', tensor=np.ones(64)),
+    video=VideoDoc(url=f'http://example.ai/videos/1024', tensor=np.ones(128)),
+    tensor=np.ones(256),
+)
+
+# find by the `video` tensor; nested level
+docs, scores = doc_index.find(query_doc, limit=3)
+```
+
+### Nested data with subindex
+
+Documents can be nested by containing a `DocList` of other documents, which is a slightly more complicated scenario than the one [above](#nested-data).
+
+If a Document contains a DocList, it can still be stored in a Document Index.
+In this case, the DocList will be represented as a new index (or table, collection, etc., depending on the database backend), that is linked with the parent index (table, collection, ...).
+
+This still lets index and search through all of your data, but if you want to avoid the creation of additional indexes you could try to refactor your document schemas without the use of DocList.
+
+
+**Index**
+
+In the following example you can see a complex schema that contains nested Documents with subindex.
+The `MyDoc` contains a `DocList` of `VideoDoc`, which contains a `DocList` of `ImageDoc`, alongside some "basic" fields:
+
+```python
+class ImageDoc(BaseDoc):
+    url: ImageUrl
+    tensor_image: AnyTensor = Field(space='cosine', dim=64, is_embedding=True)
+
+
+class VideoDoc(BaseDoc):
+    url: VideoUrl
+    images: DocList[ImageDoc]
+    tensor_video: AnyTensor = Field(space='cosine', dim=128, is_embedding=True)
+
+
+class MyDoc(BaseDoc):
+    docs: DocList[VideoDoc]
+    tensor: AnyTensor = Field(space='cosine', dim=256, is_embedding=True)
+
+
+# create a Document Index
+doc_index = WeaviateDocumentIndex[MyDoc]()
+
+# create some data
+index_docs = [
+    MyDoc(
+        docs=DocList[VideoDoc](
+            [
+                VideoDoc(
+                    url=f'http://example.ai/videos/{i}-{j}',
+                    images=DocList[ImageDoc](
+                        [
+                            ImageDoc(
+                                url=f'http://example.ai/images/{i}-{j}-{k}',
+                                tensor_image=np.ones(64),
+                            )
+                            for k in range(10)
+                        ]
+                    ),
+                    tensor_video=np.ones(128),
+                )
+                for j in range(10)
+            ]
+        ),
+        tensor=np.ones(256),
+    )
+    for i in range(10)
+]
+
+# index the Documents
+doc_index.index(index_docs)
+```
+
+**Search**
+
+You can perform search on any subindex level by using `find_subindex()` method and the dunder operator `'root__subindex'` to specify the index to search on.
+
+```python
+# find by the `VideoDoc` tensor
+root_docs, sub_docs, scores = doc_index.find_subindex(
+    np.ones(128), subindex='docs', limit=3
+)
+
+# find by the `ImageDoc` tensor
+root_docs, sub_docs, scores = doc_index.find_subindex(
+    np.ones(64), subindex='docs__images', limit=3
+)
+```
+
+### Update elements
+In order to update a Document inside the index, you only need to reindex it with the updated attributes.
+
+First lets create a schema for our Index
+```python
+import numpy as np
+from docarray import BaseDoc, DocList
+from docarray.typing import NdArray
+from docarray.index import WeaviateDocumentIndex
+class MyDoc(BaseDoc):
+    text: str
+    embedding: NdArray[128] = Field(is_embedding=True)
+```
+Now we can instantiate our Index and index some data.
+
+```python
+docs = DocList[MyDoc](
+    [MyDoc(embedding=np.random.rand(10), text=f'I am the first version of Document {i}') for i in range(100)]
+)
+index = WeaviateDocumentIndex[MyDoc]()
+index.index(docs)
+assert index.num_docs() == 100
+```
+
+Now we can find relevant documents
+
+```python
+res = index.find(query=docs[0], limit=100)
+assert len(res.documents) == 100
+for doc in res.documents:
+    assert 'I am the first version' in doc.text
+```
+
+and update all of the text of this documents and reindex them
+
+```python
+for i, doc in enumerate(docs):
+    doc.text = f'I am the second version of Document {i}'
+
+index.index(docs)
+assert index.num_docs() == 100
+```
+
+When we retrieve them again we can see that their text attribute has been updated accordingly
+
+```python
+res = index.find(query=docs[0], limit=100)
+assert len(res.documents) == 100
+for doc in res.documents:
+    assert 'I am the second version' in doc.text
+```
