@@ -257,7 +257,7 @@ class RedisDocumentIndex(BaseDocIndex, Generic[TSchema]):
     class RuntimeConfig(BaseDocIndex.RuntimeConfig):
         """Dataclass that contains all "dynamic" configurations of RedisDocumentIndex.
 
-        :param batch_size: Batch size during indexing.
+        :param batch_size: Batch size for index/get/del.
         """
 
         batch_size: int = 100
