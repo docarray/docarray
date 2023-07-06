@@ -366,7 +366,10 @@ class RedisDocumentIndex(BaseDocIndex, Generic[TSchema]):
         """
         doc_ids = [self._prefix + id for id in doc_ids if self._doc_exists(id)]
         if doc_ids:
-            self._client.delete(*doc_ids)
+            for batch in self._generate_batches(
+                doc_ids, batch_size=self._runtime_config.batch_size
+            ):
+                self._client.delete(*batch)
 
     def _doc_exists(self, doc_id) -> bool:
         """
@@ -376,6 +379,11 @@ class RedisDocumentIndex(BaseDocIndex, Generic[TSchema]):
         :return: True if the document exists, False otherwise.
         """
         return bool(self._client.exists(self._prefix + doc_id))
+
+    @staticmethod
+    def _generate_batches(data, batch_size):
+        for i in range(0, len(data), batch_size):
+            yield data[i : i + batch_size]
 
     def _get_items(
         self, doc_ids: Sequence[str]
@@ -388,10 +396,14 @@ class RedisDocumentIndex(BaseDocIndex, Generic[TSchema]):
         """
         if not doc_ids:
             return []
+        docs: List[Dict[str, Any]] = []
+        for batch in self._generate_batches(
+            doc_ids, batch_size=self._runtime_config.batch_size
+        ):
+            ids = [self._prefix + id for id in batch]
+            retrieved_docs = self._client.json().mget(ids, '$')
+            docs.extend(doc[0] for doc in retrieved_docs if doc)
 
-        ids = [self._prefix + id for id in doc_ids]
-        docs = self._client.json().mget(ids, '$')
-        docs = [doc[0] for doc in docs if doc]
         if not docs:
             raise KeyError(f'No document with id {doc_ids} found')
         return docs
