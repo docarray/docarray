@@ -70,7 +70,7 @@ In this code snippet, `HnswDocumentIndex` takes a schema of the form of `MyDoc`.
 The Document Index then _creates a column for each field in `MyDoc`_.
 
 The column types in the backend database are determined by the type hints of the document's fields.
-Optionally, you can [customize the database types for every field](#customize-configurations).
+Optionally, you can [customize the database types for every field](#configuration).
 
 Most vector databases need to know the dimensionality of the vectors that will be stored.
 Here, that is automatically inferred from the type hint of the `embedding` field: `NdArray[128]` means that
@@ -293,14 +293,6 @@ as well as the batched version [filter_batched()][docarray.index.abstract.BaseDo
 
     To see how to perform filter search, you can check out other backends that offer support.
 
-
-In addition to vector similarity search, the Document Index interface offers methods for text search and filtered search:
-[text_search()][docarray.index.abstract.BaseDocIndex.text_search] and [filter()][docarray.index.abstract.BaseDocIndex.filter],
-as well as their batched versions [text_search_batched()][docarray.index.abstract.BaseDocIndex.text_search_batched] and [filter_batched()][docarray.index.abstract.BaseDocIndex.filter_batched]. [filter_subindex()][docarray.index.abstract.BaseDocIndex.filter_subindex] is for filter on subindex level.
-
-!!! note
-    The [HnswDocumentIndex][docarray.index.backends.hnswlib.HnswDocumentIndex] implementation does not offer support for filter
-    or text search.
 
 
 ## Text Search
