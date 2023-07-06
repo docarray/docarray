@@ -311,7 +311,11 @@ class BaseDoc(BaseModel, IOMixin, UpdateMixin, BaseNode):
     ) -> 'DictStrAny':
         """
         Generate a dictionary representation of the model, optionally specifying
-        which fields to include or exclude.
+        which fields to include or exclude. The method also includes the attributes
+        and their values when attributes are objects of class types which can include
+        nesting. This method differs from the `dict()` method of python which only
+        prints the methods and attributes of the object and only the type of the
+        attribute when attributes are types of other class.
 
         """
 

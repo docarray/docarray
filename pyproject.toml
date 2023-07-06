@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "docarray"
-version = '0.34.0'
+version = '0.35.0'
 description='The data structure for multimodal data'
 readme = 'README.md'
 authors=['DocArray']
@@ -35,7 +35,7 @@ classifiers = [
 
 [tool.poetry.dependencies]
 python = ">=3.8,<4.0"
-pydantic = ">=1.10.2"
+pydantic = ">=1.10.2,<2.0.0"
 numpy = ">=1.17.3"
 protobuf = { version = ">=3.19.0", optional = true }
 torch = { version = ">=1.0.0", optional = true }

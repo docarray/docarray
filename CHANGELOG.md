@@ -7,6 +7,7 @@
 
 
 
+
 <a name=release-note-0-30-0></a>
 ## Release Note (`0.30.0`)
 
@@ -430,4 +431,39 @@
  - [[```67a328f4```](https://github.com/jina-ai/docarray/commit/67a328f444777db1f36aa99dbf879e42bd28517a)] __-__ Revert &#34;fix: move default_column_config to DBConfig&#34; (*Joan Fontanals Martinez*)
  - [[```adc48180```](https://github.com/jina-ai/docarray/commit/adc481807ca02721952501479ce4f2b209c6e62c)] __-__ drop python 3.7 (#1644) (*samsja*)
  - [[```e66bf106```](https://github.com/jina-ai/docarray/commit/e66bf1060cb020023948498df4f5266c3b23324d)] __-__ __version__: the next version will be 0.33.1 (*Jina Dev Bot*)
+
+<a name=release-note-0-35-0></a>
+## Release Note (`0.35.0`)
+
+> Release time: 2023-07-03 11:53:25
+
+
+
+🙇 We'd like to thank all contributors for this new release! In particular,
+ Joan Fontanals,  Johannes Messner,  Saba Sturua,  Han Xiao,  Jina Dev Bot,  🙇
+
+
+### 🆕 New Features
+
+ - [[```8f25887d```](https://github.com/jina-ai/docarray/commit/8f25887d13f27338a99199ebd85462a4d6764615)] __-__ i/o for DocVec (#1562) (*Johannes Messner*)
+ - [[```e0e5cd8c```](https://github.com/jina-ai/docarray/commit/e0e5cd8ceacc9da8450094f591287d597cd7b0af)] __-__ validate file formats in url (#1606) (#1669) (*Saba Sturua*)
+ - [[```a7643414```](https://github.com/jina-ai/docarray/commit/a7643414da05e1f55198836646580965a49314d2)] __-__ add method to create BaseDoc from schema (#1667) (*Joan Fontanals*)
+
+### 🐞 Bug fixes
+
+ - [[```bcb60ca6```](https://github.com/jina-ai/docarray/commit/bcb60ca66738dc27ce04769e754133a4e9b0e173)] __-__ better error message when docvec is unusable (#1675) (*Johannes Messner*)
+
+### 📗 Documentation
+
+ - [[```b6eaa94c```](https://github.com/jina-ai/docarray/commit/b6eaa94cc1853c261e5a7967a3634f017fc41968)] __-__ fix a reference in readme (#1674) (*Saba Sturua*)
+
+### 🏁 Unit Test and CICD
+
+ - [[```b65b385d```](https://github.com/jina-ai/docarray/commit/b65b385d36d740afb5218a3de7c258617a2e51ca)] __-__ pin pydantic version (#1682) (*Joan Fontanals*)
+
+### 🍹 Other Improvements
+
+ - [[```3f089e52```](https://github.com/jina-ai/docarray/commit/3f089e5237c84e2ada367e30820d96018a7954d0)] __-__ update version to 0.35.0 (#1684) (*Joan Fontanals*)
+ - [[```3fc6ecb7```](https://github.com/jina-ai/docarray/commit/3fc6ecb71bdc0095f2c405c17492debcc3d8412d)] __-__ fix docarray v1v2 terms (#1668) (*Han Xiao*)
+ - [[```f507a5f7```](https://github.com/jina-ai/docarray/commit/f507a5f72548a5235e60f15dbcee2c35930c60c1)] __-__ __version__: the next version will be 0.34.1 (*Jina Dev Bot*)
 
