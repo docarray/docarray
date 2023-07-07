@@ -75,20 +75,13 @@ VALID_TEXT_SCORERS = [
 class RedisDocumentIndex(BaseDocIndex, Generic[TSchema]):
     def __init__(self, db_config=None, **kwargs):
         """Initialize RedisDocumentIndex"""
-        if db_config is not None and getattr(db_config, 'index_name'):
-            self._index_name = db_config.index_name
-        elif kwargs.get('index_name'):
-            self._index_name = kwargs.get('index_name')
-        else:
-            self._index_name = 'index_name__' + self._random_name()
-
         super().__init__(db_config=db_config, **kwargs)
         self._db_config = cast(RedisDocumentIndex.DBConfig, self._db_config)
 
         self._runtime_config: RedisDocumentIndex.RuntimeConfig = cast(
             RedisDocumentIndex.RuntimeConfig, self._runtime_config
         )
-        self._prefix = self._index_name + ':'
+        self._prefix = self.index_name + ':'
         self._text_scorer = self._db_config.text_scorer
         # initialize Redis client
         self._client = redis.Redis(
@@ -100,6 +93,23 @@ class RedisDocumentIndex(BaseDocIndex, Generic[TSchema]):
         )
         self._create_index()
         self._logger.info(f'{self.__class__.__name__} has been initialized')
+
+    @property
+    def index_name(self):
+        default_index_name = (
+            self._schema.__name__.lower() if self._schema is not None else None
+        )
+        if default_index_name is None:
+            err_msg = (
+                'A RedisDocIndex must be typed with a Document type.To do so, use the syntax: '
+                'RedisDocIndex[DocumentType] '
+            )
+
+            self._logger.error(err_msg)
+            raise ValueError(err_msg)
+        index_name = self._db_config.index_name or default_index_name
+        self._logger.debug(f'Retrieved index name: {index_name}')
+        return index_name
 
     @staticmethod
     def _random_name() -> str:
@@ -301,28 +311,28 @@ class RedisDocumentIndex(BaseDocIndex, Generic[TSchema]):
             an item from the corresponding generator. Yields until all generators
             are exhausted.
         """
-        keys = list(column_to_data.keys())
-        iterators = [iter(column_to_data[key]) for key in keys]
+        column_names = list(column_to_data.keys())
+        data_generators = [iter(column_to_data[col_name]) for col_name in column_names]
         batch: List[Dict[str, Any]] = []
 
         while True:
-            item_dict = {}
-            for key, it in zip(keys, iterators):
-                item = next(it, None)
+            data_dict = {}
+            for column_name, gen in zip(column_names, data_generators):
+                data_item = next(gen, None)
 
-                if key == 'id' and not item:
+                if column_name == 'id' and not data_item:
                     if batch:
                         yield batch
                     return
 
-                if isinstance(item, AbstractTensor):
-                    item_dict[key] = item._docarray_to_ndarray().tolist()
-                elif isinstance(item, ndarray):
-                    item_dict[key] = item.astype(np.float32).tolist()
-                elif item is not None:
-                    item_dict[key] = item
+                if isinstance(data_item, AbstractTensor):
+                    data_dict[column_name] = data_item._docarray_to_ndarray().tolist()
+                elif isinstance(data_item, ndarray):
+                    data_dict[column_name] = data_item.astype(np.float32).tolist()
+                elif data_item is not None:
+                    data_dict[column_name] = data_item
 
-            batch.append(item_dict)
+            batch.append(data_dict)
             if len(batch) == batch_size:
                 yield batch
                 batch = []
