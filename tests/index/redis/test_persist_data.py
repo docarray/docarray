@@ -5,7 +5,7 @@ from pydantic import Field
 from docarray import BaseDoc
 from docarray.index import RedisDocumentIndex
 from docarray.typing import NdArray
-from tests.index.redis.fixtures import start_redis  # noqa: F401
+from tests.index.redis.fixtures import start_redis, tmp_index_name  # noqa: F401
 
 
 pytestmark = [pytest.mark.slow, pytest.mark.index]
@@ -15,12 +15,11 @@ class SimpleDoc(BaseDoc):
     tens: NdArray[10] = Field(dim=1000)
 
 
-def test_persist():
+def test_persist(tmp_index_name):
     query = SimpleDoc(tens=np.random.random((10,)))
 
     # create index
-    index = RedisDocumentIndex[SimpleDoc](host='localhost')
-    index_name = index._index_name
+    index = RedisDocumentIndex[SimpleDoc](host='localhost', index_name=tmp_index_name)
 
     assert index.num_docs() == 0
 
@@ -29,7 +28,7 @@ def test_persist():
     find_results_before = index.find(query, search_field='tens', limit=5)
 
     # load existing index
-    index = RedisDocumentIndex[SimpleDoc](host='localhost', index_name=index_name)
+    index = RedisDocumentIndex[SimpleDoc](host='localhost', index_name=tmp_index_name)
     assert index.num_docs() == 10
     find_results_after = index.find(query, search_field='tens', limit=5)
     for doc_before, doc_after in zip(find_results_before[0], find_results_after[0]):

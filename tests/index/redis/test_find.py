@@ -8,7 +8,7 @@ from pydantic import Field
 from docarray import BaseDoc, DocList
 from docarray.index import RedisDocumentIndex
 from docarray.typing import NdArray, TorchTensor
-from tests.index.redis.fixtures import start_redis  # noqa: F401
+from tests.index.redis.fixtures import start_redis, tmp_index_name  # noqa: F401
 
 pytestmark = [pytest.mark.slow, pytest.mark.index]
 
@@ -27,9 +27,9 @@ class TorchDoc(BaseDoc):
 
 
 @pytest.mark.parametrize('space', ['cosine', 'l2', 'ip'])
-def test_find_simple_schema(space):
+def test_find_simple_schema(space, tmp_index_name):
     schema = get_simple_schema(space=space)
-    db = RedisDocumentIndex[schema](host='localhost')
+    db = RedisDocumentIndex[schema](host='localhost', index_name=tmp_index_name)
 
     index_docs = [schema(tens=np.random.rand(N_DIM)) for _ in range(10)]
     index_docs.append(schema(tens=np.ones(N_DIM)))
@@ -68,8 +68,8 @@ def test_find_limit_larger_than_index():
 
 
 @pytest.mark.parametrize('space', ['cosine', 'l2', 'ip'])
-def test_find_torch(space):
-    db = RedisDocumentIndex[TorchDoc](host='localhost')
+def test_find_torch(space, tmp_index_name):
+    db = RedisDocumentIndex[TorchDoc](host='localhost', index_name=tmp_index_name)
     index_docs = [TorchDoc(tens=np.random.rand(N_DIM)) for _ in range(10)]
     index_docs.append(TorchDoc(tens=np.ones(N_DIM, dtype=np.float32)))
     db.index(index_docs)
@@ -91,13 +91,13 @@ def test_find_torch(space):
 
 @pytest.mark.tensorflow
 @pytest.mark.parametrize('space', ['cosine', 'l2', 'ip'])
-def test_find_tensorflow(space):
+def test_find_tensorflow(space, tmp_index_name):
     from docarray.typing import TensorFlowTensor
 
     class TfDoc(BaseDoc):
         tens: TensorFlowTensor[10]
 
-    db = RedisDocumentIndex[TfDoc](host='localhost')
+    db = RedisDocumentIndex[TfDoc](host='localhost', index_name=tmp_index_name)
 
     index_docs = [TfDoc(tens=np.random.rand(N_DIM)) for _ in range(10)]
     index_docs.append(TfDoc(tens=np.ones(10)))
@@ -121,12 +121,12 @@ def test_find_tensorflow(space):
 
 
 @pytest.mark.parametrize('space', ['cosine', 'l2', 'ip'])
-def test_find_flat_schema(space):
+def test_find_flat_schema(space, tmp_index_name):
     class FlatSchema(BaseDoc):
         tens_one: NdArray = Field(dim=N_DIM, space=space)
         tens_two: NdArray = Field(dim=50, space=space)
 
-    index = RedisDocumentIndex[FlatSchema](host='localhost')
+    index = RedisDocumentIndex[FlatSchema](host='localhost', index_name=tmp_index_name)
 
     index_docs = [
         FlatSchema(tens_one=np.random.rand(N_DIM), tens_two=np.random.rand(50))
@@ -156,7 +156,7 @@ def test_find_flat_schema(space):
 
 
 @pytest.mark.parametrize('space', ['cosine', 'l2', 'ip'])
-def test_find_nested_schema(space):
+def test_find_nested_schema(space, tmp_index_name):
     class SimpleDoc(BaseDoc):
         tens: NdArray[N_DIM] = Field(space=space)
 
@@ -168,7 +168,9 @@ def test_find_nested_schema(space):
         d: NestedDoc
         tens: NdArray = Field(space=space, dim=N_DIM)
 
-    index = RedisDocumentIndex[DeepNestedDoc](host='localhost')
+    index = RedisDocumentIndex[DeepNestedDoc](
+        host='localhost', index_name=tmp_index_name
+    )
 
     index_docs = [
         DeepNestedDoc(
@@ -243,12 +245,12 @@ def test_simple_usage():
         assert q.id == matches[0].id
 
 
-def test_query_builder():
+def test_query_builder(tmp_index_name):
     class SimpleSchema(BaseDoc):
         tensor: NdArray[N_DIM] = Field(space='cosine')
         price: int
 
-    db = RedisDocumentIndex[SimpleSchema](host='localhost')
+    db = RedisDocumentIndex[SimpleSchema](host='localhost', index_name=tmp_index_name)
 
     index_docs = [
         SimpleSchema(tensor=np.array([i + 1] * 10), price=i + 1) for i in range(10)
@@ -269,7 +271,7 @@ def test_query_builder():
         assert doc.price <= 3
 
 
-def test_text_search():
+def test_text_search(tmp_index_name):
     class SimpleSchema(BaseDoc):
         description: str
         some_field: Optional[int]
@@ -286,7 +288,7 @@ def test_text_search():
 
     docs = [SimpleSchema(description=text) for text in texts_to_index]
 
-    db = RedisDocumentIndex[SimpleSchema](host='localhost')
+    db = RedisDocumentIndex[SimpleSchema](host='localhost', index_name=tmp_index_name)
     db.index(docs)
 
     docs, _ = db.text_search(query=query_string, search_field='description')
@@ -294,7 +296,7 @@ def test_text_search():
     assert docs[0].description == texts_to_index[0]
 
 
-def test_filter():
+def test_filter(tmp_index_name):
     class SimpleSchema(BaseDoc):
         description: str
         price: int
@@ -304,7 +306,7 @@ def test_filter():
     doc3 = SimpleSchema(description='Random book', price=40)
     docs = [doc1, doc2, doc3]
 
-    db = RedisDocumentIndex[SimpleSchema](host='localhost')
+    db = RedisDocumentIndex[SimpleSchema](host='localhost', index_name=tmp_index_name)
     db.index(docs)
 
     # filter on price < 45

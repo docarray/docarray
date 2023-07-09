@@ -5,7 +5,7 @@ from pydantic import Field
 from docarray import BaseDoc
 from docarray.index import RedisDocumentIndex
 from docarray.typing import NdArray
-from tests.index.redis.fixtures import start_redis  # noqa: F401
+from tests.index.redis.fixtures import start_redis, tmp_index_name  # noqa: F401
 
 
 pytestmark = [pytest.mark.slow, pytest.mark.index]
@@ -23,16 +23,16 @@ def test_configure_dim():
     assert index.num_docs() == 10
 
 
-def test_configure_index():
+def test_configure_index(tmp_index_name):
     class Schema(BaseDoc):
         tens: NdArray[100] = Field(space='cosine')
         title: str
         year: int
 
     types = {'id': 'TAG', 'tens': 'VECTOR', 'title': 'TEXT', 'year': 'NUMERIC'}
-    index = RedisDocumentIndex[Schema](host='localhost')
+    index = RedisDocumentIndex[Schema](host='localhost', index_name=tmp_index_name)
 
-    attr_bytes = index._client.ft(index._index_name).info()['attributes']
+    attr_bytes = index._client.ft(index.index_name).info()['attributes']
     attr = [[byte.decode() for byte in sublist] for sublist in attr_bytes]
 
     assert len(Schema.__fields__) == len(attr)

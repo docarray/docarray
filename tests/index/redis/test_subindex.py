@@ -22,7 +22,7 @@ class ListDoc(BaseDoc):
     list_tens: NdArray[20] = Field(space='l2')
 
 
-class MyDoc(BaseDoc):
+class NestedDoc(BaseDoc):
     docs: DocList[SimpleDoc]
     list_docs: DocList[ListDoc]
     my_tens: NdArray[30] = Field(space='l2')
@@ -30,14 +30,14 @@ class MyDoc(BaseDoc):
 
 @pytest.fixture(scope='session')
 def index():
-    index = RedisDocumentIndex[MyDoc](host='localhost')
+    index = RedisDocumentIndex[NestedDoc](host='localhost')
     return index
 
 
 @pytest.fixture(scope='session')
 def data():
     my_docs = [
-        MyDoc(
+        NestedDoc(
             id=f'{i}',
             docs=DocList[SimpleDoc](
                 [
@@ -99,7 +99,7 @@ def test_subindex_index(index, data):
 def test_subindex_get(index, data):
     index.index(data)
     doc = index['1']
-    assert type(doc) == MyDoc
+    assert type(doc) == NestedDoc
     assert doc.id == '1'
     assert len(doc.docs) == 5
     assert type(doc.docs[0]) == SimpleDoc
@@ -158,7 +158,7 @@ def test_subindex_contain(index, data):
     assert not index.subindex_contains(empty_doc)
 
     # Empty index
-    empty_index = RedisDocumentIndex[MyDoc](host='localhost')
+    empty_index = RedisDocumentIndex[NestedDoc](host='localhost')
     assert empty_doc not in empty_index
 
 
@@ -174,7 +174,7 @@ def test_find_subindex(index, data):
     root_docs, docs, scores = index.find_subindex(
         query, subindex='docs', search_field='simple_tens', limit=5
     )
-    assert type(root_docs[0]) == MyDoc
+    assert type(root_docs[0]) == NestedDoc
     assert type(docs[0]) == SimpleDoc
     assert len(scores) == 5
     for root_doc, doc in zip(root_docs, docs):
@@ -188,7 +188,7 @@ def test_find_subindex(index, data):
     )
     assert len(docs) == 5
     assert len(scores) == 5
-    assert type(root_docs[0]) == MyDoc
+    assert type(root_docs[0]) == NestedDoc
     assert type(docs[0]) == SimpleDoc
     for root_doc, doc in zip(root_docs, docs):
         assert np.allclose(doc.simple_tens, np.ones(10))

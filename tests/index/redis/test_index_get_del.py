@@ -5,7 +5,7 @@ from pydantic import Field
 from docarray import BaseDoc
 from docarray.index import RedisDocumentIndex
 from docarray.typing import NdArray
-from tests.index.redis.fixtures import start_redis  # noqa: F401
+from tests.index.redis.fixtures import start_redis, tmp_index_name  # noqa: F401
 
 pytestmark = [pytest.mark.slow, pytest.mark.index]
 
@@ -39,8 +39,8 @@ def test_num_docs(ten_simple_docs):
     assert index.num_docs() == 10
 
 
-def test_get_single(ten_simple_docs):
-    index = RedisDocumentIndex[SimpleDoc](host='localhost')
+def test_get_single(ten_simple_docs, tmp_index_name):
+    index = RedisDocumentIndex[SimpleDoc](host='localhost', index_name=tmp_index_name)
     index.index(ten_simple_docs)
 
     assert index.num_docs() == 10
@@ -54,9 +54,9 @@ def test_get_single(ten_simple_docs):
         index['some_id']
 
 
-def test_get_multiple(ten_simple_docs):
+def test_get_multiple(ten_simple_docs, tmp_index_name):
     docs_to_get_idx = [0, 2, 4, 6, 8]
-    index = RedisDocumentIndex[SimpleDoc](host='localhost')
+    index = RedisDocumentIndex[SimpleDoc](host='localhost', index_name=tmp_index_name)
     index.index(ten_simple_docs)
 
     assert index.num_docs() == 10
@@ -68,8 +68,8 @@ def test_get_multiple(ten_simple_docs):
         assert np.allclose(d_out.tens, d_in.tens)
 
 
-def test_del_single(ten_simple_docs):
-    index = RedisDocumentIndex[SimpleDoc](host='localhost')
+def test_del_single(ten_simple_docs, tmp_index_name):
+    index = RedisDocumentIndex[SimpleDoc](host='localhost', index_name=tmp_index_name)
     index.index(ten_simple_docs)
     assert index.num_docs() == 10
 
@@ -82,10 +82,10 @@ def test_del_single(ten_simple_docs):
         index[doc_id]
 
 
-def test_del_multiple(ten_simple_docs):
+def test_del_multiple(ten_simple_docs, tmp_index_name):
     docs_to_del_idx = [0, 2, 4, 6, 8]
 
-    index = RedisDocumentIndex[SimpleDoc](host='localhost')
+    index = RedisDocumentIndex[SimpleDoc](host='localhost', index_name=tmp_index_name)
     index.index(ten_simple_docs)
 
     assert index.num_docs() == 10
@@ -101,8 +101,8 @@ def test_del_multiple(ten_simple_docs):
             assert np.allclose(index[doc.id].tens, doc.tens)
 
 
-def test_contains(ten_simple_docs):
-    index = RedisDocumentIndex[SimpleDoc](host='localhost')
+def test_contains(ten_simple_docs, tmp_index_name):
+    index = RedisDocumentIndex[SimpleDoc](host='localhost', index_name=tmp_index_name)
     index.index(ten_simple_docs)
 
     for doc in ten_simple_docs:
