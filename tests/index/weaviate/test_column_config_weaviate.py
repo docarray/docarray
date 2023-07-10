@@ -24,16 +24,16 @@ def test_column_config(weaviate_client):
     class TextDoc(BaseDoc):
         text: str = Field()
 
-    class StringDoc(BaseDoc):
-        text: str = Field(col_type="text")
+    class NumberDoc(BaseDoc):
+        text: str = Field(col_type="number")
 
     dbconfig = WeaviateDocumentIndex.DBConfig(index_name="TextDoc")
     index = WeaviateDocumentIndex[TextDoc](db_config=dbconfig)
     assert get_text_field_data_type(index, "TextDoc") == "text"
 
-    dbconfig = WeaviateDocumentIndex.DBConfig(index_name="StringDoc")
-    index = WeaviateDocumentIndex[StringDoc](db_config=dbconfig)
-    assert get_text_field_data_type(index, "StringDoc") == "text"
+    dbconfig = WeaviateDocumentIndex.DBConfig(index_name="NumberDoc")
+    index = WeaviateDocumentIndex[NumberDoc](db_config=dbconfig)
+    assert get_text_field_data_type(index, "NumberDoc") == "number"
 
 
 def test_index_name():
