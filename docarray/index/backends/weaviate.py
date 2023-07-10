@@ -822,9 +822,14 @@ class WeaviateDocumentIndex(BaseDocIndex, Generic[TSchema]):
             """
 
             text_query = query._bm25.query
+            search_field = query._bm25.properties
             vector_query = query._near_ask._content["vector"]
             hybrid_query = weaviate.gql.get.Hybrid(
-                query=text_query, vector=vector_query, alpha=0.5
+                query=text_query,
+                vector=vector_query,
+                alpha=0.5,
+                properties=search_field,
+                fusion_type=weaviate.gql.get.HybridFusion.RANKED.value,
             )
 
             query._bm25 = None
