@@ -265,7 +265,7 @@ class QdrantDocumentIndex(BaseDocIndex, Generic[TSchema]):
         if any(issubclass(python_type, vt) for vt in QDRANT_PY_VECTOR_TYPES):
             return 'vector'
 
-        if issubclass(python_type, docarray.typing.id.ID):
+        if safe_issubclass(python_type, docarray.typing.id.ID):
             return 'id'
 
         return 'payload'
@@ -587,7 +587,7 @@ class QdrantDocumentIndex(BaseDocIndex, Generic[TSchema]):
         vectors: Dict[str, List[float]] = {}
         payload: Dict[str, Any] = {'__generated_vectors': []}
         for column_name, column_info in self._column_infos.items():
-            if issubclass(column_info.docarray_type, AnyDocArray):
+            if safe_issubclass(column_info.docarray_type, AnyDocArray):
                 continue
             if column_info.db_type in ['id', 'payload']:
                 payload[column_name] = row.get(column_name)

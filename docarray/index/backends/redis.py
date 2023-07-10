@@ -104,7 +104,7 @@ class RedisDocumentIndex(BaseDocIndex, Generic[TSchema]):
         if not self._check_index_exists(self.index_name):
             schema = []
             for column, info in self._column_infos.items():
-                if issubclass(info.docarray_type, AnyDocArray):
+                if safe_issubclass(info.docarray_type, AnyDocArray):
                     continue
                 elif info.db_type == VectorField:
                     space = info.config.get('space') or info.config.get('distance')
@@ -286,7 +286,7 @@ class RedisDocumentIndex(BaseDocIndex, Generic[TSchema]):
         }
 
         for py_type, redis_type in type_map.items():
-            if issubclass(python_type, py_type):
+            if safe_issubclass(python_type, py_type):
                 return redis_type
         raise ValueError(f'Unsupported column type for {type(self)}: {python_type}')
 
