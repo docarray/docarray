@@ -4,7 +4,7 @@ In this example we'll build an audio-to-text app using [Jina](https://docs.jina.
 
 We will use: 
 
-* DocArray V2: To load and preprocess multimodal data such as image, text and audio.
+* DocArray >=0.30: To load and preprocess multimodal data such as image, text and audio.
 * Jina: To serve the model quickly and create a client.
 
 ## Install packages

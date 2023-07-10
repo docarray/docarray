@@ -228,7 +228,7 @@ class BaseDoc(BaseModel, IOMixin, UpdateMixin, BaseNode):
         `encoder` is an optional function to supply as `default` to json.dumps(),
         other arguments as per `json.dumps()`.
         """
-        exclude, original_exclude, doclist_exclude_fields = self._exclude_doclist(
+        exclude, original_exclude, doclist_exclude_fields = self._exclude_docarray(
             exclude=exclude
         )
 
@@ -311,11 +311,15 @@ class BaseDoc(BaseModel, IOMixin, UpdateMixin, BaseNode):
     ) -> 'DictStrAny':
         """
         Generate a dictionary representation of the model, optionally specifying
-        which fields to include or exclude.
+        which fields to include or exclude. The method also includes the attributes
+        and their values when attributes are objects of class types which can include
+        nesting. This method differs from the `dict()` method of python which only
+        prints the methods and attributes of the object and only the type of the
+        attribute when attributes are types of other class.
 
         """
 
-        exclude, original_exclude, doclist_exclude_fields = self._exclude_doclist(
+        exclude, original_exclude, docarray_exclude_fields = self._exclude_docarray(
             exclude=exclude
         )
 
@@ -329,7 +333,7 @@ class BaseDoc(BaseModel, IOMixin, UpdateMixin, BaseNode):
             exclude_none=exclude_none,
         )
 
-        for field in doclist_exclude_fields:
+        for field in docarray_exclude_fields:
             # we need to do this because pydantic will not recognize DocList correctly
             original_exclude = original_exclude or {}
             if field not in original_exclude:
@@ -338,30 +342,32 @@ class BaseDoc(BaseModel, IOMixin, UpdateMixin, BaseNode):
 
         return data
 
-    def _exclude_doclist(
+    def _exclude_docarray(
         self, exclude: ExcludeType
     ) -> Tuple[ExcludeType, ExcludeType, List[str]]:
-        doclist_exclude_fields = []
+        docarray_exclude_fields = []
         for field in self.__fields__.keys():
-            from docarray import DocList
+            from docarray import DocList, DocVec
 
             type_ = self._get_field_type(field)
-            if isinstance(type_, type) and issubclass(type_, DocList):
-                doclist_exclude_fields.append(field)
+            if isinstance(type_, type) and (
+                issubclass(type_, DocList) or issubclass(type_, DocVec)
+            ):
+                docarray_exclude_fields.append(field)
 
         original_exclude = exclude
         if exclude is None:
-            exclude = set(doclist_exclude_fields)
+            exclude = set(docarray_exclude_fields)
         elif isinstance(exclude, AbstractSet):
-            exclude = set([*exclude, *doclist_exclude_fields])
+            exclude = set([*exclude, *docarray_exclude_fields])
         elif isinstance(exclude, Mapping):
             exclude = dict(**exclude)
-            exclude.update({field: ... for field in doclist_exclude_fields})
+            exclude.update({field: ... for field in docarray_exclude_fields})
 
         return (
             exclude,
             original_exclude,
-            doclist_exclude_fields,
+            docarray_exclude_fields,
         )
 
     to_json = json

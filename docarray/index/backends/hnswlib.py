@@ -297,7 +297,7 @@ class HnswDocumentIndex(BaseDocIndex, Generic[TSchema]):
         limit = min(limit, self.num_docs())
 
         index = self._hnsw_indices[search_field]
-        labels, distances = index.knn_query(queries, k=limit)
+        labels, distances = index.knn_query(queries, k=int(limit))
         result_das = [
             self._get_docs_sqlite_hashed_id(
                 ids_per_query.tolist(),

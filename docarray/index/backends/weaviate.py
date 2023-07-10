@@ -357,7 +357,7 @@ class WeaviateDocumentIndex(BaseDocIndex, Generic[TSchema]):
             query_vec_np, search_field=search_field, limit=limit, **kwargs
         )
 
-        if isinstance(docs, List):
+        if isinstance(docs, List) and not isinstance(docs, DocList):
             docs = self._dict_list_to_docarray(docs)
 
         return FindResult(documents=docs, scores=scores)
@@ -599,7 +599,7 @@ class WeaviateDocumentIndex(BaseDocIndex, Generic[TSchema]):
 
         results = (
             self._client.query.get(index_name, self.properties)
-            .with_bm25(bm25)
+            .with_bm25(**bm25)
             .with_limit(limit)
             .with_additional(["score", "vector"])
             .do()
@@ -620,7 +620,7 @@ class WeaviateDocumentIndex(BaseDocIndex, Generic[TSchema]):
 
             q = (
                 self._client.query.get(self.index_name, self.properties)
-                .with_bm25(bm25)
+                .with_bm25(**bm25)
                 .with_limit(limit)
                 .with_additional(["score", "vector"])
                 .with_alias(f'query_{i}')

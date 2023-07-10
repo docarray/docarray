@@ -40,7 +40,6 @@ from docarray.utils._internal.misc import import_library
 if TYPE_CHECKING:
     import pandas as pd
 
-    from docarray import DocList
     from docarray.proto import DocListProto
 
 T = TypeVar('T', bound='IOMixinArray')
@@ -332,11 +331,11 @@ class IOMixinArray(Iterable[T_doc]):
 
     @classmethod
     def from_csv(
-        cls,
+        cls: Type['T'],
         file_path: str,
         encoding: str = 'utf-8',
         dialect: Union[str, csv.Dialect] = 'excel',
-    ) -> 'DocList':
+    ) -> 'T':
         """
         Load a DocList from a csv file following the schema defined in the
         [`.doc_type`][docarray.DocList] attribute.
@@ -358,10 +357,10 @@ class IOMixinArray(Iterable[T_doc]):
 
         :return: `DocList` object
         """
-        if cls.doc_type == AnyDoc:
+        if cls.doc_type == AnyDoc or cls.doc_type == BaseDoc:
             raise TypeError(
                 'There is no document schema defined. '
-                'Please specify the DocList\'s Document type using `DocList[MyDoc]`.'
+                f'Please specify the {cls}\'s Document type using `{cls}[MyDoc]`.'
             )
 
         if file_path.startswith('http'):
@@ -376,14 +375,15 @@ class IOMixinArray(Iterable[T_doc]):
 
     @classmethod
     def _from_csv_file(
-        cls, file: Union[StringIO, TextIOWrapper], dialect: Union[str, csv.Dialect]
-    ) -> 'DocList':
-        from docarray import DocList
+        cls: Type['T'],
+        file: Union[StringIO, TextIOWrapper],
+        dialect: Union[str, csv.Dialect],
+    ) -> 'T':
 
         rows = csv.DictReader(file, dialect=dialect)
 
         doc_type = cls.doc_type
-        docs = DocList.__class_getitem__(doc_type)()
+        docs = []
 
         field_names: List[str] = (
             [] if rows.fieldnames is None else [str(f) for f in rows.fieldnames]
@@ -405,7 +405,7 @@ class IOMixinArray(Iterable[T_doc]):
             doc_dict: Dict[Any, Any] = _access_path_dict_to_nested_dict(access_path2val)
             docs.append(doc_type.parse_obj(doc_dict))
 
-        return docs
+        return cls(docs)
 
     def to_csv(
         self, file_path: str, dialect: Union[str, csv.Dialect] = 'excel'
@@ -426,11 +426,11 @@ class IOMixinArray(Iterable[T_doc]):
             `'unix'` (for csv file generated on UNIX systems).
 
         """
-        if self.doc_type == AnyDoc:
+        if self.doc_type == AnyDoc or self.doc_type == BaseDoc:
             raise TypeError(
-                'DocList must be homogeneous to be converted to a csv.'
+                f'{type(self)} must be homogeneous to be converted to a csv.'
                 'There is no document schema defined. '
-                'Please specify the DocList\'s Document type using `DocList[MyDoc]`.'
+                f'Please specify the {type(self)}\'s Document type using `{type(self)}[MyDoc]`.'
             )
         fields = self.doc_type._get_access_paths()
 
@@ -443,7 +443,7 @@ class IOMixinArray(Iterable[T_doc]):
                 writer.writerow(doc_dict)
 
     @classmethod
-    def from_dataframe(cls, df: 'pd.DataFrame') -> 'DocList':
+    def from_dataframe(cls: Type['T'], df: 'pd.DataFrame') -> 'T':
         """
         Load a `DocList` from a `pandas.DataFrame` following the schema
         defined in the [`.doc_type`][docarray.DocList] attribute.
@@ -486,10 +486,10 @@ class IOMixinArray(Iterable[T_doc]):
         """
         from docarray import DocList
 
-        if cls.doc_type == AnyDoc:
+        if cls.doc_type == AnyDoc or cls.doc_type == BaseDoc:
             raise TypeError(
                 'There is no document schema defined. '
-                'Please specify the DocList\'s Document type using `DocList[MyDoc]`.'
+                f'Please specify the {cls}\'s Document type using `{cls}[MyDoc]`.'
             )
 
         doc_type = cls.doc_type
@@ -515,6 +515,8 @@ class IOMixinArray(Iterable[T_doc]):
             doc_dict = _access_path_dict_to_nested_dict(access_path2val)
             docs.append(doc_type.parse_obj(doc_dict))
 
+        if not isinstance(docs, cls):
+            return cls(docs)
         return docs
 
     def to_dataframe(self) -> 'pd.DataFrame':
@@ -555,13 +557,18 @@ class IOMixinArray(Iterable[T_doc]):
         # Binary format for streaming case
 
         # V2 DocList streaming serialization format
-        # | 1 byte | 8 bytes | 4 bytes | variable(docarray v2) | 4 bytes | variable(docarray v2) ...
+        # | 1 byte | 8 bytes | 4 bytes | variable(DocArray >=0.30) | 4 bytes | variable(DocArray >=0.30) ...
 
         # 1 byte (uint8)
         version_byte = b'\x02'
         # 8 bytes (uint64)
         num_docs_as_bytes = len(self).to_bytes(8, 'big', signed=False)
         return version_byte + num_docs_as_bytes
+
+    @classmethod
+    @abstractmethod
+    def _get_proto_class(cls: Type[T]):
+        ...
 
     @classmethod
     def _load_binary_all(
@@ -593,12 +600,10 @@ class IOMixinArray(Iterable[T_doc]):
                 compress = None
 
         if protocol is not None and protocol == 'protobuf-array':
-            from docarray.proto import DocListProto
+            proto = cls._get_proto_class()()
+            proto.ParseFromString(d)
 
-            dap = DocListProto()
-            dap.ParseFromString(d)
-
-            return cls.from_protobuf(dap)
+            return cls.from_protobuf(proto)
         elif protocol is not None and protocol == 'pickle-array':
             return pickle.loads(d)
 

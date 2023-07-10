@@ -1,8 +1,9 @@
+import mimetypes
 import os
 import urllib
 import urllib.parse
 import urllib.request
-from typing import TYPE_CHECKING, Any, Optional, Type, TypeVar, Union
+from typing import TYPE_CHECKING, Any, List, Optional, Type, TypeVar, Union
 
 import numpy as np
 from pydantic import AnyUrl as BaseAnyUrl
@@ -20,12 +21,25 @@ if TYPE_CHECKING:
 
 T = TypeVar('T', bound='AnyUrl')
 
+mimetypes.init([])
+
 
 @_register_proto(proto_type_name='any_url')
 class AnyUrl(BaseAnyUrl, AbstractType):
     host_required = (
         False  # turn off host requirement to allow passing of local paths as URL
     )
+
+    @classmethod
+    def mime_type(cls) -> str:
+        """Returns the mime type associated with the class."""
+        raise NotImplementedError
+
+    @classmethod
+    def extra_extensions(cls) -> List[str]:
+        """Returns a list of allowed file extensions for the class
+        that are not covered by the mimetypes library."""
+        raise NotImplementedError
 
     def _to_node_protobuf(self) -> 'NodeProto':
         """Convert Document into a NodeProto protobuf message. This function should
@@ -37,6 +51,48 @@ class AnyUrl(BaseAnyUrl, AbstractType):
         from docarray.proto import NodeProto
 
         return NodeProto(text=str(self), type=self._proto_type_name)
+
+    @staticmethod
+    def _get_url_extension(url: str) -> str:
+        """
+        Extracts and returns the file extension from a given URL.
+        If no file extension is present, the function returns an empty string.
+
+
+        :param url: The URL to extract the file extension from.
+        :return: The file extension without the period, if one exists,
+            otherwise an empty string.
+        """
+
+        parsed_url = urllib.parse.urlparse(url)
+        ext = os.path.splitext(parsed_url.path)[1]
+        ext = ext[1:] if ext.startswith('.') else ext
+        return ext
+
+    @classmethod
+    def is_extension_allowed(cls, value: Any) -> bool:
+        """
+        Check if the file extension of the URL is allowed for this class.
+        First, it guesses the mime type of the file. If it fails to detect the
+        mime type, it then checks the extra file extensions.
+        Note: This method assumes that any URL without an extension is valid.
+
+        :param value: The URL or file path.
+        :return: True if the extension is allowed, False otherwise
+        """
+        if cls is AnyUrl:
+            return True
+
+        url_parts = value.split('?')
+        extension = cls._get_url_extension(value)
+        if not extension:
+            return True
+
+        mimetype, _ = mimetypes.guess_type(url_parts[0])
+        if mimetype and mimetype.startswith(cls.mime_type()):
+            return True
+
+        return extension in cls.extra_extensions()
 
     @classmethod
     def validate(
@@ -61,10 +117,12 @@ class AnyUrl(BaseAnyUrl, AbstractType):
 
         url = super().validate(abs_path, field, config)  # basic url validation
 
-        if input_is_relative_path:
-            return cls(str(value), scheme=None)
-        else:
-            return cls(str(url), scheme=None)
+        if not cls.is_extension_allowed(value):
+            raise ValueError(
+                f"The file '{value}' is not in a valid format for class '{cls.__name__}'."
+            )
+
+        return cls(str(value if input_is_relative_path else url), scheme=None)
 
     @classmethod
     def validate_parts(cls, parts: 'Parts', validate_port: bool = True) -> 'Parts':

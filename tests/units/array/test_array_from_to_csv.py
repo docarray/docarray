@@ -3,7 +3,7 @@ from typing import Optional
 
 import pytest
 
-from docarray import BaseDoc, DocList
+from docarray import BaseDoc, DocList, DocVec
 from docarray.documents import ImageDoc
 from tests import TOYDATA_DIR
 
@@ -38,6 +38,7 @@ def test_to_from_csv(tmpdir, nested_doc_cls):
     assert os.path.isfile(tmp_file)
 
     da_from = DocList[nested_doc_cls].from_csv(tmp_file)
+    assert isinstance(da_from, DocList)
     for doc1, doc2 in zip(da, da_from):
         assert doc1 == doc2
 
@@ -46,6 +47,7 @@ def test_from_csv_nested(nested_doc_cls):
     da = DocList[nested_doc_cls].from_csv(
         file_path=str(TOYDATA_DIR / 'docs_nested.csv')
     )
+    assert isinstance(da, DocList)
     assert len(da) == 3
 
     for i, doc in enumerate(da):
@@ -108,6 +110,7 @@ def test_from_remote_csv_file():
         year: int
 
     books = DocList[Book].from_csv(file_path=remote_url)
+    assert isinstance(books, DocList)
 
     assert len(books) == 3
 
@@ -116,7 +119,48 @@ def test_doc_list_error(tmpdir):
     class Book(BaseDoc):
         title: str
 
+    # not testing DocVec bc it already fails here (as it should!)
     docs = DocList([Book(title='hello'), Book(title='world')])
     tmp_file = str(tmpdir / 'tmp.csv')
     with pytest.raises(TypeError):
         docs.to_csv(tmp_file)
+
+
+def test_union_type_error(tmp_path):
+    from typing import Union
+
+    from docarray.documents import TextDoc
+
+    class CustomDoc(BaseDoc):
+        ud: Union[TextDoc, ImageDoc] = TextDoc(text='union type')
+
+    docs = DocList[CustomDoc]([CustomDoc(ud=TextDoc(text='union type'))])
+
+    with pytest.raises(ValueError):
+        docs.to_csv(str(tmp_path) + ".csv")
+        DocList[CustomDoc].from_csv(str(tmp_path) + ".csv")
+
+    class BasisUnion(BaseDoc):
+        ud: Union[int, str]
+
+    docs_basic = DocList[BasisUnion]([BasisUnion(ud="hello")])
+    docs_basic.to_csv(str(tmp_path) + ".csv")
+    docs_copy = DocList[BasisUnion].from_csv(str(tmp_path) + ".csv")
+    assert docs_copy == docs_basic
+
+
+def test_to_from_csv_docvec_raises():
+    class Book(BaseDoc):
+        title: str
+        author: str
+        year: int
+
+    books = DocVec[Book](
+        [Book(title='It\'s me, hi', author='I\'m the problem it\'s me', year=2022)]
+    )
+
+    with pytest.raises(NotImplementedError):
+        books.to_csv('dummy/file/path')
+
+    with pytest.raises(NotImplementedError):
+        DocVec[Book].from_csv('dummy/file/path')

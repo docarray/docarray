@@ -1,9 +1,10 @@
 import warnings
-from typing import Optional, TypeVar
+from typing import List, Optional, TypeVar
 
 from docarray.typing.bytes.video_bytes import VideoBytes, VideoLoadResult
 from docarray.typing.proto_register import _register_proto
 from docarray.typing.url.any_url import AnyUrl
+from docarray.typing.url.mimetypes import VIDEO_MIMETYPE
 from docarray.utils._internal.misc import is_notebook
 
 T = TypeVar('T', bound='VideoUrl')
@@ -15,6 +16,18 @@ class VideoUrl(AnyUrl):
     URL to a video file.
     Can be remote (web) URL, or a local file path.
     """
+
+    @classmethod
+    def mime_type(cls) -> str:
+        return VIDEO_MIMETYPE
+
+    @classmethod
+    def extra_extensions(cls) -> List[str]:
+        """
+        Returns a list of additional file extensions that are valid for this class
+        but cannot be identified by the mimetypes library.
+        """
+        return []
 
     def load(self: T, **kwargs) -> VideoLoadResult:
         """
