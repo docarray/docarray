@@ -24,6 +24,7 @@ from docarray.array.doc_list.pushpull import PushPullMixin
 from docarray.array.list_advance_indexing import IndexIterType, ListAdvancedIndexing
 from docarray.base_doc import AnyDoc, BaseDoc
 from docarray.typing import NdArray
+from docarray.utils._internal._typing import safe_issubclass
 
 if TYPE_CHECKING:
     from pydantic import BaseConfig
@@ -158,7 +159,9 @@ class DocList(
 
     def _validate_one_doc(self, doc: T_doc) -> T_doc:
         """Validate if a Document is compatible with this `DocList`"""
-        if not issubclass(self.doc_type, AnyDoc) and not isinstance(doc, self.doc_type):
+        if not safe_issubclass(self.doc_type, AnyDoc) and not isinstance(
+            doc, self.doc_type
+        ):
             raise ValueError(f'{doc} is not a {self.doc_type}')
         return doc
 
@@ -218,7 +221,7 @@ class DocList(
             not is_union_type(field_type)
             and self.__class__.doc_type.__fields__[field].required
             and isinstance(field_type, type)
-            and issubclass(field_type, BaseDoc)
+            and safe_issubclass(field_type, BaseDoc)
         ):
             # calling __class_getitem__ ourselves is a hack otherwise mypy complain
             # most likely a bug in mypy though
@@ -272,7 +275,7 @@ class DocList(
             return value
         elif isinstance(value, DocVec):
             if (
-                issubclass(value.doc_type, cls.doc_type)
+                safe_issubclass(value.doc_type, cls.doc_type)
                 or value.doc_type == cls.doc_type
             ):
                 return cast(T, value.to_doc_list())
@@ -326,7 +329,7 @@ class DocList(
     @classmethod
     def __class_getitem__(cls, item: Union[Type[BaseDoc], TypeVar, str]):
 
-        if isinstance(item, type) and issubclass(item, BaseDoc):
+        if isinstance(item, type) and safe_issubclass(item, BaseDoc):
             return AnyDocArray.__class_getitem__.__func__(cls, item)  # type: ignore
         else:
             return super().__class_getitem__(item)
