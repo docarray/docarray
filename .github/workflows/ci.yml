@@ -190,7 +190,7 @@ jobs:
 
 
   docarray-doc-index:
-    needs: [lint-ruff, check-black, import-test]
+    needs: [import-test]
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -221,7 +221,7 @@ jobs:
 
 
   docarray-elastic-v8:
-    needs: [lint-ruff, check-black, import-test]
+    needs: [import-test]
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
