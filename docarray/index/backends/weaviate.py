@@ -700,7 +700,7 @@ class WeaviateDocumentIndex(BaseDocIndex, Generic[TSchema]):
                 return 'number[]'
 
         py_weaviate_type_map = {
-            docarray.typing.ID: 'string',
+            docarray.typing.ID: 'text',
             str: 'text',
             int: 'int',
             float: 'number',
