@@ -11,6 +11,8 @@ from docarray.base_doc import BaseDoc
 from docarray.helper import _get_field_type_by_access_path
 from docarray.typing import AnyTensor
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
+from docarray.typing.tensor.embedding import AnyEmbedding
+from docarray.typing.tensor.embedding.ndarray import NdArrayEmbedding
 from docarray.utils._internal._typing import safe_issubclass
 
 
@@ -207,12 +209,10 @@ def find_batched(
         descending = metric.endswith('_sim')  # similarity metrics are descending
 
     embedding_type = _da_attr_type(index, search_field)
-    try:
-        comp_backend = embedding_type.get_comp_backend()
-    except:
-        from docarray.typing.tensor.embedding.ndarray import NdArrayEmbedding
+    if embedding_type == AnyEmbedding:
         embedding_type = NdArrayEmbedding
-        comp_backend = embedding_type.get_comp_backend()
+
+    comp_backend = embedding_type.get_comp_backend()
 
     # extract embeddings from query and index
     if cache is not None and search_field in cache:
