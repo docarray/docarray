@@ -67,8 +67,9 @@ class EmbeddedOptions:
     additional_env_vars: Optional[Dict[str, str]] = None
 
 
-# TODO: add more types and figure out how to handle text vs string type
+# TODO: add more types and figure out how to handle text type tokenization
 # see https://weaviate.io/developers/weaviate/configuration/datatypes
+# and https://weaviate.io/developers/weaviate/config-refs/schema#property-tokenization
 WEAVIATE_PY_VEC_TYPES = [list, np.ndarray, AbstractTensor]
 WEAVIATE_PY_TYPES = [bool, int, float, str, docarray.typing.ID]
 
