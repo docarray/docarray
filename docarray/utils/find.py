@@ -207,7 +207,12 @@ def find_batched(
         descending = metric.endswith('_sim')  # similarity metrics are descending
 
     embedding_type = _da_attr_type(index, search_field)
-    comp_backend = embedding_type.get_comp_backend()
+    try:
+        comp_backend = embedding_type.get_comp_backend()
+    except:
+        from docarray.typing.tensor.embedding.ndarray import NdArrayEmbedding
+        embedding_type = NdArrayEmbedding
+        comp_backend = embedding_type.get_comp_backend()
 
     # extract embeddings from query and index
     if cache is not None and search_field in cache:
