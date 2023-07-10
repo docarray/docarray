@@ -22,7 +22,7 @@ DocArray is a Python library expertly crafted for the [representation](#represen
 
 - :fire: Offers native support for **[NumPy](https://github.com/numpy/numpy)**, **[PyTorch](https://github.com/pytorch/pytorch)**, and **[TensorFlow](https://github.com/tensorflow/tensorflow)**, catering specifically to **model training scenarios**.
 - :zap: Based on **[Pydantic](https://github.com/pydantic/pydantic)**, and instantly compatible with web and microservice frameworks like **[FastAPI](https://github.com/tiangolo/fastapi/)** and **[Jina](https://github.com/jina-ai/jina/)**.
-- :package: Provides support for vector databases such as **[Weaviate](https://weaviate.io/), [Qdrant](https://qdrant.tech/), [ElasticSearch](https://www.elastic.co/de/elasticsearch/)**, and **[HNSWLib](https://github.com/nmslib/hnswlib)**.
+- :package: Provides support for vector databases such as **[Weaviate](https://weaviate.io/), [Qdrant](https://qdrant.tech/), [ElasticSearch](https://www.elastic.co/de/elasticsearch/), [Redis](https://redis.io/)**, and **[HNSWLib](https://github.com/nmslib/hnswlib)**.
 - :chains: Allows data transmission as JSON over **HTTP** or as **[Protobuf](https://protobuf.dev/)** over **[gRPC](https://grpc.io/)**.
 
 ## Installation
@@ -349,7 +349,7 @@ This is useful for:
 - :mag: **Neural search** applications
 - :bulb: **Recommender systems**
 
-Currently, Document Indexes support **[Weaviate](https://weaviate.io/)**, **[Qdrant](https://qdrant.tech/)**, **[ElasticSearch](https://www.elastic.co/)**, and **[HNSWLib](https://github.com/nmslib/hnswlib)**, with more to come!
+Currently, Document Indexes support **[Weaviate](https://weaviate.io/)**, **[Qdrant](https://qdrant.tech/)**, **[ElasticSearch](https://www.elastic.co/)**,  **[Redis](https://redis.io/)**, and **[HNSWLib](https://github.com/nmslib/hnswlib)**, with more to come!
 
 The Document Index interface lets you index and retrieve Documents from multiple vector databases, all with the same user interface.
 
@@ -421,7 +421,7 @@ They are now called **Document Indexes** and offer the following improvements (s
 - **Production-ready:** The new Document Indexes are a much thinner wrapper around the various vector DB libraries, making them more robust and easier to maintain
 - **Increased flexibility:** We strive to support any configuration or setting that you could perform through the DB's first-party client
 
-For now, Document Indexes support **[Weaviate](https://weaviate.io/)**, **[Qdrant](https://qdrant.tech/)**, **[ElasticSearch](https://www.elastic.co/)**, and **[HNSWLib](https://github.com/nmslib/hnswlib)**, with more to come.
+For now, Document Indexes support **[Weaviate](https://weaviate.io/)**, **[Qdrant](https://qdrant.tech/)**, **[ElasticSearch](https://www.elastic.co/)**, **[Redis](https://redis.io/)**, and **[HNSWLib](https://github.com/nmslib/hnswlib)**, with more to come.
 
 </details>
 
@@ -775,6 +775,7 @@ Currently, DocArray supports the following vector databases:
 - [Weaviate](https://www.weaviate.io/)
 - [Qdrant](https://qdrant.tech/)
 - [Elasticsearch](https://www.elastic.co/elasticsearch/) v8 and v7
+- [Redis](https://redis.io/)
 - [HNSWlib](https://github.com/nmslib/hnswlib) as a local-first alternative
 
 An integration of [OpenSearch](https://opensearch.org/) is currently in progress.
@@ -836,6 +837,7 @@ from docarray.index import (
     WeaviateDocumentIndex,
     QdrantDocumentIndex,
     ElasticDocIndex,
+    RedisDocumentIndex,
 )
 
 # Select a suitable backend and initialize it with data
