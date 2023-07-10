@@ -190,13 +190,13 @@ jobs:
 
 
   docarray-doc-index:
-    needs: [lint-ruff, check-black, import-test]
+    needs: [import-test]
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
         python-version: [3.8]
-        db_test_folder: [base_classes, elastic, hnswlib, qdrant, weaviate]
+        db_test_folder: [base_classes, elastic, hnswlib, qdrant, weaviate, redis]
     steps:
       - uses: actions/checkout@v2.5.0
       - name: Set up Python ${{ matrix.python-version }}
@@ -221,7 +221,7 @@ jobs:
 
 
   docarray-elastic-v8:
-    needs: [lint-ruff, check-black, import-test]
+    needs: [import-test]
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false

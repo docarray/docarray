@@ -131,7 +131,7 @@ class WeaviateDocumentIndex(BaseDocIndex, Generic[TSchema]):
             field_overwrites.get(k, k)
             for k, v in self._column_infos.items()
             if v.config.get('is_embedding', False) is False
-            and not issubclass(v.docarray_type, AnyDocArray)
+            and not safe_issubclass(v.docarray_type, AnyDocArray)
         ]
 
     def _validate_columns(self) -> None:
@@ -202,7 +202,7 @@ class WeaviateDocumentIndex(BaseDocIndex, Generic[TSchema]):
 
         for column_name, column_info in column_infos.items():
             # in weaviate, we do not create a property for the doc's embeddings
-            if issubclass(column_info.docarray_type, AnyDocArray):
+            if safe_issubclass(column_info.docarray_type, AnyDocArray):
                 continue
             if column_name == self.embedding_column:
                 continue
@@ -694,7 +694,7 @@ class WeaviateDocumentIndex(BaseDocIndex, Generic[TSchema]):
             or None if ``python_type`` is not supported.
         """
         for allowed_type in WEAVIATE_PY_VEC_TYPES:
-            if issubclass(python_type, allowed_type):
+            if safe_issubclass(python_type, allowed_type):
                 return 'number[]'
 
         py_weaviate_type_map = {
@@ -708,7 +708,7 @@ class WeaviateDocumentIndex(BaseDocIndex, Generic[TSchema]):
         }
 
         for py_type, weaviate_type in py_weaviate_type_map.items():
-            if issubclass(python_type, py_type):
+            if safe_issubclass(python_type, py_type):
                 return weaviate_type
 
         raise ValueError(f'Unsupported column type for {type(self)}: {python_type}')

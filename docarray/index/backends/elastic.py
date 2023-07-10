@@ -95,7 +95,7 @@ class ElasticDocIndex(BaseDocIndex, Generic[TSchema]):
         self._logger.debug('Mappings have been updated with db_config.index_mappings')
 
         for col_name, col in self._column_infos.items():
-            if issubclass(col.docarray_type, AnyDocArray):
+            if safe_issubclass(col.docarray_type, AnyDocArray):
                 continue
             if col.db_type == 'dense_vector' and (
                 not col.n_dim and col.config['dims'] < 0
@@ -336,7 +336,7 @@ class ElasticDocIndex(BaseDocIndex, Generic[TSchema]):
         self._logger.debug(f'Mapping Python type {python_type} to database type')
 
         for allowed_type in ELASTIC_PY_VEC_TYPES:
-            if issubclass(python_type, allowed_type):
+            if safe_issubclass(python_type, allowed_type):
                 self._logger.info(
                     f'Mapped Python type {python_type} to database type "dense_vector"'
                 )
@@ -354,7 +354,7 @@ class ElasticDocIndex(BaseDocIndex, Generic[TSchema]):
         }
 
         for type in elastic_py_types.keys():
-            if issubclass(python_type, type):
+            if safe_issubclass(python_type, type):
                 self._logger.info(
                     f'Mapped Python type {python_type} to database type "{elastic_py_types[type]}"'
                 )
@@ -381,7 +381,7 @@ class ElasticDocIndex(BaseDocIndex, Generic[TSchema]):
                 '_id': row['id'],
             }
             for col_name, col in self._column_infos.items():
-                if issubclass(col.docarray_type, AnyDocArray):
+                if safe_issubclass(col.docarray_type, AnyDocArray):
                     continue
                 if col.db_type == 'dense_vector' and np.all(row[col_name] == 0):
                     row[col_name] = row[col_name] + 1.0e-9

@@ -2,6 +2,7 @@ from docarray import DocList, BaseDoc
 from docarray.typing import AnyTensor
 from pydantic import create_model
 from typing import Dict, List, Any, Union, Optional, Type
+from docarray.utils._internal._typing import safe_issubclass
 
 
 def create_pure_python_type_model(model: Any) -> BaseDoc:
@@ -36,7 +37,7 @@ def create_pure_python_type_model(model: Any) -> BaseDoc:
     fields: Dict[str, Any] = {}
     for field_name, field in model.__annotations__.items():
         try:
-            if issubclass(field, DocList):
+            if safe_issubclass(field, DocList):
                 t: Any = field.doc_type
                 fields[field_name] = (List[t], {})
             else:

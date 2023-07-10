@@ -11,6 +11,7 @@ from docarray.base_doc import BaseDoc
 from docarray.helper import _get_field_type_by_access_path
 from docarray.typing import AnyTensor
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
+from docarray.utils._internal._typing import safe_issubclass
 
 
 class FindResult(NamedTuple):
@@ -316,7 +317,7 @@ def _da_attr_type(docs: AnyDocArray, access_path: str) -> Type[AnyTensor]:
         # determine type based on the fist element
         field_type = type(next(AnyDocArray._traverse(docs[0], access_path)))
 
-    if not issubclass(field_type, AbstractTensor):
+    if not safe_issubclass(field_type, AbstractTensor):
         raise ValueError(
             f'attribute {access_path} is not a tensor-like type, '
             f'but {field_type.__class__.__name__}'
