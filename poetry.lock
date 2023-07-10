@@ -4363,18 +4363,18 @@ files = [
 
 [[package]]
 name = "weaviate-client"
-version = "3.17.1"
-description = "A python native weaviate client"
+version = "3.22.1"
+description = "A python native Weaviate client"
 optional = true
 python-versions = ">=3.8"
 files = [
-    {file = "weaviate-client-3.17.1.tar.gz", hash = "sha256:04277030396a0e63e73b994a185c705f07f948254d27c0a3774c60b4795c37ab"},
-    {file = "weaviate_client-3.17.1-py3-none-any.whl", hash = "sha256:0c86f4d5fcb155efd0888515c8caa20364241c0df01dead361ce0c023dbc5da9"},
+    {file = "weaviate-client-3.22.1.tar.gz", hash = "sha256:aff61bd3f5d74df20a62328443e3aa9c860d5330fdfb19c4d8ddc44cb604032f"},
+    {file = "weaviate_client-3.22.1-py3-none-any.whl", hash = "sha256:01843a4899a227300e570409e77628e9d1b28476313f94943c37aee3f75112e1"},
 ]
 
 [package.dependencies]
 authlib = ">=1.1.0"
-requests = ">=2.28.0,<2.29.0"
+requests = ">=2.28.0,<=2.31.0"
 tqdm = ">=4.59.0,<5.0.0"
 validators = ">=0.18.2,<=0.21.0"
 
@@ -4651,4 +4651,4 @@ web = ["fastapi"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.8,<4.0"
-content-hash = "efa11671865be91f94b93c6988ac1d348f8cad1b3c9314ca989ac7f471fce497"
+content-hash = "20df2e115d1b94612a8e43476e1319341a04c877d27e3a9130948994f9430c53"
