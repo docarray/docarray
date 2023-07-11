@@ -181,6 +181,7 @@ def test_parametrized_equality():
     assert jnp.allclose(t1.tensor, t2.tensor)
 
 
+@pytest.mark.jax
 def test_parametrized_operations():
     t1 = parse_obj_as(JaxArray[128], jnp.zeros((128,)))
     t2 = parse_obj_as(JaxArray[128], jnp.zeros((128,)))
@@ -190,6 +191,7 @@ def test_parametrized_operations():
     assert not isinstance(t_result, JaxArray[128])
 
 
+@pytest.mark.jax
 def test_set_item():
     t = JaxArray(tensor=jnp.zeros((3, 224, 224)))
     t[0] = jnp.ones((1, 224, 224))
