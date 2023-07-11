@@ -10,6 +10,13 @@ from docarray.documents import TextDoc
 from docarray.index.backends.in_memory import InMemoryExactNNIndex
 from docarray.typing import NdArray, TorchTensor
 
+from docarray.utils._internal.misc import is_tf_available
+
+tf_available = is_tf_available()
+if tf_available:
+    import tensorflow as tf
+    from docarray.typing import TensorFlowTensor
+
 
 class SchemaDoc(BaseDoc):
     text: str
@@ -113,11 +120,43 @@ def test_find_batched(doc_index, space, is_query_doc):
     assert len(scores) == 0
 
 
-def test_with_text_doc():
+def test_with_text_doc_ndarray():
     index = InMemoryExactNNIndex[TextDoc]()
 
     docs = DocList[TextDoc](
-        [TextDoc(text='hey', embedding=np.random.rand(128)) for i in range(200)]
+        [TextDoc(text='hey', embedding=np.random.rand(128)) for _ in range(200)]
+    )
+    index.index(docs)
+    res = index.find_batched(docs[0:10], search_field='embedding')
+    assert len(res.documents) == 10
+    for r in res.documents:
+        assert len(r) == 5
+
+
+@pytest.mark.tensorflow
+def test_with_text_doc_tensorflow():
+    index = InMemoryExactNNIndex[TextDoc]()
+
+    docs = DocList[TextDoc](
+        [
+            TextDoc(text='hey', embedding=tf.random.uniform(shape=[128]))
+            for _ in range(200)
+        ]
+    )
+    index.index(docs)
+    res = index.find_batched(docs[0:10], search_field='embedding')
+    assert len(res.documents) == 10
+    for r in res.documents:
+        assert len(r) == 5
+
+
+def test_with_text_doc_torch():
+    import torch
+
+    index = InMemoryExactNNIndex[TextDoc]()
+
+    docs = DocList[TextDoc](
+        [TextDoc(text='hey', embedding=torch.rand(128)) for _ in range(200)]
     )
     index.index(docs)
     res = index.find_batched(docs[0:10], search_field='embedding')
