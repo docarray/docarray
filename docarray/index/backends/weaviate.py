@@ -269,7 +269,7 @@ class WeaviateDocumentIndex(BaseDocIndex, Generic[TSchema]):
         has_matches = True
 
         operands = [
-            {"path": [DOCUMENTID], "operator": "Equal", "valueString": doc_id}
+            {"path": [DOCUMENTID], "operator": "Equal", "valueText": doc_id}
             for doc_id in doc_ids
         ]
         where_filter = {
@@ -511,7 +511,7 @@ class WeaviateDocumentIndex(BaseDocIndex, Generic[TSchema]):
         #       https://github.com/weaviate/weaviate/issues/2792
         #       is implemented
         operands = [
-            {"path": [DOCUMENTID], "operator": "Equal", "valueString": doc_id}
+            {"path": [DOCUMENTID], "operator": "Equal", "valueText": doc_id}
             for doc_id in doc_ids
         ]
         where_filter = {
@@ -698,7 +698,7 @@ class WeaviateDocumentIndex(BaseDocIndex, Generic[TSchema]):
                 return 'number[]'
 
         py_weaviate_type_map = {
-            docarray.typing.ID: 'string',
+            docarray.typing.ID: 'text',
             str: 'text',
             int: 'int',
             float: 'number',
@@ -749,7 +749,7 @@ class WeaviateDocumentIndex(BaseDocIndex, Generic[TSchema]):
         results = (
             self._client.query.get(self._db_config.index_name, ['docarrayid'])
             .with_where(
-                {'path': ['parent_id'], 'operator': 'Equal', 'valueString': f'{id}'}
+                {'path': ['parent_id'], 'operator': 'Equal', 'valueText': f'{id}'}
             )
             .do()
         )
@@ -768,7 +768,7 @@ class WeaviateDocumentIndex(BaseDocIndex, Generic[TSchema]):
                     {
                         "path": ['docarrayid'],
                         "operator": "Equal",
-                        "valueString": f'{item.id}',
+                        "valueText": f'{item.id}',
                     }
                 )
                 .do()
