@@ -1,19 +1,22 @@
 from typing import TYPE_CHECKING, Any, Generic, List, Tuple, Type, TypeVar, Union, cast
 
-import jax.numpy as jnp
 import numpy as np
-from jax import Array
 
 from docarray.typing.proto_register import _register_proto
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
+from docarray.utils._internal.misc import import_library
 
 if TYPE_CHECKING:
+    import jax
+    import jax.numpy as jnp
     from pydantic import BaseConfig
     from pydantic.fields import ModelField
 
     from docarray.computation.jax_backend import JaxCompBackend
     from docarray.proto import NdArrayProto
-
+else:
+    jax = import_library('jax', raise_error=True)
+    jnp = jax.numpy
 from docarray.base_doc.base_node import BaseNode
 
 T = TypeVar('T', bound='JaxArray')
@@ -33,7 +36,62 @@ class metaJax(
 
 @_register_proto(proto_type_name='jaxarray')
 class JaxArray(AbstractTensor, Generic[ShapeT], metaclass=metaJax):
-    """ """
+    """
+    Subclass of `jnp.ndarray`, intended for use in a Document.
+    This enables (de)serialization from/to protobuf and json, data validation,
+    and coercion from compatible types like `torch.Tensor`.
+
+    This type can also be used in a parametrized way, specifying the shape of the array.
+
+    ---
+
+    ```python
+    from docarray import BaseDoc
+    from docarray.typing import JaxArray
+    import jax.numpy as jnp
+
+
+    class MyDoc(BaseDoc):
+        arr: JaxArray
+        image_arr: JaxArray[3, 224, 224]
+        square_crop: JaxArray[3, 'x', 'x']
+        random_image: JaxArray[3, ...]  # first dimension is fixed, can have arbitrary shape
+
+
+    # create a document with tensors
+    doc = MyDoc(
+        arr=jnp.zeros((128,)),
+        image_arr=jnp.zeros((3, 224, 224)),
+        square_crop=jnp.zeros((3, 64, 64)),
+        random_image=jnp.zeros((3, 128, 256)),
+    )
+    assert doc.image_arr.shape == (3, 224, 224)
+
+    # automatic shape conversion
+    doc = MyDoc(
+        arr=np.zeros((128,)),
+        image_arr=np.zeros((224, 224, 3)),  # will reshape to (3, 224, 224)
+        square_crop=np.zeros((3, 128, 128)),
+        random_image=np.zeros((3, 64, 128)),
+    )
+    assert doc.image_arr.shape == (3, 224, 224)
+
+    # !! The following will raise an error due to shape mismatch !!
+    from pydantic import ValidationError
+
+    try:
+        doc = MyDoc(
+            arr=np.zeros((128,)),
+            image_arr=np.zeros((224, 224)),  # this will fail validation
+            square_crop=np.zeros((3, 128, 64)),  # this will also fail validation
+            random_image=np.zeros((4, 64, 128)),  # this will also fail validation
+        )
+    except ValidationError as e:
+        pass
+    ```
+
+    ---
+    """
 
     __parametrized_meta__ = metaJax
 
@@ -75,7 +133,7 @@ class JaxArray(AbstractTensor, Generic[ShapeT], metaclass=metaJax):
         field: 'ModelField',
         config: 'BaseConfig',
     ) -> T:
-        if isinstance(value, Array):
+        if isinstance(value, jax.Array):
             return cls._docarray_from_native(value)
         elif isinstance(value, JaxArray):
             return cast(T, value)
@@ -99,7 +157,7 @@ class JaxArray(AbstractTensor, Generic[ShapeT], metaclass=metaJax):
             if cls.__unparametrizedcls__:  # None if the tensor is parametrized
                 value.__class__ = cls.__unparametrizedcls__  # type: ignore
             else:
-                value.__class__ = cls
+                value.__class__ = cls  # type: ignore
             return cast(T, value)
         else:
             if cls.__unparametrizedcls__:  # None if the tensor is parametrized

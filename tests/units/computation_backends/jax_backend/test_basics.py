@@ -1,14 +1,19 @@
-import jax
-import jax.numpy as jnp
 import pytest
 
-from docarray.computation.jax_backend import JaxCompBackend
-from docarray.typing import JaxArray
+from docarray.utils._internal.misc import is_jax_available
 
-jax.config.update("jax_enable_x64", True)
+jax_available = is_jax_available()
+if jax_available:
+    import jax
+    import jax.numpy as jnp
+
+    from docarray.computation.jax_backend import JaxCompBackend
+    from docarray.typing import JaxArray
+
+    jax.config.update("jax_enable_x64", True)
 
 
-@pytest.mark.tensorflow
+@pytest.mark.jax
 @pytest.mark.parametrize(
     'shape,result',
     [
@@ -23,7 +28,7 @@ def test_n_dim(shape, result):
     assert JaxCompBackend.n_dim(array) == result
 
 
-@pytest.mark.tensorflow
+@pytest.mark.jax
 @pytest.mark.parametrize(
     'shape,result',
     [
@@ -39,14 +44,14 @@ def test_shape(shape, result):
     assert type(shape) == tuple
 
 
-@pytest.mark.tensorflow
+@pytest.mark.jax
 def test_to_device():
     array = JaxArray(jnp.zeros((3)))
     array = JaxCompBackend.to_device(array, 'cpu')
     assert array.tensor.device().platform.endswith('cpu')
 
 
-@pytest.mark.tensorflow
+@pytest.mark.jax
 @pytest.mark.parametrize(
     'dtype,result_type',
     [
@@ -61,34 +66,34 @@ def test_dtype(dtype, result_type):
     assert JaxCompBackend.dtype(array) == result_type
 
 
-@pytest.mark.tensorflow
+@pytest.mark.jax
 def test_empty():
     array = JaxCompBackend.empty((10, 3))
     assert array.tensor.shape == (10, 3)
 
 
-@pytest.mark.tensorflow
+@pytest.mark.jax
 def test_empty_dtype():
     tf_tensor = JaxCompBackend.empty((10, 3), dtype=jnp.int32)
     assert tf_tensor.tensor.shape == (10, 3)
     assert tf_tensor.tensor.dtype == jnp.int32
 
 
-@pytest.mark.tensorflow
+@pytest.mark.jax
 def test_empty_device():
     tensor = JaxCompBackend.empty((10, 3), device='cpu')
     assert tensor.tensor.shape == (10, 3)
     assert tensor.tensor.device().platform.endswith('cpu')
 
 
-@pytest.mark.tensorflow
+@pytest.mark.jax
 def test_squeeze():
     tensor = JaxArray(jnp.zeros(shape=(1, 1, 3, 1)))
     squeezed = JaxCompBackend.squeeze(tensor)
     assert squeezed.tensor.shape == (3,)
 
 
-@pytest.mark.tensorflow
+@pytest.mark.jax
 @pytest.mark.parametrize(
     'data_input,t_range,x_range,data_result',
     [
@@ -120,14 +125,14 @@ def test_minmax_normalize(data_input, t_range, x_range, data_result):
     assert jnp.allclose(output.tensor, jnp.array(data_result))
 
 
-@pytest.mark.tensorflow
+@pytest.mark.jax
 def test_reshape():
     tensor = JaxArray(jnp.zeros((3, 224, 224)))
     reshaped = JaxCompBackend.reshape(tensor, (224, 224, 3))
     assert reshaped.tensor.shape == (224, 224, 3)
 
 
-@pytest.mark.tensorflow
+@pytest.mark.jax
 def test_stack():
     t0 = JaxArray(jnp.zeros((3, 224, 224)))
     t1 = JaxArray(jnp.ones((3, 224, 224)))

@@ -111,7 +111,7 @@ jobs:
       - name: Test
         id: test
         run: |
-          poetry run pytest -m "not (tensorflow or benchmark or index)" --cov=docarray --cov-report=xml ${{ matrix.test-path }} --ignore=tests/integrations/store/test_jac.py
+          poetry run pytest -m "not (tensorflow or benchmark or index or jax)" --cov=docarray --cov-report=xml ${{ matrix.test-path }} --ignore=tests/integrations/store/test_jac.py
           echo "flag it as docarray for codeoverage"
           echo "codecov_flag=docarray" >> $GITHUB_OUTPUT
         timeout-minutes: 30

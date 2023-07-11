@@ -1,12 +1,21 @@
-import jax
-import jax.numpy as jnp
+import pytest
 
-from docarray.computation.jax_backend import JaxCompBackend
-from docarray.typing import JaxArray
+from docarray.utils._internal.misc import is_jax_available
 
-metrics = JaxCompBackend.Metrics
+jax_available = is_jax_available()
+if jax_available:
+    import jax
+    import jax.numpy as jnp
+
+    from docarray.computation.jax_backend import JaxCompBackend
+    from docarray.typing import JaxArray
+
+    metrics = JaxCompBackend.Metrics
+else:
+    metrics = None
 
 
+@pytest.mark.jax
 def test_cosine_sim_jax():
     a = JaxArray(jax.random.uniform(jax.random.PRNGKey(0), shape=(128,)))
     b = JaxArray(jax.random.uniform(jax.random.PRNGKey(1), shape=(128,)))
@@ -23,6 +32,7 @@ def test_cosine_sim_jax():
     assert jnp.allclose(diag_dists, jnp.ones((5,)))
 
 
+@pytest.mark.jax
 def test_euclidean_dist_jax():
     a = JaxArray(jax.random.normal(jax.random.PRNGKey(0), shape=(128,)))
     b = JaxArray(jax.random.normal(jax.random.PRNGKey(1), shape=(128,)))
@@ -53,6 +63,7 @@ def test_euclidean_dist_jax():
     assert jnp.allclose(metrics.euclidean_dist(a, b).tensor, desired_output_singleton)
 
 
+@pytest.mark.jax
 def test_sqeuclidea_dist_jnp():
     a = JaxArray(jax.random.uniform(jax.random.PRNGKey(0), shape=(128,)))
     b = JaxArray(jax.random.uniform(jax.random.PRNGKey(1), shape=(128,)))

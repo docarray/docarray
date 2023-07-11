@@ -1,11 +1,20 @@
-import jax.numpy as jnp
 import pytest
 
-from docarray.computation.jax_backend import JaxCompBackend
-from docarray.typing import JaxArray
+from docarray.utils._internal.misc import is_jax_available
+
+jax_available = is_jax_available()
+if jax_available:
+    import jax.numpy as jnp
+
+    from docarray.computation.jax_backend import JaxCompBackend
+    from docarray.typing import JaxArray
+
+    metrics = JaxCompBackend.Metrics
+else:
+    metrics = None
 
 
-@pytest.mark.tensorflow
+@pytest.mark.jax
 def test_top_k_descending_false():
     top_k = JaxCompBackend.Retrieval.top_k
 
@@ -32,7 +41,7 @@ def test_top_k_descending_false():
     assert jnp.allclose(indices.tensor[1], jnp.array([2, 4, 6]))
 
 
-@pytest.mark.tensorflow
+@pytest.mark.jax
 def test_top_k_descending_true():
     top_k = JaxCompBackend.Retrieval.top_k
 

@@ -1,14 +1,20 @@
-import jax.numpy as jnp
 import numpy as np
 import pytest
-from jax._src.core import InconclusiveDimensionOperation
 from pydantic import schema_json_of
 from pydantic.tools import parse_obj_as
 
 from docarray.base_doc.io.json import orjson_dumps
-from docarray.typing import JaxArray
+from docarray.utils._internal.misc import is_jax_available
+
+jax_available = is_jax_available()
+if jax_available:
+    import jax.numpy as jnp
+    from jax._src.core import InconclusiveDimensionOperation
+
+    from docarray.typing import JaxArray
 
 
+@pytest.mark.jax
 def test_proto_tensor():
     from docarray.proto.pb2.docarray_pb2 import NdArrayProto
 
@@ -21,15 +27,18 @@ def test_proto_tensor():
     assert jnp.allclose(tensor.tensor, from_proto.tensor)
 
 
+@pytest.mark.jax
 def test_json_schema():
     schema_json_of(JaxArray)
 
 
+@pytest.mark.jax
 def test_dump_json():
     tensor = parse_obj_as(JaxArray, jnp.zeros((3, 224, 224)))
     orjson_dumps(tensor)
 
 
+@pytest.mark.jax
 def test_unwrap():
     tf_tensor = parse_obj_as(JaxArray, jnp.zeros((3, 224, 224)))
     unwrapped = tf_tensor.unwrap()
@@ -41,6 +50,7 @@ def test_unwrap():
     assert np.allclose(unwrapped, np.zeros((3, 224, 224)))
 
 
+@pytest.mark.jax
 def test_from_ndarray():
     nd = np.array([1, 2, 3])
     tensor = JaxArray.from_ndarray(nd)
@@ -48,6 +58,7 @@ def test_from_ndarray():
     assert isinstance(tensor.tensor, jnp.ndarray)
 
 
+@pytest.mark.jax
 def test_ellipsis_in_shape():
     # ellipsis in the end, two extra dimensions needed
     tf_tensor = parse_obj_as(JaxArray[3, ...], jnp.zeros((3, 128, 224)))
@@ -70,6 +81,7 @@ def test_ellipsis_in_shape():
         parse_obj_as(JaxArray[3, 224, ...], jnp.zeros((3, 128, 224)))
 
 
+@pytest.mark.jax
 def test_parametrized():
     # correct shape, single axis
     tf_tensor = parse_obj_as(JaxArray[128], jnp.zeros(128))
@@ -94,6 +106,7 @@ def test_parametrized():
         parse_obj_as(JaxArray[3, 224, 224], jnp.zeros((224, 224)))
 
 
+@pytest.mark.jax
 def test_parametrized_with_str():
     # test independent variable dimensions
     tf_tensor = parse_obj_as(JaxArray[3, 'x', 'y'], jnp.zeros((3, 224, 224)))
@@ -125,6 +138,7 @@ def test_parametrized_with_str():
         _ = parse_obj_as(JaxArray[3, 'x', 'x'], jnp.zeros((3, 60)))
 
 
+@pytest.mark.jax
 @pytest.mark.parametrize('shape', [(3, 224, 224), (224, 224, 3)])
 def test_parameterized_tensor_class_name(shape):
     MyTFT = JaxArray[3, 224, 224]
@@ -138,6 +152,7 @@ def test_parameterized_tensor_class_name(shape):
     assert f'{tensor.tensor[0][0][0]}' == '0.0'
 
 
+@pytest.mark.jax
 def test_parametrized_subclass():
     c1 = JaxArray[128]
     c2 = JaxArray[128]
@@ -147,6 +162,7 @@ def test_parametrized_subclass():
     assert not issubclass(c1, JaxArray[256])
 
 
+@pytest.mark.jax
 def test_parametrized_instance():
     t = parse_obj_as(JaxArray[128], jnp.zeros((128,)))
     assert isinstance(t, JaxArray[128])
@@ -158,6 +174,7 @@ def test_parametrized_instance():
     assert not isinstance(t, JaxArray[2, 2, 64])
 
 
+@pytest.mark.jax
 def test_parametrized_equality():
     t1 = parse_obj_as(JaxArray[128], jnp.zeros((128,)))
     t2 = parse_obj_as(JaxArray[128], jnp.zeros((128,)))

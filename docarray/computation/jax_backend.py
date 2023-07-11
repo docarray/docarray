@@ -1,41 +1,18 @@
-from typing import Any, Callable, List, Optional, Tuple
+from typing import TYPE_CHECKING, Any, Callable, List, Optional, Tuple
 
-import jax
-import jax.numpy as jnp
 import numpy as np
 
 from docarray.computation.abstract_comp_backend import AbstractComputationalBackend
 from docarray.computation.abstract_numpy_based_backend import AbstractNumpyBasedBackend
 from docarray.typing import JaxArray
+from docarray.utils._internal.misc import import_library
 
-
-def _unsqueeze_if_single_axis(*matrices) -> List[jnp.ndarray]:
-    """Unsqueezes tensors that only have one axis, at dim 0.
-    This ensures that all outputs can be treated as matrices, not vectors.
-
-    :param matrices: Matrices to be unsqueezed
-    :return: List of the input matrices,
-        where single axis matrices are unsqueezed at dim 0.
-    """
-    unsqueezed = []
-    for m in matrices:
-        if len(m.shape) == 1:
-            unsqueezed.append(jnp.expand_dims(m, axis=0))
-        else:
-            unsqueezed.append(m)
-    return unsqueezed
-
-
-def _unsqueeze_if_scalar(t):
-    """
-    Unsqueezes tensor of a scalar, from shape () to shape (1,).
-
-    :param t: tensor to unsqueeze.
-    :return: unsqueezed tf.Tensor
-    """
-    if len(t.shape) == 0:  # avoid scalar output
-        t = jnp.expand_dims(t, 0)
-    return t
+if TYPE_CHECKING:
+    import jax
+    import jax.numpy as jnp
+else:
+    jax = import_library('jax', raise_error=True)
+    jnp = jax.numpy
 
 
 def _expand_if_single_axis(*matrices: jnp.ndarray) -> List[jnp.ndarray]:
@@ -71,7 +48,7 @@ def norm_right(t: JaxArray) -> jnp.ndarray:
 
 class JaxCompBackend(AbstractNumpyBasedBackend):
     """
-    Computational backend for Numpy.
+    Computational backend for Jax.
     """
 
     _module = jnp
@@ -95,16 +72,16 @@ class JaxCompBackend(AbstractNumpyBasedBackend):
         return cls._get_tensor(tensor).device().platform
 
     @classmethod
-    def to_numpy(cls, array: 'jax.numpy.array') -> 'np.ndarray':
-        return np.array(cls._get_tensor(array))
+    def to_numpy(cls, array: 'JaxArray') -> 'np.ndarray':
+        return cls._get_tensor(array).__array__()
 
     @classmethod
     def none_value(cls) -> Any:
-        """Provide a compatible value that represents None in numpy."""
+        """Provide a compatible value that represents None in jax."""
         return jnp.nan
 
     @classmethod
-    def detach(cls, tensor: 'jax.numpy.array') -> 'jax.numpy.array':
+    def detach(cls, tensor: 'JaxArray') -> 'JaxArray':
         """
         Returns the tensor detached from its current graph.
 
@@ -114,7 +91,7 @@ class JaxCompBackend(AbstractNumpyBasedBackend):
         return cls._cast_output(jax.lax.stop_gradient(cls._get_tensor(tensor)))
 
     @classmethod
-    def dtype(cls, tensor: 'JaxArray') -> np.dtype:
+    def dtype(cls, tensor: 'JaxArray') -> jnp.dtype:
         """Get the data type of the tensor."""
         d_type = cls._get_tensor(tensor).dtype
         return d_type.name
@@ -126,7 +103,7 @@ class JaxCompBackend(AbstractNumpyBasedBackend):
         t_range: Tuple = (0, 1),
         x_range: Optional[Tuple] = None,
         eps: float = 1e-7,
-    ) -> 'jax.numpy.array':
+    ) -> 'JaxArray':
         """
         Normalize values in `tensor` into `t_range`.
 
@@ -156,7 +133,23 @@ class JaxCompBackend(AbstractNumpyBasedBackend):
         normalized = jnp.clip(r, *((a, b) if a < b else (b, a)))
         return cls._cast_output(jnp.asarray(normalized, cls._get_tensor(tensor).dtype))
 
-    class Retrieval(AbstractComputationalBackend.Retrieval[jax.numpy.array]):
+    @classmethod
+    def equal(cls, tensor1: 'JaxArray', tensor2: 'JaxArray') -> bool:
+        """
+        Check if two tensors are equal.
+
+        :param tensor1: the first tensor
+        :param tensor2: the second tensor
+        :return: True if two tensors are equal, False otherwise.
+            If one or more of the inputs is not a TensorFlowTensor, return False.
+        """
+        t1, t2 = getattr(tensor1, 'tensor', None), getattr(tensor2, 'tensor', None)
+        if isinstance(t1, jnp.ndarray) and isinstance(t2, jnp.ndarray):
+            # mypy doesn't know that tf.is_tensor implies that t1, t2 are not None
+            return t1.shape == t2.shape and jnp.all(jnp.equal(t1, t1))  # type: ignore
+        return False
+
+    class Retrieval(AbstractComputationalBackend.Retrieval[JaxArray]):
         """
         Abstract class for retrieval and ranking functionalities
         """
@@ -174,7 +167,7 @@ class JaxCompBackend(AbstractNumpyBasedBackend):
             Can also be used to retrieve the top k largest values,
             by setting the `descending` flag.
 
-            :param values: Torch tensor of values to rank.
+            :param values: Jax tensor of values to rank.
                 Should be of shape (n_queries, n_values_per_query).
                 Inputs of shape (n_values_per_query,) will be expanded
                 to (1, n_values_per_query).
@@ -188,30 +181,30 @@ class JaxCompBackend(AbstractNumpyBasedBackend):
             if device is not None:
                 values = comp_be.to_device(values, device)
 
-            values: jnp.ndarray = comp_be._get_tensor(values)
+            jax_values: jnp.ndarray = comp_be._get_tensor(values)
 
-            if len(values.shape) == 1:
-                values = jnp.expand_dims(values, axis=0)
+            if len(jax_values.shape) == 1:
+                jax_values = jnp.expand_dims(jax_values, axis=0)
 
             if descending:
-                values = -values
+                jax_values = -jax_values
 
-            if k >= values.shape[1]:
-                idx = values.argsort(axis=1)[:, :k]
-                values = jnp.take_along_axis(values, idx, axis=1)
+            if k >= jax_values.shape[1]:
+                idx = jax_values.argsort(axis=1)[:, :k]
+                jax_values = jnp.take_along_axis(jax_values, idx, axis=1)
             else:
-                idx_ps = values.argpartition(kth=k, axis=1)[:, :k]
-                values = jnp.take_along_axis(values, idx_ps, axis=1)
-                idx_fs = values.argsort(axis=1)
+                idx_ps = jax_values.argpartition(kth=k, axis=1)[:, :k]
+                jax_values = jnp.take_along_axis(jax_values, idx_ps, axis=1)
+                idx_fs = jax_values.argsort(axis=1)
                 idx = jnp.take_along_axis(idx_ps, idx_fs, axis=1)
-                values = jnp.take_along_axis(values, idx_fs, axis=1)
+                jax_values = jnp.take_along_axis(jax_values, idx_fs, axis=1)
 
             if descending:
-                values = -values
+                jax_values = -jax_values
 
-            return comp_be._cast_output(values), comp_be._cast_output(idx)
+            return comp_be._cast_output(jax_values), comp_be._cast_output(idx)
 
-    class Metrics(AbstractComputationalBackend.Metrics[jnp.ndarray]):
+    class Metrics(AbstractComputationalBackend.Metrics[JaxArray]):
         """
         Abstract base class for metrics (distances and similarities).
         """
@@ -232,7 +225,7 @@ class JaxCompBackend(AbstractNumpyBasedBackend):
             :param eps: a small jitter to avoid divide by zero
             :param device: the device to use for computations.
                 If not provided, the devices of x_mat and y_mat are used.
-            :return: Tensor of shape (n_vectors, n_vectors) containing all pairwise
+            :return: JaxArray of shape (n_vectors, n_vectors) containing all pairwise
                 cosine distances.
                 The index [i_x, i_y] contains the cosine distance between
                 x_mat[i_x] and y_mat[i_y].
@@ -241,7 +234,7 @@ class JaxCompBackend(AbstractNumpyBasedBackend):
             x_mat_jax: jnp.ndarray = comp_be._get_tensor(x_mat)
             y_mat_jax: jnp.ndarray = comp_be._get_tensor(y_mat)
 
-            x_mat_jax, y_mat_jax = _unsqueeze_if_single_axis(x_mat_jax, y_mat_jax)
+            x_mat_jax, y_mat_jax = _expand_if_single_axis(x_mat_jax, y_mat_jax)
 
             sims = jnp.clip(
                 (jnp.dot(x_mat_jax, y_mat_jax.T) + eps)
@@ -255,44 +248,46 @@ class JaxCompBackend(AbstractNumpyBasedBackend):
                 -1,
                 1,
             ).squeeze()
-            sims = _unsqueeze_if_scalar(sims)
+            sims = _expand_if_scalar(sims)
 
             return comp_be._cast_output(sims)
 
         @classmethod
         def euclidean_dist(
-            cls, x_mat: jnp.ndarray, y_mat: jnp.ndarray, device: Optional[str] = None
+            cls, x_mat: JaxArray, y_mat: JaxArray, device: Optional[str] = None
         ) -> JaxArray:
             """Pairwise Euclidian distances between all vectors in x_mat and y_mat.
 
-            :param x_mat: np.ndarray of shape (n_vectors, n_dim), where n_vectors is
+            :param x_mat: jnp.ndarray of shape (n_vectors, n_dim), where n_vectors is
                 the number of vectors and n_dim is the number of dimensions of each
                 example.
-            :param y_mat: np.ndarray of shape (n_vectors, n_dim), where n_vectors is
+            :param y_mat: jnp.ndarray of shape (n_vectors, n_dim), where n_vectors is
                 the number of vectors and n_dim is the number of dimensions of each
                 example.
             :param eps: a small jitter to avoid divde by zero
             :param device: Not supported for this backend
-            :return: np.ndarray  of shape (n_vectors, n_vectors) containing all
+            :return: JaxArray  of shape (n_vectors, n_vectors) containing all
                 pairwise euclidian distances.
                 The index [i_x, i_y] contains the euclidian distance between
                 x_mat[i_x] and y_mat[i_y].
             """
             comp_be = JaxCompBackend
-            x_mat: jnp.ndarray = comp_be._get_tensor(x_mat)
-            y_mat: jnp.ndarray = comp_be._get_tensor(y_mat)
+            x_mat_jax: jnp.ndarray = comp_be._get_tensor(x_mat)
+            y_mat_jax: jnp.ndarray = comp_be._get_tensor(y_mat)
             if device is not None:
                 # warnings.warn('`device` is not supported for numpy operations')
                 pass
 
-            x_mat, y_mat = _expand_if_single_axis(x_mat, y_mat)
+            x_mat_jax, y_mat_jax = _expand_if_single_axis(x_mat_jax, y_mat_jax)
 
-            x_mat = comp_be._cast_output(x_mat)
-            y_mat = comp_be._cast_output(y_mat)
+            x_mat_jax_arr: JaxArray = comp_be._cast_output(x_mat_jax)
+            y_mat_jax_arr: JaxArray = comp_be._cast_output(y_mat_jax)
 
             dists = _expand_if_scalar(
                 jnp.sqrt(
-                    comp_be._get_tensor(cls.sqeuclidean_dist(x_mat, y_mat))
+                    comp_be._get_tensor(
+                        cls.sqeuclidean_dist(x_mat_jax_arr, y_mat_jax_arr)
+                    )
                 ).squeeze()
             )
 
@@ -300,21 +295,21 @@ class JaxCompBackend(AbstractNumpyBasedBackend):
 
         @staticmethod
         def sqeuclidean_dist(
-            x_mat: jnp.ndarray,
-            y_mat: jnp.ndarray,
+            x_mat: JaxArray,
+            y_mat: JaxArray,
             device: Optional[str] = None,
         ) -> JaxArray:
             """Pairwise Squared Euclidian distances between all vectors in
             x_mat and y_mat.
 
-            :param x_mat: np.ndarray of shape (n_vectors, n_dim), where n_vectors is
+            :param x_mat: jnp.ndarray of shape (n_vectors, n_dim), where n_vectors is
                 the number of vectors and n_dim is the number of dimensions of each
                 example.
-            :param y_mat: np.ndarray of shape (n_vectors, n_dim), where n_vectors is
+            :param y_mat: jnp.ndarray of shape (n_vectors, n_dim), where n_vectors is
                 the number of vectors and n_dim is the number of dimensions of each
                 example.
             :param device: Not supported for this backend
-            :return: np.ndarray  of shape (n_vectors, n_vectors) containing all
+            :return: JaxArray  of shape (n_vectors, n_vectors) containing all
                 pairwise Squared Euclidian distances.
                 The index [i_x, i_y] contains the cosine Squared Euclidian between
                 x_mat[i_x] and y_mat[i_y].

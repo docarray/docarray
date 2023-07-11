@@ -5,7 +5,18 @@ import numpy as np
 from docarray.typing.tensor.tensor import AnyTensor
 from docarray.typing.tensor.video.video_ndarray import VideoNdArray
 from docarray.typing.tensor.video.video_tensor_mixin import VideoTensorMixin
-from docarray.utils._internal.misc import is_tf_available, is_torch_available
+from docarray.utils._internal.misc import (
+    is_jax_available,
+    is_tf_available,
+    is_torch_available,
+)
+
+jax_available = is_jax_available()
+if jax_available:
+    import jax.numpy as jnp
+
+    from docarray.typing.tensor.jaxarray import JaxArray  # noqa: F401
+    from docarray.typing.tensor.video.video_jax_array import VideoJaxArray
 
 torch_available = is_torch_available()
 if torch_available:
@@ -94,6 +105,11 @@ class VideoTensor(AnyTensor, VideoTensorMixin):
                 return cast(VideoTensorFlowTensor, value)
             elif isinstance(value, tf.Tensor):
                 return VideoTensorFlowTensor._docarray_from_native(value)  # noqa
+        if jax_available:
+            if isinstance(value, JaxArray):
+                return cast(VideoJaxArray, value)
+            elif isinstance(value, jnp.ndarray):
+                return VideoJaxArray._docarray_from_native(value)  # noqa
         if isinstance(value, VideoNdArray):
             return cast(VideoNdArray, value)
         if isinstance(value, np.ndarray):

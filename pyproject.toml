@@ -77,9 +77,10 @@ web = ["fastapi"]
 qdrant = ["qdrant-client"]
 weaviate = ["weaviate-client"]
 redis = ['redis']
+jax = ["jaxlib","jax"]
 
 # all
-full = ["protobuf", "lz4", "pandas", "pillow", "types-pillow", "av", "pydub", "trimesh"]
+full = ["protobuf", "lz4", "pandas", "pillow", "types-pillow", "av", "pydub", "trimesh", "jax"]
 
 [tool.poetry.dev-dependencies]
 pytest = ">=7.0"
