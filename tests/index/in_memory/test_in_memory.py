@@ -127,7 +127,7 @@ def test_with_text_doc_ndarray():
         [TextDoc(text='hey', embedding=np.random.rand(128)) for _ in range(200)]
     )
     index.index(docs)
-    res = index.find_batched(docs[0:10], search_field='embedding')
+    res = index.find_batched(docs[0:10], search_field='embedding', limit=5)
     assert len(res.documents) == 10
     for r in res.documents:
         assert len(r) == 5
@@ -144,7 +144,7 @@ def test_with_text_doc_tensorflow():
         ]
     )
     index.index(docs)
-    res = index.find_batched(docs[0:10], search_field='embedding')
+    res = index.find_batched(docs[0:10], search_field='embedding', limit=5)
     assert len(res.documents) == 10
     for r in res.documents:
         assert len(r) == 5
@@ -159,7 +159,7 @@ def test_with_text_doc_torch():
         [TextDoc(text='hey', embedding=torch.rand(128)) for _ in range(200)]
     )
     index.index(docs)
-    res = index.find_batched(docs[0:10], search_field='embedding')
+    res = index.find_batched(docs[0:10], search_field='embedding', limit=5)
     assert len(res.documents) == 10
     for r in res.documents:
         assert len(r) == 5
