@@ -1,5 +1,4 @@
 from typing import (
-    TYPE_CHECKING,
     Any,
     Iterable,
     List,
@@ -14,7 +13,18 @@ from typing import (
 import numpy as np
 from typing_extensions import SupportsIndex
 
-from docarray.utils._internal.misc import import_library
+from docarray.utils._internal.misc import (
+    is_torch_available,
+    is_tf_available,
+)
+
+torch_available = is_torch_available()
+if torch_available:
+    import torch
+tf_available = is_tf_available()
+if tf_available:
+    import tensorflow as tf  # type: ignore
+    from docarray.typing.tensor.tensorflow_tensor import TensorFlowTensor
 
 T_item = TypeVar('T_item')
 T = TypeVar('T', bound='ListAdvancedIndexing')
@@ -75,17 +85,20 @@ class ListAdvancedIndexing(List[T_item]):
             return item.tolist()
 
         # torch index types
-        if TYPE_CHECKING:
-            import torch
-        else:
-            torch = import_library('torch', raise_error=True)
+        if torch_available:
 
-        allowed_torch_dtypes = [
-            torch.bool,
-            torch.int64,
-        ]
-        if isinstance(item, torch.Tensor) and (item.dtype in allowed_torch_dtypes):
-            return item.tolist()
+            allowed_torch_dtypes = [
+                torch.bool,
+                torch.int64,
+            ]
+            if isinstance(item, torch.Tensor) and (item.dtype in allowed_torch_dtypes):
+                return item.tolist()
+
+        if tf_available:
+            if isinstance(item, tf.Tensor):
+                return item.numpy().tolist()
+            if isinstance(item, TensorFlowTensor):
+                return item.tensor.numpy().tolist()
 
         return item
 
