@@ -341,3 +341,7 @@ class TensorFlowTensor(AbstractTensor, Generic[ShapeT], metaclass=metaTensorFlow
     def _docarray_to_ndarray(self) -> np.ndarray:
         """cast itself to a numpy array"""
         return self.tensor.numpy()
+
+    @property
+    def shape(self):
+        return tf.shape(self.tensor)
