@@ -624,7 +624,7 @@ Like the [PyTorch approach](#coming-from-pytorch), you can also use DocArray wit
 First off, to use DocArray with TensorFlow we first need to install it as follows:
 
 ```
-pip install tensorflow==2.11.0
+pip install tensorflow==2.12.0
 pip install protobuf==3.19.0
 ```
 

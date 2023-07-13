@@ -22,7 +22,7 @@ import numpy as np
 from docarray import BaseDoc, DocList
 from docarray.index.abstract import BaseDocIndex
 from docarray.index.backends.helper import _execute_find_and_filter_query
-from docarray.typing import AnyTensor
+from docarray.typing import AnyTensor, NdArray
 from docarray.typing.id import ID
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
 from docarray.utils._internal._typing import safe_issubclass
@@ -42,6 +42,7 @@ if TYPE_CHECKING:
         FieldSchema,
         connections,
         utility,
+        Hits,
     )
 else:
     from pymilvus import (
@@ -51,6 +52,7 @@ else:
         FieldSchema,
         connections,
         utility,
+        Hits,
     )
 
 ID_VARCHAR_LEN = 1024
@@ -88,7 +90,7 @@ class MilvusDocumentIndex(BaseDocIndex, Generic[TSchema]):
     class DBConfig(BaseDocIndex.DBConfig):
         """Dataclass that contains all "static" configurations of MilvusDocumentIndex."""
 
-        collection_name: str = None
+        collection_name: Optional[str] = None
         collection_description: str = ""
         host: str = "localhost"
         port: int = 19530
@@ -286,7 +288,7 @@ class MilvusDocumentIndex(BaseDocIndex, Generic[TSchema]):
         self._update_subindex_data(docs_validated)
 
         docs = self._validate_docs(docs)
-        entities = [[] for _ in range(len(self._collection.schema))]
+        entities: List[List[Any]] = [[] for _ in range(len(self._collection.schema))]
 
         for i in range(len(docs)):
             entities[0].append(docs[i].to_base64(**self._db_config.serialize_config))
@@ -571,9 +573,9 @@ class MilvusDocumentIndex(BaseDocIndex, Generic[TSchema]):
     def _check_loaded(self):
         """This function checks if the collection is loaded and loads it if necessary"""
 
-        self._collection.load() and setattr(
-            self, "_loaded", True
-        ) if not self._loaded else None
+        if not self._loaded:
+            self._collection.load()
+            self._loaded = True
 
     def _docs_from_query_response(self, result: Sequence[Dict]) -> Sequence[TSchema]:
         return DocList[self._schema](
@@ -585,7 +587,11 @@ class MilvusDocumentIndex(BaseDocIndex, Generic[TSchema]):
             ]
         )
 
-    def _docs_from_find_response(self, result: str) -> _FindResult:
+    def _docs_from_find_response(self, result: Hits) -> _FindResult:
+        scores: NdArray = NdArray._docarray_from_native(
+            np.array([hit.score for hit in result])
+        )
+
         return _FindResult(
             documents=DocList[self._schema](
                 [
@@ -595,7 +601,7 @@ class MilvusDocumentIndex(BaseDocIndex, Generic[TSchema]):
                     for hit in result
                 ]
             ),
-            scores=[hit.score for hit in result],
+            scores=scores,
         )
 
     def _always_true_expr(self, primary_key: str) -> str:
@@ -608,7 +614,7 @@ class MilvusDocumentIndex(BaseDocIndex, Generic[TSchema]):
         """
         return f'({primary_key} in ["1"]) or ({primary_key} not in ["1"])'
 
-    def _map_embedding(self, embedding: Optional[AnyTensor]) -> AnyTensor:
+    def _map_embedding(self, embedding: Optional[AnyTensor]) -> Optional[AnyTensor]:
         """
         Milvus exclusively supports one-dimensional vectors. If multi-dimensional
         vectors are provided, they will be automatically flattened to ensure compatibility.
@@ -623,7 +629,7 @@ class MilvusDocumentIndex(BaseDocIndex, Generic[TSchema]):
             if embedding.ndim > 1:
                 embedding = np.asarray(embedding).squeeze()
         else:
-            embedding = np.zeros(self._config.n_dim)
+            embedding = np.zeros(self._db_config.n_dim)
         return embedding
 
     def __contains__(self, item) -> bool:

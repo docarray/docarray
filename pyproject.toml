@@ -77,7 +77,7 @@ web = ["fastapi"]
 qdrant = ["qdrant-client"]
 weaviate = ["weaviate-client"]
 milvus = ["pymilvus"]
-redis = ['redis']
+redis = ["redis"]
 
 # all
 full = ["protobuf", "lz4", "pandas", "pillow", "types-pillow", "av", "pydub", "trimesh"]
