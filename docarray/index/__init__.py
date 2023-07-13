@@ -37,7 +37,7 @@ def __getattr__(name: str):
         import_library('weaviate', raise_error=True)
         import docarray.index.backends.weaviate as lib
     elif name == 'MilvusDocumentIndex':
-        import_library('milvus', raise_error=True)
+        import_library('pymilvus', raise_error=True)
         import docarray.index.backends.milvus as lib
     elif name == 'RedisDocumentIndex':
         import_library('redis', raise_error=True)
