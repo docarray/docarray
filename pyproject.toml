@@ -76,7 +76,7 @@ torch = ["torch"]
 web = ["fastapi"]
 qdrant = ["qdrant-client"]
 weaviate = ["weaviate-client"]
-pymilvus = ["pymilvus"]
+milvus = ["pymilvus"]
 redis = ['redis']
 
 # all
