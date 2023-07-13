@@ -32,6 +32,7 @@ from docarray.utils.find import (
     FindResult,
     FindResultBatched,
 )
+from docarray.array.any_array import AnyDocArray
 
 if TYPE_CHECKING:
     from pymilvus import (
