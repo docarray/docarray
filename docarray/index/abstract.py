@@ -362,7 +362,9 @@ class BaseDocIndex(ABC, Generic[TSchema]):
         for field_name, type_, _ in self._flatten_schema(
             cast(Type[BaseDoc], self._schema)
         ):
-            if issubclass(type_, AnyDocArray) and isinstance(doc_sequence[0], Dict):
+            if safe_issubclass(type_, AnyDocArray) and isinstance(
+                doc_sequence[0], Dict
+            ):
                 for doc in doc_sequence:
                     self._get_subindex_doclist(doc, field_name)  # type: ignore
 
@@ -534,7 +536,7 @@ class BaseDocIndex(ABC, Generic[TSchema]):
         if search_field:
             if '__' in search_field:
                 fields = search_field.split('__')
-                if issubclass(self._schema._get_field_type(fields[0]), AnyDocArray):  # type: ignore
+                if safe_issubclass(self._schema._get_field_type(fields[0]), AnyDocArray):  # type: ignore
                     return self._subindices[fields[0]].find_batched(
                         queries,
                         search_field='__'.join(fields[1:]),
@@ -656,7 +658,7 @@ class BaseDocIndex(ABC, Generic[TSchema]):
             query_text, search_field=search_field, limit=limit, **kwargs
         )
 
-        if isinstance(docs, List):
+        if isinstance(docs, List) and not isinstance(docs, DocList):
             docs = self._dict_list_to_docarray(docs)
 
         return FindResult(documents=docs, scores=scores)
@@ -799,7 +801,7 @@ class BaseDocIndex(ABC, Generic[TSchema]):
             # do nothing
             # enables use in static contexts with type vars, e.g. as type annotation
             return Generic.__class_getitem__.__func__(cls, item)
-        if not issubclass(item, BaseDoc):
+        if not safe_issubclass(item, BaseDoc):
             raise ValueError(
                 f'{cls.__name__}[item] `item` should be a Document not a {item} '
             )
@@ -849,7 +851,7 @@ class BaseDocIndex(ABC, Generic[TSchema]):
                     # treat as if it was a single non-optional type
                     for t_arg in union_args:
                         if t_arg is not type(None):
-                            if issubclass(t_arg, BaseDoc):
+                            if safe_issubclass(t_arg, BaseDoc):
                                 names_types_fields.extend(
                                     cls._flatten_schema(t_arg, name_prefix=inner_prefix)
                                 )
@@ -1044,7 +1046,7 @@ class BaseDocIndex(ABC, Generic[TSchema]):
         for field_name, _ in schema.__fields__.items():
             t_ = schema._get_field_type(field_name)
 
-            if not is_union_type(t_) and issubclass(t_, AnyDocArray):
+            if not is_union_type(t_) and safe_issubclass(t_, AnyDocArray):
                 self._get_subindex_doclist(doc_dict, field_name)
 
             if is_optional_type(t_):
@@ -1052,7 +1054,7 @@ class BaseDocIndex(ABC, Generic[TSchema]):
                     if t_arg is not type(None):
                         t_ = t_arg
 
-            if not is_union_type(t_) and issubclass(t_, BaseDoc):
+            if not is_union_type(t_) and safe_issubclass(t_, BaseDoc):
                 inner_dict = {}
 
                 fields = [
@@ -1125,7 +1127,7 @@ class BaseDocIndex(ABC, Generic[TSchema]):
     ) -> FindResult:
         """Find documents in the subindex and return subindex docs and scores."""
         fields = subindex.split('__')
-        if not subindex or not issubclass(
+        if not subindex or not safe_issubclass(
             self._schema._get_field_type(fields[0]), AnyDocArray  # type: ignore
         ):
             raise ValueError(f'subindex {subindex} is not valid')

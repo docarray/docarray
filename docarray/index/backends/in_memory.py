@@ -33,7 +33,6 @@ from docarray.utils.filter import filter_docs
 from docarray.utils.find import (
     FindResult,
     FindResultBatched,
-    _da_attr_type,
     _extract_embeddings,
     _FindResult,
     _FindResultBatched,
@@ -196,10 +195,7 @@ class InMemoryExactNNIndex(BaseDocIndex, Generic[TSchema]):
             self._embedding_map = dict()
         else:
             for field_, embedding in self._embedding_map.items():
-                embedding_type = _da_attr_type(self._docs, field_)
-                self._embedding_map[field_] = _extract_embeddings(
-                    self._docs, field_, embedding_type
-                )
+                self._embedding_map[field_] = _extract_embeddings(self._docs, field_)
 
     def _del_items(self, doc_ids: Sequence[str]):
         """Delete Documents from the index.
