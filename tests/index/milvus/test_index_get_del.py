@@ -1,6 +1,7 @@
 import numpy as np
 import pytest
 import torch
+from pydantic import Field
 
 from docarray import BaseDoc, DocList
 from docarray.index import MilvusDocumentIndex
@@ -11,11 +12,11 @@ pytestmark = [pytest.mark.slow, pytest.mark.index]
 
 
 class SimpleDoc(BaseDoc):
-    tens: NdArray[10]
+    tens: NdArray[10] = Field(is_embedding=True)
 
 
 class FlatDoc(BaseDoc):
-    tens_one: NdArray[10]
+    tens_one: NdArray[10] = Field(is_embedding=True)
     tens_two: NdArray[50]
 
 
@@ -28,7 +29,7 @@ class DeepNestedDoc(BaseDoc):
 
 
 class TorchDoc(BaseDoc):
-    tens: TorchTensor[10]  # type: ignore[valid-type]
+    tens: TorchTensor[10] = Field(is_embedding=True)  # type: ignore[valid-type]
 
 
 @pytest.fixture
@@ -51,7 +52,7 @@ def ten_nested_docs():
 
 @pytest.mark.parametrize('use_docarray', [True, False])
 def test_index_simple_schema(ten_simple_docs, use_docarray):  # noqa: F811
-    index = MilvusDocumentIndex[SimpleDoc](index_name='tens')
+    index = MilvusDocumentIndex[SimpleDoc]()
     if use_docarray:
         ten_simple_docs = DocList[SimpleDoc](ten_simple_docs)
 
@@ -61,7 +62,7 @@ def test_index_simple_schema(ten_simple_docs, use_docarray):  # noqa: F811
 
 @pytest.mark.parametrize('use_docarray', [True, False])
 def test_index_flat_schema(ten_flat_docs, use_docarray):  # noqa: F811
-    index = MilvusDocumentIndex[FlatDoc](index_name='tens_one')
+    index = MilvusDocumentIndex[FlatDoc]()
     if use_docarray:
         ten_flat_docs = DocList[FlatDoc](ten_flat_docs)
 
@@ -74,14 +75,14 @@ def test_index_torch():
     assert isinstance(docs[0].tens, torch.Tensor)
     assert isinstance(docs[0].tens, TorchTensor)
 
-    index = MilvusDocumentIndex[TorchDoc](index_name='tens')
+    index = MilvusDocumentIndex[TorchDoc]()
 
     index.index(docs)
     assert index.num_docs() == 10
 
 
 def test_del_single(ten_simple_docs):  # noqa: F811
-    index = MilvusDocumentIndex[SimpleDoc](index_name='tens')
+    index = MilvusDocumentIndex[SimpleDoc]()
     index.index(ten_simple_docs)
     # delete once
     assert index.num_docs() == 10
@@ -109,7 +110,7 @@ def test_del_single(ten_simple_docs):  # noqa: F811
 def test_del_multiple(ten_simple_docs):
     docs_to_del_idx = [0, 2, 4, 6, 8]
 
-    index = MilvusDocumentIndex[SimpleDoc](index_name='tens')
+    index = MilvusDocumentIndex[SimpleDoc]()
     index.index(ten_simple_docs)
 
     assert index.num_docs() == 10
@@ -125,7 +126,7 @@ def test_del_multiple(ten_simple_docs):
 
 
 def test_num_docs(ten_simple_docs):  # noqa: F811
-    index = MilvusDocumentIndex[SimpleDoc](index_name='tens')
+    index = MilvusDocumentIndex[SimpleDoc]()
     index.index(ten_simple_docs)
 
     assert index.num_docs() == 10

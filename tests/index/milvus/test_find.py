@@ -11,24 +11,24 @@ pytestmark = [pytest.mark.slow, pytest.mark.index]
 
 
 class SimpleDoc(BaseDoc):
-    tens: NdArray[10] = Field(dim=1000)  # type: ignore[valid-type]
+    tens: NdArray[10] = Field(is_embedding=True, dim=1000)  # type: ignore[valid-type]
 
 
 class FlatDoc(BaseDoc):
-    tens_one: NdArray = Field(dim=10)
+    tens_one: NdArray = Field(is_embedding=True, dim=10)
     tens_two: NdArray = Field(dim=50)
 
 
 class TorchDoc(BaseDoc):
-    tens: TorchTensor[10]  # type: ignore[valid-type]
+    tens: TorchTensor[10] = Field(is_embedding=True)  # type: ignore[valid-type]
 
 
 @pytest.mark.parametrize('space', ['cosine', 'l2', 'ip'])
 def test_find_simple_schema(space):
     class SimpleSchema(BaseDoc):
-        tens: NdArray[10] = Field(space=space)  # type: ignore[valid-type]
+        tens: NdArray[10] = Field(is_embedding=True, space=space)  # type: ignore[valid-type]
 
-    index = MilvusDocumentIndex[SimpleSchema](index_name="tens")
+    index = MilvusDocumentIndex[SimpleSchema]()
 
     index_docs = [SimpleDoc(tens=np.zeros(10)) for _ in range(10)]
     index_docs.append(SimpleDoc(tens=np.ones(10)))
@@ -36,14 +36,14 @@ def test_find_simple_schema(space):
 
     query = SimpleDoc(tens=np.ones(10))
 
-    docs, scores = index.find(query, search_field='tens', limit=5)
+    docs, scores = index.find(query, limit=5)
 
     assert len(docs) == 5
     assert len(scores) == 5
 
 
 def test_find_torch():
-    index = MilvusDocumentIndex[TorchDoc](index_name="tens")
+    index = MilvusDocumentIndex[TorchDoc]()
 
     index_docs = [TorchDoc(tens=np.zeros(10)) for _ in range(10)]
     index_docs.append(TorchDoc(tens=np.ones(10)))
@@ -54,7 +54,7 @@ def test_find_torch():
 
     query = TorchDoc(tens=np.ones(10))
 
-    result_docs, scores = index.find(query, search_field='tens', limit=5)
+    result_docs, scores = index.find(query, limit=5)
 
     assert len(result_docs) == 5
     assert len(scores) == 5
@@ -67,9 +67,9 @@ def test_find_tensorflow():
     from docarray.typing import TensorFlowTensor
 
     class TfDoc(BaseDoc):
-        tens: TensorFlowTensor[10]  # type: ignore[valid-type]
+        tens: TensorFlowTensor[10] = Field(is_embedding=True)  # type: ignore[valid-type]
 
-    index = MilvusDocumentIndex[TfDoc](index_name="tens")
+    index = MilvusDocumentIndex[TfDoc]()
 
     index_docs = [TfDoc(tens=np.random.rand(10)) for _ in range(10)]
     index.index(index_docs)
@@ -78,7 +78,7 @@ def test_find_tensorflow():
         assert isinstance(doc.tens, TensorFlowTensor)
 
     query = index_docs[-1]
-    docs, scores = index.find(query, search_field='tens', limit=5)
+    docs, scores = index.find(query, limit=5)
 
     assert len(docs) == 5
     assert len(scores) == 5
@@ -88,9 +88,9 @@ def test_find_tensorflow():
 
 def test_find_batched():  # noqa: F811
     class SimpleSchema(BaseDoc):
-        tens: NdArray[10]
+        tens: NdArray[10] = Field(is_embedding=True)
 
-    index = MilvusDocumentIndex[SimpleSchema](index_name="tens")
+    index = MilvusDocumentIndex[SimpleSchema]()
 
     index_docs = [SimpleDoc(tens=vector) for vector in np.identity(10)]
     index.index(index_docs)
@@ -106,7 +106,7 @@ def test_find_batched():  # noqa: F811
         ]
     )
 
-    docs, scores = index.find_batched(queries, search_field='tens', limit=1)
+    docs, scores = index.find_batched(queries, limit=1)
 
     assert len(docs) == 2
     assert len(docs[0]) == 1
@@ -118,12 +118,12 @@ def test_find_batched():  # noqa: F811
 
 def test_contain():
     class SimpleDoc(BaseDoc):
-        tens: NdArray[10]
+        tens: NdArray[10] = Field(is_embedding=True)
 
     class SimpleSchema(BaseDoc):
-        tens: NdArray[10]
+        tens: NdArray[10] = Field(is_embedding=True)
 
-    index = MilvusDocumentIndex[SimpleSchema](index_name="tens")
+    index = MilvusDocumentIndex[SimpleSchema]()
     index_docs = [SimpleDoc(tens=np.zeros(10)) for _ in range(10)]
 
     assert (index_docs[0] in index) is False
@@ -141,10 +141,10 @@ def test_contain():
 @pytest.mark.parametrize('space', ['cosine', 'l2', 'ip'])
 def test_find_flat_schema(space):
     class FlatSchema(BaseDoc):
-        tens_one: NdArray[10] = Field(space=space)
+        tens_one: NdArray[10] = Field(space=space, is_embedding=True)
         tens_two: NdArray[50] = Field(space=space)
 
-    index = MilvusDocumentIndex[FlatSchema](index_name="tens_one")
+    index = MilvusDocumentIndex[FlatSchema]()
 
     index_docs = [
         FlatDoc(tens_one=np.zeros(10), tens_two=np.zeros(50)) for _ in range(10)
@@ -156,7 +156,7 @@ def test_find_flat_schema(space):
     query = FlatDoc(tens_one=np.ones(10), tens_two=np.ones(50))
 
     # find on tens_one
-    docs, scores = index.find(query, search_field='tens_one', limit=5)
+    docs, scores = index.find(query, limit=5)
     assert len(docs) == 5
     assert len(scores) == 5
 
@@ -171,9 +171,9 @@ def test_find_nested_schema():
 
     class DeepNestedDoc(BaseDoc):
         d: NestedDoc
-        tens: NdArray[10]
+        tens: NdArray[10] = Field(is_embedding=True)
 
-    index = MilvusDocumentIndex[DeepNestedDoc](index_name="tens")
+    index = MilvusDocumentIndex[DeepNestedDoc]()
 
     index_docs = [
         DeepNestedDoc(
@@ -207,6 +207,33 @@ def test_find_nested_schema():
     )
 
     # find on root level (only support one level now)
-    docs, scores = index.find(query, search_field='tens', limit=5)
+    docs, scores = index.find(query, limit=5)
     assert len(docs) == 5
     assert len(scores) == 5
+
+
+def test_find_empty_index():
+    empty_index = MilvusDocumentIndex[SimpleDoc]()
+    query = SimpleDoc(tens=np.random.rand(10))
+
+    docs, scores = empty_index.find(query, limit=5)
+    assert len(docs) == 0
+    assert len(scores) == 0
+
+
+def test_simple_usage():
+    class MyDoc(BaseDoc):
+        text: str
+        embedding: NdArray[128] = Field(is_embedding=True)
+
+    docs = [MyDoc(text='hey', embedding=np.random.rand(128)) for _ in range(200)]
+    queries = docs[0:3]
+    index = MilvusDocumentIndex[MyDoc]()
+    index.index(docs=DocList[MyDoc](docs))
+    print('num docs', index.num_docs())
+    resp = index.find_batched(queries=queries, limit=5)
+    docs_responses = resp.documents
+    assert len(docs_responses) == 3
+    for q, matches in zip(queries, docs_responses):
+        assert len(matches) == 5
+        assert q.id == matches[0].id

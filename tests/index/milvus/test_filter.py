@@ -1,4 +1,5 @@
 import numpy as np
+import pytest
 from pydantic import Field
 
 from docarray import BaseDoc
@@ -6,21 +7,18 @@ from docarray.index import MilvusDocumentIndex
 from docarray.typing import NdArray
 from tests.index.milvus.fixtures import start_storage  # noqa: F401
 
-
-class SimpleDoc(BaseDoc):
-    embedding: NdArray[10] = Field(dim=1000)  # type: ignore[valid-type]
-    number: int
+pytestmark = [pytest.mark.slow, pytest.mark.index]
 
 
 def test_filter_range():  # noqa: F811
     class SimpleSchema(BaseDoc):
-        embedding: NdArray[10] = Field(space='cosine')  # type: ignore[valid-type]
+        embedding: NdArray[10] = Field(space='cosine', is_embedding=True)  # type: ignore[valid-type]
         number: int
 
-    index = MilvusDocumentIndex[SimpleSchema](index_name="embedding")
+    index = MilvusDocumentIndex[SimpleSchema]()
 
     index_docs = [
-        SimpleDoc(
+        SimpleSchema(
             embedding=np.zeros(10),
             number=i,
         )

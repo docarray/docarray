@@ -17,6 +17,8 @@ from typing import (
     cast,
 )
 
+import numpy as np
+
 from docarray import BaseDoc, DocList
 from docarray.index.abstract import BaseDocIndex
 from docarray.index.backends.helper import _execute_find_and_filter_query
@@ -24,11 +26,14 @@ from docarray.typing import AnyTensor
 from docarray.typing.id import ID
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
 from docarray.utils._internal._typing import safe_issubclass
-from docarray.utils._internal.misc import import_library
-from docarray.utils.find import _FindResult, _FindResultBatched
+from docarray.utils.find import (
+    _FindResult,
+    _FindResultBatched,
+    FindResult,
+    FindResultBatched,
+)
 
 if TYPE_CHECKING:
-    import numpy as np
     from pymilvus import (
         Collection,
         CollectionSchema,
@@ -38,7 +43,6 @@ if TYPE_CHECKING:
         utility,
     )
 else:
-    np = import_library('numpy', raise_error=False)
     from pymilvus import (
         Collection,
         CollectionSchema,
@@ -55,7 +59,7 @@ TSchema = TypeVar('TSchema', bound=BaseDoc)
 
 
 class MilvusDocumentIndex(BaseDocIndex, Generic[TSchema]):
-    def __init__(self, db_config=None, index_name=None, **kwargs):
+    def __init__(self, db_config=None, **kwargs):
         """Initialize MilvusDocumentIndex"""
         super().__init__(db_config=db_config, **kwargs)
         self._db_config: MilvusDocumentIndex.DBConfig = cast(
@@ -72,8 +76,8 @@ class MilvusDocumentIndex(BaseDocIndex, Generic[TSchema]):
 
         self._loaded = False
 
-        self._db_config.index_name = index_name
         self._validate_columns()
+        self._field_name = self._get_vector_field_name()
         self._create_collection_name()
         self._collection = self._init_index()
         self._build_index()
@@ -90,7 +94,6 @@ class MilvusDocumentIndex(BaseDocIndex, Generic[TSchema]):
         user: Optional[str] = ""
         password: Optional[str] = ""
         token: Optional[str] = ""
-        index_name: str = None
         index_type: str = "IVF_FLAT"
         index_metric: str = "L2"
         index_params: Dict = field(default_factory=lambda: {"nlist": 1024})
@@ -158,7 +161,7 @@ class MilvusDocumentIndex(BaseDocIndex, Generic[TSchema]):
                     dtype=DataType.VARCHAR,
                     is_primary=True,
                     max_length=ID_VARCHAR_LEN,
-                ),  # id represents the document id
+                ),
             ]
             fields.extend(
                 [
@@ -172,16 +175,16 @@ class MilvusDocumentIndex(BaseDocIndex, Generic[TSchema]):
                             else {}
                         ),
                         **(
-                            {'dim': info.n_dim}
+                            {'dim': info.n_dim or info.config.get('dim')}
                             if info.db_type == DataType.FLOAT_VECTOR
                             else {}
                         ),
                     )
                     for column_name, info in self._column_infos.items()
-                    if column_name != "id"
+                    if column_name != 'id'
                     and not (
                         info.db_type == DataType.FLOAT_VECTOR
-                        and column_name != self._db_config.index_name
+                        and column_name != self._field_name
                     )  # Only store one vector field in column
                 ]
             )
@@ -213,26 +216,29 @@ class MilvusDocumentIndex(BaseDocIndex, Generic[TSchema]):
 
     def _validate_columns(self):
         """
-        Validates if the DataFrame contains at least one vector column
-        (Milvus' requirement) and checks that each vector column has
-        dimension information specified.
+        Validates whether the data schema includes at least one vector column used
+        for embedding (as required by Milvus), and ensures that dimension information
+        is specified for that column.
         """
-        vector_columns_exist = any(
+        vector_columns = sum(
             safe_issubclass(info.docarray_type, AbstractTensor)
+            and info.config.get('is_embedding', False)
             for info in self._column_infos.values()
         )
-
-        if not vector_columns_exist:
+        if vector_columns == 0:
             raise ValueError(
-                "No vector columns found. Ensure that at least one column is of a vector type"
+                "Unable to find any vector columns. Please make sure that at least one "
+                "column is of a vector type with the is_embedding=True attribute specified."
             )
+        elif vector_columns > 1:
+            raise ValueError("Specifying multiple vector fields is not supported.")
 
-        for column_name, info in self._column_infos.items():
-            if info.n_dim is None and safe_issubclass(
-                info.docarray_type, AbstractTensor
+        for column, info in self._column_infos.items():
+            if info.config.get('is_embedding') and (
+                not info.n_dim and not info.config.get('dim')
             ):
                 raise ValueError(
-                    f"Dimension information is missing for column '{column_name}' which is vector type"
+                    f"The dimension information is missing for the column '{column}', which is of vector type."
                 )
 
     def _build_index(self):
@@ -247,10 +253,18 @@ class MilvusDocumentIndex(BaseDocIndex, Generic[TSchema]):
             "params": self._db_config.index_params,
         }
 
-        self._collection.create_index(self._db_config.index_name, index)
+        self._collection.create_index(self._field_name, index)
         self._logger.info(
-            f"Index '{self._db_config.index_name}' has been successfully created"
+            f"Index for the field '{self._field_name}' has been successfully created"
         )
+
+    def _get_vector_field_name(self):
+        for column, info in self._column_infos.items():
+            if info.db_type == DataType.FLOAT_VECTOR and info.config.get(
+                'is_embedding'
+            ):
+                return column
+        return ''
 
     def index(self, docs: Union[BaseDoc, Sequence[BaseDoc]], **kwargs):
         """Index Documents into the index.
@@ -279,7 +293,7 @@ class MilvusDocumentIndex(BaseDocIndex, Generic[TSchema]):
             for column_name, info in self._column_infos.items():
                 column_value = self._get_values_by_column([docs[i]], column_name)[0]
                 if info.db_type == DataType.FLOAT_VECTOR:
-                    if column_name != self._db_config.index_name:
+                    if column_name != self._field_name:
                         continue
                     column_value = self._map_embedding(column_value)
 
@@ -391,6 +405,46 @@ class MilvusDocumentIndex(BaseDocIndex, Generic[TSchema]):
     ) -> _FindResultBatched:
         raise NotImplementedError(f'{type(self)} does not support text search.')
 
+    def find(
+        self,
+        query: Union[AnyTensor, BaseDoc],
+        search_field: str = '',
+        limit: int = 10,
+        **kwargs,
+    ) -> FindResult:
+        """Find documents in the index using nearest neighbor search.
+
+        :param query: query vector for KNN/ANN search.
+            Can be either a tensor-like (np.array, torch.Tensor, etc.)
+            with a single axis, or a Document
+        :param search_field: name of the field to search on.
+            Documents in the index are retrieved based on this similarity
+            of this field to the query.
+        :param limit: maximum number of documents to return
+        :return: a named tuple containing `documents` and `scores`
+        """
+        self._logger.debug(f'Executing `find` for search field {search_field}')
+        if search_field != '':
+            raise ValueError(
+                'Argument search_field is not supported for MilvusDocumentIndex.'
+                'Set search_field to an empty string to proceed.'
+            )
+
+        search_field = self._field_name
+        if isinstance(query, BaseDoc):
+            query_vec = self._get_values_by_column([query], search_field)[0]
+        else:
+            query_vec = query
+        query_vec_np = self._to_numpy(query_vec)
+        docs, scores = self._find(
+            query_vec_np, search_field=search_field, limit=limit, **kwargs
+        )
+
+        if isinstance(docs, List) and not isinstance(docs, DocList):
+            docs = self._dict_list_to_docarray(docs)
+
+        return FindResult(documents=docs, scores=scores)
+
     def _find(
         self,
         query: np.ndarray,
@@ -404,6 +458,7 @@ class MilvusDocumentIndex(BaseDocIndex, Generic[TSchema]):
             anns_field=search_field,
             param=self._db_config.search_params,
             limit=limit,
+            offset=0,
             expr=None,
             output_fields=["serialized"],
             consistency_level=self._db_config.consistency_level,
@@ -415,6 +470,63 @@ class MilvusDocumentIndex(BaseDocIndex, Generic[TSchema]):
 
         return self._docs_from_find_response(results)
 
+    def find_batched(
+        self,
+        queries: Union[AnyTensor, DocList],
+        search_field: str = '',
+        limit: int = 10,
+        **kwargs,
+    ) -> FindResultBatched:
+        """Find documents in the index using nearest neighbor search.
+
+        :param queries: query vector for KNN/ANN search.
+            Can be either a tensor-like (np.array, torch.Tensor, etc.) with a,
+            or a DocList.
+            If a tensor-like is passed, it should have shape (batch_size, vector_dim)
+        :param search_field: name of the field to search on.
+            Documents in the index are retrieved based on this similarity
+            of this field to the query.
+        :param limit: maximum number of documents to return per query
+        :return: a named tuple containing `documents` and `scores`
+        """
+        self._logger.debug(f'Executing `find_batched` for search field {search_field}')
+
+        if search_field:
+            if '__' in search_field:
+                fields = search_field.split('__')
+                if issubclass(self._schema._get_field_type(fields[0]), AnyDocArray):  # type: ignore
+                    return self._subindices[fields[0]].find_batched(
+                        queries,
+                        search_field='__'.join(fields[1:]),
+                        limit=limit,
+                        **kwargs,
+                    )
+        if search_field != '':
+            raise ValueError(
+                'Argument search_field is not supported for MilvusDocumentIndex.'
+                'Set search_field to an empty string to proceed.'
+            )
+        search_field = self._field_name
+        if isinstance(queries, Sequence):
+            query_vec_list = self._get_values_by_column(queries, search_field)
+            query_vec_np = np.stack(
+                tuple(self._to_numpy(query_vec) for query_vec in query_vec_list)
+            )
+        else:
+            query_vec_np = self._to_numpy(queries)
+
+        da_list, scores = self._find_batched(
+            query_vec_np, search_field=search_field, limit=limit, **kwargs
+        )
+        if (
+            len(da_list) > 0
+            and isinstance(da_list[0], List)
+            and not isinstance(da_list[0], DocList)
+        ):
+            da_list = [self._dict_list_to_docarray(docs) for docs in da_list]
+
+        return FindResultBatched(documents=da_list, scores=scores)  # type: ignore
+
     def _find_batched(
         self,
         queries: np.ndarray,
@@ -425,7 +537,7 @@ class MilvusDocumentIndex(BaseDocIndex, Generic[TSchema]):
 
         results = self._collection.search(
             data=queries,
-            anns_field=search_field,
+            anns_field=self._field_name,
             param=self._db_config.search_params,
             limit=limit,
             expr=None,
