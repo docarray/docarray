@@ -5165,9 +5165,9 @@ hnswlib = ["hnswlib", "protobuf"]
 image = ["pillow", "types-pillow"]
 jac = ["jina-hubble-sdk"]
 mesh = ["trimesh"]
-milvus = ["pymilvus"]
 pandas = ["pandas"]
 proto = ["lz4", "protobuf"]
+pymilvus = ["pymilvus"]
 qdrant = ["qdrant-client"]
 redis = ["redis"]
 torch = ["torch"]
@@ -5178,4 +5178,4 @@ web = ["fastapi"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.8,<4.0"
-content-hash = "8fa88061d4a916c664bc8d5925dbcec1ab7e6fddf0e50b9978d66b6fede76036"
+content-hash = "1edd0ffa758143ce4af361f74eb5ee1dce4521bc8824cc3a4bb2a53760cd3e2f"
