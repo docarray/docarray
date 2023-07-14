@@ -260,3 +260,29 @@ def test_filter_range(tmp_index_name):  # noqa: F811
 
     docs = index.filter(f"id == '{index_docs[0].id}'", limit=5)
     assert docs[0].id == index_docs[0].id
+
+
+def test_query_builder(tmp_index_name):
+    class SimpleSchema(BaseDoc):
+        tensor: NdArray[10] = Field(is_embedding=True)
+        price: int
+
+    db = MilvusDocumentIndex[SimpleSchema](index_name=tmp_index_name)
+
+    index_docs = [
+        SimpleSchema(tensor=np.array([i + 1] * 10), price=i + 1) for i in range(10)
+    ]
+    db.index(index_docs)
+
+    q = (
+        db.build_query()
+        .find(query=np.ones(10), limit=5)
+        .filter(filter_query='price <= 3')
+        .build()
+    )
+
+    docs, scores = db.execute_query(q)
+
+    assert len(docs) == 3
+    for doc in docs:
+        assert doc.price <= 3
