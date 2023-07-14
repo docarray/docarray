@@ -16,7 +16,15 @@ if TYPE_CHECKING:
     from docarray.index.backends.redis import RedisDocumentIndex  # noqa: F401
     from docarray.index.backends.milvus import MilvusDocumentIndex  # noqa: F401
 
-__all__ = ['InMemoryExactNNIndex']
+__all__ = [
+    'InMemoryExactNNIndex',
+    'ElasticDocIndex',
+    'ElasticV7DocIndex',
+    'QdrantDocumentIndex',
+    'WeaviateDocumentIndex',
+    'RedisDocumentIndex',
+    'MilvusDocumentIndex',
+]
 
 
 def __getattr__(name: str):

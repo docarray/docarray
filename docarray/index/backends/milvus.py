@@ -24,10 +24,7 @@ from docarray.index.abstract import (
     _raise_not_supported,
     _raise_not_composable,
 )
-from docarray.index.backends.helper import (
-    _execute_find_and_filter_query,
-    _collect_query_args,
-)
+from docarray.index.backends.helper import _collect_query_args
 from docarray.typing import AnyTensor, NdArray
 from docarray.typing.id import ID
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
@@ -201,7 +198,7 @@ class MilvusDocumentIndex(BaseDocIndex, Generic[TSchema]):
             if safe_issubclass(python_type, py_type):
                 return db_type
 
-        return None
+        raise ValueError(f'Unsupported column type for {type(self)}: {python_type}')
 
     def _create_or_load_collection(self) -> Collection:
         """
@@ -778,10 +775,10 @@ class MilvusDocumentIndex(BaseDocIndex, Generic[TSchema]):
 
         return FindResult(documents=docs, scores=scores)
 
-    def _docs_from_query_response(self, result: Sequence[Dict]) -> Sequence[TSchema]:
-        return DocList[self._schema](
+    def _docs_from_query_response(self, result: Sequence[Dict]) -> DocList[Any]:
+        return DocList[self._schema](  # type: ignore
             [
-                self._schema.from_base64(
+                self._schema.from_base64(  # type: ignore
                     result[i]["serialized"], **self._db_config.serialize_config
                 )
                 for i in range(len(result))
@@ -794,7 +791,7 @@ class MilvusDocumentIndex(BaseDocIndex, Generic[TSchema]):
         )
 
         return _FindResult(
-            documents=DocList[self.out_schema](
+            documents=DocList[self.out_schema](  # type: ignore
                 [
                     self.out_schema.from_base64(
                         hit.entity.get('serialized'), **self._db_config.serialize_config
@@ -815,7 +812,7 @@ class MilvusDocumentIndex(BaseDocIndex, Generic[TSchema]):
         """
         return f'({primary_key} in ["1"]) or ({primary_key} not in ["1"])'
 
-    def _map_embedding(self, embedding: Optional[AnyTensor]) -> Optional[AnyTensor]:
+    def _map_embedding(self, embedding: AnyTensor) -> np.ndarray:
         """
         Milvus exclusively supports one-dimensional vectors. If multi-dimensional
         vectors are provided, they will be automatically flattened to ensure compatibility.
@@ -830,7 +827,7 @@ class MilvusDocumentIndex(BaseDocIndex, Generic[TSchema]):
 
         embedding = self._to_numpy(embedding)
         if embedding.ndim > 1:
-            embedding = np.asarray(embedding).squeeze()
+            embedding = np.asarray(embedding).squeeze()  # type: ignore
 
         return embedding
 

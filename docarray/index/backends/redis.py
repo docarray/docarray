@@ -1,4 +1,3 @@
-import uuid
 from collections import defaultdict
 from typing import (
     TypeVar,
