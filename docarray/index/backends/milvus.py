@@ -77,13 +77,12 @@ class MilvusDocumentIndex(BaseDocIndex, Generic[TSchema]):
             token=self._db_config.token,
         )
 
-        self._loaded = False
-
         self._validate_columns()
         self._field_name = self._get_vector_field_name()
         self._create_collection_name()
         self._collection = self._init_index()
         self._build_index()
+        self._collection.load()
         self._logger.info(f'{self.__class__.__name__} has been initialized')
 
     @dataclass
@@ -244,6 +243,10 @@ class MilvusDocumentIndex(BaseDocIndex, Generic[TSchema]):
                     f"The dimension information is missing for the column '{column}', which is of vector type."
                 )
 
+    @property
+    def index_name(self):
+        return self._db_config.collection_name
+
     def _build_index(self):
         """
         Sets up an index configuration for a specific column index, which is
@@ -315,7 +318,8 @@ class MilvusDocumentIndex(BaseDocIndex, Generic[TSchema]):
              Cannot use Milvus' num_entities method because it's not precise
              especially after delete ops (#15201 issue in Milvus)
         """
-        self._check_loaded()
+
+        self._collection.load()
 
         result = self._collection.query(
             expr=self._always_true_expr("id"),
@@ -337,7 +341,7 @@ class MilvusDocumentIndex(BaseDocIndex, Generic[TSchema]):
                 Duplicate `doc_ids` can be omitted in the output.
         """
 
-        self._check_loaded()
+        self._collection.load()
 
         result = self._collection.query(
             expr="id in " + str([id for id in doc_ids]),
@@ -355,6 +359,7 @@ class MilvusDocumentIndex(BaseDocIndex, Generic[TSchema]):
 
         :param doc_ids: ids to delete from the Document Store
         """
+        self._collection.load()
         self._collection.delete(
             expr="id in " + str([id for id in doc_ids]),
             consistency_level=self._db_config.consistency_level,
@@ -367,7 +372,7 @@ class MilvusDocumentIndex(BaseDocIndex, Generic[TSchema]):
         filter_query: Any,
         limit: int,
     ) -> Union[DocList, List[Dict]]:
-        self._check_loaded()
+        self._collection.load()
 
         result = self._collection.query(
             expr=filter_query,
@@ -454,7 +459,7 @@ class MilvusDocumentIndex(BaseDocIndex, Generic[TSchema]):
         limit: int,
         search_field: str = '',
     ) -> _FindResult:
-        self._check_loaded()
+        self._collection.load()
 
         results = self._collection.search(
             data=[query],
@@ -536,7 +541,7 @@ class MilvusDocumentIndex(BaseDocIndex, Generic[TSchema]):
         limit: int,
         search_field: str = '',
     ) -> _FindResultBatched:
-        self._check_loaded()
+        self._collection.load()
 
         results = self._collection.search(
             data=queries,
@@ -570,13 +575,6 @@ class MilvusDocumentIndex(BaseDocIndex, Generic[TSchema]):
         )
         return find_res
 
-    def _check_loaded(self):
-        """This function checks if the collection is loaded and loads it if necessary"""
-
-        if not self._loaded:
-            self._collection.load()
-            self._loaded = True
-
     def _docs_from_query_response(self, result: Sequence[Dict]) -> Sequence[TSchema]:
         return DocList[self._schema](
             [
@@ -606,7 +604,7 @@ class MilvusDocumentIndex(BaseDocIndex, Generic[TSchema]):
 
     def _always_true_expr(self, primary_key: str) -> str:
         """
-        Returns a Milvus expression that is always true, thus allowing for the retrieval of all entries in a Collection
+        Returns a Milvus expression that is always true, thus allowing for the retrieval of all entries in a Collection.
         Assumes that the primary key is of type DataType.VARCHAR
 
         :param primary_key: the name of the primary key
@@ -633,8 +631,6 @@ class MilvusDocumentIndex(BaseDocIndex, Generic[TSchema]):
         return embedding
 
     def __contains__(self, item) -> bool:
-        self._check_loaded()
-
         result = self._collection.query(
             expr="id in " + str([item.id]),
             offset=0,
