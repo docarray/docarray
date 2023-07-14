@@ -1,5 +1,3 @@
-import re
-import uuid
 from collections import defaultdict
 from dataclasses import dataclass, field
 from typing import (
@@ -35,7 +33,7 @@ from docarray.utils.find import (
 from docarray.array.any_array import AnyDocArray
 
 if TYPE_CHECKING:
-    from pymilvus import (
+    from pymilvus import (  # type: ignore[import]
         Collection,
         CollectionSchema,
         DataType,
@@ -57,6 +55,16 @@ else:
 
 ID_VARCHAR_LEN = 1024
 SERIALIZED_VARCHAR_LEN = 65_535  # Maximum length that Milvus allows for a VARCHAR field
+VALID_METRICS = ['L2', 'IP']
+VALID_INDEX_TYPES = [
+    'FLAT',
+    'IVF_FLAT',
+    'IVF_SQ8',
+    'IVF_PQ',
+    'HNSW',
+    'ANNOY',
+    'DISKANN',
+]
 
 TSchema = TypeVar('TSchema', bound=BaseDoc)
 
@@ -67,6 +75,9 @@ class MilvusDocumentIndex(BaseDocIndex, Generic[TSchema]):
         super().__init__(db_config=db_config, **kwargs)
         self._db_config: MilvusDocumentIndex.DBConfig = cast(
             MilvusDocumentIndex.DBConfig, self._db_config
+        )
+        self._runtime_config: MilvusDocumentIndex.RuntimeConfig = cast(
+            MilvusDocumentIndex.RuntimeConfig, self._runtime_config
         )
 
         self._client = connections.connect(
@@ -79,8 +90,7 @@ class MilvusDocumentIndex(BaseDocIndex, Generic[TSchema]):
 
         self._validate_columns()
         self._field_name = self._get_vector_field_name()
-        self._create_collection_name()
-        self._collection = self._init_index()
+        self._collection = self._create_or_load_collection()
         self._build_index()
         self._collection.load()
         self._logger.info(f'{self.__class__.__name__} has been initialized')
@@ -89,27 +99,41 @@ class MilvusDocumentIndex(BaseDocIndex, Generic[TSchema]):
     class DBConfig(BaseDocIndex.DBConfig):
         """Dataclass that contains all "static" configurations of MilvusDocumentIndex."""
 
-        collection_name: Optional[str] = None
+        index_name: Optional[str] = None
         collection_description: str = ""
         host: str = "localhost"
         port: int = 19530
         user: Optional[str] = ""
         password: Optional[str] = ""
         token: Optional[str] = ""
-        index_type: str = "IVF_FLAT"
-        index_metric: str = "L2"
-        index_params: Dict = field(default_factory=lambda: {"nlist": 1024})
         consistency_level: str = 'Session'
         search_params: Dict = field(
             default_factory=lambda: {
-                "metric_type": "L2",
                 "params": {"nprobe": 10},
             }
         )
         serialize_config: Dict = field(default_factory=lambda: {"protocol": "protobuf"})
         default_column_config: Dict[Type, Dict[str, Any]] = field(
-            default_factory=lambda: defaultdict(dict)
+            default_factory=lambda: defaultdict(
+                dict,
+                {
+                    DataType.FLOAT_VECTOR: {
+                        'index_type': 'IVF_FLAT',
+                        'metric_type': 'L2',
+                        'params': {"nlist": 1024},
+                    },
+                },
+            )
         )
+
+    @dataclass
+    class RuntimeConfig(BaseDocIndex.RuntimeConfig):
+        """Dataclass that contains all "dynamic" configurations of RedisDocumentIndex.
+
+        :param batch_size: Batch size for index/get/del.
+        """
+
+        batch_size: int = 100
 
     def python_type_to_db_type(self, python_type: Type) -> Any:
         """Map python type to database type.
@@ -139,7 +163,7 @@ class MilvusDocumentIndex(BaseDocIndex, Generic[TSchema]):
 
         return None
 
-    def _init_index(self) -> Collection:
+    def _create_or_load_collection(self) -> Collection:
         """
         This function initializes or retrieves a Milvus collection with a specified schema,
         storing documents as serialized data and using the document's ID as the collection's ID
@@ -150,7 +174,7 @@ class MilvusDocumentIndex(BaseDocIndex, Generic[TSchema]):
             column can store in the schema (others are stored in the serialized data)
         """
 
-        if not utility.has_collection(self._db_config.collection_name):
+        if not utility.has_collection(self.index_name):
             fields = [
                 FieldSchema(
                     name="serialized",
@@ -170,16 +194,15 @@ class MilvusDocumentIndex(BaseDocIndex, Generic[TSchema]):
                     and not (
                         info.db_type == DataType.FLOAT_VECTOR
                         and column_name
-                        != self._field_name  # Only store one vector field in column
+                        != self._field_name  # Only store one vector field as a column
                     )
                     and not safe_issubclass(info.docarray_type, AnyDocArray)
                 ):
+                    field_dict: Dict[str, Any] = {}
                     if info.db_type == DataType.VARCHAR:
                         field_dict = {'max_length': 256}
                     elif info.db_type == DataType.FLOAT_VECTOR:
                         field_dict = {'dim': info.n_dim or info.config.get('dim')}
-                    else:
-                        field_dict = {}
 
                     fields.append(
                         FieldSchema(
@@ -192,7 +215,7 @@ class MilvusDocumentIndex(BaseDocIndex, Generic[TSchema]):
 
             self._logger.info("Collection has been created")
             return Collection(
-                name=self._db_config.collection_name,
+                name=self.index_name,
                 schema=CollectionSchema(
                     fields=fields,
                     description=self._db_config.collection_description,
@@ -200,21 +223,7 @@ class MilvusDocumentIndex(BaseDocIndex, Generic[TSchema]):
                 using='default',
             )
 
-        return Collection(self._db_config.collection_name)
-
-    def _create_collection_name(self):
-        """
-        This function generates a unique and sanitized name for the collection,
-        , ensuring a unique identifier is used if the user does not specify a
-        collection name.
-        """
-        if self._db_config.collection_name is None:
-            id = uuid.uuid4().hex
-            self._db_config.collection_name = f"{self.__class__.__name__}__" + id
-
-        self._db_config.collection_name = ''.join(
-            re.findall('[a-zA-Z0-9_]', self._db_config.collection_name)
-        )
+        return Collection(self.index_name)
 
     def _validate_columns(self):
         """
@@ -245,7 +254,20 @@ class MilvusDocumentIndex(BaseDocIndex, Generic[TSchema]):
 
     @property
     def index_name(self):
-        return self._db_config.collection_name
+        default_index_name = (
+            self._schema.__name__.lower() if self._schema is not None else None
+        )
+        if default_index_name is None:
+            err_msg = (
+                'A MilvusDocumentIndex must be typed with a Document type. '
+                'To do so, use the syntax: MilvusDocumentIndex[DocumentType]'
+            )
+
+            self._logger.error(err_msg)
+            raise ValueError(err_msg)
+        index_name = self._db_config.index_name or default_index_name
+        self._logger.debug(f'Retrieved index name: {index_name}')
+        return index_name
 
     @property
     def out_schema(self) -> Type[BaseDoc]:
@@ -260,10 +282,31 @@ class MilvusDocumentIndex(BaseDocIndex, Generic[TSchema]):
         required by the Milvus backend.
         """
 
+        existing_indices = [index.field_name for index in self._collection.indexes]
+        if self._field_name in existing_indices:
+            return
+
+        index_type = self._column_infos[self._field_name].config['index_type'].upper()
+        if index_type not in VALID_INDEX_TYPES:
+            raise ValueError(
+                f"Invalid index type '{index_type}' provided. "
+                f"Must be one of: {', '.join(VALID_INDEX_TYPES)}"
+            )
+        metric_type = (
+            self._column_infos[self._field_name].config.get('space', '').upper()
+        )
+        if metric_type not in VALID_METRICS:
+            self._logger.warning(
+                f"Invalid or no distance metric '{metric_type}' was provided. "
+                f"Should be one of: {', '.join(VALID_INDEX_TYPES)}. "
+                f"Default distance metric will be used."
+            )
+            metric_type = self._column_infos[self._field_name].config['metric_type']
+
         index = {
-            "index_type": self._db_config.index_type,
-            "metric_type": self._db_config.index_metric,
-            "params": self._db_config.index_params,
+            "index_type": index_type,
+            "metric_type": metric_type,
+            "params": self._column_infos[self._field_name].config['params'],
         }
 
         self._collection.create_index(self._field_name, index)
@@ -305,13 +348,13 @@ class MilvusDocumentIndex(BaseDocIndex, Generic[TSchema]):
         data_by_columns = self._get_col_value_dict(docs)
         self._index_subindex(data_by_columns)
 
-        batch_size = 10
-
         positions: Dict[str, int] = {
             info.name: num for num, info in enumerate(self._collection.schema.fields)
         }
 
-        for batch in self._get_batches(docs, batch_size=batch_size):
+        for batch in self._get_batches(
+            docs, batch_size=self._runtime_config.batch_size
+        ):
             entities: List[List[Any]] = [
                 [] for _ in range(len(self._collection.schema))
             ]
@@ -321,7 +364,9 @@ class MilvusDocumentIndex(BaseDocIndex, Generic[TSchema]):
                 for schema_field in self._collection.schema.fields:
                     if schema_field.name == 'serialized':
                         continue
-                    column_value = self._get_values_by_column([doc], schema_field.name)[0]
+                    column_value = self._get_values_by_column([doc], schema_field.name)[
+                        0
+                    ]
                     if schema_field.dtype == DataType.FLOAT_VECTOR:
                         column_value = self._map_embedding(column_value)
 
@@ -338,7 +383,7 @@ class MilvusDocumentIndex(BaseDocIndex, Generic[TSchema]):
         :return: a list of ids of the subindex documents
         """
         docs = self._filter(filter_query=f"parent_id == '{id}'", limit=self.num_docs())
-        return [doc.id for doc in docs]
+        return [doc.id for doc in docs]  # type: ignore[union-attr]
 
     def num_docs(self) -> int:
         """
@@ -372,17 +417,22 @@ class MilvusDocumentIndex(BaseDocIndex, Generic[TSchema]):
         """
 
         self._collection.load()
-
-        result = self._collection.query(
-            expr="id in " + str([id for id in doc_ids]),
-            offset=0,
-            output_fields=["serialized"],
-            consistency_level=self._db_config.consistency_level,
-        )
+        results: List[Dict] = []
+        for batch in self._get_batches(
+            doc_ids, batch_size=self._runtime_config.batch_size
+        ):
+            results.extend(
+                self._collection.query(
+                    expr="id in " + str([id for id in batch]),
+                    offset=0,
+                    output_fields=["serialized"],
+                    consistency_level=self._db_config.consistency_level,
+                )
+            )
 
         self._collection.release()
 
-        return self._docs_from_query_response(result)
+        return self._docs_from_query_response(results)
 
     def _del_items(self, doc_ids: Sequence[str]):
         """Delete Documents from the index.
@@ -390,11 +440,13 @@ class MilvusDocumentIndex(BaseDocIndex, Generic[TSchema]):
         :param doc_ids: ids to delete from the Document Store
         """
         self._collection.load()
-        self._collection.delete(
-            expr="id in " + str([id for id in doc_ids]),
-            consistency_level=self._db_config.consistency_level,
-        )
-
+        for batch in self._get_batches(
+            doc_ids, batch_size=self._runtime_config.batch_size
+        ):
+            self._collection.delete(
+                expr="id in " + str([id for id in batch]),
+                consistency_level=self._db_config.consistency_level,
+            )
         self._logger.info(f"{len(doc_ids)} documents has been deleted")
 
     def _filter(
@@ -651,14 +703,15 @@ class MilvusDocumentIndex(BaseDocIndex, Generic[TSchema]):
         :param embedding: The original raw embedding, which can be in the form of a TensorFlow or PyTorch tensor.
         :return embedding: A one-dimensional numpy array representing the flattened version of the original embedding.
         """
+        if embedding is None:
+            raise ValueError(
+                "Embedding is None. Each document must have a valid embedding."
+            )
 
-        if embedding is not None:
-            embedding = self._to_numpy(embedding)
+        embedding = self._to_numpy(embedding)
+        if embedding.ndim > 1:
+            embedding = np.asarray(embedding).squeeze()
 
-            if embedding.ndim > 1:
-                embedding = np.asarray(embedding).squeeze()
-        else:
-            embedding = np.zeros(self._db_config.n_dim)
         return embedding
 
     def __contains__(self, item) -> bool:

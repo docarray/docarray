@@ -5,7 +5,7 @@ from pydantic import Field
 from docarray import BaseDoc, DocList
 from docarray.index import MilvusDocumentIndex
 from docarray.typing import NdArray, TorchTensor
-from tests.index.milvus.fixtures import start_storage  # noqa: F401
+from tests.index.milvus.fixtures import start_storage, tmp_index_name  # noqa: F401
 
 pytestmark = [pytest.mark.slow, pytest.mark.index]
 
@@ -23,12 +23,12 @@ class TorchDoc(BaseDoc):
     tens: TorchTensor[10] = Field(is_embedding=True)  # type: ignore[valid-type]
 
 
-@pytest.mark.parametrize('space', ['cosine', 'l2', 'ip'])
-def test_find_simple_schema(space):
+@pytest.mark.parametrize('space', ['l2', 'ip'])
+def test_find_simple_schema(space, tmp_index_name):
     class SimpleSchema(BaseDoc):
         tens: NdArray[10] = Field(is_embedding=True, space=space)  # type: ignore[valid-type]
 
-    index = MilvusDocumentIndex[SimpleSchema]()
+    index = MilvusDocumentIndex[SimpleSchema](index_name=tmp_index_name)
 
     index_docs = [SimpleDoc(tens=np.zeros(10)) for _ in range(10)]
     index_docs.append(SimpleDoc(tens=np.ones(10)))
@@ -42,8 +42,8 @@ def test_find_simple_schema(space):
     assert len(scores) == 5
 
 
-def test_find_torch():
-    index = MilvusDocumentIndex[TorchDoc]()
+def test_find_torch(tmp_index_name):
+    index = MilvusDocumentIndex[TorchDoc](index_name=tmp_index_name)
 
     index_docs = [TorchDoc(tens=np.zeros(10)) for _ in range(10)]
     index_docs.append(TorchDoc(tens=np.ones(10)))
@@ -86,11 +86,11 @@ def test_find_tensorflow():
         assert isinstance(doc.tens, TensorFlowTensor)
 
 
-def test_find_batched():  # noqa: F811
+def test_find_batched(tmp_index_name):  # noqa: F811
     class SimpleSchema(BaseDoc):
         tens: NdArray[10] = Field(is_embedding=True)
 
-    index = MilvusDocumentIndex[SimpleSchema]()
+    index = MilvusDocumentIndex[SimpleSchema](index_name=tmp_index_name)
 
     index_docs = [SimpleDoc(tens=vector) for vector in np.identity(10)]
     index.index(index_docs)
@@ -116,14 +116,14 @@ def test_find_batched():  # noqa: F811
     assert len(scores[1]) == 1
 
 
-def test_contain():
+def test_contain(tmp_index_name):
     class SimpleDoc(BaseDoc):
         tens: NdArray[10] = Field(is_embedding=True)
 
     class SimpleSchema(BaseDoc):
         tens: NdArray[10] = Field(is_embedding=True)
 
-    index = MilvusDocumentIndex[SimpleSchema]()
+    index = MilvusDocumentIndex[SimpleSchema](index_name=tmp_index_name)
     index_docs = [SimpleDoc(tens=np.zeros(10)) for _ in range(10)]
 
     assert (index_docs[0] in index) is False
@@ -138,13 +138,13 @@ def test_contain():
         assert (doc in index) is False
 
 
-@pytest.mark.parametrize('space', ['cosine', 'l2', 'ip'])
-def test_find_flat_schema(space):
+@pytest.mark.parametrize('space', ['l2', 'ip'])
+def test_find_flat_schema(space, tmp_index_name):
     class FlatSchema(BaseDoc):
         tens_one: NdArray[10] = Field(space=space, is_embedding=True)
         tens_two: NdArray[50] = Field(space=space)
 
-    index = MilvusDocumentIndex[FlatSchema]()
+    index = MilvusDocumentIndex[FlatSchema](index_name=tmp_index_name)
 
     index_docs = [
         FlatDoc(tens_one=np.zeros(10), tens_two=np.zeros(50)) for _ in range(10)
@@ -161,7 +161,7 @@ def test_find_flat_schema(space):
     assert len(scores) == 5
 
 
-def test_find_nested_schema():
+def test_find_nested_schema(tmp_index_name):
     class SimpleDoc(BaseDoc):
         tens: NdArray[10]  # type: ignore[valid-type]
 
@@ -173,7 +173,7 @@ def test_find_nested_schema():
         d: NestedDoc
         tens: NdArray[10] = Field(is_embedding=True)
 
-    index = MilvusDocumentIndex[DeepNestedDoc]()
+    index = MilvusDocumentIndex[DeepNestedDoc](index_name=tmp_index_name)
 
     index_docs = [
         DeepNestedDoc(
@@ -212,8 +212,8 @@ def test_find_nested_schema():
     assert len(scores) == 5
 
 
-def test_find_empty_index():
-    empty_index = MilvusDocumentIndex[SimpleDoc]()
+def test_find_empty_index(tmp_index_name):
+    empty_index = MilvusDocumentIndex[SimpleDoc](index_name=tmp_index_name)
     query = SimpleDoc(tens=np.random.rand(10))
 
     docs, scores = empty_index.find(query, limit=5)
@@ -221,14 +221,14 @@ def test_find_empty_index():
     assert len(scores) == 0
 
 
-def test_simple_usage():
+def test_simple_usage(tmp_index_name):
     class MyDoc(BaseDoc):
         text: str
         embedding: NdArray[128] = Field(is_embedding=True)
 
     docs = [MyDoc(text='hey', embedding=np.random.rand(128)) for _ in range(200)]
     queries = docs[0:3]
-    index = MilvusDocumentIndex[MyDoc]()
+    index = MilvusDocumentIndex[MyDoc](index_name=tmp_index_name)
     index.index(docs=DocList[MyDoc](docs))
     resp = index.find_batched(queries=queries, limit=5)
     docs_responses = resp.documents
@@ -236,3 +236,27 @@ def test_simple_usage():
     for q, matches in zip(queries, docs_responses):
         assert len(matches) == 5
         assert q.id == matches[0].id
+
+
+def test_filter_range(tmp_index_name):  # noqa: F811
+    class SimpleSchema(BaseDoc):
+        embedding: NdArray[10] = Field(space='l2', is_embedding=True)  # type: ignore[valid-type]
+        number: int
+
+    index = MilvusDocumentIndex[SimpleSchema](index_name=tmp_index_name)
+
+    index_docs = [
+        SimpleSchema(
+            embedding=np.zeros(10),
+            number=i,
+        )
+        for i in range(10)
+    ]
+    index.index(index_docs)
+
+    docs = index.filter("number > 8", limit=5)
+
+    assert len(docs) == 1
+
+    docs = index.filter(f"id == '{index_docs[0].id}'", limit=5)
+    assert docs[0].id == index_docs[0].id

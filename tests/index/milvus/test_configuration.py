@@ -5,7 +5,7 @@ from pydantic import Field
 from docarray import BaseDoc
 from docarray.index import MilvusDocumentIndex
 from docarray.typing import NdArray
-from tests.index.milvus.fixtures import start_storage  # noqa: F401
+from tests.index.milvus.fixtures import start_storage, tmp_index_name  # noqa: F401
 
 
 pytestmark = [pytest.mark.slow, pytest.mark.index]
@@ -54,3 +54,14 @@ def test_incorrect_vector_field():
         ValueError, match='Specifying multiple vector fields is not supported'
     ):
         MilvusDocumentIndex[Schema2]()
+
+
+def test_runtime_config():
+    class Schema(BaseDoc):
+        tens: NdArray = Field(dim=10, is_embedding=True)
+
+    index = MilvusDocumentIndex[Schema]()
+    assert index._runtime_config.batch_size == 100
+
+    index.configure(batch_size=10)
+    assert index._runtime_config.batch_size == 10

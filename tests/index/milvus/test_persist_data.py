@@ -5,7 +5,7 @@ from pydantic import Field
 from docarray import BaseDoc
 from docarray.index import MilvusDocumentIndex
 from docarray.typing import NdArray
-from tests.index.milvus.fixtures import start_storage  # noqa: F401
+from tests.index.milvus.fixtures import start_storage, tmp_index_name  # noqa: F401
 
 
 pytestmark = [pytest.mark.slow, pytest.mark.index]
@@ -15,13 +15,13 @@ class SimpleDoc(BaseDoc):
     tens: NdArray[10] = Field(is_embedding=True)
 
 
-def test_persist():
+def test_persist(tmp_index_name):
     query = SimpleDoc(tens=np.random.random((10,)))
 
     # create index
-    index = MilvusDocumentIndex[SimpleDoc]()
+    index = MilvusDocumentIndex[SimpleDoc](index_name=tmp_index_name)
 
-    collection_name = index.index_name
+    index_name = index.index_name
 
     assert index.num_docs() == 0
 
@@ -30,7 +30,7 @@ def test_persist():
     find_results_before = index.find(query, limit=5)
 
     # load existing index
-    index = MilvusDocumentIndex[SimpleDoc](collection_name=collection_name)
+    index = MilvusDocumentIndex[SimpleDoc](index_name=index_name)
     assert index.num_docs() == 10
     find_results_after = index.find(query, limit=5)
     for doc_before, doc_after in zip(find_results_before[0], find_results_after[0]):
