@@ -221,19 +221,18 @@ def test_find_empty_index():
     assert len(scores) == 0
 
 
-# def test_simple_usage():
-#     class MyDoc(BaseDoc):
-#         text: str
-#         embedding: NdArray[128] = Field(is_embedding=True)
-#
-#     docs = [MyDoc(text='hey', embedding=np.random.rand(128)) for _ in range(200)]
-#     queries = docs[0:3]
-#     index = MilvusDocumentIndex[MyDoc]()
-#     index.index(docs=DocList[MyDoc](docs))
-#     print('num docs', index.num_docs())
-#     resp = index.find_batched(queries=queries, limit=5)
-#     docs_responses = resp.documents
-#     assert len(docs_responses) == 3
-#     for q, matches in zip(queries, docs_responses):
-#         assert len(matches) == 5
-#         assert q.id == matches[0].id
+def test_simple_usage():
+    class MyDoc(BaseDoc):
+        text: str
+        embedding: NdArray[128] = Field(is_embedding=True)
+
+    docs = [MyDoc(text='hey', embedding=np.random.rand(128)) for _ in range(200)]
+    queries = docs[0:3]
+    index = MilvusDocumentIndex[MyDoc]()
+    index.index(docs=DocList[MyDoc](docs))
+    resp = index.find_batched(queries=queries, limit=5)
+    docs_responses = resp.documents
+    assert len(docs_responses) == 3
+    for q, matches in zip(queries, docs_responses):
+        assert len(matches) == 5
+        assert q.id == matches[0].id

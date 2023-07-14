@@ -104,7 +104,6 @@ class MilvusDocumentIndex(BaseDocIndex, Generic[TSchema]):
             default_factory=lambda: {
                 "metric_type": "L2",
                 "params": {"nprobe": 10},
-                "offset": 5,
             }
         )
         serialize_config: Dict = field(default_factory=lambda: {"protocol": "protobuf"})
@@ -165,31 +164,32 @@ class MilvusDocumentIndex(BaseDocIndex, Generic[TSchema]):
                     max_length=ID_VARCHAR_LEN,
                 ),
             ]
-            fields.extend(
-                [
-                    FieldSchema(
-                        name=column_name,
-                        dtype=info.db_type,
-                        is_primary=False,
-                        **(
-                            {'max_length': 256}
-                            if info.db_type == DataType.VARCHAR
-                            else {}
-                        ),
-                        **(
-                            {'dim': info.n_dim or info.config.get('dim')}
-                            if info.db_type == DataType.FLOAT_VECTOR
-                            else {}
-                        ),
-                    )
-                    for column_name, info in self._column_infos.items()
-                    if column_name != 'id'
+            for column_name, info in self._column_infos.items():
+                if (
+                    column_name != 'id'
                     and not (
                         info.db_type == DataType.FLOAT_VECTOR
-                        and column_name != self._field_name
-                    )  # Only store one vector field in column
-                ]
-            )
+                        and column_name
+                        != self._field_name  # Only store one vector field in column
+                    )
+                    and not safe_issubclass(info.docarray_type, AnyDocArray)
+                ):
+                    if info.db_type == DataType.VARCHAR:
+                        field_dict = {'max_length': 256}
+                    elif info.db_type == DataType.FLOAT_VECTOR:
+                        field_dict = {'dim': info.n_dim or info.config.get('dim')}
+                    else:
+                        field_dict = {}
+
+                    fields.append(
+                        FieldSchema(
+                            name=column_name,
+                            dtype=info.db_type,
+                            is_primary=False,
+                            **field_dict,
+                        )
+                    )
+
             self._logger.info("Collection has been created")
             return Collection(
                 name=self._db_config.collection_name,
@@ -247,6 +247,13 @@ class MilvusDocumentIndex(BaseDocIndex, Generic[TSchema]):
     def index_name(self):
         return self._db_config.collection_name
 
+    @property
+    def out_schema(self) -> Type[BaseDoc]:
+        """Return the real schema of the index."""
+        if self._is_subindex:
+            return self._ori_schema
+        return cast(Type[BaseDoc], self._schema)
+
     def _build_index(self):
         """
         Sets up an index configuration for a specific column index, which is
@@ -272,6 +279,12 @@ class MilvusDocumentIndex(BaseDocIndex, Generic[TSchema]):
                 return column
         return ''
 
+    @staticmethod
+    def _get_batches(docs, batch_size):
+        """Yield successive batch_size batches from docs."""
+        for i in range(0, len(docs), batch_size):
+            yield docs[i : i + batch_size]
+
     def index(self, docs: Union[BaseDoc, Sequence[BaseDoc]], **kwargs):
         """Index Documents into the index.
 
@@ -287,28 +300,45 @@ class MilvusDocumentIndex(BaseDocIndex, Generic[TSchema]):
 
         n_docs = 1 if isinstance(docs, BaseDoc) else len(docs)
         self._logger.debug(f'Indexing {n_docs} documents')
-        docs_validated = self._validate_docs(docs)
-        self._update_subindex_data(docs_validated)
-
         docs = self._validate_docs(docs)
-        entities: List[List[Any]] = [[] for _ in range(len(self._collection.schema))]
+        self._update_subindex_data(docs)
+        data_by_columns = self._get_col_value_dict(docs)
+        self._index_subindex(data_by_columns)
 
-        for i in range(len(docs)):
-            entities[0].append(docs[i].to_base64(**self._db_config.serialize_config))
-            entity_index = 1
-            for column_name, info in self._column_infos.items():
-                column_value = self._get_values_by_column([docs[i]], column_name)[0]
-                if info.db_type == DataType.FLOAT_VECTOR:
-                    if column_name != self._field_name:
+        batch_size = 10
+
+        positions: Dict[str, int] = {
+            info.name: num for num, info in enumerate(self._collection.schema.fields)
+        }
+
+        for batch in self._get_batches(docs, batch_size=batch_size):
+            entities: List[List[Any]] = [
+                [] for _ in range(len(self._collection.schema))
+            ]
+            for doc in batch:
+                # "serialized" will always be in the first position
+                entities[0].append(doc.to_base64(**self._db_config.serialize_config))
+                for schema_field in self._collection.schema.fields:
+                    if schema_field.name == 'serialized':
                         continue
-                    column_value = self._map_embedding(column_value)
+                    column_value = self._get_values_by_column([doc], schema_field.name)[0]
+                    if schema_field.dtype == DataType.FLOAT_VECTOR:
+                        column_value = self._map_embedding(column_value)
 
-                entities[entity_index].append(column_value)
-                entity_index += 1
+                    entities[positions[schema_field.name]].append(column_value)
+            self._collection.insert(entities)
 
-        self._collection.insert(entities)
         self._collection.flush()
         self._logger.info(f"{len(docs)} documents has been indexed")
+
+    def _filter_by_parent_id(self, id: str) -> Optional[List[str]]:
+        """Filter the ids of the subindex documents given id of root document.
+
+        :param id: the root document id to filter by
+        :return: a list of ids of the subindex documents
+        """
+        docs = self._filter(filter_query=f"parent_id == '{id}'", limit=self.num_docs())
+        return [doc.id for doc in docs]
 
     def num_docs(self) -> int:
         """
@@ -394,9 +424,6 @@ class MilvusDocumentIndex(BaseDocIndex, Generic[TSchema]):
             self._filter(filter_query=query, limit=limit) for query in filter_queries
         ]
 
-    def _index(self, column_to_data: Dict[str, Generator[Any, None, None]]):
-        raise NotImplementedError
-
     def _text_search(
         self,
         query: str,
@@ -412,6 +439,10 @@ class MilvusDocumentIndex(BaseDocIndex, Generic[TSchema]):
         search_field: str = '',
     ) -> _FindResultBatched:
         raise NotImplementedError(f'{type(self)} does not support text search.')
+
+    def _index(self, column_to_data: Dict[str, Generator[Any, None, None]]):
+        """index a document into the store"""
+        raise NotImplementedError()
 
     def find(
         self,
@@ -591,9 +622,9 @@ class MilvusDocumentIndex(BaseDocIndex, Generic[TSchema]):
         )
 
         return _FindResult(
-            documents=DocList[self._schema](
+            documents=DocList[self.out_schema](
                 [
-                    self._schema.from_base64(
+                    self.out_schema.from_base64(
                         hit.entity.get('serialized'), **self._db_config.serialize_config
                     )
                     for hit in result
