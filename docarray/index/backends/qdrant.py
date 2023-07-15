@@ -317,21 +317,16 @@ class QdrantDocumentIndex(BaseDocIndex, Generic[TSchema]):
         """
         return self._client.count(collection_name=self.collection_name).count
 
-    def __contains__(self, item: BaseDoc) -> bool:
-        if safe_issubclass(type(item), BaseDoc):
-            response, _ = self._client.scroll(
-                collection_name=self.index_name,
-                scroll_filter=rest.Filter(
-                    must=[
-                        rest.HasIdCondition(has_id=[self._to_qdrant_id(item.id)]),
-                    ],
-                ),
-            )
-            return len(response) > 0
-        else:
-            raise TypeError(
-                f"item must be an instance of BaseDoc or its subclass, not '{type(item).__name__}'"
-            )
+    def _doc_exists(self, doc_id: str) -> bool:
+        response, _ = self._client.scroll(
+            collection_name=self.index_name,
+            scroll_filter=rest.Filter(
+                must=[
+                    rest.HasIdCondition(has_id=[self._to_qdrant_id(doc_id)]),
+                ],
+            ),
+        )
+        return len(response) > 0
 
     def _del_items(self, doc_ids: Sequence[str]):
         items = self._get_items(doc_ids)

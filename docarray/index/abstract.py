@@ -231,6 +231,16 @@ class BaseDocIndex(ABC, Generic[TSchema]):
         ...
 
     @abstractmethod
+    def _doc_exists(self, doc_id: str) -> bool:
+        """
+        Checks if a given document exists in the index.
+
+        :param doc_id: The id of a document to check.
+        :return: True if the document exists in the index, False otherwise.
+        """
+        ...
+
+    @abstractmethod
     def _find(
         self,
         query: np.ndarray,
@@ -402,6 +412,21 @@ class BaseDocIndex(ABC, Generic[TSchema]):
                         del self._subindices[field_name][nested_docs_id]
         # delete data
         self._del_items(key)
+
+    def __contains__(self, item: BaseDoc) -> bool:
+        """
+        Checks if a given document exists in the index.
+
+        :param item: The document to check.
+            It must be an instance of BaseDoc or its subclass.
+        :return: True if the document exists in the index, False otherwise.
+        """
+        if safe_issubclass(type(item), BaseDoc):
+            return self._doc_exists(item.id)
+        else:
+            raise TypeError(
+                f"item must be an instance of BaseDoc or its subclass, not '{type(item).__name__}'"
+            )
 
     def configure(self, runtime_config=None, **kwargs):
         """
@@ -1169,14 +1194,6 @@ class BaseDocIndex(ABC, Generic[TSchema]):
                 id, fields[0], '__'.join(fields[1:])
             )
             return self._get_root_doc_id(cur_root_id, root, '')
-
-    def __contains__(self, item: BaseDoc) -> bool:
-        """Checks if a given BaseDoc item is contained in the index.
-
-        :param item: the given BaseDoc
-        :return: if the given BaseDoc item is contained in the index
-        """
-        return False  # Will be overridden by backends
 
     def subindex_contains(self, item: BaseDoc) -> bool:
         """Checks if a given BaseDoc item is contained in the index or any of its subindices.

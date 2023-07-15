@@ -393,18 +393,13 @@ class HnswDocumentIndex(BaseDocIndex, Generic[TSchema]):
             raise KeyError(f'No document with id {doc_ids} found')
         return out_docs
 
-    def __contains__(self, item: BaseDoc):
-        if safe_issubclass(type(item), BaseDoc):
-            hash_id = self._to_hashed_id(item.id)
-            self._sqlite_cursor.execute(
-                f"SELECT data FROM docs WHERE doc_id = '{hash_id}'"
-            )
-            rows = self._sqlite_cursor.fetchall()
-            return len(rows) > 0
-        else:
-            raise TypeError(
-                f"item must be an instance of BaseDoc or its subclass, not '{type(item).__name__}'"
-            )
+    def _doc_exists(self, doc_id: str) -> bool:
+        hash_id = self._to_hashed_id(doc_id)
+        self._sqlite_cursor.execute(
+            f"SELECT data FROM docs WHERE doc_id = '{hash_id}'"
+        )
+        rows = self._sqlite_cursor.fetchall()
+        return len(rows) > 0
 
     def num_docs(self) -> int:
         """
