@@ -422,7 +422,7 @@ class BaseDocIndex(ABC, Generic[TSchema]):
         :return: True if the document exists in the index, False otherwise.
         """
         if safe_issubclass(type(item), BaseDoc):
-            return self._doc_exists(item.id)
+            return self._doc_exists(str(item.id))
         else:
             raise TypeError(
                 f"item must be an instance of BaseDoc or its subclass, not '{type(item).__name__}'"

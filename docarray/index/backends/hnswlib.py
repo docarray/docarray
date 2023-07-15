@@ -395,9 +395,7 @@ class HnswDocumentIndex(BaseDocIndex, Generic[TSchema]):
 
     def _doc_exists(self, doc_id: str) -> bool:
         hash_id = self._to_hashed_id(doc_id)
-        self._sqlite_cursor.execute(
-            f"SELECT data FROM docs WHERE doc_id = '{hash_id}'"
-        )
+        self._sqlite_cursor.execute(f"SELECT data FROM docs WHERE doc_id = '{hash_id}'")
         rows = self._sqlite_cursor.fetchall()
         return len(rows) > 0
 
