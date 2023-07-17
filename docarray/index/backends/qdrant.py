@@ -67,9 +67,6 @@ class QdrantDocumentIndex(BaseDocIndex, Generic[TSchema]):
 
     def __init__(self, db_config=None, **kwargs):
         """Initialize QdrantDocumentIndex"""
-        if db_config is not None and getattr(db_config, 'index_name'):
-            db_config.collection_name = db_config.index_name
-
         super().__init__(db_config=db_config, **kwargs)
         self._db_config: QdrantDocumentIndex.DBConfig = cast(
             QdrantDocumentIndex.DBConfig, self._db_config
@@ -101,7 +98,11 @@ class QdrantDocumentIndex(BaseDocIndex, Generic[TSchema]):
                 'To do so, use the syntax: QdrantDocumentIndex[DocumentType]'
             )
 
-        return self._db_config.collection_name or default_collection_name
+        return (
+            self._db_config.collection_name
+            or self._db_config.index_name
+            or default_collection_name
+        )
 
     @property
     def index_name(self):
@@ -563,7 +564,7 @@ class QdrantDocumentIndex(BaseDocIndex, Generic[TSchema]):
 
     def _filter_by_parent_id(self, id: str) -> Optional[List[str]]:
         response, _ = self._client.scroll(
-            collection_name=self._db_config.collection_name,  # type: ignore
+            collection_name=self.collection_name,  # type: ignore
             scroll_filter=rest.Filter(
                 must=[
                     rest.FieldCondition(
