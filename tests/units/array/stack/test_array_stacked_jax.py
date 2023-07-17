@@ -24,6 +24,9 @@ if jax_available:
 @pytest.fixture()
 @pytest.mark.jax
 def batch():
+
+    import jax.numpy as jnp
+
     class Image(BaseDoc):
         tensor: JaxArray[3, 224, 224]
 

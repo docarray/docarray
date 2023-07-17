@@ -17,7 +17,7 @@ def test_basic_jax_operation():
     def basic_jax_fn(x):
         return jnp.sum(x)
 
-    def abstract_JaxArray(array: JaxArray) -> jnp.ndarray:
+    def abstract_JaxArray(array: 'JaxArray') -> jnp.ndarray:
         return array.tensor
 
     class Mmdoc(BaseDoc):

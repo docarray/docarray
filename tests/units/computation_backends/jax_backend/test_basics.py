@@ -4,6 +4,7 @@ from docarray.utils._internal.misc import is_jax_available
 
 jax_available = is_jax_available()
 if jax_available:
+    print("is jax available", jax_available)
     import jax
     import jax.numpy as jnp
 
@@ -11,6 +12,12 @@ if jax_available:
     from docarray.typing import JaxArray
 
     jax.config.update("jax_enable_x64", True)
+else:
+    import jax
+    import jax.numpy as jnp
+
+    from docarray.computation.jax_backend import JaxCompBackend
+    from docarray.typing import JaxArray
 
 
 @pytest.mark.jax
@@ -24,6 +31,7 @@ if jax_available:
     ],
 )
 def test_n_dim(shape, result):
+
     array = JaxArray(jnp.zeros(shape))
     assert JaxCompBackend.n_dim(array) == result
 
