@@ -32,7 +32,7 @@ doc_index.index(docs)
 
 # Perform a vector search.
 query = np.ones(128)
-retrieved_docs = doc_index.find(query, limit=10)
+retrieved_docs, scores = doc_index.find(query, search_field='embedding', limit=10)
 ```
 
 ## Initialize
@@ -68,7 +68,7 @@ docker-compose up
 Next, you can create a [QdrantDocumentIndex][docarray.index.backends.qdrant.QdrantDocumentIndex] instance using:
 
 ```python
-qdrant_config = QdrantDocumentIndex.DBConfig("http://localhost:6333")
+qdrant_config = QdrantDocumentIndex.DBConfig('localhost')
 doc_index = QdrantDocumentIndex[MyDoc](qdrant_config)
 
 # or just
@@ -182,7 +182,7 @@ docs = DocList[MyDoc](
 )
 
 # index the data
-db.index(docs)
+doc_index.index(docs)
 ```
 
 That call to [index()][docarray.index.backends.qdrant.QdrantDocumentIndex.index] stores all Documents in `docs` into the Document Index,
@@ -220,7 +220,7 @@ similar Documents in the Document Index:
     query = MyDoc(embedding=np.random.rand(128), text='query')
 
     # find similar Documents
-    matches, scores = db.find(query, search_field='embedding', limit=5)
+    matches, scores = doc_index.find(query, search_field='embedding', limit=5)
 
     print(f'{matches=}')
     print(f'{matches.text=}')
@@ -234,7 +234,7 @@ similar Documents in the Document Index:
     query = np.random.rand(128)
 
     # find similar Documents
-    matches, scores = db.find(query, search_field='embedding', limit=5)
+    matches, scores = doc_index.find(query, search_field='embedding', limit=5)
 
     print(f'{matches=}')
     print(f'{matches.text=}')
@@ -275,7 +275,8 @@ class Book(BaseDoc):
 
 
 books = DocList[Book]([Book(title=f'title {i}', price=i * 10) for i in range(10)])
-book_index = QdrantDocumentIndex[Book](books)
+book_index = QdrantDocumentIndex[Book]()
+book_index.index(books)
 
 # filter for books that are cheaper than 29 dollars
 query = rest.Filter(
@@ -325,15 +326,15 @@ through [build_query()][docarray.index.abstract.BaseDocIndex.build_query]:
 For example, you can build a hybrid serach query that performs range filtering, vector search and text search:
 
 ```python
-class MyDoc(BaseDoc):
+class SimpleDoc(BaseDoc):
     tens: NdArray[10]
     num: int
     text: str
 
 
-doc_index = QdrantDocumentIndex[MyDoc](host='localhost')
+doc_index = QdrantDocumentIndex[SimpleDoc](host='localhost')
 index_docs = [
-    MyDoc(id=f'{i}', tens=np.ones(10) * i, num=int(i / 2), text=f'Lorem ipsum {int(i/2)}')
+    SimpleDoc(id=f'{i}', tens=np.ones(10) * i, num=int(i / 2), text=f'Lorem ipsum {int(i/2)}')
     for i in range(10)
 ]
 doc_index.index(index_docs)
@@ -353,8 +354,8 @@ filter_query = rest.Filter(
     )
 
 query = (
-    index.build_query()
-    .find(find_query, search_field='embedding')
+    doc_index.build_query()
+    .find(find_query, search_field='tens')
     .text_search(text_search_query, search_field='text')
     .filter(filter_query)
     .build(limit=5)
@@ -517,17 +518,17 @@ class VideoDoc(BaseDoc):
     tensor_video: AnyTensor = Field(space='cosine', dim=128)
 
 
-class MyDoc(BaseDoc):
+class MediaDoc(BaseDoc):
     docs: DocList[VideoDoc]
     tensor: AnyTensor = Field(space='cosine', dim=256)
 
 
 # create a Document Index
-doc_index = QdrantDocumentIndex[MyDoc]()
+doc_index = QdrantDocumentIndex[MediaDoc](index_name='tmp3')
 
 # create some data
 index_docs = [
-    MyDoc(
+    MediaDoc(
         docs=DocList[VideoDoc](
             [
                 VideoDoc(
@@ -598,7 +599,7 @@ assert index.num_docs() == 100
 Now we can find relevant documents
 
 ```python
-res = index.find(query=docs[0], search_field='tens', limit=100)
+res = index.find(query=docs[0], search_field='embedding', limit=100)
 assert len(res.documents) == 100
 for doc in res.documents:
     assert 'I am the first version' in doc.text
@@ -617,7 +618,7 @@ assert index.num_docs() == 100
 When we retrieve them again we can see that their text attribute has been updated accordingly
 
 ```python
-res = index.find(query=docs[0], search_field='tens', limit=100)
+res = index.find(query=docs[0], search_field='embedding', limit=100)
 assert len(res.documents) == 100
 for doc in res.documents:
     assert 'I am the second version' in doc.text

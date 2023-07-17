@@ -394,10 +394,10 @@ To access the `Doc`, you need to specify the `id`. You can also pass a list of `
 
 ```python
 # access a single Doc
-doc_index[index_docs[16].id]
+doc_index[index_docs[1].id]
 
 # access multiple Docs
-doc_index[index_docs[16].id, index_docs[17].id]
+doc_index[index_docs[2].id, index_docs[3].id]
 ```
 
 ## Delete documents
@@ -407,10 +407,10 @@ You can also pass a list of `id`s to delete multiple documents.
 
 ```python
 # delete a single Doc
-del doc_index[index_docs[16].id]
+del doc_index[index_docs[1].id]
 
 # delete multiple Docs
-del doc_index[index_docs[17].id, index_docs[18].id]
+del doc_index[index_docs[2].id, index_docs[3].id]
 ```
 
 
@@ -439,7 +439,7 @@ class SimpleDoc(BaseDoc):
     tensor: NdArray[128] = Field(similarity='l2_norm', m=32, num_candidates=5000)
 
 
-doc_index = ElasticDocIndex[SimpleDoc]()
+doc_index = ElasticDocIndex[SimpleDoc](index_name='my_index_1')
 ```
 
 ### RuntimeConfig
@@ -447,7 +447,7 @@ doc_index = ElasticDocIndex[SimpleDoc]()
 The `RuntimeConfig` dataclass of `ElasticDocIndex` consists of `chunk_size`. You can change `chunk_size` for batch operations:
 
 ```python
-doc_index = ElasticDocIndex[SimpleDoc]()
+doc_index = ElasticDocIndex[SimpleDoc](index_name='my_index_2')
 doc_index.configure(ElasticDocIndex.RuntimeConfig(chunk_size=1000))
 ```
 
@@ -461,12 +461,12 @@ You can hook into a database index that was persisted during a previous session.
 To do so, you need to specify `index_name` and the `hosts`:
 
 ```python
-doc_index = ElasticDocIndex[SimpleDoc](
+doc_index = ElasticDocIndex[MyDoc](
     hosts='http://localhost:9200', index_name='previously_stored'
 )
 doc_index.index(index_docs)
 
-doc_index2 = ElasticDocIndex[SimpleDoc](
+doc_index2 = ElasticDocIndex[MyDoc](
     hosts='http://localhost:9200', index_name='previously_stored'
 )
 
