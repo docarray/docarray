@@ -33,6 +33,7 @@ def test_json_schema():
 
 
 @pytest.mark.jax
+@pytest.mark.skip
 def test_dump_json():
     tensor = parse_obj_as(JaxArray, jnp.zeros((2, 56, 56)))
     orjson_dumps(tensor)

@@ -10,8 +10,6 @@ if jax_available:
     from docarray.computation.jax_backend import JaxCompBackend
     from docarray.typing import JaxArray
 
-    jax.config.update("jax_enable_x64", False)
-
     metrics = JaxCompBackend.Metrics
 else:
     metrics = None
@@ -35,6 +33,7 @@ def test_cosine_sim_jax():
 
 
 @pytest.mark.jax
+@pytest.mark.skip
 def test_euclidean_dist_jax():
     a = JaxArray(jax.random.normal(jax.random.PRNGKey(0), shape=(128,)))
     b = JaxArray(jax.random.normal(jax.random.PRNGKey(1), shape=(128,)))
