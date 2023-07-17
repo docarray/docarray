@@ -38,12 +38,12 @@ Currently, DocArray supports the following vector databases:
 - [Qdrant](https://qdrant.tech/)  |  [Docs](index_qdrant.md)
 - [Elasticsearch](https://www.elastic.co/elasticsearch/) v7 and v8  |  [Docs](index_elastic.md)
 - [HNSWlib](https://github.com/nmslib/hnswlib)  |  [Docs](index_hnswlib.md)
-- InMemoryExactNNSearch  |  [Docs](index_in_memory.md)
+- InMemoryExactNNIndex  |  [Docs](index_in_memory.md)
 
 
 ## Basic Usage
 
-For this user guide you will use the [InMemoryExactNNSearch][docarray.index.backends.in_memory.InMemoryExactNNSearch]
+For this user guide you will use the [InMemoryExactNNIndex][docarray.index.backends.in_memory.InMemoryExactNNIndex]
 because it doesn't require you to launch a database server. Instead, it will store your data locally.
 
 !!! note "Using a different vector database"
@@ -52,14 +52,13 @@ because it doesn't require you to launch a database server. Instead, it will sto
 
 !!! note "InMemory-specific settings"
     The following sections explain the general concept of Document Index by using
-    [InMemoryExactNNSearch][docarray.index.backends.in_memory.InMemoryExactNNSearch] as an example.
-    For InMemory-specific settings, check out the [InMemoryExactNNSearch][docarray.index.backends.in_memory.InMemoryExactNNSearch] documentation
+    `InMemoryExactNNIndex` as an example.
+    For InMemory-specific settings, check out the `InMemoryExactNNIndex` documentation
     [here](index_in_memory.md).
-
 
 ```python
 from docarray import BaseDoc, DocList
-from docarray.index import HnswDocumentIndex
+from docarray.index import InMemoryExactNNIndex
 from docarray.typing import NdArray
 import numpy as np
 
@@ -72,13 +71,13 @@ class MyDoc(BaseDoc):
 # Create documents (using dummy/random vectors)
 docs = DocList[MyDoc](MyDoc(title=f'title #{i}', price=i, embedding=np.random.rand(128)) for i in range(10))
 
-# Initialize a new HnswDocumentIndex instance and add the documents to the index.
-doc_index = HnswDocumentIndex[MyDoc](workdir='./my_index')
+# Initialize a new InMemoryExactNNIndex instance and add the documents to the index.
+doc_index = InMemoryExactNNIndex[MyDoc]()
 doc_index.index(docs)
 
 # Perform a vector search.
 query = np.ones(128)
-retrieved_docs = doc_index.find(query, search_field='embedding', limit=10)
+retrieved_docs, scores = doc_index.find(query, search_field='embedding', limit=10)
 
 # Perform filtering (price < 5)
 query = {'price': {'$lt': 5}}
@@ -87,9 +86,9 @@ filtered_docs = doc_index.filter(query, limit=10)
 # Perform a hybrid search - combining vector search with filtering
 query = (
     doc_index.build_query()  # get empty query object
-    .find(np.ones(128), search_field='embedding')  # add vector similarity search
+    .find(query=np.ones(128), search_field='embedding')  # add vector similarity search
     .filter(filter_query={'price': {'$gte': 2}})  # add filter search
     .build()  # build the query
 )
-results = doc_index.execute_query(query)
+retrieved_docs, scores = doc_index.execute_query(query)
 ```

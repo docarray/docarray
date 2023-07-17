@@ -39,7 +39,7 @@ doc_index.index(docs)
 
 # Perform a vector search.
 query = np.ones(128)
-retrieved_docs = doc_index.find(query, search_field='embedding', limit=10)
+retrieved_docs, scores = doc_index.find(query, search_field='embedding', limit=10)
 ```
 
 ## Initialize
@@ -99,7 +99,7 @@ You can work around this problem by subclassing the predefined Document and addi
         embedding: NdArray[128]
 
 
-    db = InMemoryExactNNIndex[MyDoc](work_dir='test_db')
+    db = InMemoryExactNNIndex[MyDoc]()
     ```
 
 === "Using Field()"
@@ -114,7 +114,7 @@ You can work around this problem by subclassing the predefined Document and addi
         embedding: AnyTensor = Field(dim=128)
 
 
-    db = InMemoryExactNNIndex[MyDoc](work_dir='test_db3')
+    db = InMemoryExactNNIndex[MyDoc]()
     ```
 
 Once the schema of your Document Index is defined in this way, the data that you are indexing can be either of the
@@ -126,11 +126,11 @@ The [next section](#index) goes into more detail about data indexing, but note t
 from docarray import DocList
 
 # data of type TextDoc
-data = DocList[TextDoc](
+data = DocList[MyDoc](
     [
-        TextDoc(text='hello world', embedding=np.random.rand(128)),
-        TextDoc(text='hello world', embedding=np.random.rand(128)),
-        TextDoc(text='hello world', embedding=np.random.rand(128)),
+        MyDoc(text='hello world', embedding=np.random.rand(128)),
+        MyDoc(text='hello world', embedding=np.random.rand(128)),
+        MyDoc(text='hello world', embedding=np.random.rand(128)),
     ]
 )
 
@@ -338,8 +338,8 @@ query = (
 )
 
 # execute the combined query and return the results
-results = db.execute_query(query)
-print(f'{results=}')
+retrieved_docs, scores = db.execute_query(query)
+print(f'{retrieved_docs=}')
 ```
 
 In the example above you can see how to form a hybrid query that combines vector similarity search and filtered search
@@ -403,7 +403,7 @@ If you want to set configurations globally, i.e. for all vector fields in your D
 
 ```python
 from collections import defaultdict
-from docarray.typing import AbstractTensor
+from docarray.typing.tensor.abstract_tensor import AbstractTensor
 new_doc_index = InMemoryExactNNIndex[MyDoc](
     default_column_config=defaultdict(
         dict,
@@ -461,12 +461,12 @@ from docarray.typing import ImageUrl, VideoUrl, AnyTensor
 # define a nested schema
 class ImageDoc(BaseDoc):
     url: ImageUrl
-    tensor: AnyTensor = Field(space='cosine', dim=64)
+    tensor: AnyTensor = Field(space='cosine_sim', dim=64)
 
 
 class VideoDoc(BaseDoc):
     url: VideoUrl
-    tensor: AnyTensor = Field(space='cosine', dim=128)
+    tensor: AnyTensor = Field(space='cosine_sim', dim=128)
 
 
 class YouTubeVideoDoc(BaseDoc):
@@ -474,11 +474,11 @@ class YouTubeVideoDoc(BaseDoc):
     description: str
     thumbnail: ImageDoc
     video: VideoDoc
-    tensor: AnyTensor = Field(space='cosine', dim=256)
+    tensor: AnyTensor = Field(space='cosine_sim', dim=256)
 
 
 # create a Document Index
-doc_index = InMemoryExactNNIndex[YouTubeVideoDoc](work_dir='/tmp2')
+doc_index = InMemoryExactNNIndex[YouTubeVideoDoc]()
 
 # create some data
 index_docs = [
@@ -540,18 +540,18 @@ The `MyDoc` contains a `DocList` of `VideoDoc`, which contains a `DocList` of `I
 ```python
 class ImageDoc(BaseDoc):
     url: ImageUrl
-    tensor_image: AnyTensor = Field(space='cosine', dim=64)
+    tensor_image: AnyTensor = Field(space='cosine_sim', dim=64)
 
 
 class VideoDoc(BaseDoc):
     url: VideoUrl
     images: DocList[ImageDoc]
-    tensor_video: AnyTensor = Field(space='cosine', dim=128)
+    tensor_video: AnyTensor = Field(space='cosine_sim', dim=128)
 
 
 class MyDoc(BaseDoc):
     docs: DocList[VideoDoc]
-    tensor: AnyTensor = Field(space='cosine', dim=256)
+    tensor: AnyTensor = Field(space='cosine_sim', dim=256)
 
 
 # create a Document Index
@@ -601,56 +601,4 @@ root_docs, sub_docs, scores = doc_index.find_subindex(
 root_docs, sub_docs, scores = doc_index.find_subindex(
     np.ones(64), subindex='docs__images', search_field='tensor_image', limit=3
 )
-```
-
-### Update elements
-In order to update a Document inside the index, you only need to reindex it with the updated attributes.
-
-First lets create a schema for our Index
-```python
-import numpy as np
-from docarray import BaseDoc, DocList
-from docarray.typing import NdArray
-from docarray.index import InMemoryExactNNIndex
-class MyDoc(BaseDoc):
-    text: str
-    embedding: NdArray[128]
-```
-Now we can instantiate our Index and index some data.
-
-```python
-docs = DocList[MyDoc](
-    [MyDoc(embedding=np.random.rand(10), text=f'I am the first version of Document {i}') for i in range(100)]
-)
-index = InMemoryExactNNIndex[MyDoc]()
-index.index(docs)
-assert index.num_docs() == 100
-```
-
-Now we can find relevant documents
-
-```python
-res = index.find(query=docs[0], search_field='tens', limit=100)
-assert len(res.documents) == 100
-for doc in res.documents:
-    assert 'I am the first version' in doc.text
-```
-
-and update all of the text of this documents and reindex them
-
-```python
-for i, doc in enumerate(docs):
-    doc.text = f'I am the second version of Document {i}'
-
-index.index(docs)
-assert index.num_docs() == 100
-```
-
-When we retrieve them again we can see that their text attribute has been updated accordingly
-
-```python
-res = index.find(query=docs[0], search_field='tens', limit=100)
-assert len(res.documents) == 100
-for doc in res.documents:
-    assert 'I am the second version' in doc.text
 ```

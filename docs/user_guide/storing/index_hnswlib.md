@@ -38,7 +38,7 @@ class MyDoc(BaseDoc):
 docs = DocList[MyDoc](MyDoc(title=f'title #{i}', embedding=np.random.rand(128)) for i in range(10))
 
 # Initialize a new HnswDocumentIndex instance and add the documents to the index.
-doc_index = HnswDocumentIndex[MyDoc](workdir='./my_index')
+doc_index = HnswDocumentIndex[MyDoc](work_dir='./my_index')
 doc_index.index(docs)
 
 # Perform a vector search.
@@ -326,8 +326,8 @@ query = (
 )
 
 # execute the combined query and return the results
-results = db.execute_query(query)
-print(f'{results=}')
+retrieved_docs, scores = db.execute_query(query)
+print(f'{retrieved_docs=}')
 ```
 
 In the example above you can see how to form a hybrid query that combines vector similarity search and filtered search
@@ -534,7 +534,7 @@ class YouTubeVideoDoc(BaseDoc):
 
 
 # create a Document Index
-doc_index = HnswDocumentIndex[YouTubeVideoDoc](work_dir='/tmp2')
+doc_index = HnswDocumentIndex[YouTubeVideoDoc](work_dir='./tmp2')
 
 # create some data
 index_docs = [
@@ -611,7 +611,7 @@ class MyDoc(BaseDoc):
 
 
 # create a Document Index
-doc_index = HnswDocumentIndex[MyDoc](work_dir='/tmp3')
+doc_index = HnswDocumentIndex[MyDoc](work_dir='./tmp3')
 
 # create some data
 index_docs = [
@@ -676,7 +676,7 @@ Now we can instantiate our Index and index some data.
 
 ```python
 docs = DocList[MyDoc](
-    [MyDoc(embedding=np.random.rand(10), text=f'I am the first version of Document {i}') for i in range(100)]
+    [MyDoc(embedding=np.random.rand(128), text=f'I am the first version of Document {i}') for i in range(100)]
 )
 index = HnswDocumentIndex[MyDoc]()
 index.index(docs)
@@ -686,7 +686,7 @@ assert index.num_docs() == 100
 Now we can find relevant documents
 
 ```python
-res = index.find(query=docs[0], search_field='tens', limit=100)
+res = index.find(query=docs[0], search_field='embedding', limit=100)
 assert len(res.documents) == 100
 for doc in res.documents:
     assert 'I am the first version' in doc.text
@@ -705,7 +705,7 @@ assert index.num_docs() == 100
 When we retrieve them again we can see that their text attribute has been updated accordingly
 
 ```python
-res = index.find(query=docs[0], search_field='tens', limit=100)
+res = index.find(query=docs[0], search_field='embedding', limit=100)
 assert len(res.documents) == 100
 for doc in res.documents:
     assert 'I am the second version' in doc.text
