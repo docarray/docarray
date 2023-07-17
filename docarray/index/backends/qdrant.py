@@ -564,7 +564,7 @@ class QdrantDocumentIndex(BaseDocIndex, Generic[TSchema]):
 
     def _filter_by_parent_id(self, id: str) -> Optional[List[str]]:
         response, _ = self._client.scroll(
-            collection_name=self._db_config.collection_name,  # type: ignore
+            collection_name=self.collection_name,  # type: ignore
             scroll_filter=rest.Filter(
                 must=[
                     rest.FieldCondition(
