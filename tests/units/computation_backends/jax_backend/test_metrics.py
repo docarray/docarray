@@ -10,6 +10,8 @@ if jax_available:
     from docarray.computation.jax_backend import JaxCompBackend
     from docarray.typing import JaxArray
 
+    jax.config.update("jax_enable_x64", False)
+
     metrics = JaxCompBackend.Metrics
 else:
     metrics = None
