@@ -371,7 +371,7 @@ class RedisDocumentIndex(BaseDocIndex, Generic[TSchema]):
             ):
                 self._client.delete(*batch)
 
-    def _doc_exists(self, doc_id) -> bool:
+    def _doc_exists(self, doc_id: str) -> bool:
         """
         Checks if a document exists in the index.
 
@@ -604,18 +604,3 @@ class RedisDocumentIndex(BaseDocIndex, Generic[TSchema]):
             scores.append(results.scores)
 
         return _FindResultBatched(documents=docs, scores=scores)
-
-    def __contains__(self, item: BaseDoc) -> bool:
-        """
-        Checks if a given document exists in the index.
-
-        :param item: The document to check.
-            It must be an instance of BaseDoc or its subclass.
-        :return: True if the document exists in the index, False otherwise.
-        """
-        if safe_issubclass(type(item), BaseDoc):
-            return self._doc_exists(item.id)
-        else:
-            raise TypeError(
-                f"item must be an instance of BaseDoc or its subclass, not '{type(item).__name__}'"
-            )

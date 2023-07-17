@@ -831,9 +831,9 @@ class MilvusDocumentIndex(BaseDocIndex, Generic[TSchema]):
 
         return embedding
 
-    def __contains__(self, item) -> bool:
+    def _doc_exists(self, doc_id: str) -> bool:
         result = self._collection.query(
-            expr="id in " + str([item.id]),
+            expr="id in " + str([doc_id]),
             offset=0,
             output_fields=["serialized"],
         )

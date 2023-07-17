@@ -669,16 +669,11 @@ class ElasticDocIndex(BaseDocIndex, Generic[TSchema]):
     def _refresh(self, index_name: str):
         self._client.indices.refresh(index=index_name)
 
-    def __contains__(self, item: BaseDoc) -> bool:
-        if safe_issubclass(type(item), BaseDoc):
-            if len(item.id) == 0:
-                return False
-            ret = self._client_mget([item.id])
-            return ret["docs"][0]["found"]
-        else:
-            raise TypeError(
-                f"item must be an instance of BaseDoc or its subclass, not '{type(item).__name__}'"
-            )
+    def _doc_exists(self, doc_id: str) -> bool:
+        if len(doc_id) == 0:
+            return False
+        ret = self._client_mget([doc_id])
+        return ret["docs"][0]["found"]
 
     ###############################################
     # API Wrappers                                #
