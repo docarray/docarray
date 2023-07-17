@@ -4,7 +4,7 @@ from torch.utils.data import Dataset
 
 from docarray import BaseDoc, DocList, DocVec
 from docarray.typing import TorchTensor
-from docarray.utils._internal._typing import change_cls_name
+from docarray.utils._internal._typing import change_cls_name, safe_issubclass
 
 T_doc = TypeVar('T_doc', bound=BaseDoc)
 
@@ -141,7 +141,7 @@ class MultiModalDataset(Dataset, Generic[T_doc]):
 
     @classmethod
     def __class_getitem__(cls, item: Type[BaseDoc]) -> Type['MultiModalDataset']:
-        if not issubclass(item, BaseDoc):
+        if not safe_issubclass(item, BaseDoc):
             raise ValueError(
                 f'{cls.__name__}[item] item should be a Document not a {item} '
             )

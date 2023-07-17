@@ -33,7 +33,6 @@ from docarray.utils.filter import filter_docs
 from docarray.utils.find import (
     FindResult,
     FindResultBatched,
-    _da_attr_type,
     _extract_embeddings,
     _FindResult,
     _FindResultBatched,
@@ -196,10 +195,7 @@ class InMemoryExactNNIndex(BaseDocIndex, Generic[TSchema]):
             self._embedding_map = dict()
         else:
             for field_, embedding in self._embedding_map.items():
-                embedding_type = _da_attr_type(self._docs, field_)
-                self._embedding_map[field_] = _extract_embeddings(
-                    self._docs, field_, embedding_type
-                )
+                self._embedding_map[field_] = _extract_embeddings(self._docs, field_)
 
     def _del_items(self, doc_ids: Sequence[str]):
         """Delete Documents from the index.
@@ -435,13 +431,8 @@ class InMemoryExactNNIndex(BaseDocIndex, Generic[TSchema]):
     ) -> _FindResultBatched:
         raise NotImplementedError(f'{type(self)} does not support text search.')
 
-    def __contains__(self, item: BaseDoc):
-        if safe_issubclass(type(item), BaseDoc):
-            return any(doc.id == item.id for doc in self._docs)
-        else:
-            raise TypeError(
-                f"item must be an instance of BaseDoc or its subclass, not '{type(item).__name__}'"
-            )
+    def _doc_exists(self, doc_id: str) -> bool:
+        return any(doc.id == doc_id for doc in self._docs)
 
     def persist(self, file: Optional[str] = None) -> None:
         """Persist InMemoryExactNNIndex into a binary file."""

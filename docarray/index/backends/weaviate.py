@@ -131,7 +131,7 @@ class WeaviateDocumentIndex(BaseDocIndex, Generic[TSchema]):
             field_overwrites.get(k, k)
             for k, v in self._column_infos.items()
             if v.config.get('is_embedding', False) is False
-            and not issubclass(v.docarray_type, AnyDocArray)
+            and not safe_issubclass(v.docarray_type, AnyDocArray)
         ]
 
     def _validate_columns(self) -> None:
@@ -202,7 +202,7 @@ class WeaviateDocumentIndex(BaseDocIndex, Generic[TSchema]):
 
         for column_name, column_info in column_infos.items():
             # in weaviate, we do not create a property for the doc's embeddings
-            if issubclass(column_info.docarray_type, AnyDocArray):
+            if safe_issubclass(column_info.docarray_type, AnyDocArray):
                 continue
             if column_name == self.embedding_column:
                 continue
@@ -225,9 +225,7 @@ class WeaviateDocumentIndex(BaseDocIndex, Generic[TSchema]):
         schema["properties"] = properties
         schema["class"] = self.index_name
 
-        # TODO: Use exists() instead of contains() when available
-        #       see https://github.com/weaviate/weaviate-python-client/issues/232
-        if self._client.schema.contains(schema):
+        if self._client.schema.exists(self.index_name):
             logging.warning(
                 f"Found index {self.index_name} with schema {schema}. Will reuse existing schema."
             )
@@ -696,7 +694,7 @@ class WeaviateDocumentIndex(BaseDocIndex, Generic[TSchema]):
             or None if ``python_type`` is not supported.
         """
         for allowed_type in WEAVIATE_PY_VEC_TYPES:
-            if issubclass(python_type, allowed_type):
+            if safe_issubclass(python_type, allowed_type):
                 return 'number[]'
 
         py_weaviate_type_map = {
@@ -710,7 +708,7 @@ class WeaviateDocumentIndex(BaseDocIndex, Generic[TSchema]):
         }
 
         for py_type, weaviate_type in py_weaviate_type_map.items():
-            if issubclass(python_type, py_type):
+            if safe_issubclass(python_type, py_type):
                 return weaviate_type
 
         raise ValueError(f'Unsupported column type for {type(self)}: {python_type}')
@@ -762,25 +760,20 @@ class WeaviateDocumentIndex(BaseDocIndex, Generic[TSchema]):
         ]
         return ids
 
-    def __contains__(self, item: BaseDoc) -> bool:
-        if safe_issubclass(type(item), BaseDoc):
-            result = (
-                self._client.query.get(self.index_name, ['docarrayid'])
-                .with_where(
-                    {
-                        "path": ['docarrayid'],
-                        "operator": "Equal",
-                        "valueString": f'{item.id}',
-                    }
-                )
-                .do()
+    def _doc_exists(self, doc_id: str) -> bool:
+        result = (
+            self._client.query.get(self.index_name, ['docarrayid'])
+            .with_where(
+                {
+                    "path": ['docarrayid'],
+                    "operator": "Equal",
+                    "valueString": f'{doc_id}',
+                }
             )
-            docs = result["data"]["Get"][self.index_name]
-            return docs is not None and len(docs) > 0
-        else:
-            raise TypeError(
-                f"item must be an instance of BaseDoc or its subclass, not '{type(item).__name__}'"
-            )
+            .do()
+        )
+        docs = result["data"]["Get"][self.index_name]
+        return docs is not None and len(docs) > 0
 
     class QueryBuilder(BaseDocIndex.QueryBuilder):
         def __init__(self, document_index):
