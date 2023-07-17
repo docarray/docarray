@@ -12,12 +12,6 @@ if jax_available:
     from docarray.typing import JaxArray
 
     jax.config.update("jax_enable_x64", True)
-else:
-    import jax
-    import jax.numpy as jnp
-
-    from docarray.computation.jax_backend import JaxCompBackend
-    from docarray.typing import JaxArray
 
 
 @pytest.mark.jax
