@@ -97,6 +97,9 @@ class DummyDocIndex(BaseDocIndex):
     def num_docs(self):
         return 3
 
+    def _doc_exists(self, doc_id: str) -> bool:
+        return False
+
     _index = _identity
     _del_items = _identity
     _get_items = _identity
