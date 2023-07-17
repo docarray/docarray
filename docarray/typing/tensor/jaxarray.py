@@ -186,11 +186,11 @@ class JaxArray(AbstractTensor, Generic[ShapeT], metaclass=metaJax):
 
     def unwrap(self) -> jnp.ndarray:
         """
-        Return the original ndarray without any memory copy.
+        Return the original ndarray without making a copy in memory.
 
-        The original view rest intact and is still a Document `JaxArray`
-        but the return object is a pure `np.ndarray` but both object share
-        the same memory layout.
+        The original view remains intact and is still a Document `JaxArray`
+        but the return object is a pure `np.ndarray` and both objects share
+        the same underlying memory.
 
         ---
 

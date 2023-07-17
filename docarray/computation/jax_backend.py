@@ -77,7 +77,7 @@ class JaxCompBackend(AbstractNumpyBasedBackend):
 
     @classmethod
     def none_value(cls) -> Any:
-        """Provide a compatible value that represents None in jax."""
+        """Provide a compatible value that represents None in JAX."""
         return jnp.nan
 
     @classmethod
@@ -119,7 +119,7 @@ class JaxCompBackend(AbstractNumpyBasedBackend):
         :param tensor: the data to be normalized
         :param t_range: a tuple represents the target range.
         :param x_range: a tuple represents tensors range.
-        :param eps: a small jitter to avoid divide by zero
+        :param eps: a small jitter to avoid dividing by zero
         :return: normalized data in `t_range`
         """
         a, b = t_range
@@ -162,9 +162,8 @@ class JaxCompBackend(AbstractNumpyBasedBackend):
             device: Optional[str] = None,
         ) -> Tuple['JaxArray', 'JaxArray']:
             """
-            Retrieves the top k smallest values in `values`,
-            and returns them alongside their indices in the input `values`.
-            Can also be used to retrieve the top k largest values,
+            Returns the k smallest values in `values` along with their indices.
+            Can also be used to retrieve the k largest values,
             by setting the `descending` flag.
 
             :param values: Jax tensor of values to rank.
@@ -175,7 +174,7 @@ class JaxCompBackend(AbstractNumpyBasedBackend):
             :param descending: retrieve largest values instead of smallest values
             :param device: Not supported for this backend
             :return: Tuple containing the retrieved values, and their indices.
-                Both ar of shape (n_queries, k)
+                Both are of shape (n_queries, k)
             """
             comp_be = JaxCompBackend
             if device is not None:
@@ -222,7 +221,7 @@ class JaxCompBackend(AbstractNumpyBasedBackend):
                 number of vectors and n_dim is the number of dimensions of each example.
             :param y_mat: tensor of shape (n_vectors, n_dim), where n_vectors is the
                 number of vectors and n_dim is the number of dimensions of each example.
-            :param eps: a small jitter to avoid divide by zero
+            :param eps: a small jitter to avoid dividing by zero
             :param device: the device to use for computations.
                 If not provided, the devices of x_mat and y_mat are used.
             :return: JaxArray of shape (n_vectors, n_vectors) containing all pairwise
@@ -264,7 +263,7 @@ class JaxCompBackend(AbstractNumpyBasedBackend):
             :param y_mat: jnp.ndarray of shape (n_vectors, n_dim), where n_vectors is
                 the number of vectors and n_dim is the number of dimensions of each
                 example.
-            :param eps: a small jitter to avoid divde by zero
+            :param eps: a small jitter to avoid dividing by zero
             :param device: Not supported for this backend
             :return: JaxArray  of shape (n_vectors, n_vectors) containing all
                 pairwise euclidian distances.
