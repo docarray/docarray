@@ -112,7 +112,7 @@ jobs:
       - name: Test
         id: test
         run: |
-          poetry run pytest -m "not (tensorflow or benchmark or index)" --cov=docarray --cov-report=xml ${{ matrix.test-path }} --ignore=tests/integrations/store/test_jac.py
+          poetry run pytest -m "not (tensorflow or benchmark or index or jax)" --cov=docarray --cov-report=xml ${{ matrix.test-path }} --ignore=tests/integrations/store/test_jac.py
           echo "flag it as docarray for codeoverage"
           echo "codecov_flag=docarray" >> $GITHUB_OUTPUT
         timeout-minutes: 30
@@ -159,7 +159,7 @@ jobs:
       - name: Test
         id: test
         run: |
-          poetry run pytest -m "not (tensorflow or benchmark or index)" --cov=docarray --cov-report=xml tests/integrations/store/test_jac.py
+          poetry run pytest -m "not (tensorflow or benchmark or index or jax)" --cov=docarray --cov-report=xml tests/integrations/store/test_jac.py
           echo "flag it as docarray for codeoverage"
           echo "codecov_flag=docarray" >> $GITHUB_OUTPUT
         timeout-minutes: 30
@@ -357,6 +357,48 @@ jobs:
           name: benchmark-test-codecov
           flags: ${{ steps.test.outputs.codecov_flag }}
           fail_ci_if_error: false
+
+  docarray-test-jax:
+    needs: [import-test]
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: [3.8]
+    steps:
+      - uses: actions/checkout@v2.5.0
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Prepare environment
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install poetry
+          poetry install --all-extras
+          poetry run pip install jax
+
+      - name: Test
+        id: test
+        run: |
+          poetry run pytest -m 'jax' --cov=docarray --cov-report=xml tests
+          echo "flag it as docarray for codeoverage"
+          echo "codecov_flag=docarray" >> $GITHUB_OUTPUT
+        timeout-minutes: 30
+      - name: Check codecov file
+        id: check_files
+        uses: andstor/file-existence-action@v1
+        with:
+          files: "coverage.xml"
+      - name: Upload coverage from test to Codecov
+        uses: codecov/codecov-action@v3.1.1
+        if: steps.check_files.outputs.files_exists == 'true' && ${{ matrix.python-version }} == '3.8'
+        with:
+          file: coverage.xml
+          name: benchmark-test-codecov
+          flags: ${{ steps.test.outputs.codecov_flag }}
+          fail_ci_if_error: false
+
 
 
   docarray-test-benchmarks:
