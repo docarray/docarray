@@ -14,8 +14,9 @@ import numpy as np
 from typing_extensions import SupportsIndex
 
 from docarray.utils._internal.misc import (
-    is_torch_available,
+    is_jax_available,
     is_tf_available,
+    is_torch_available,
 )
 
 torch_available = is_torch_available()
@@ -24,7 +25,13 @@ if torch_available:
 tf_available = is_tf_available()
 if tf_available:
     import tensorflow as tf  # type: ignore
+
     from docarray.typing.tensor.tensorflow_tensor import TensorFlowTensor
+jax_available = is_jax_available()
+if jax_available:
+    import jax.numpy as jnp
+
+    from docarray.typing.tensor.jaxarray import JaxArray
 
 T_item = TypeVar('T_item')
 T = TypeVar('T', bound='ListAdvancedIndexing')
@@ -99,6 +106,12 @@ class ListAdvancedIndexing(List[T_item]):
                 return item.numpy().tolist()
             if isinstance(item, TensorFlowTensor):
                 return item.tensor.numpy().tolist()
+
+        if jax_available:
+            if isinstance(item, jnp.ndarray):
+                return item.__array__().tolist()
+            if isinstance(item, JaxArray):
+                return item.tensor.__array__().tolist()
 
         return item
 
