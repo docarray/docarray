@@ -5,7 +5,18 @@ import numpy as np
 from docarray.typing.tensor.embedding.embedding_mixin import EmbeddingMixin
 from docarray.typing.tensor.embedding.ndarray import NdArrayEmbedding
 from docarray.typing.tensor.tensor import AnyTensor
-from docarray.utils._internal.misc import is_tf_available, is_torch_available  # noqa
+from docarray.utils._internal.misc import (  # noqa
+    is_jax_available,
+    is_tf_available,
+    is_torch_available,
+)
+
+jax_available = is_jax_available()
+if jax_available:
+    import jax.numpy as jnp  # type: ignore
+
+    from docarray.typing.tensor.embedding.jax_array import JaxArrayEmbedding
+    from docarray.typing.tensor.jaxarray import JaxArray  # noqa: F401
 
 torch_available = is_torch_available()
 if torch_available:
@@ -89,6 +100,11 @@ class AnyEmbedding(AnyTensor, EmbeddingMixin):
                 return cast(TensorFlowEmbedding, value)
             elif isinstance(value, tf.Tensor):
                 return TensorFlowEmbedding._docarray_from_native(value)  # noqa
+        if jax_available:
+            if isinstance(value, JaxArray):
+                return cast(JaxArrayEmbedding, value)
+            elif isinstance(value, jnp.ndarray):
+                return JaxArrayEmbedding._docarray_from_native(value)  # noqa
         try:
             return NdArrayEmbedding.validate(value, field, config)
         except Exception:  # noqa
