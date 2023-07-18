@@ -16,7 +16,6 @@ focusing on special features and configurations of Redis.
 from docarray import BaseDoc, DocList
 from docarray.index import RedisDocumentIndex
 from docarray.typing import NdArray
-from pydantic import Field
 import numpy as np
 
 # Define the document schema.
@@ -33,7 +32,7 @@ doc_index.index(docs)
 
 # Perform a vector search.
 query = np.ones(128)
-retrieved_docs = doc_index.find(query, limit=10)
+retrieved_docs = doc_index.find(query, search_field='embedding', limit=10)
 ```
 
 
@@ -247,7 +246,8 @@ class Book(BaseDoc):
 
 
 books = DocList[Book]([Book(title=f'title {i}', price=i * 10) for i in range(10)])
-book_index = RedisDocumentIndex[Book](books)
+book_index = RedisDocumentIndex[Book]()
+book_index.index(books)
 
 # filter for books that are cheaper than 29 dollars
 query = '@price:[-inf 29]'
@@ -292,17 +292,25 @@ To combine these operations into a single, hybrid search query, you can use the 
 through [build_query()][docarray.index.abstract.BaseDocIndex.build_query]:
 
 ```python
-# prepare a query
-q_doc = MyDoc(embedding=np.random.rand(128), text='query')
+# Define the document schema.
+class SimpleSchema(BaseDoc):
+    price: int
+    embedding: NdArray[128]
+
+# Create dummy documents.
+docs = DocList[SimpleSchema](SimpleSchema(price=i, embedding=np.random.rand(128)) for i in range(10))
+
+doc_index = RedisDocumentIndex[SimpleSchema](host='localhost')
+doc_index.index(docs)
 
 query = (
     doc_index.build_query()  # get empty query object
-    .find(query=q_doc, search_field='embedding')  # add vector similarity search
-    .filter(filter_query='@text:*')  # add filter search
+    .find(query=np.random.rand(128), search_field='embedding')  # add vector similarity search
+    .filter(filter_query='@price:[-inf 3]')  # add filter search
     .build()
 )
 # execute the combined query and return the results
-results = db.execute_query(query)
+results = doc_index.execute_query(query)
 print(f'{results=}')
 ```
 
@@ -383,7 +391,7 @@ You can pass any of the above as keyword arguments to the `__init__()` method or
 
 ```python
 class SimpleDoc(BaseDoc):
-    tensor: NdArray[128] = Field(algorithm='FLAT', m=32, distance='COSINE')
+    tensor: NdArray[128] = Field(algorithm='FLAT', distance='COSINE')
 
 
 doc_index = RedisDocumentIndex[SimpleDoc]()
@@ -581,7 +589,7 @@ Now we can instantiate our Index and index some data.
 
 ```python
 docs = DocList[MyDoc](
-    [MyDoc(embedding=np.random.rand(10), text=f'I am the first version of Document {i}') for i in range(100)]
+    [MyDoc(embedding=np.random.rand(128), text=f'I am the first version of Document {i}') for i in range(100)]
 )
 index = RedisDocumentIndex[MyDoc]()
 index.index(docs)
@@ -591,7 +599,7 @@ assert index.num_docs() == 100
 Now we can find relevant documents
 
 ```python
-res = index.find(query=docs[0], search_field='tens', limit=100)
+res = index.find(query=docs[0], search_field='embedding', limit=100)
 assert len(res.documents) == 100
 for doc in res.documents:
     assert 'I am the first version' in doc.text
@@ -610,7 +618,7 @@ assert index.num_docs() == 100
 When we retrieve them again we can see that their text attribute has been updated accordingly
 
 ```python
-res = index.find(query=docs[0], search_field='tens', limit=100)
+res = index.find(query=docs[0], search_field='embedding', limit=100)
 assert len(res.documents) == 100
 for doc in res.documents:
     assert 'I am the second version' in doc.text

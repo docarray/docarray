@@ -230,7 +230,7 @@ batch_config = {
 
 runtimeconfig = WeaviateDocumentIndex.RuntimeConfig(batch_config=batch_config)
 
-store = WeaviateDocumentIndex[Document](db_config=dbconfig)
+store = WeaviateDocumentIndex[Document]()
 store.configure(runtimeconfig)  # Batch settings being passed on
 store.index(docs)
 ```
@@ -326,16 +326,16 @@ You can also access data by the `id` that was assigned to each document:
 ```python
 # prepare some data
 data = DocList[MyDoc](
-    MyDoc(embedding=np.random.rand(128), text=f'query {i}') for i in range(3)
+    MyDoc(embedding=np.random.rand(128), title=f'query {i}') for i in range(3)
 )
 
 # remember the Document ids and index the data
 ids = data.id
-store.index(data)
+doc_index.index(data)
 
 # access the Documents by id
-doc = store[ids[0]]  # get by single id
-docs = store[ids]  # get by list of ids
+doc = doc_index[ids[0]]  # get by single id
+docs = doc_index[ids]  # get by list of ids
 ```
 
 
@@ -346,16 +346,16 @@ In the same way you can access Documents by id, you can also delete them:
 ```python
 # prepare some data
 data = DocList[MyDoc](
-    MyDoc(embedding=np.random.rand(128), text=f'query {i}') for i in range(3)
+    MyDoc(embedding=np.random.rand(128), title=f'query {i}') for i in range(3)
 )
 
 # remember the Document ids and index the data
 ids = data.id
-store.index(data)
+doc_index.index(data)
 
 # access the Documents by id
-del store[ids[0]]  # del by single id
-del store[ids[1:]]  # del by list of ids
+del doc_index[ids[0]]  # del by single id
+del doc_index[ids[1:]]  # del by list of ids
 ```
 
 ## Configuration
@@ -604,56 +604,4 @@ root_docs, sub_docs, scores = doc_index.find_subindex(
 root_docs, sub_docs, scores = doc_index.find_subindex(
     np.ones(64), subindex='docs__images', limit=3
 )
-```
-
-### Update elements
-In order to update a Document inside the index, you only need to reindex it with the updated attributes.
-
-First lets create a schema for our Index
-```python
-import numpy as np
-from docarray import BaseDoc, DocList
-from docarray.typing import NdArray
-from docarray.index import WeaviateDocumentIndex
-class MyDoc(BaseDoc):
-    text: str
-    embedding: NdArray[128] = Field(is_embedding=True)
-```
-Now we can instantiate our Index and index some data.
-
-```python
-docs = DocList[MyDoc](
-    [MyDoc(embedding=np.random.rand(10), text=f'I am the first version of Document {i}') for i in range(100)]
-)
-index = WeaviateDocumentIndex[MyDoc]()
-index.index(docs)
-assert index.num_docs() == 100
-```
-
-Now we can find relevant documents
-
-```python
-res = index.find(query=docs[0], limit=100)
-assert len(res.documents) == 100
-for doc in res.documents:
-    assert 'I am the first version' in doc.text
-```
-
-and update all of the text of this documents and reindex them
-
-```python
-for i, doc in enumerate(docs):
-    doc.text = f'I am the second version of Document {i}'
-
-index.index(docs)
-assert index.num_docs() == 100
-```
-
-When we retrieve them again we can see that their text attribute has been updated accordingly
-
-```python
-res = index.find(query=docs[0], limit=100)
-assert len(res.documents) == 100
-for doc in res.documents:
-    assert 'I am the second version' in doc.text
 ```
