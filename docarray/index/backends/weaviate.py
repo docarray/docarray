@@ -257,6 +257,16 @@ class WeaviateDocumentIndex(BaseDocIndex, Generic[TSchema]):
             }
         )
 
+        def __post_init__(self):
+            # To prevent errors, it is important to capitalize the provided index name
+            # when working with Weaviate, as it stores index names in a capitalized format.
+            # Can't use .capitalize() because it modifies the whole string (See test).
+            self.index_name = (
+                self.index_name[0].upper() + self.index_name[1:]
+                if self.index_name
+                else None
+            )
+
     @dataclass
     class RuntimeConfig(BaseDocIndex.RuntimeConfig):
         """Dataclass that contains all "dynamic" configurations of WeaviateDocumentIndex."""
