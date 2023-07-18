@@ -127,6 +127,7 @@ class HnswDocumentIndex(BaseDocIndex, Generic[TSchema]):
         self._sqlite_cursor = self._sqlite_conn.cursor()
         self._create_docs_table()
         self._sqlite_conn.commit()
+        self._num_docs = self._get_num_docs_sqlite()
         self._logger.info(f'{self.__class__.__name__} has been initialized')
 
     @property
@@ -259,6 +260,7 @@ class HnswDocumentIndex(BaseDocIndex, Generic[TSchema]):
 
         self._send_docs_to_sqlite(docs_validated)
         self._sqlite_conn.commit()
+        self._num_docs = self._get_num_docs_sqlite()
 
     def execute_query(self, query: List[Tuple[str, Dict]], *args, **kwargs) -> Any:
         """
@@ -379,6 +381,7 @@ class HnswDocumentIndex(BaseDocIndex, Generic[TSchema]):
 
         self._delete_docs_from_sqlite(doc_ids)
         self._sqlite_conn.commit()
+        self._num_docs = self._get_num_docs_sqlite()
 
     def _get_items(self, doc_ids: Sequence[str], out: bool = True) -> Sequence[TSchema]:
         """Get Documents from the hnswlib index, by `id`.
@@ -403,7 +406,8 @@ class HnswDocumentIndex(BaseDocIndex, Generic[TSchema]):
         """
         Get the number of documents.
         """
-        return self._get_num_docs_sqlite()
+        return self._num_docs
+        # return self._get_num_docs_sqlite()
 
     ###############################################
     # Helpers                                     #
