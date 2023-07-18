@@ -2426,7 +2426,7 @@
 </span><span id="__span-0-53"><a id="__codelineno-0-53" name="__codelineno-0-53"></a>        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="nb">type</span><span class="p">):</span>
 </span><span id="__span-0-54"><a id="__codelineno-0-54" name="__codelineno-0-54"></a>            <span class="k">return</span> <span class="n">Generic</span><span class="o">.</span><span class="n">__class_getitem__</span><span class="o">.</span><span class="vm">__func__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">item</span><span class="p">)</span>  <span class="c1"># type: ignore</span>
 </span><span id="__span-0-55"><a id="__codelineno-0-55" name="__codelineno-0-55"></a>            <span class="c1"># this do nothing that checking that item is valid type var or str</span>
-</span><span id="__span-0-56"><a id="__codelineno-0-56" name="__codelineno-0-56"></a>        <span class="k">if</span> <span class="ow">not</span> <span class="nb">issubclass</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">BaseDoc</span><span class="p">):</span>
+</span><span id="__span-0-56"><a id="__codelineno-0-56" name="__codelineno-0-56"></a>        <span class="k">if</span> <span class="ow">not</span> <span class="n">safe_issubclass</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">BaseDoc</span><span class="p">):</span>
 </span><span id="__span-0-57"><a id="__codelineno-0-57" name="__codelineno-0-57"></a>            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
 </span><span id="__span-0-58"><a id="__codelineno-0-58" name="__codelineno-0-58"></a>                <span class="sa">f</span><span class="s1">'</span><span class="si">{</span><span class="bp">cls</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s1">[item] item should be a Document not a </span><span class="si">{</span><span class="n">item</span><span class="si">}</span><span class="s1"> '</span>
 </span><span id="__span-0-59"><a id="__codelineno-0-59" name="__codelineno-0-59"></a>            <span class="p">)</span>
@@ -2717,8 +2717,8 @@
 <code class="highlight language-python"><span class="n">from_protobuf</span><span class="p">(</span><span class="n">pb_msg</span><span class="p">)</span></code>
   
   <span class="doc doc-labels">
-      <small class="doc doc-label doc-label-classmethod"><code>classmethod</code></small>
       <small class="doc doc-label doc-label-abstractmethod"><code>abstractmethod</code></small>
+      <small class="doc doc-label doc-label-classmethod"><code>classmethod</code></small>
   </span>
 
 </h3>

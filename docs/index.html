@@ -2291,8 +2291,8 @@
 
 <p align="center">
 <a href="https://pypi.org/project/docarray/"><img src="https://img.shields.io/pypi/v/docarray?style=flat-square&amp;label=Release" alt="PyPI"></a>
-<a href="https://codecov.io/gh/docarray/docarray"><img alt="Codecov branch" src="https://img.shields.io/codecov/c/github/docarray/docarray/main?logo=Codecov&amp;logoColor=white&amp;style=flat-square"></a>
 <a href="https://bestpractices.coreinfrastructure.org/projects/6554"><img src="https://bestpractices.coreinfrastructure.org/projects/6554/badge"></a>
+<a href="https://codecov.io/gh/docarray/docarray"><img alt="Codecov branch" src="https://img.shields.io/codecov/c/github/docarray/docarray/main?&amp;logo=Codecov&amp;logoColor=white&amp;style=flat-square"></a>
 <a href="https://pypistats.org/packages/docarray"><img alt="PyPI - Downloads from official pypistats" src="https://img.shields.io/pypi/dm/docarray?style=flat-square"></a>
 <a href="https://discord.gg/WaMp6PVPgR"><img src="https://dcbadge.vercel.app/api/server/WaMp6PVPgR?theme=default-inverted&amp;style=flat-square"></a>
 </p>
@@ -2305,7 +2305,7 @@ The README you're currently viewing is for DocArray&gt;0.30, which introduces so
 <ul>
 <li><img alt="🔥" class="twemoji" src="https://cdnjs.cloudflare.com/ajax/libs/twemoji/14.0.2/svg/1f525.svg" title=":fire:"> Offers native support for <strong><a href="https://github.com/numpy/numpy">NumPy</a></strong>, <strong><a href="https://github.com/pytorch/pytorch">PyTorch</a></strong>, and <strong><a href="https://github.com/tensorflow/tensorflow">TensorFlow</a></strong>, catering specifically to <strong>model training scenarios</strong>.</li>
 <li><img alt="⚡" class="twemoji" src="https://cdnjs.cloudflare.com/ajax/libs/twemoji/14.0.2/svg/26a1.svg" title=":zap:"> Based on <strong><a href="https://github.com/pydantic/pydantic">Pydantic</a></strong>, and instantly compatible with web and microservice frameworks like <strong><a href="https://github.com/tiangolo/fastapi/">FastAPI</a></strong> and <strong><a href="https://github.com/jina-ai/jina/">Jina</a></strong>.</li>
-<li><img alt="📦" class="twemoji" src="https://cdnjs.cloudflare.com/ajax/libs/twemoji/14.0.2/svg/1f4e6.svg" title=":package:"> Provides support for vector databases such as <strong><a href="https://weaviate.io/">Weaviate</a>, <a href="https://qdrant.tech/">Qdrant</a>, <a href="https://www.elastic.co/de/elasticsearch/">ElasticSearch</a></strong>, and <strong><a href="https://github.com/nmslib/hnswlib">HNSWLib</a></strong>.</li>
+<li><img alt="📦" class="twemoji" src="https://cdnjs.cloudflare.com/ajax/libs/twemoji/14.0.2/svg/1f4e6.svg" title=":package:"> Provides support for vector databases such as <strong><a href="https://weaviate.io/">Weaviate</a>, <a href="https://qdrant.tech/">Qdrant</a>, <a href="https://www.elastic.co/de/elasticsearch/">ElasticSearch</a>, <a href="https://redis.io/">Redis</a></strong>, and <strong><a href="https://github.com/nmslib/hnswlib">HNSWLib</a></strong>.</li>
 <li><img alt="⛓" class="twemoji" src="https://cdnjs.cloudflare.com/ajax/libs/twemoji/14.0.2/svg/26d3.svg" title=":chains:"> Allows data transmission as JSON over <strong>HTTP</strong> or as <strong><a href="https://protobuf.dev/">Protobuf</a></strong> over <strong><a href="https://grpc.io/">gRPC</a></strong>.</li>
 </ul>
 <h2 id="installation">Installation</h2>
@@ -2574,7 +2574,7 @@ Plus, we have a <a href="#coming-from-fastapi">dedicated section</a> specificall
 <li><img alt="🔍" class="twemoji" src="https://cdnjs.cloudflare.com/ajax/libs/twemoji/14.0.2/svg/1f50d.svg" title=":mag:"> <strong>Neural search</strong> applications</li>
 <li><img alt="💡" class="twemoji" src="https://cdnjs.cloudflare.com/ajax/libs/twemoji/14.0.2/svg/1f4a1.svg" title=":bulb:"> <strong>Recommender systems</strong></li>
 </ul>
-<p>Currently, Document Indexes support <strong><a href="https://weaviate.io/">Weaviate</a></strong>, <strong><a href="https://qdrant.tech/">Qdrant</a></strong>, <strong><a href="https://www.elastic.co/">ElasticSearch</a></strong>, and <strong><a href="https://github.com/nmslib/hnswlib">HNSWLib</a></strong>, with more to come!</p>
+<p>Currently, Document Indexes support <strong><a href="https://weaviate.io/">Weaviate</a></strong>, <strong><a href="https://qdrant.tech/">Qdrant</a></strong>, <strong><a href="https://www.elastic.co/">ElasticSearch</a></strong>,  <strong><a href="https://redis.io/">Redis</a></strong>, and <strong><a href="https://github.com/nmslib/hnswlib">HNSWLib</a></strong>, with more to come!</p>
 <p>The Document Index interface lets you index and retrieve Documents from multiple vector databases, all with the same user interface.</p>
 <p>It supports ANN vector search, text search, filtering, and hybrid search.</p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">DocList</span><span class="p">,</span> <span class="n">BaseDoc</span>
@@ -2632,7 +2632,7 @@ They are now called <strong>Document Indexes</strong> and offer the following im
 <li><strong>Production-ready:</strong> The new Document Indexes are a much thinner wrapper around the various vector DB libraries, making them more robust and easier to maintain</li>
 <li><strong>Increased flexibility:</strong> We strive to support any configuration or setting that you could perform through the DB's first-party client</li>
 </ul>
-<p>For now, Document Indexes support <strong><a href="https://weaviate.io/">Weaviate</a></strong>, <strong><a href="https://qdrant.tech/">Qdrant</a></strong>, <strong><a href="https://www.elastic.co/">ElasticSearch</a></strong>, and <strong><a href="https://github.com/nmslib/hnswlib">HNSWLib</a></strong>, with more to come.</p>
+<p>For now, Document Indexes support <strong><a href="https://weaviate.io/">Weaviate</a></strong>, <strong><a href="https://qdrant.tech/">Qdrant</a></strong>, <strong><a href="https://www.elastic.co/">ElasticSearch</a></strong>, <strong><a href="https://redis.io/">Redis</a></strong>, and <strong><a href="https://github.com/nmslib/hnswlib">HNSWLib</a></strong>, with more to come.</p>
 </details>
 <h3 id="coming-from-pydantic">Coming from Pydantic</h3>
 <details>
@@ -2936,6 +2936,7 @@ store it there, and thus make it searchable:</p>
 <li><a href="https://www.weaviate.io/">Weaviate</a></li>
 <li><a href="https://qdrant.tech/">Qdrant</a></li>
 <li><a href="https://www.elastic.co/elasticsearch/">Elasticsearch</a> v8 and v7</li>
+<li><a href="https://redis.io/">Redis</a></li>
 <li><a href="https://github.com/nmslib/hnswlib">HNSWlib</a> as a local-first alternative</li>
 </ul>
 <p>An integration of <a href="https://opensearch.org/">OpenSearch</a> is currently in progress.</p>
@@ -2988,10 +2989,11 @@ After creating your document index, you can connect it to your Langchain app usi
 </span><span id="__span-23-4"><a id="__codelineno-23-4" name="__codelineno-23-4" href="#__codelineno-23-4"></a>    <span class="n">WeaviateDocumentIndex</span><span class="p">,</span>
 </span><span id="__span-23-5"><a id="__codelineno-23-5" name="__codelineno-23-5" href="#__codelineno-23-5"></a>    <span class="n">QdrantDocumentIndex</span><span class="p">,</span>
 </span><span id="__span-23-6"><a id="__codelineno-23-6" name="__codelineno-23-6" href="#__codelineno-23-6"></a>    <span class="n">ElasticDocIndex</span><span class="p">,</span>
-</span><span id="__span-23-7"><a id="__codelineno-23-7" name="__codelineno-23-7" href="#__codelineno-23-7"></a><span class="p">)</span>
-</span><span id="__span-23-8"><a id="__codelineno-23-8" name="__codelineno-23-8" href="#__codelineno-23-8"></a>
-</span><span id="__span-23-9"><a id="__codelineno-23-9" name="__codelineno-23-9" href="#__codelineno-23-9"></a><span class="c1"># Select a suitable backend and initialize it with data</span>
-</span><span id="__span-23-10"><a id="__codelineno-23-10" name="__codelineno-23-10" href="#__codelineno-23-10"></a><span class="n">db</span> <span class="o">=</span> <span class="n">InMemoryExactNNIndex</span><span class="p">[</span><span class="n">MovieDoc</span><span class="p">](</span><span class="n">docs</span><span class="p">)</span>
+</span><span id="__span-23-7"><a id="__codelineno-23-7" name="__codelineno-23-7" href="#__codelineno-23-7"></a>    <span class="n">RedisDocumentIndex</span><span class="p">,</span>
+</span><span id="__span-23-8"><a id="__codelineno-23-8" name="__codelineno-23-8" href="#__codelineno-23-8"></a><span class="p">)</span>
+</span><span id="__span-23-9"><a id="__codelineno-23-9" name="__codelineno-23-9" href="#__codelineno-23-9"></a>
+</span><span id="__span-23-10"><a id="__codelineno-23-10" name="__codelineno-23-10" href="#__codelineno-23-10"></a><span class="c1"># Select a suitable backend and initialize it with data</span>
+</span><span id="__span-23-11"><a id="__codelineno-23-11" name="__codelineno-23-11" href="#__codelineno-23-11"></a><span class="n">db</span> <span class="o">=</span> <span class="n">InMemoryExactNNIndex</span><span class="p">[</span><span class="n">MovieDoc</span><span class="p">](</span><span class="n">docs</span><span class="p">)</span>
 </span></code></pre></div>
 </li>
 <li>
