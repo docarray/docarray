@@ -1,40 +1,51 @@
 __all__ = ['find', 'find_batched']
 
 from typing import (
+    TYPE_CHECKING,
     Any,
     Dict,
     List,
     NamedTuple,
     Optional,
     Tuple,
+    Type,
     Union,
     cast,
-    Type,
-    TYPE_CHECKING,
 )
 
 from docarray.array.any_array import AnyDocArray
 from docarray.array.doc_list.doc_list import DocList
 from docarray.array.doc_vec.doc_vec import DocVec
 from docarray.base_doc import BaseDoc
-from docarray.typing import AnyTensor
 from docarray.computation.numpy_backend import NumpyCompBackend
+from docarray.typing import AnyTensor
 from docarray.typing.tensor import NdArray
-from docarray.utils._internal.misc import is_tf_available, is_torch_available  # noqa
+from docarray.utils._internal.misc import (  # noqa
+    is_jax_available,
+    is_tf_available,
+    is_torch_available,
+)
+
+jax_available = is_jax_available()
+if jax_available:
+    import jax.numpy as jnp
+
+    from docarray.computation.jax_backend import JaxCompBackend
+    from docarray.typing.tensor.jaxarray import JaxArray  # noqa: F401
 
 torch_available = is_torch_available()
 if torch_available:
     import torch
 
-    from docarray.typing.tensor.torch_tensor import TorchTensor  # noqa: F401
     from docarray.computation.torch_backend import TorchCompBackend
+    from docarray.typing.tensor.torch_tensor import TorchTensor  # noqa: F401
 
 tf_available = is_tf_available()
 if tf_available:
     import tensorflow as tf  # type: ignore
 
-    from docarray.typing.tensor.tensorflow_tensor import TensorFlowTensor  # noqa: F401
     from docarray.computation.tensorflow_backend import TensorFlowCompBackend
+    from docarray.typing.tensor.tensorflow_tensor import TensorFlowTensor  # noqa: F401
 
 if TYPE_CHECKING:
     from docarray.computation.abstract_numpy_based_backend import (
@@ -310,6 +321,9 @@ def _get_tensor_type_and_comp_backend_from_tensor(
     elif tf_available and isinstance(tensor, (TensorFlowTensor, tf.Tensor)):
         comp_backend = TensorFlowCompBackend()
         da_tensor_type = TensorFlowTensor
+    elif jax_available and isinstance(tensor, (JaxArray, jnp.ndarray)):
+        comp_backend = JaxCompBackend()
+        da_tensor_type = JaxArray
 
     return da_tensor_type, comp_backend
 

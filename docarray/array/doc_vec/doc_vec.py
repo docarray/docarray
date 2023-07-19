@@ -32,7 +32,11 @@ from docarray.base_doc.mixins.io import _type_to_protobuf
 from docarray.typing import NdArray
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
 from docarray.utils._internal._typing import is_tensor_union, safe_issubclass
-from docarray.utils._internal.misc import is_tf_available, is_torch_available
+from docarray.utils._internal.misc import (
+    is_jax_available,
+    is_tf_available,
+    is_torch_available,
+)
 
 if TYPE_CHECKING:
     import csv
@@ -59,6 +63,14 @@ if tf_available:
     from docarray.typing import TensorFlowTensor  # noqa: F401
 else:
     TensorFlowTensor = None  # type: ignore
+
+jnp_available = is_jax_available()
+if jnp_available:
+    import jax.numpy as jnp  # type: ignore
+
+    from docarray.typing import JaxArray  # noqa: F401
+else:
+    JaxArray = None  # type: ignore
 
 T_doc = TypeVar('T_doc', bound=BaseDoc)
 T = TypeVar('T', bound='DocVec')
@@ -262,6 +274,19 @@ class DocVec(IOMixinArray, AnyDocArray[T_doc]):
 
                         stacked: tf.Tensor = tf.stack(tf_stack)
                         tensor_columns[field_name] = TensorFlowTensor(stacked)
+                elif jnp_available and issubclass(field_type, JaxArray):
+                    if first_doc_is_none:
+                        _verify_optional_field_of_docs(docs)
+                        tensor_columns[field_name] = None
+                    else:
+                        tf_stack = []
+                        for i, doc in enumerate(docs):
+                            val = getattr(doc, field_name)
+                            _check_doc_field_not_none(field_name, doc)
+                            tf_stack.append(val.tensor)
+
+                        jax_stacked: jnp.ndarray = jnp.stack(tf_stack)
+                        tensor_columns[field_name] = JaxArray(jax_stacked)
 
                 elif safe_issubclass(field_type, AbstractTensor):
                     if first_doc_is_none:
@@ -835,7 +860,6 @@ class DocVec(IOMixinArray, AnyDocArray[T_doc]):
             unstacked_doc_column[field] = doc_col.to_doc_list() if doc_col else None
 
         for field, da_col in self._storage.docs_vec_columns.items():
-
             unstacked_da_column[field] = (
                 [docs.to_doc_list() for docs in da_col] if da_col else None
             )

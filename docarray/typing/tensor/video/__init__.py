@@ -10,6 +10,7 @@ from docarray.utils._internal.misc import (
 )
 
 if TYPE_CHECKING:
+    from docarray.typing.tensor.video.video_jax_array import VideoJaxArray  # noqa
     from docarray.typing.tensor.video.video_tensorflow_tensor import (  # noqa
         VideoTensorFlowTensor,
     )
@@ -26,6 +27,9 @@ def __getattr__(name: str):
     elif name == 'VideoTensorFlowTensor':
         import_library('tensorflow', raise_error=True)
         import docarray.typing.tensor.video.video_tensorflow_tensor as lib
+    elif name == 'VideoJaxArray':
+        import_library('jax', raise_error=True)
+        import docarray.typing.tensor.video.video_jax_array as lib
     else:
         raise ImportError(
             f'cannot import name \'{name}\' from \'{_get_path_from_docarray_root_level(__file__)}\''
