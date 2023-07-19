@@ -1,4 +1,5 @@
 import os
+import sys
 from collections import defaultdict
 from dataclasses import dataclass, field
 from typing import (
@@ -22,10 +23,7 @@ from docarray import BaseDoc, DocList
 from docarray.array.any_array import AnyDocArray
 from docarray.helper import _shallow_copy_doc
 from docarray.index.abstract import BaseDocIndex, _raise_not_supported
-from docarray.index.backends.helper import (
-    _collect_query_args,
-    _execute_find_and_filter_query,
-)
+from docarray.index.backends.helper import _collect_query_args
 from docarray.typing import AnyTensor, NdArray
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
 from docarray.utils._internal._typing import safe_issubclass
@@ -293,12 +291,53 @@ class InMemoryExactNNIndex(BaseDocIndex, Generic[TSchema]):
             raise ValueError(
                 f'args and kwargs not supported for `execute_query` on {type(self)}'
             )
-        find_res = _execute_find_and_filter_query(
-            doc_index=self,
-            query=query,
-            reverse_order=True,
-        )
+        # find_res = _execute_find_and_filter_query(
+        #     doc_index=self,
+        #     query=query,
+        #     reverse_order=True,
+        # )
+        find_res = self._hybrid_search(query)
         return find_res
+
+    def _hybrid_search(self, query: List[Tuple[str, Dict]]) -> FindResult:
+        """
+        Executes a hybrid search on documents based on the provided query.
+
+        The function performs search operations such as 'find' and 'filter' in the order
+        they appear in the query. The 'find' operation performs a vector similarity search.
+        The 'filter' operation filters out documents based on a filter query.
+        The documents are finally sorted based on their scores.
+
+        :param query: The query to execute.
+        :return: A tuple of retrieved documents and their scores.
+        """
+        out_docs = self._docs
+        doc_to_score: Dict[BaseDoc, Any] = {}
+        limit = sys.maxsize
+        for op, op_kwargs in query:
+            limit = min(limit, op_kwargs['limit']) if op_kwargs.get('limit') else limit
+            if op == 'find':
+                out_docs, scores = find(
+                    index=out_docs,
+                    query=op_kwargs['query'],
+                    search_field=op_kwargs['search_field'],
+                    limit=len(out_docs),
+                    metric=self._column_infos[op_kwargs['search_field']].config[
+                        'space'
+                    ],
+                )
+                doc_to_score.update(zip(out_docs.id, scores))
+            elif op == 'filter':
+                out_docs = filter_docs(out_docs, op_kwargs['filter_query'])
+            else:
+                raise ValueError(f'Query operation is not supported: {op}')
+
+        out_docs = out_docs[:limit]
+        scores_and_docs = zip([doc_to_score[doc.id] for doc in out_docs], out_docs)
+        sorted_lists = sorted(scores_and_docs, reverse=True)
+        out_scores, out_docs = zip(*sorted_lists)
+
+        return FindResult(documents=out_docs, scores=out_scores)
 
     def find(
         self,
