@@ -182,16 +182,16 @@ def test_query_builder_pre_filtering(doc_index):
 def test_query_builder_post_filtering(doc_index):
     q = (
         doc_index.build_query()
-        .find(query=np.ones(10), search_field='tensor', limit=5)
-        .filter(filter_query={'price': {'$gt': 7}})
+        .find(query=np.ones(10), search_field='tensor')
+        .filter(filter_query={'price': {'$gt': 3}}, limit=5)
         .build()
     )
 
     docs, scores = doc_index.execute_query(q)
 
-    assert len(docs) == 2
+    assert len(docs) == 5
     for doc in docs:
-        assert doc.price > 7
+        assert doc.price > 3
 
 
 def test_query_builder_pre_post_filtering(doc_index):

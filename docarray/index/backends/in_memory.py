@@ -1,5 +1,4 @@
 import os
-import sys
 from collections import defaultdict
 from dataclasses import dataclass, field
 from typing import (
@@ -307,15 +306,13 @@ class InMemoryExactNNIndex(BaseDocIndex, Generic[TSchema]):
         """
         out_docs = self._docs
         doc_to_score: Dict[BaseDoc, Any] = {}
-        limit = sys.maxsize
         for op, op_kwargs in query:
-            limit = min(limit, op_kwargs['limit']) if op_kwargs.get('limit') else limit
             if op == 'find':
                 out_docs, scores = find(
                     index=out_docs,
                     query=op_kwargs['query'],
                     search_field=op_kwargs['search_field'],
-                    limit=len(out_docs),
+                    limit=op_kwargs.get('limit', len(out_docs)),
                     metric=self._column_infos[op_kwargs['search_field']].config[
                         'space'
                     ],
@@ -323,14 +320,10 @@ class InMemoryExactNNIndex(BaseDocIndex, Generic[TSchema]):
                 doc_to_score.update(zip(out_docs.id, scores))
             elif op == 'filter':
                 out_docs = filter_docs(out_docs, op_kwargs['filter_query'])
+                out_docs = out_docs[: op_kwargs.get('limit', len(out_docs))]
             else:
                 raise ValueError(f'Query operation is not supported: {op}')
 
-        # if limit was not provided, use the default
-        if limit == sys.maxsize:
-            limit = 10
-
-        out_docs = out_docs[:limit]
         scores_and_docs = zip([doc_to_score[doc.id] for doc in out_docs], out_docs)
         sorted_lists = sorted(scores_and_docs, reverse=True)
         out_scores, out_docs = zip(*sorted_lists)
