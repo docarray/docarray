@@ -876,6 +876,6 @@ Both are user-friendly and are best suited to small to medium-sized datasets.
 - [DocArray<=0.21 documentation](https://docarray.jina.ai/)
 - [Join our Discord server](https://discord.gg/WaMp6PVPgR)
 - [Donation to Linux Foundation AI&Data blog post](https://jina.ai/news/donate-docarray-lf-for-inclusive-standard-multimodal-data-model/)
-
+- [Roadmap](https://github.com/docarray/docarray/issues/1714)
 
 > DocArray is a trademark of LF AI Projects, LLC
