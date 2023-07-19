@@ -164,7 +164,7 @@ def test_with_text_doc_torch():
         assert len(r) == 5
 
 
-def test_hybrid_search_pre_filtering(doc_index):
+def test_query_builder_pre_filtering(doc_index):
     q = (
         doc_index.build_query()
         .filter(filter_query={'price': {'$lte': 3}})
@@ -179,7 +179,7 @@ def test_hybrid_search_pre_filtering(doc_index):
         assert doc.price <= 3
 
 
-def test_hybrid_search_post_filtering(doc_index):
+def test_query_builder_post_filtering(doc_index):
     q = (
         doc_index.build_query()
         .find(query=np.ones(10), search_field='tensor', limit=5)
@@ -194,7 +194,7 @@ def test_hybrid_search_post_filtering(doc_index):
         assert doc.price > 7
 
 
-def test_hybrid_search_pre_post_filtering(doc_index):
+def test_query_builder_pre_post_filtering(doc_index):
     q = (
         doc_index.build_query()
         .filter(filter_query={'price': {'$lte': 3}})
@@ -207,6 +207,23 @@ def test_hybrid_search_pre_post_filtering(doc_index):
 
     assert len(docs) == 1
     assert docs[0].text == 'hello 1' and docs[0].price <= 3
+
+
+def test_find_and_filter(doc_index):
+    q = (
+        doc_index.build_query()
+        .filter(filter_query={'price': {'$lt': 3}})
+        .find(query=np.ones(10), search_field='tensor')
+        .filter(filter_query={'text': {'$neq': 'hello 2'}})
+        .build()
+    )
+
+    docs, scores = doc_index._find_and_filter(q)
+
+    assert len(docs) == 2
+    for doc in docs:
+        assert doc.text in ['hello 1', 'hello 0']
+        assert doc.price < 3
 
 
 def test_filter(doc_index):

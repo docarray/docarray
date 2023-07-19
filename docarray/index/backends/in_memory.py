@@ -291,8 +291,7 @@ class InMemoryExactNNIndex(BaseDocIndex, Generic[TSchema]):
             raise ValueError(
                 f'args and kwargs not supported for `execute_query` on {type(self)}'
             )
-        find_res = self._find_and_filter(query)
-        return find_res
+        return self._find_and_filter(query)
 
     def _find_and_filter(self, query: List[Tuple[str, Dict]]) -> FindResult:
         """
