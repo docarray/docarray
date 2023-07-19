@@ -623,7 +623,7 @@ Like the [PyTorch approach](#coming-from-pytorch), you can also use DocArray wit
 First off, to use DocArray with TensorFlow we first need to install it as follows:
 
 ```
-pip install tensorflow==2.11.0
+pip install tensorflow==2.12.0
 pip install protobuf==3.19.0
 ```
 
@@ -875,6 +875,7 @@ Both are user-friendly and are best suited to small to medium-sized datasets.
 - [DocArray<=0.21 documentation](https://docarray.jina.ai/)
 - [Join our Discord server](https://discord.gg/WaMp6PVPgR)
 - [Donation to Linux Foundation AI&Data blog post](https://jina.ai/news/donate-docarray-lf-for-inclusive-standard-multimodal-data-model/)
-
+- [Roadmap](https://github.com/docarray/docarray/issues/1714)
 
 > DocArray is a trademark of LF AI Projects, LLC
+> 

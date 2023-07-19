@@ -1,4 +1,3 @@
-import uuid
 from collections import defaultdict
 from typing import (
     TypeVar,
@@ -93,11 +92,6 @@ class RedisDocumentIndex(BaseDocIndex, Generic[TSchema]):
         )
         self._create_index()
         self._logger.info(f'{self.__class__.__name__} has been initialized')
-
-    @staticmethod
-    def _random_name() -> str:
-        """Generate a random index name."""
-        return uuid.uuid4().hex
 
     def _create_index(self) -> None:
         """Create a new index in the Redis database if it doesn't already exist."""
@@ -220,7 +214,7 @@ class RedisDocumentIndex(BaseDocIndex, Generic[TSchema]):
         :param host: The host address for the Redis server. Default is 'localhost'.
         :param port: The port number for the Redis server. Default is 6379.
         :param index_name: The name of the index in the Redis database.
-            In case it's not provided, a random index name will be generated.
+            If not provided, default index name will be used.
         :param username: The username for the Redis server. Default is None.
         :param password: The password for the Redis server. Default is None.
         :param text_scorer: The method for scoring text during text search.

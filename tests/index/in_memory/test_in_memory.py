@@ -15,7 +15,6 @@ from docarray.utils._internal.misc import is_tf_available
 tf_available = is_tf_available()
 if tf_available:
     import tensorflow as tf
-    from docarray.typing import TensorFlowTensor
 
 
 class SchemaDoc(BaseDoc):
@@ -165,37 +164,49 @@ def test_with_text_doc_torch():
         assert len(r) == 5
 
 
-def test_concatenated_queries(doc_index):
-    query = SchemaDoc(text='query', price=0, tensor=np.ones(10))
-
+def test_query_builder_pre_filtering(doc_index):
     q = (
         doc_index.build_query()
-        .find(query=query, search_field='tensor', limit=5)
-        .filter(filter_query={'price': {'$neq': 5}})
+        .filter(filter_query={'price': {'$lte': 3}})
+        .find(query=np.ones(10), search_field='tensor', limit=5)
         .build()
     )
 
     docs, scores = doc_index.execute_query(q)
 
     assert len(docs) == 4
+    for doc in docs:
+        assert doc.price <= 3
 
 
-@pytest.mark.parametrize(
-    'find_limit, filter_limit, expected_docs', [(10, 3, 3), (5, None, 1)]
-)
-def test_query_builder_limits(doc_index, find_limit, filter_limit, expected_docs):
-    query = SchemaDoc(text='query', price=3, tensor=np.array([3] * 10))
-
+def test_query_builder_post_filtering(doc_index):
     q = (
         doc_index.build_query()
-        .find(query=query, search_field='tensor', limit=find_limit)
-        .filter(filter_query={'price': {'$lte': 5}}, limit=filter_limit)
+        .find(query=np.ones(10), search_field='tensor')
+        .filter(filter_query={'price': {'$gt': 3}}, limit=5)
         .build()
     )
 
     docs, scores = doc_index.execute_query(q)
 
-    assert len(docs) == expected_docs
+    assert len(docs) == 5
+    for doc in docs:
+        assert doc.price > 3
+
+
+def test_query_builder_pre_post_filtering(doc_index):
+    q = (
+        doc_index.build_query()
+        .filter(filter_query={'price': {'$lte': 3}})
+        .find(query=np.ones(10), search_field='tensor')
+        .filter(filter_query={'text': {'$eq': 'hello 1'}})
+        .build()
+    )
+
+    docs, scores = doc_index.execute_query(q)
+
+    assert len(docs) == 1
+    assert docs[0].text == 'hello 1' and docs[0].price <= 3
 
 
 def test_filter(doc_index):
