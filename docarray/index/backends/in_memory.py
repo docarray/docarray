@@ -291,11 +291,6 @@ class InMemoryExactNNIndex(BaseDocIndex, Generic[TSchema]):
             raise ValueError(
                 f'args and kwargs not supported for `execute_query` on {type(self)}'
             )
-        # find_res = _execute_find_and_filter_query(
-        #     doc_index=self,
-        #     query=query,
-        #     reverse_order=True,
-        # )
         find_res = self._hybrid_search(query)
         return find_res
 
@@ -331,6 +326,10 @@ class InMemoryExactNNIndex(BaseDocIndex, Generic[TSchema]):
                 out_docs = filter_docs(out_docs, op_kwargs['filter_query'])
             else:
                 raise ValueError(f'Query operation is not supported: {op}')
+
+        # if limit was not provided, use the default
+        if limit == sys.maxsize:
+            limit = 10
 
         out_docs = out_docs[:limit]
         scores_and_docs = zip([doc_to_score[doc.id] for doc in out_docs], out_docs)
