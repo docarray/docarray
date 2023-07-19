@@ -291,10 +291,10 @@ class InMemoryExactNNIndex(BaseDocIndex, Generic[TSchema]):
             raise ValueError(
                 f'args and kwargs not supported for `execute_query` on {type(self)}'
             )
-        find_res = self._hybrid_search(query)
+        find_res = self._find_and_filter(query)
         return find_res
 
-    def _hybrid_search(self, query: List[Tuple[str, Dict]]) -> FindResult:
+    def _find_and_filter(self, query: List[Tuple[str, Dict]]) -> FindResult:
         """
         Executes a hybrid search on documents based on the provided query.
 
