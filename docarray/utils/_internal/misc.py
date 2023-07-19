@@ -50,6 +50,7 @@ INSTALL_INSTRUCTIONS = {
     'boto3': '"docarray[aws]"',
     'botocore': '"docarray[aws]"',
     'redis': '"docarray[redis]"',
+    'pymilvus': '"docarray[milvus]"',
 }
 
 
