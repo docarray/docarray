@@ -294,9 +294,7 @@ class InMemoryExactNNIndex(BaseDocIndex, Generic[TSchema]):
 
     def _find_and_filter(self, query: List[Tuple[str, Dict]]) -> FindResult:
         """
-        Executes a hybrid search on documents based on the provided query.
-
-        The function performs search operations such as 'find' and 'filter' in the order
+        The function executes search operations such as 'find' and 'filter' in the order
         they appear in the query. The 'find' operation performs a vector similarity search.
         The 'filter' operation filters out documents based on a filter query.
         The documents are finally sorted based on their scores.
@@ -320,7 +318,8 @@ class InMemoryExactNNIndex(BaseDocIndex, Generic[TSchema]):
                 doc_to_score.update(zip(out_docs.id, scores))
             elif op == 'filter':
                 out_docs = filter_docs(out_docs, op_kwargs['filter_query'])
-                out_docs = out_docs[: op_kwargs.get('limit', len(out_docs))]
+                if 'limit' in op_kwargs:
+                    out_docs = out_docs[: op_kwargs['limit']]
             else:
                 raise ValueError(f'Query operation is not supported: {op}')
 

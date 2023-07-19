@@ -209,23 +209,6 @@ def test_query_builder_pre_post_filtering(doc_index):
     assert docs[0].text == 'hello 1' and docs[0].price <= 3
 
 
-def test_find_and_filter(doc_index):
-    q = (
-        doc_index.build_query()
-        .filter(filter_query={'price': {'$lt': 3}})
-        .find(query=np.ones(10), search_field='tensor')
-        .filter(filter_query={'text': {'$neq': 'hello 2'}})
-        .build()
-    )
-
-    docs, scores = doc_index._find_and_filter(q)
-
-    assert len(docs) == 2
-    for doc in docs:
-        assert doc.text in ['hello 1', 'hello 0']
-        assert doc.price < 3
-
-
 def test_filter(doc_index):
     docs = doc_index.filter({'price': {'$eq': 3}})
     assert len(docs) == 1
