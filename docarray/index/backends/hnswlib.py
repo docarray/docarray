@@ -624,7 +624,7 @@ class HnswDocumentIndex(BaseDocIndex, Generic[TSchema]):
 
         def accept_hashed_ids(id):
             """Accepts IDs that are in hashed_ids."""
-            return id in hashed_ids
+            return id in hashed_ids  # type: ignore[operator]
 
         # Choose the appropriate filter function based on whether hashed_ids was provided
         filter_function = accept_hashed_ids if hashed_ids else accept_all
