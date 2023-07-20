@@ -243,9 +243,10 @@ class AbstractTensor(Generic[TTensor, T], AbstractType, ABC, Sized):
 
         @classmethod
         def __get_pydantic_json_schema__(
-            cls, schema: CoreSchema, handler: GetJsonSchemaHandler
+            cls, core_schema: CoreSchema, handler: GetJsonSchemaHandler
         ) -> Dict[str, Any]:
-            json_schema = handler(schema)
+            json_schema = handler(core_schema)
+            json_schema = handler.resolve_ref_schema(json_schema)
             json_schema.update(type='array', items={'type': 'number'})
             if cls.__docarray_target_shape__ is not None:
                 shape_info = (
