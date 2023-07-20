@@ -110,6 +110,28 @@ class BaseDoc(BaseModel, IOMixin, UpdateMixin, BaseNode):
 
             return doc
 
+        @classmethod
+        def _shallow_copy(cls: Type[T], doc_to_copy: T) -> T:
+            """
+            perform a shallow copy, the new doc share the same data with the original doc
+            """
+            doc = cls.__new__(cls)
+
+            object.__setattr__(doc, '__dict__', doc_to_copy.__dict__)
+            object.__setattr__(
+                doc, '__pydantic_fields_set__', doc_to_copy.__pydantic_fields_set__
+            )
+            object.__setattr__(doc, '__pydantic_extra__', {})
+
+            if cls.__pydantic_post_init__:
+                doc.model_post_init(None)
+            else:
+                # Note: if there are any private attributes, cls.__pydantic_post_init__ would exist
+                # Since it doesn't, that means that `__pydantic_private__` should be set to None
+                object.__setattr__(doc, '__pydantic_private__', None)
+
+            return doc
+
     else:
 
         @classmethod
@@ -117,6 +139,18 @@ class BaseDoc(BaseModel, IOMixin, UpdateMixin, BaseNode):
             doc = cls.__new__(cls)
             object.__setattr__(doc, '__dict__', storage_view)
             object.__setattr__(doc, '__fields_set__', set(storage_view.keys()))
+
+            doc._init_private_attributes()
+            return doc
+
+        @classmethod
+        def _shallow_copy(cls: Type[T], doc_to_copy: T) -> T:
+            """
+            perform a shallow copy, the new doc share the same data with the original doc
+            """
+            doc = cls.__new__(cls)
+            object.__setattr__(doc, '__dict__', doc_to_copy.__dict__)
+            object.__setattr__(doc, '__fields_set__', set(doc_to_copy.__fields_set__))
 
             doc._init_private_attributes()
             return doc
