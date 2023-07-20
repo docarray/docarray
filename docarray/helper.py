@@ -248,13 +248,17 @@ def _shallow_copy_doc(doc):
     cls = doc.__class__
     shallow_copy = cls.__new__(cls)
 
-    field_set = set(doc.__fields_set__)
+    field_set = (
+        set(doc.__pydantic_fields_set__) if is_pydantic_v2 else set(doc.__fields_set__)
+    )
 
     field_key = '__pydantic_fields_set__' if is_pydantic_v2 else '__fields_set__'
 
     object.__setattr__(shallow_copy, field_key, field_set)
 
     for field_name, field_ in doc._docarray_fields.items():
+        if field_name == "__pydantic_extra__":
+            breakpoint()
         val = doc.__getattr__(field_name)
         setattr(shallow_copy, field_name, val)
 

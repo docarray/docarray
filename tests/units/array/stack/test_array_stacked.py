@@ -562,7 +562,6 @@ def test_doc_view_update(batch):
 
 def test_doc_view_nested(batch_nested_doc):
     batch, Doc, Inner = batch_nested_doc
-    # batch[0].__fields_set__
     batch[0].inner = Inner(hello='world')
     assert batch.inner[0].hello == 'world'
 
