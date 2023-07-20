@@ -279,7 +279,7 @@ def test_any_tensor_with_optional():
     tensor = torch.zeros(3, 224, 224)
 
     class ImageDoc(BaseDoc):
-        tensor: Optional[AnyTensor]
+        tensor: Optional[AnyTensor] = None
 
     class TopDoc(BaseDoc):
         img: ImageDoc
@@ -341,7 +341,7 @@ def test_stack_embedding():
 @pytest.mark.parametrize('tensor_backend', [TorchTensor, NdArray])
 def test_stack_none(tensor_backend):
     class MyDoc(BaseDoc):
-        tensor: Optional[AnyTensor]
+        tensor: Optional[AnyTensor] = None
 
     da = DocVec[MyDoc](
         [MyDoc(tensor=None) for _ in range(10)], tensor_type=tensor_backend
@@ -470,7 +470,7 @@ def test_torch_scalar():
 
 def test_np_nan():
     class MyDoc(BaseDoc):
-        scalar: Optional[NdArray]
+        scalar: Optional[NdArray] = None
 
     da = DocList[MyDoc]([MyDoc() for _ in range(3)])
     assert all(doc.scalar is None for doc in da)
