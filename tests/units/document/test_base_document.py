@@ -97,7 +97,7 @@ def nested_none_docs():
         simple_tens: NdArray[10]
 
     class NestedDoc(BaseDoc):
-        docs: Optional[DocList[SimpleDoc]]
+        docs: Optional[DocList[SimpleDoc]] = None
         hello: str = 'world'
 
     nested_docs = NestedDoc()
