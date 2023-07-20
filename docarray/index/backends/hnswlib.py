@@ -2,6 +2,7 @@ import glob
 import hashlib
 import os
 import sqlite3
+from collections import defaultdict
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import (
@@ -13,6 +14,7 @@ from typing import (
     List,
     Optional,
     Sequence,
+    Set,
     Tuple,
     Type,
     TypeVar,
@@ -30,16 +32,14 @@ from docarray.index.abstract import (
     _raise_not_composable,
     _raise_not_supported,
 )
-from docarray.index.backends.helper import (
-    _collect_query_args,
-    _execute_find_and_filter_query,
-)
+from docarray.index.backends.helper import _collect_query_args
 from docarray.proto import DocProto
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
 from docarray.typing.tensor.ndarray import NdArray
 from docarray.utils._internal._typing import safe_issubclass
 from docarray.utils._internal.misc import import_library, is_np_int
-from docarray.utils.find import _FindResult, _FindResultBatched
+from docarray.utils.filter import filter_docs
+from docarray.utils.find import FindResult, _FindResult, _FindResultBatched
 
 if TYPE_CHECKING:
     import hnswlib
@@ -66,6 +66,15 @@ if tf is not None:
 
 TSchema = TypeVar('TSchema', bound=BaseDoc)
 T = TypeVar('T', bound='HnswDocumentIndex')
+
+OPERATOR_MAPPING = {
+    '$eq': '=',
+    '$neq': '!=',
+    '$lt': '<',
+    '$lte': '<=',
+    '$gt': '>',
+    '$gte': '>=',
+}
 
 
 class HnswDocumentIndex(BaseDocIndex, Generic[TSchema]):
@@ -125,6 +134,7 @@ class HnswDocumentIndex(BaseDocIndex, Generic[TSchema]):
         self._sqlite_conn = sqlite3.connect(self._sqlite_db_path)
         self._logger.info('Connection to DB has been established')
         self._sqlite_cursor = self._sqlite_conn.cursor()
+        self._column_names: List[str] = []
         self._create_docs_table()
         self._sqlite_conn.commit()
         self._num_docs = self._get_num_docs_sqlite()
@@ -167,21 +177,22 @@ class HnswDocumentIndex(BaseDocIndex, Generic[TSchema]):
 
         work_dir: str = '.'
         default_column_config: Dict[Type, Dict[str, Any]] = field(
-            default_factory=lambda: {
-                np.ndarray: {
-                    'dim': -1,
-                    'index': True,  # if False, don't index at all
-                    'space': 'l2',  # 'l2', 'ip', 'cosine'
-                    'max_elements': 1024,
-                    'ef_construction': 200,
-                    'ef': 10,
-                    'M': 16,
-                    'allow_replace_deleted': True,
-                    'num_threads': 1,
+            default_factory=lambda: defaultdict(
+                dict,
+                {
+                    np.ndarray: {
+                        'dim': -1,
+                        'index': True,  # if False, don't index at all
+                        'space': 'l2',  # 'l2', 'ip', 'cosine'
+                        'max_elements': 1024,
+                        'ef_construction': 200,
+                        'ef': 10,
+                        'M': 16,
+                        'allow_replace_deleted': True,
+                        'num_threads': 1,
+                    },
                 },
-                # `None` is not a Type, but we allow it here anyway
-                None: {},  # type: ignore
-            }
+            )
         )
 
     @dataclass
@@ -205,6 +216,15 @@ class HnswDocumentIndex(BaseDocIndex, Generic[TSchema]):
         for allowed_type in HNSWLIB_PY_VEC_TYPES:
             if safe_issubclass(python_type, allowed_type):
                 return np.ndarray
+
+        type_map = {
+            int: 'INTEGER',
+            float: 'REAL',
+            str: 'TEXT',
+        }
+        for py_type, sqlite_type in type_map.items():
+            if safe_issubclass(python_type, py_type):
+                return sqlite_type
 
         return None  # all types allowed, but no db type needed
 
@@ -281,11 +301,8 @@ class HnswDocumentIndex(BaseDocIndex, Generic[TSchema]):
             raise ValueError(
                 f'args and kwargs not supported for `execute_query` on {type(self)}'
             )
-        find_res = _execute_find_and_filter_query(
-            doc_index=self,
-            query=query,
-        )
-        return find_res
+
+        return self._execute_find_and_filter_query(query)
 
     def _find_batched(
         self,
@@ -293,20 +310,9 @@ class HnswDocumentIndex(BaseDocIndex, Generic[TSchema]):
         limit: int,
         search_field: str = '',
     ) -> _FindResultBatched:
-        if self.num_docs() == 0:
-            return _FindResultBatched(documents=[], scores=[])  # type: ignore
-
-        limit = min(limit, self.num_docs())
-
-        index = self._hnsw_indices[search_field]
-        labels, distances = index.knn_query(queries, k=int(limit))
-        result_das = [
-            self._get_docs_sqlite_hashed_id(
-                ids_per_query.tolist(),
-            )
-            for ids_per_query in labels
-        ]
-        return _FindResultBatched(documents=result_das, scores=distances)
+        return self._search_and_filter(
+            queries=queries, limit=limit, search_field=search_field
+        )
 
     def _find(
         self, query: np.ndarray, limit: int, search_field: str = ''
@@ -327,11 +333,8 @@ class HnswDocumentIndex(BaseDocIndex, Generic[TSchema]):
         filter_query: Any,
         limit: int,
     ) -> DocList:
-        raise NotImplementedError(
-            f'{type(self)} does not support filter-only queries.'
-            f' To perform post-filtering on a query, use'
-            f' `build_query()` and `execute_query()`.'
-        )
+        rows = self._execute_filter(filter_query=filter_query, limit=limit)
+        return DocList[self.out_schema](self._doc_from_bytes(blob) for _, blob in rows)  # type: ignore[name-defined]
 
     def _filter_batched(
         self,
@@ -451,16 +454,45 @@ class HnswDocumentIndex(BaseDocIndex, Generic[TSchema]):
 
     # SQLite helpers
     def _create_docs_table(self):
-        self._sqlite_cursor.execute(
-            'CREATE TABLE IF NOT EXISTS docs (doc_id INTEGER PRIMARY KEY, data BLOB)'
-        )
+        columns: List[Tuple[str, str]] = []
+        for col, info in self._column_infos.items():
+            if (
+                col == 'id'
+                or '__' in col
+                or not info.db_type
+                or info.db_type == np.ndarray
+            ):
+                continue
+            columns.append((col, info.db_type))
+
+        columns_str = ', '.join(f'{name} {type}' for name, type in columns)
+        if columns_str:
+            columns_str = ', ' + columns_str
+
+        query = f'CREATE TABLE IF NOT EXISTS docs (doc_id INTEGER PRIMARY KEY, data BLOB{columns_str})'
+        self._sqlite_cursor.execute(query)
 
     def _send_docs_to_sqlite(self, docs: Sequence[BaseDoc]):
+        # Generate the IDs
         ids = (self._to_hashed_id(doc.id) for doc in docs)
-        self._sqlite_cursor.executemany(
-            'INSERT OR REPLACE INTO docs VALUES (?, ?)',
-            ((id_, self._doc_to_bytes(doc)) for id_, doc in zip(ids, docs)),
+
+        column_names = self._get_column_names()
+        # Construct the field names and placeholders for the SQL query
+        all_fields = ', '.join(column_names)
+        placeholders = ', '.join(['?'] * len(column_names))
+
+        # Prepare the SQL statement
+        query = f'INSERT OR REPLACE INTO docs ({all_fields}) VALUES ({placeholders})'
+
+        # Prepare the data for insertion
+        data_to_insert = (
+            (id_, self._doc_to_bytes(doc))
+            + tuple(getattr(doc, field) for field in column_names[2:])
+            for id_, doc in zip(ids, docs)
         )
+
+        # Execute the query
+        self._sqlite_cursor.executemany(query, data_to_insert)
 
     def _get_docs_sqlite_unsorted(self, univ_ids: Sequence[int], out: bool = True):
         for id_ in univ_ids:
@@ -540,3 +572,303 @@ class HnswDocumentIndex(BaseDocIndex, Generic[TSchema]):
                 id, fields[0], '__'.join(fields[1:])
             )
             return self._get_root_doc_id(cur_root_id, root, '')
+
+    def _get_column_names(self) -> List[str]:
+        """
+        Retrieves the column names of the 'docs' table in the SQLite database.
+        The column names are cached in `self._column_names` to prevent multiple queries to the SQLite database.
+
+        :return: A list of strings, where each string is a column name.
+        """
+        if not self._column_names:
+            self._sqlite_cursor.execute('PRAGMA table_info(docs)')
+            info = self._sqlite_cursor.fetchall()
+            self._column_names = [row[1] for row in info]
+        return self._column_names
+
+    def _search_and_filter(
+        self,
+        queries: np.ndarray,
+        limit: int,
+        search_field: str = '',
+        hashed_ids: Optional[Set[str]] = None,
+    ) -> _FindResultBatched:
+        """
+        Executes a search and filter operation on the database.
+
+        :param queries: A numpy array of queries.
+        :param limit: The maximum number of results to return.
+        :param search_field: The field to search in.
+        :param hashed_ids: A set of hashed IDs to filter the results with.
+        :return: An instance of _FindResultBatched, containing the matching
+            documents and their corresponding scores.
+        """
+        # If there are no documents or hashed_ids is an empty set, return an empty _FindResultBatched
+        if self.num_docs() == 0 or (hashed_ids is not None and len(hashed_ids) == 0):
+            return _FindResultBatched(documents=[], scores=[])  # type: ignore
+
+        # Set limit as the minimum of the provided limit and the total number of documents
+        limit = min(limit, self.num_docs())
+
+        # Ensure the search field is in the HNSW indices
+        if search_field not in self._hnsw_indices:
+            raise ValueError(
+                f"Search field {search_field} is not present in the HNSW indices"
+            )
+
+        index = self._hnsw_indices[search_field]
+
+        def accept_all(id):
+            """Accepts all IDs."""
+            return True
+
+        def accept_hashed_ids(id):
+            """Accepts IDs that are in hashed_ids."""
+            return id in hashed_ids
+
+        # Choose the appropriate filter function based on whether hashed_ids was provided
+        filter_function = accept_hashed_ids if hashed_ids else accept_all
+
+        # If hashed_ids is provided, k is the minimum of limit and the length of hashed_ids; else it is limit
+        k = min(limit, len(hashed_ids)) if hashed_ids else limit
+
+        labels, distances = index.knn_query(queries, k=k, filter=filter_function)
+
+        result_das = [
+            self._get_docs_sqlite_hashed_id(
+                ids_per_query.tolist(),
+            )
+            for ids_per_query in labels
+        ]
+
+        return _FindResultBatched(documents=result_das, scores=distances)
+
+    @classmethod
+    def _build_filter_query(
+        cls, query: Union[Dict, str], param_values: List[Any]
+    ) -> str:
+        """
+        Builds a filter query for database operations.
+
+        :param query: Query for filtering.
+        :param param_values: A list to store the parameters for the query.
+        :return: A string representing a SQL filter query.
+        """
+        if isinstance(query, dict):
+            if len(query) != 1:
+                raise ValueError("Each nested dict must have exactly one key")
+
+            key, value = next(iter(query.items()))
+
+            if key in ['$and', '$or']:
+                # Combine subqueries using the AND or OR operator
+                subqueries = [cls._build_filter_query(q, param_values) for q in value]
+                return f'({f" {key[1:].upper()} ".join(subqueries)})'
+            elif key == '$not':
+                # Negate the query
+                return f'NOT {cls._build_filter_query(value, param_values)}'
+            else:  # normal field
+                field = key
+                if not isinstance(value, dict) or len(value) != 1:
+                    raise ValueError(f"Invalid condition for field {field}")
+                operator_key, operator_value = next(iter(value.items()))
+
+                if operator_key == "$exists":
+                    # Check for the existence or non-existence of a field
+                    if operator_value:
+                        return f'{field} IS NOT NULL'
+                    else:
+                        return f'{field} IS NULL'
+                elif operator_key not in OPERATOR_MAPPING:
+                    raise ValueError(f"Invalid operator {operator_key}")
+                else:
+                    # If the operator is valid, create a placeholder and append the value to param_values
+                    operator = OPERATOR_MAPPING[operator_key]
+                    placeholder = '?'
+                    param_values.append(operator_value)
+                    return f'{field} {operator} {placeholder}'
+        else:
+            raise ValueError("Invalid query")
+
+    def _execute_filter(
+        self,
+        filter_query: Any,
+        limit: int,
+    ) -> List[Tuple[str, bytes]]:
+        """
+        Executes a filter query on the database.
+
+        :param filter_query: Query for filtering.
+        :param limit: Maximum number of rows to be fetched.
+        :return: A list of rows fetched from the database.
+        """
+        param_values: List[Any] = []
+        sql_query = self._build_filter_query(filter_query, param_values)
+        sql_query = f'SELECT doc_id, data FROM docs WHERE {sql_query} LIMIT {limit}'
+        return self._sqlite_cursor.execute(sql_query, param_values).fetchall()
+
+    def _execute_find_and_filter_query(
+        self, query: List[Tuple[str, Dict]]
+    ) -> FindResult:
+        """
+        Executes a query to find and filter documents.
+
+        :param query: A list of operations and their corresponding arguments.
+        :return: A FindResult object containing filtered documents and their scores.
+        """
+        # Dictionary to store the score of each document
+        doc_to_score: Dict[BaseDoc, Any] = {}
+
+        # Pre- and post-filter conditions
+        pre_filters: Dict[str, Dict] = {}
+        post_filters: Dict[str, Dict] = {}
+
+        # Define filter limits
+        pre_filter_limit = self.num_docs()
+        post_filter_limit = self.num_docs()
+
+        find_executed: bool = False
+
+        # Document list with output schema
+        out_docs: DocList = DocList[self.out_schema]()  # type: ignore[name-defined]
+
+        for op, op_kwargs in query:
+            if op == 'find':
+                hashed_ids: Optional[Set[str]] = None
+                if pre_filters:
+                    hashed_ids = self._pre_filtering(pre_filters, pre_filter_limit)
+
+                query_vector = self._get_vector_for_query_builder(op_kwargs)
+                # Perform search and filter if hashed_ids returned by pre-filtering is not empty
+                if not (pre_filters and not hashed_ids):
+                    # Returns batched output, so we need to get the first lists
+                    out_docs, scores = self._search_and_filter(  # type: ignore[assignment]
+                        queries=query_vector,
+                        limit=op_kwargs.get('limit', self.num_docs()),
+                        search_field=op_kwargs['search_field'],
+                        hashed_ids=hashed_ids,
+                    )
+                    out_docs = DocList[self.out_schema](out_docs[0])  # type: ignore[name-defined]
+                    doc_to_score.update(zip(out_docs.__getattribute__('id'), scores[0]))
+                find_executed = True
+            elif op == 'filter':
+                if find_executed:
+                    post_filters, post_filter_limit = self._update_filter_conditions(
+                        post_filters, op_kwargs, post_filter_limit
+                    )
+                else:
+                    pre_filters, pre_filter_limit = self._update_filter_conditions(
+                        pre_filters, op_kwargs, pre_filter_limit
+                    )
+            else:
+                raise ValueError(f'Query operation is not supported: {op}')
+
+        if post_filters:
+            out_docs = self._post_filtering(
+                out_docs, post_filters, post_filter_limit, find_executed
+            )
+
+        return self._prepare_out_docs(out_docs, doc_to_score)
+
+    def _update_filter_conditions(
+        self, filter_conditions: Dict, operation_args: Dict, filter_limit: int
+    ) -> Tuple[Dict, int]:
+        """
+        Updates filter conditions based on the operation arguments and updates the filter limit.
+
+        :param filter_conditions: Current filter conditions.
+        :param operation_args: Arguments of the operation to be executed.
+        :param filter_limit: Current filter limit.
+        :return: Updated filter conditions and filter limit.
+        """
+        # Use '$and' operator if filter_conditions is not empty, else use operation_args['filter_query']
+        updated_filter_conditions = (
+            {'$and': {**filter_conditions, **operation_args['filter_query']}}
+            if filter_conditions
+            else operation_args['filter_query']
+        )
+        # Update filter limit based on the operation_args limit
+        updated_filter_limit = min(
+            filter_limit, operation_args.get('limit', filter_limit)
+        )
+        return updated_filter_conditions, updated_filter_limit
+
+    def _pre_filtering(
+        self, pre_filters: Dict[str, Dict], pre_filter_limit: int
+    ) -> Set[str]:
+        """
+        Performs pre-filtering on the data.
+
+        :param pre_filters: Filter conditions.
+        :param pre_filter_limit: Limit for the filtering.
+        :return: A set of hashed IDs from the filtered rows.
+        """
+        rows = self._execute_filter(filter_query=pre_filters, limit=pre_filter_limit)
+        return set(hashed_id for hashed_id, _ in rows)
+
+    def _get_vector_for_query_builder(self, find_args: Dict[str, Any]) -> np.ndarray:
+        """
+        Prepares the query vector for search operation.
+
+        :param find_args: Arguments for the 'find' operation.
+        :return: A numpy array representing the query vector.
+        """
+        if isinstance(find_args['query'], BaseDoc):
+            query_vec = self._get_values_by_column(
+                [find_args['query']], find_args['search_field']
+            )[0]
+        else:
+            query_vec = find_args['query']
+        query_vec_np = self._to_numpy(query_vec)
+        query_batched = np.expand_dims(query_vec_np, axis=0)
+        return query_batched
+
+    def _post_filtering(
+        self,
+        out_docs: DocList,
+        post_filters: Dict[str, Dict],
+        post_filter_limit: int,
+        find_executed: bool,
+    ) -> DocList:
+        """
+        Performs post-filtering on the found documents.
+
+        :param out_docs: The documents found by the 'find' operation.
+        :param post_filters: The post-filter conditions.
+        :param post_filter_limit: Limit for the post-filtering.
+        :param find_executed: Whether 'find' operation was executed.
+        :return: Filtered documents as per the post-filter conditions.
+        """
+        if not find_executed:
+            out_docs = self.filter(post_filters, limit=self.num_docs())
+        else:
+            docs_cls = DocList.__class_getitem__(cast(Type[BaseDoc], self.out_schema))
+            out_docs = docs_cls(filter_docs(out_docs, post_filters))
+
+        if post_filters:
+            out_docs = out_docs[:post_filter_limit]
+
+        return out_docs
+
+    def _prepare_out_docs(
+        self, out_docs: DocList, doc_to_score: Dict[BaseDoc, Any]
+    ) -> FindResult:
+        """
+        Prepares output documents with their scores.
+
+        :param out_docs: The documents to be output.
+        :param doc_to_score: Mapping of documents to their scores.
+        :return: FindResult object with documents and their scores.
+        """
+        if out_docs:
+            # If the "find" operation isn't called through the query builder,
+            # all returned scores will be 0
+            docs_and_scores = zip(
+                out_docs, (doc_to_score.get(doc.id, 0) for doc in out_docs)
+            )
+            docs_sorted = sorted(docs_and_scores, key=lambda x: x[1])
+            out_docs, out_scores = zip(*docs_sorted)
+        else:
+            out_docs, out_scores = [], []  # type: ignore[assignment]
+
+        return FindResult(documents=out_docs, scores=out_scores)
