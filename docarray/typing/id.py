@@ -62,6 +62,7 @@ class ID(str, AbstractType):
         def __get_pydantic_core_schema__(
             cls, source: type[Any], handler: 'GetCoreSchemaHandler'
         ) -> core_schema.CoreSchema:
-            return core_schema.general_plain_validator_function(
+            return core_schema.general_before_validator_function(
                 cls.validate,
+                core_schema.str_schema(),
             )
