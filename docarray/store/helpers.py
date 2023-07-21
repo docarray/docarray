@@ -1,11 +1,20 @@
 # It is usually a bad idea to have a helper file because it means we don't know where to put the code (or haven't put much thought into it).
 # With that said, rules are meant to be broken, we will live with this for now.
 from contextlib import nullcontext
-from typing import Dict, Iterable, Iterator, NoReturn, Optional, Sequence, Type, TypeVar
+from typing import (
+    Dict,
+    Iterable,
+    Iterator,
+    Literal,
+    NoReturn,
+    Optional,
+    Sequence,
+    Type,
+    TypeVar,
+)
 
 from rich import filesize
 from typing_extensions import TYPE_CHECKING, Protocol
-from typing import Literal
 
 from docarray.utils._internal.progress_bar import _get_progressbar
 
@@ -113,7 +122,9 @@ T_Elem = TypeVar('T_Elem')
 class Streamable(Protocol):
     """A protocol for streamable objects."""
 
-    def to_bytes(self, protocol: Literal['pickle', 'protobuf'], compress: Optional[str]) -> bytes:
+    def to_bytes(
+        self, protocol: Literal['pickle', 'protobuf'], compress: Optional[str]
+    ) -> bytes:
         ...
 
     @classmethod
@@ -132,7 +143,8 @@ class ReadableBytes(Protocol):
 
 
 def _to_binary_stream(
-    self, protocol: Literal['pickle', 'protobuf'],
+    self,
+    protocol: Literal['pickle', 'protobuf'],
     iterator: Iterator['Streamable'],
     total: Optional[int] = None,
     compress: Optional[str] = None,
@@ -144,9 +156,9 @@ def _to_binary_stream(
     import pickle
 
     if protocol == 'pickle':
-        bstr = pickle.dumps(self)
+        pickle.dumps(self)
     elif protocol == 'protobuf':
-        bstr = self.to_protobuf().SerializePartialToString()
+        self.to_protobuf().SerializePartialToString()
     else:
         raise ValueError(
             f'protocol={protocol} is not supported. Can be only `protobuf` or '
@@ -183,7 +195,8 @@ T = TypeVar('T', bound=Streamable)
 
 
 def _from_binary_stream(
-    self, protocol: Literal['pickle', 'protobuf'],
+    self,
+    protocol: Literal['pickle', 'protobuf'],
     cls: Type[T],
     stream: ReadableBytes,
     total: Optional[int] = None,
@@ -196,15 +209,15 @@ def _from_binary_stream(
     import pickle
 
     if protocol == 'pickle':
-        bstr = pickle.dumps(self)
+        pickle.dumps(self)
     elif protocol == 'protobuf':
-        bstr = self.to_protobuf().SerializePartialToString()
+        self.to_protobuf().SerializePartialToString()
     else:
         raise ValueError(
             f'protocol={protocol} is not supported. Can be only `protobuf` or '
             f'pickle protocols 0-5.'
         )
-    
+
     if show_progress:
         pbar, t = _get_progressbar(
             'Deserializing', disable=not show_progress, total=total
