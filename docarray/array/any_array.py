@@ -23,7 +23,7 @@ from docarray.base_doc import BaseDoc
 from docarray.display.document_array_summary import DocArraySummary
 from docarray.exceptions.exceptions import UnusableObjectError
 from docarray.typing.abstract_type import AbstractType
-from docarray.utils._internal._typing import change_cls_name
+from docarray.utils._internal._typing import change_cls_name, safe_issubclass
 
 if TYPE_CHECKING:
     from docarray.proto import DocListProto, NodeProto
@@ -53,7 +53,7 @@ class AnyDocArray(Sequence[T_doc], Generic[T_doc], AbstractType):
         if not isinstance(item, type):
             return Generic.__class_getitem__.__func__(cls, item)  # type: ignore
             # this do nothing that checking that item is valid type var or str
-        if not issubclass(item, BaseDoc):
+        if not safe_issubclass(item, BaseDoc):
             raise ValueError(
                 f'{cls.__name__}[item] item should be a Document not a {item} '
             )

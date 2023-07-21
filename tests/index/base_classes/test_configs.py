@@ -35,7 +35,6 @@ class DBConfig(BaseDocIndex.DBConfig):
 
 @dataclass
 class RuntimeConfig(BaseDocIndex.RuntimeConfig):
-
     default_ef: int = 50
 
 
@@ -61,6 +60,7 @@ class DummyDocIndex(BaseDocIndex):
     _filter_batched = _identity
     _text_search = _identity
     _text_search_batched = _identity
+    _doc_exists = _identity
 
 
 def test_defaults():

@@ -5,7 +5,18 @@ import numpy as np
 from docarray.typing.tensor.image.abstract_image_tensor import AbstractImageTensor
 from docarray.typing.tensor.image.image_ndarray import ImageNdArray
 from docarray.typing.tensor.tensor import AnyTensor
-from docarray.utils._internal.misc import is_tf_available, is_torch_available
+from docarray.utils._internal.misc import (
+    is_jax_available,
+    is_tf_available,
+    is_torch_available,
+)
+
+jax_available = is_jax_available()
+if jax_available:
+    import jax.numpy as jnp  # type: ignore
+
+    from docarray.typing.tensor.image.image_jax_array import ImageJaxArray
+    from docarray.typing.tensor.jaxarray import JaxArray
 
 torch_available = is_torch_available()
 if torch_available:
@@ -94,6 +105,11 @@ class ImageTensor(AnyTensor, AbstractImageTensor):
                 return cast(ImageTensorFlowTensor, value)
             elif isinstance(value, tf.Tensor):
                 return ImageTensorFlowTensor._docarray_from_native(value)  # noqa
+        if jax_available:
+            if isinstance(value, JaxArray):
+                return cast(ImageJaxArray, value)
+            elif isinstance(value, jnp.ndarray):
+                return ImageJaxArray._docarray_from_native(value)  # noqa
         try:
             return ImageNdArray.validate(value, field, config)
         except Exception:  # noqa

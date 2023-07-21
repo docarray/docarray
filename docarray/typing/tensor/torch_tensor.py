@@ -6,7 +6,11 @@ import numpy as np
 from docarray.base_doc.base_node import BaseNode
 from docarray.typing.proto_register import _register_proto
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
-from docarray.utils._internal.misc import import_library, is_tf_available
+from docarray.utils._internal.misc import (
+    import_library,
+    is_jax_available,
+    is_tf_available,
+)
 
 if TYPE_CHECKING:
     import torch
@@ -21,6 +25,10 @@ else:
 tf_available = is_tf_available()
 if tf_available:
     import tensorflow as tf  # type: ignore
+
+jax_available = is_jax_available()
+if jax_available:
+    import jax.numpy as jnp
 
 T = TypeVar('T', bound='TorchTensor')
 ShapeT = TypeVar('ShapeT')
@@ -132,6 +140,8 @@ class TorchTensor(
             return cls._docarray_from_ndarray(value.numpy())
         elif isinstance(value, np.ndarray):
             return cls._docarray_from_ndarray(value)
+        elif jax_available and isinstance(value, jnp.ndarray):
+            return cls._docarray_from_ndarray(value.__array__())
         else:
             try:
                 arr: torch.Tensor = torch.tensor(value)
@@ -261,3 +271,10 @@ class TorchTensor(
     def _docarray_to_ndarray(self) -> np.ndarray:
         """cast itself to a numpy array"""
         return self.detach().cpu().numpy()
+
+    def new_empty(self, *args, **kwargs):
+        """
+        This method enables the deepcopy of `TorchTensor` by returning another instance of this subclass.
+        If this function is not implemented, the deepcopy will throw an RuntimeError from Torch.
+        """
+        return self.__class__(*args, **kwargs)

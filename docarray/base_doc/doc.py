@@ -27,6 +27,7 @@ from docarray.base_doc.io.json import orjson_dumps_and_decode
 from docarray.base_doc.mixins import IOMixin, UpdateMixin
 from docarray.typing import ID
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
+from docarray.utils._internal._typing import safe_issubclass
 
 if TYPE_CHECKING:
     from pydantic import Protocol
@@ -311,7 +312,11 @@ class BaseDoc(BaseModel, IOMixin, UpdateMixin, BaseNode):
     ) -> 'DictStrAny':
         """
         Generate a dictionary representation of the model, optionally specifying
-        which fields to include or exclude.
+        which fields to include or exclude. The method also includes the attributes
+        and their values when attributes are objects of class types which can include
+        nesting. This method differs from the `dict()` method of python which only
+        prints the methods and attributes of the object and only the type of the
+        attribute when attributes are types of other class.
 
         """
 
@@ -347,7 +352,7 @@ class BaseDoc(BaseModel, IOMixin, UpdateMixin, BaseNode):
 
             type_ = self._get_field_type(field)
             if isinstance(type_, type) and (
-                issubclass(type_, DocList) or issubclass(type_, DocVec)
+                safe_issubclass(type_, DocList) or safe_issubclass(type_, DocVec)
             ):
                 docarray_exclude_fields.append(field)
 

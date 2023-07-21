@@ -67,9 +67,6 @@ class QdrantDocumentIndex(BaseDocIndex, Generic[TSchema]):
 
     def __init__(self, db_config=None, **kwargs):
         """Initialize QdrantDocumentIndex"""
-        if db_config is not None and getattr(db_config, 'index_name'):
-            db_config.collection_name = db_config.index_name
-
         super().__init__(db_config=db_config, **kwargs)
         self._db_config: QdrantDocumentIndex.DBConfig = cast(
             QdrantDocumentIndex.DBConfig, self._db_config
@@ -101,7 +98,11 @@ class QdrantDocumentIndex(BaseDocIndex, Generic[TSchema]):
                 'To do so, use the syntax: QdrantDocumentIndex[DocumentType]'
             )
 
-        return self._db_config.collection_name or default_collection_name
+        return (
+            self._db_config.collection_name
+            or self._db_config.index_name
+            or default_collection_name
+        )
 
     @property
     def index_name(self):
@@ -265,7 +266,7 @@ class QdrantDocumentIndex(BaseDocIndex, Generic[TSchema]):
         if any(issubclass(python_type, vt) for vt in QDRANT_PY_VECTOR_TYPES):
             return 'vector'
 
-        if issubclass(python_type, docarray.typing.id.ID):
+        if safe_issubclass(python_type, docarray.typing.id.ID):
             return 'id'
 
         return 'payload'
@@ -317,21 +318,16 @@ class QdrantDocumentIndex(BaseDocIndex, Generic[TSchema]):
         """
         return self._client.count(collection_name=self.collection_name).count
 
-    def __contains__(self, item: BaseDoc) -> bool:
-        if safe_issubclass(type(item), BaseDoc):
-            response, _ = self._client.scroll(
-                collection_name=self.index_name,
-                scroll_filter=rest.Filter(
-                    must=[
-                        rest.HasIdCondition(has_id=[self._to_qdrant_id(item.id)]),
-                    ],
-                ),
-            )
-            return len(response) > 0
-        else:
-            raise TypeError(
-                f"item must be an instance of BaseDoc or its subclass, not '{type(item).__name__}'"
-            )
+    def _doc_exists(self, doc_id: str) -> bool:
+        response, _ = self._client.scroll(
+            collection_name=self.index_name,
+            scroll_filter=rest.Filter(
+                must=[
+                    rest.HasIdCondition(has_id=[self._to_qdrant_id(doc_id)]),
+                ],
+            ),
+        )
+        return len(response) > 0
 
     def _del_items(self, doc_ids: Sequence[str]):
         items = self._get_items(doc_ids)
@@ -568,7 +564,7 @@ class QdrantDocumentIndex(BaseDocIndex, Generic[TSchema]):
 
     def _filter_by_parent_id(self, id: str) -> Optional[List[str]]:
         response, _ = self._client.scroll(
-            collection_name=self._db_config.collection_name,  # type: ignore
+            collection_name=self.collection_name,  # type: ignore
             scroll_filter=rest.Filter(
                 must=[
                     rest.FieldCondition(
@@ -587,7 +583,7 @@ class QdrantDocumentIndex(BaseDocIndex, Generic[TSchema]):
         vectors: Dict[str, List[float]] = {}
         payload: Dict[str, Any] = {'__generated_vectors': []}
         for column_name, column_info in self._column_infos.items():
-            if issubclass(column_info.docarray_type, AnyDocArray):
+            if safe_issubclass(column_info.docarray_type, AnyDocArray):
                 continue
             if column_info.db_type in ['id', 'payload']:
                 payload[column_name] = row.get(column_name)

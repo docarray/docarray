@@ -31,8 +31,12 @@ from docarray.base_doc import AnyDoc, BaseDoc
 from docarray.base_doc.mixins.io import _type_to_protobuf
 from docarray.typing import NdArray
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
-from docarray.utils._internal._typing import is_tensor_union
-from docarray.utils._internal.misc import is_tf_available, is_torch_available
+from docarray.utils._internal._typing import is_tensor_union, safe_issubclass
+from docarray.utils._internal.misc import (
+    is_jax_available,
+    is_tf_available,
+    is_torch_available,
+)
 
 if TYPE_CHECKING:
     import csv
@@ -59,6 +63,14 @@ if tf_available:
     from docarray.typing import TensorFlowTensor  # noqa: F401
 else:
     TensorFlowTensor = None  # type: ignore
+
+jnp_available = is_jax_available()
+if jnp_available:
+    import jax.numpy as jnp  # type: ignore
+
+    from docarray.typing import JaxArray  # noqa: F401
+else:
+    JaxArray = None  # type: ignore
 
 T_doc = TypeVar('T_doc', bound=BaseDoc)
 T = TypeVar('T', bound='DocVec')
@@ -198,7 +210,7 @@ class DocVec(IOMixinArray, AnyDocArray[T_doc]):
         for field_name, field in self.doc_type.__fields__.items():
             # here we iterate over the field of the docs schema, and we collect the data
             # from each document and put them in the corresponding column
-            field_type = self.doc_type._get_field_type(field_name)
+            field_type: Type = self.doc_type._get_field_type(field_name)
 
             is_field_required = self.doc_type.__fields__[field_name].required
 
@@ -231,7 +243,7 @@ class DocVec(IOMixinArray, AnyDocArray[T_doc]):
                 field_type = tensor_type
             # all generic tensor types such as AnyTensor, ImageTensor, etc. are subclasses of AbstractTensor.
             # Perform check only if the field_type is not an alias and is a subclass of AbstractTensor
-            elif not isinstance(field_type, typingGenericAlias) and issubclass(
+            elif not isinstance(field_type, typingGenericAlias) and safe_issubclass(
                 field_type, AbstractTensor
             ):
                 # check if the tensor associated with the field_name in the document is a subclass of the tensor_type
@@ -239,11 +251,11 @@ class DocVec(IOMixinArray, AnyDocArray[T_doc]):
                 # then we change the field_type to ImageTensor, since AnyTensor is a union of all the tensor types
                 # and does not override any methods of specific tensor types
                 tensor = getattr(docs[0], field_name)
-                if issubclass(tensor.__class__, tensor_type):
+                if safe_issubclass(tensor.__class__, tensor_type):
                     field_type = tensor_type
 
             if isinstance(field_type, type):
-                if tf_available and issubclass(field_type, TensorFlowTensor):
+                if tf_available and safe_issubclass(field_type, TensorFlowTensor):
                     # tf.Tensor does not allow item assignment, therefore the
                     # optimized way
                     # of initializing an empty array and assigning values to it
@@ -262,8 +274,21 @@ class DocVec(IOMixinArray, AnyDocArray[T_doc]):
 
                         stacked: tf.Tensor = tf.stack(tf_stack)
                         tensor_columns[field_name] = TensorFlowTensor(stacked)
+                elif jnp_available and issubclass(field_type, JaxArray):
+                    if first_doc_is_none:
+                        _verify_optional_field_of_docs(docs)
+                        tensor_columns[field_name] = None
+                    else:
+                        tf_stack = []
+                        for i, doc in enumerate(docs):
+                            val = getattr(doc, field_name)
+                            _check_doc_field_not_none(field_name, doc)
+                            tf_stack.append(val.tensor)
 
-                elif issubclass(field_type, AbstractTensor):
+                        jax_stacked: jnp.ndarray = jnp.stack(tf_stack)
+                        tensor_columns[field_name] = JaxArray(jax_stacked)
+
+                elif safe_issubclass(field_type, AbstractTensor):
                     if first_doc_is_none:
                         _verify_optional_field_of_docs(docs)
                         tensor_columns[field_name] = None
@@ -291,7 +316,7 @@ class DocVec(IOMixinArray, AnyDocArray[T_doc]):
                             val = getattr(doc, field_name)
                             cast(AbstractTensor, tensor_columns[field_name])[i] = val
 
-                elif issubclass(field_type, BaseDoc):
+                elif safe_issubclass(field_type, BaseDoc):
                     if first_doc_is_none:
                         _verify_optional_field_of_docs(docs)
                         doc_columns[field_name] = None
@@ -307,7 +332,7 @@ class DocVec(IOMixinArray, AnyDocArray[T_doc]):
                                 tensor_type=self.tensor_type
                             )
 
-                elif issubclass(field_type, AnyDocArray):
+                elif safe_issubclass(field_type, AnyDocArray):
                     if first_doc_is_none:
                         _verify_optional_field_of_docs(docs)
                         docs_vec_columns[field_name] = None
@@ -362,7 +387,7 @@ class DocVec(IOMixinArray, AnyDocArray[T_doc]):
             return value
         elif isinstance(value, DocList):
             if (
-                issubclass(value.doc_type, cls.doc_type)
+                safe_issubclass(value.doc_type, cls.doc_type)
                 or value.doc_type == cls.doc_type
             ):
                 return cast(T, value.to_doc_vec())
@@ -481,7 +506,7 @@ class DocVec(IOMixinArray, AnyDocArray[T_doc]):
         # set data and prepare columns
         processed_value: T
         if isinstance(value, DocList):
-            if not issubclass(value.doc_type, self.doc_type):
+            if not safe_issubclass(value.doc_type, self.doc_type):
                 raise TypeError(
                     f'{value} schema : {value.doc_type} is not compatible with '
                     f'this DocVec schema : {self.doc_type}'
@@ -491,7 +516,7 @@ class DocVec(IOMixinArray, AnyDocArray[T_doc]):
             )  # we need to copy data here
 
         elif isinstance(value, DocVec):
-            if not issubclass(value.doc_type, self.doc_type):
+            if not safe_issubclass(value.doc_type, self.doc_type):
                 raise TypeError(
                     f'{value} schema : {value.doc_type} is not compatible with '
                     f'this DocVec schema : {self.doc_type}'
@@ -835,7 +860,6 @@ class DocVec(IOMixinArray, AnyDocArray[T_doc]):
             unstacked_doc_column[field] = doc_col.to_doc_list() if doc_col else None
 
         for field, da_col in self._storage.docs_vec_columns.items():
-
             unstacked_da_column[field] = (
                 [docs.to_doc_list() for docs in da_col] if da_col else None
             )

@@ -23,6 +23,7 @@ import numpy as np
 from docarray.base_doc.io.json import orjson_dumps
 from docarray.computation import AbstractComputationalBackend
 from docarray.typing.abstract_type import AbstractType
+from docarray.utils._internal._typing import safe_issubclass
 
 if TYPE_CHECKING:
     from pydantic import BaseConfig
@@ -44,7 +45,7 @@ class _ParametrizedMeta(type):
     This metaclass ensures that instance, subclass and equality checks on parametrized Tensors
     are handled as expected:
 
-    assert issubclass(TorchTensor[128], TorchTensor[128])
+    assert safe_issubclass(TorchTensor[128], TorchTensor[128])
     t = parse_obj_as(TorchTensor[128], torch.zeros(128))
     assert isinstance(t, TorchTensor[128])
     TorchTensor[128] == TorchTensor[128]
@@ -90,7 +91,7 @@ class _ParametrizedMeta(type):
                 ):
                     return False
                 return any(
-                    issubclass(candidate, _cls.__unparametrizedcls__)
+                    safe_issubclass(candidate, _cls.__unparametrizedcls__)
                     for candidate in type(instance).mro()
                 )
             return any(issubclass(candidate, cls) for candidate in type(instance).mro())

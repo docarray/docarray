@@ -1,13 +1,13 @@
 import typing
 from abc import ABC, abstractmethod
-from typing import TYPE_CHECKING, Any, List, Optional, Tuple, TypeVar, Union
+from typing import TYPE_CHECKING, Any, List, Optional, Tuple, TypeVar, Union, Iterable
 
 if TYPE_CHECKING:
     import numpy as np
 
 # In practice all of the below will be the same type
 TTensor = TypeVar('TTensor')
-TTensorRetrieval = TypeVar('TTensorRetrieval')
+TTensorRetrieval = TypeVar('TTensorRetrieval', bound=Iterable)
 TTensorMetrics = TypeVar('TTensorMetrics')
 
 

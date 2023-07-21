@@ -64,7 +64,8 @@ jobs:
           python -m pip install --upgrade pip
           python -m pip install poetry
           poetry install --without dev
-          poetry run pip install tensorflow==2.11.0
+          poetry run pip install tensorflow==2.12.0
+          poetry run pip install jax
       - name: Test basic import
         run: poetry run python -c 'from docarray import DocList, BaseDoc'
 
@@ -86,7 +87,7 @@ jobs:
 
 
   docarray-test:
-    needs: [lint-ruff, check-black, import-test]
+    needs: [import-test]
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -111,27 +112,30 @@ jobs:
       - name: Test
         id: test
         run: |
-          poetry run pytest -m "not (tensorflow or benchmark or index)" ${{ matrix.test-path }} --ignore=tests/integrations/store/test_jac.py
+          poetry run pytest -m "not (tensorflow or benchmark or index or jax)" --cov=docarray --cov-report=xml ${{ matrix.test-path }} --ignore=tests/integrations/store/test_jac.py
+          echo "flag it as docarray for codeoverage"
+          echo "codecov_flag=docarray" >> $GITHUB_OUTPUT
         timeout-minutes: 30
         env:
           JINA_AUTH_TOKEN: "${{ secrets.JINA_AUTH_TOKEN }}"
-#      - name: Check codecov file
-#        id: check_files
-#        uses: andstor/file-existence-action@v1
-#        with:
-#          files: "coverage.xml"
-#      - name: Upload coverage from test to Codecov
-#        uses: codecov/codecov-action@v3.1.1
-#        if: steps.check_files.outputs.files_exists == 'true' && ${{ matrix.python-version }} == '3.8'
-#        with:
-#          file: coverage.xml
-#          flags: ${{ steps.test.outputs.codecov_flag }}
-#          fail_ci_if_error: false
-#          token: ${{ secrets.CODECOV_TOKEN }} # not required for public repos
+      - name: Check codecov file
+        id: check_files
+        uses: andstor/file-existence-action@v1
+        with:
+          files: "coverage.xml"
+      - name: Upload coverage from test to Codecov
+        uses: codecov/codecov-action@v3.1.1
+        if: steps.check_files.outputs.files_exists == 'true' && ${{ matrix.python-version }} == '3.8'
+        with:
+          file: coverage.xml
+          name: benchmark-test-codecov
+          flags: ${{ steps.test.outputs.codecov_flag }}
+          fail_ci_if_error: false
+
 
 
   docarray-test-jac:
-    needs: [lint-ruff, check-black, import-test]
+    needs: [import-test]
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -155,14 +159,29 @@ jobs:
       - name: Test
         id: test
         run: |
-          poetry run pytest -m "not (tensorflow or benchmark or index)" tests/integrations/store/test_jac.py
+          poetry run pytest -m "not (tensorflow or benchmark or index or jax)" --cov=docarray --cov-report=xml tests/integrations/store/test_jac.py
+          echo "flag it as docarray for codeoverage"
+          echo "codecov_flag=docarray" >> $GITHUB_OUTPUT
         timeout-minutes: 30
         env:
           JINA_AUTH_TOKEN: "${{ secrets.JINA_AUTH_TOKEN }}"
+      - name: Check codecov file
+        id: check_files
+        uses: andstor/file-existence-action@v1
+        with:
+          files: "coverage.xml"
+      - name: Upload coverage from test to Codecov
+        uses: codecov/codecov-action@v3.1.1
+        if: steps.check_files.outputs.files_exists == 'true' && ${{ matrix.python-version }} == '3.8'
+        with:
+          file: coverage.xml
+          name: benchmark-test-codecov
+          flags: ${{ steps.test.outputs.codecov_flag }}
+          fail_ci_if_error: false
 
 
   docarray-test-proto3:
-    needs: [lint-ruff, check-black, import-test]
+    needs: [import-test]
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -179,24 +198,39 @@ jobs:
           python -m pip install --upgrade pip
           python -m pip install poetry
           poetry install --all-extras
-          poetry run pip install protobuf==3.19.0 # we check that we support 3.19
+          poetry run pip install protobuf==3.20.0 # we check that we support 3.19
           sudo apt-get update
           sudo apt-get install --no-install-recommends ffmpeg
       - name: Test
         id: test
         run: |
-          poetry run pytest -m 'proto' tests
+          poetry run pytest -m 'proto' --cov=docarray --cov-report=xml tests
+          echo "flag it as docarray for codeoverage"
+          echo "codecov_flag=docarray" >> $GITHUB_OUTPUT
         timeout-minutes: 30
+      - name: Check codecov file
+        id: check_files
+        uses: andstor/file-existence-action@v1
+        with:
+          files: "coverage.xml"
+      - name: Upload coverage from test to Codecov
+        uses: codecov/codecov-action@v3.1.1
+        if: steps.check_files.outputs.files_exists == 'true' && ${{ matrix.python-version }} == '3.8'
+        with:
+          file: coverage.xml
+          name: benchmark-test-codecov
+          flags: ${{ steps.test.outputs.codecov_flag }}
+          fail_ci_if_error: false
 
 
   docarray-doc-index:
-    needs: [lint-ruff, check-black, import-test]
+    needs: [import-test]
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
         python-version: [3.8]
-        db_test_folder: [base_classes, elastic, hnswlib, qdrant, weaviate]
+        db_test_folder: [base_classes, elastic, hnswlib, qdrant, weaviate, redis, milvus]
     steps:
       - uses: actions/checkout@v2.5.0
       - name: Set up Python ${{ matrix.python-version }}
@@ -208,20 +242,35 @@ jobs:
           python -m pip install --upgrade pip
           python -m pip install poetry
           poetry install --all-extras
-          poetry run pip install protobuf==3.19.0
-          poetry run pip install tensorflow==2.11.0
+          poetry run pip install protobuf==3.20.0
+          poetry run pip install tensorflow==2.12.0
           sudo apt-get update
           sudo apt-get install --no-install-recommends ffmpeg
 
       - name: Test
         id: test
         run: |
-          poetry run pytest -m 'index and not elasticv8' tests/index/${{ matrix.db_test_folder }}
+          poetry run pytest -m 'index and not elasticv8' --cov=docarray --cov-report=xml tests/index/${{ matrix.db_test_folder }}
+          echo "flag it as docarray for codeoverage"
+          echo "codecov_flag=docarray" >> $GITHUB_OUTPUT
         timeout-minutes: 30
+      - name: Check codecov file
+        id: check_files
+        uses: andstor/file-existence-action@v1
+        with:
+          files: "coverage.xml"
+      - name: Upload coverage from test to Codecov
+        uses: codecov/codecov-action@v3.1.1
+        if: steps.check_files.outputs.files_exists == 'true' && ${{ matrix.python-version }} == '3.8'
+        with:
+          file: coverage.xml
+          name: benchmark-test-codecov
+          flags: ${{ steps.test.outputs.codecov_flag }}
+          fail_ci_if_error: false
 
 
   docarray-elastic-v8:
-    needs: [lint-ruff, check-black, import-test]
+    needs: [import-test]
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -238,8 +287,8 @@ jobs:
           python -m pip install --upgrade pip
           python -m pip install poetry
           poetry install --all-extras
-          poetry run pip install protobuf==3.19.0
-          poetry run pip install tensorflow==2.11.0
+          poetry run pip install protobuf==3.20.0
+          poetry run pip install tensorflow==2.12.0
           poetry run pip install elasticsearch==8.6.2
           sudo apt-get update
           sudo apt-get install --no-install-recommends ffmpeg
@@ -247,11 +296,26 @@ jobs:
       - name: Test
         id: test
         run: |
-          poetry run pytest -m 'index and elasticv8' tests
+          poetry run pytest -m 'index and elasticv8' --cov=docarray --cov-report=xml tests
+          echo "flag it as docarray for codeoverage"
+          echo "codecov_flag=docarray" >> $GITHUB_OUTPUT
         timeout-minutes: 30
+      - name: Check codecov file
+        id: check_files
+        uses: andstor/file-existence-action@v1
+        with:
+          files: "coverage.xml"
+      - name: Upload coverage from test to Codecov
+        uses: codecov/codecov-action@v3.1.1
+        if: steps.check_files.outputs.files_exists == 'true' && ${{ matrix.python-version }} == '3.8'
+        with:
+          file: coverage.xml
+          name: benchmark-test-codecov
+          flags: ${{ steps.test.outputs.codecov_flag }}
+          fail_ci_if_error: false
 
   docarray-test-tensorflow:
-    needs: [lint-ruff, check-black, import-test]
+    needs: [import-test]
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -268,19 +332,78 @@ jobs:
           python -m pip install --upgrade pip
           python -m pip install poetry
           poetry install --all-extras
-          poetry run pip install protobuf==3.19.0
-          poetry run pip install tensorflow==2.11.0
+          poetry run pip install protobuf==3.20.0
+          poetry run pip install tensorflow==2.12.0
           sudo apt-get update
           sudo apt-get install --no-install-recommends ffmpeg
 
       - name: Test
         id: test
         run: |
-          poetry run pytest -m 'tensorflow' tests
+          poetry run pytest -m 'tensorflow' --cov=docarray --cov-report=xml tests
+          echo "flag it as docarray for codeoverage"
+          echo "codecov_flag=docarray" >> $GITHUB_OUTPUT
         timeout-minutes: 30
+      - name: Check codecov file
+        id: check_files
+        uses: andstor/file-existence-action@v1
+        with:
+          files: "coverage.xml"
+      - name: Upload coverage from test to Codecov
+        uses: codecov/codecov-action@v3.1.1
+        if: steps.check_files.outputs.files_exists == 'true' && ${{ matrix.python-version }} == '3.8'
+        with:
+          file: coverage.xml
+          name: benchmark-test-codecov
+          flags: ${{ steps.test.outputs.codecov_flag }}
+          fail_ci_if_error: false
+
+  docarray-test-jax:
+    needs: [import-test]
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: [3.8]
+    steps:
+      - uses: actions/checkout@v2.5.0
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Prepare environment
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install poetry
+          poetry install --all-extras
+          poetry run pip install jaxlib
+          poetry run pip install jax
+
+      - name: Test
+        id: test
+        run: |
+          poetry run pytest -m 'jax' --cov=docarray --cov-report=xml tests
+          echo "flag it as docarray for codeoverage"
+          echo "codecov_flag=docarray" >> $GITHUB_OUTPUT
+        timeout-minutes: 30
+      - name: Check codecov file
+        id: check_files
+        uses: andstor/file-existence-action@v1
+        with:
+          files: "coverage.xml"
+      - name: Upload coverage from test to Codecov
+        uses: codecov/codecov-action@v3.1.1
+        if: steps.check_files.outputs.files_exists == 'true' && ${{ matrix.python-version }} == '3.8'
+        with:
+          file: coverage.xml
+          name: benchmark-test-codecov
+          flags: ${{ steps.test.outputs.codecov_flag }}
+          fail_ci_if_error: false
+
+
 
   docarray-test-benchmarks:
-    needs: [lint-ruff, check-black, import-test]
+    needs: [import-test]
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -301,10 +424,25 @@ jobs:
       - name: Test
         id: test
         run: |
-          poetry run pytest -m 'benchmark' tests
+          poetry run pytest -m 'benchmark' --cov=docarray --cov-report=xml tests
+          echo "flag it as docarray for codeoverage"
+          echo "codecov_flag=docarray" >> $GITHUB_OUTPUT
         timeout-minutes: 30
+      - name: Check codecov file
+        id: check_files
+        uses: andstor/file-existence-action@v1
+        with:
+          files: "coverage.xml"
+      - name: Upload coverage from test to Codecov
+        uses: codecov/codecov-action@v3.1.1
+        if: steps.check_files.outputs.files_exists == 'true' && ${{ matrix.python-version }} == '3.8'
+        with:
+          file: coverage.xml
+          name: benchmark-test-codecov
+          flags: ${{ steps.test.outputs.codecov_flag }}
+          fail_ci_if_error: false
 
-  # just for blocking the merge until all parallel core-test are successful
+  # just for blocking the merge until all parallel tests are successful
   success-all-test:
     needs: [docarray-test, docarray-test-proto3, docarray-doc-index, docarray-elastic-v8, docarray-test-tensorflow, docarray-test-benchmarks, import-test, check-black, check-mypy, lint-ruff]
     if: always()
