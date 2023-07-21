@@ -613,7 +613,7 @@ class HnswDocumentIndex(BaseDocIndex, Generic[TSchema]):
         # Ensure the search field is in the HNSW indices
         if search_field not in self._hnsw_indices:
             raise ValueError(
-                f"Search field {search_field} is not present in the HNSW indices"
+                f'Search field {search_field} is not present in the HNSW indices'
             )
 
         index = self._hnsw_indices[search_field]
@@ -654,41 +654,41 @@ class HnswDocumentIndex(BaseDocIndex, Generic[TSchema]):
         :param param_values: A list to store the parameters for the query.
         :return: A string representing a SQL filter query.
         """
-        if isinstance(query, dict):
-            if len(query) != 1:
-                raise ValueError("Each nested dict must have exactly one key")
+        if not isinstance(query, dict):
+            raise ValueError('Invalid query')
 
-            key, value = next(iter(query.items()))
+        if len(query) != 1:
+            raise ValueError('Each nested dict must have exactly one key')
 
-            if key in ['$and', '$or']:
-                # Combine subqueries using the AND or OR operator
-                subqueries = [cls._build_filter_query(q, param_values) for q in value]
-                return f'({f" {key[1:].upper()} ".join(subqueries)})'
-            elif key == '$not':
-                # Negate the query
-                return f'NOT {cls._build_filter_query(value, param_values)}'
-            else:  # normal field
-                field = key
-                if not isinstance(value, dict) or len(value) != 1:
-                    raise ValueError(f"Invalid condition for field {field}")
-                operator_key, operator_value = next(iter(value.items()))
+        key, value = next(iter(query.items()))
 
-                if operator_key == "$exists":
-                    # Check for the existence or non-existence of a field
-                    if operator_value:
-                        return f'{field} IS NOT NULL'
-                    else:
-                        return f'{field} IS NULL'
-                elif operator_key not in OPERATOR_MAPPING:
-                    raise ValueError(f"Invalid operator {operator_key}")
+        if key in ['$and', '$or']:
+            # Combine subqueries using the AND or OR operator
+            subqueries = [cls._build_filter_query(q, param_values) for q in value]
+            return f'({f" {key[1:].upper()} ".join(subqueries)})'
+        elif key == '$not':
+            # Negate the query
+            return f'NOT {cls._build_filter_query(value, param_values)}'
+        else:  # normal field
+            field = key
+            if not isinstance(value, dict) or len(value) != 1:
+                raise ValueError(f'Invalid condition for field {field}')
+            operator_key, operator_value = next(iter(value.items()))
+
+            if operator_key == "$exists":
+                # Check for the existence or non-existence of a field
+                if operator_value:
+                    return f'{field} IS NOT NULL'
                 else:
-                    # If the operator is valid, create a placeholder and append the value to param_values
-                    operator = OPERATOR_MAPPING[operator_key]
-                    placeholder = '?'
-                    param_values.append(operator_value)
-                    return f'{field} {operator} {placeholder}'
-        else:
-            raise ValueError("Invalid query")
+                    return f'{field} IS NULL'
+            elif operator_key not in OPERATOR_MAPPING:
+                raise ValueError(f"Invalid operator {operator_key}")
+            else:
+                # If the operator is valid, create a placeholder and append the value to param_values
+                operator = OPERATOR_MAPPING[operator_key]
+                placeholder = '?'
+                param_values.append(operator_value)
+                return f'{field} {operator} {placeholder}'
 
     def _execute_filter(
         self,
