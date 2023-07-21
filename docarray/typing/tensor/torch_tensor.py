@@ -271,3 +271,10 @@ class TorchTensor(
     def _docarray_to_ndarray(self) -> np.ndarray:
         """cast itself to a numpy array"""
         return self.detach().cpu().numpy()
+
+    def new_empty(self, *args, **kwargs):
+        """
+        This method enables the deepcopy of `TorchTensor` by returning another instance of this subclass.
+        If this function is not implemented, the deepcopy will throw an RuntimeError from Torch.
+        """
+        return self.__class__(*args, **kwargs)
