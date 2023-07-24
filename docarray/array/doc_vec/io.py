@@ -2,7 +2,17 @@ import base64
 import io
 import pathlib
 from contextlib import nullcontext
-from typing import TYPE_CHECKING, Any, Dict, Generator, Optional, Type, TypeVar, Union
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    Dict,
+    Generator,
+    Optional,
+    Type,
+    TypeVar,
+    Union,
+    cast,
+)
 
 import numpy as np
 import orjson
@@ -112,6 +122,7 @@ class IOMixinDocVec(IOMixinDocList):
         json_columns: Dict[str, Any],
         tensor_type: Type[AbstractTensor] = NdArray,
     ) -> T:
+        cls_ = cast(Type[DocVec], cls)
 
         tensor_cols = json_columns['tensor_columns']
         doc_cols = json_columns['doc_columns']
@@ -127,9 +138,9 @@ class IOMixinDocVec(IOMixinDocList):
         for key, col in doc_cols.items():
             if col is not None:
                 col_doc_type = cls.doc_type._get_field_type(key)
-                doc_cols[key] = cls.__class_getitem__(col_doc_type)._from_json_col_dict(
-                    col, tensor_type=tensor_type
-                )
+                doc_cols[key] = cls_.__class_getitem__(
+                    col_doc_type
+                )._from_json_col_dict(col, tensor_type=tensor_type)
             else:
                 doc_cols[key] = None
 
@@ -137,7 +148,7 @@ class IOMixinDocVec(IOMixinDocList):
             if col is not None:
                 col_doc_type = cls.doc_type._get_field_type(key).doc_type
                 col_ = ListAdvancedIndexing(
-                    cls.__class_getitem__(col_doc_type)._from_json_col_dict(
+                    cls_.__class_getitem__(col_doc_type)._from_json_col_dict(
                         vec, tensor_type=tensor_type
                     )
                     for vec in col
@@ -159,7 +170,7 @@ class IOMixinDocVec(IOMixinDocList):
             else:
                 any_cols[key] = None
 
-        return cls.from_columns_storage(
+        return cls_.from_columns_storage(
             ColumnStorage(
                 tensor_cols, doc_cols, docs_vec_cols, any_cols, tensor_type=tensor_type
             )
@@ -176,6 +187,7 @@ class IOMixinDocVec(IOMixinDocList):
             All tensors of the output DocVec will be of this type.
         :return: The deserialized DocVec
         """
+        cls_ = cast(Type[DocVec], cls)
 
         tensor_columns: Dict[str, Optional[AbstractTensor]] = {}
         doc_columns: Dict[str, Optional['DocVec']] = {}
@@ -197,7 +209,7 @@ class IOMixinDocVec(IOMixinDocList):
                 doc_columns[doc_col_name] = None
             else:
                 col_doc_type: Type = cls.doc_type._get_field_type(doc_col_name)
-                doc_columns[doc_col_name] = cls.__class_getitem__(
+                doc_columns[doc_col_name] = cls_.__class_getitem__(
                     col_doc_type
                 ).from_protobuf(doc_col_proto, tensor_type=tensor_type)
 
@@ -213,7 +225,7 @@ class IOMixinDocVec(IOMixinDocList):
                         docs_vec_col_name
                     ).doc_type
                     vec_list.append(
-                        cls.__class_getitem__(col_doc_type).from_protobuf(
+                        cls_.__class_getitem__(col_doc_type).from_protobuf(
                             doc_list_proto, tensor_type=tensor_type
                         )
                     )
@@ -236,7 +248,7 @@ class IOMixinDocVec(IOMixinDocList):
             tensor_type=tensor_type,
         )
 
-        return cls.from_columns_storage(storage)
+        return cls_.from_columns_storage(storage)
 
     def to_protobuf(self) -> 'DocVecProto':
         """Convert DocVec into a Protobuf message"""
@@ -248,18 +260,20 @@ class IOMixinDocVec(IOMixinDocList):
             NdArrayProto,
         )
 
+        self_ = cast(DocVec, self)
+
         doc_columns_proto: Dict[str, DocVecProto] = dict()
         tensor_columns_proto: Dict[str, NdArrayProto] = dict()
         da_columns_proto: Dict[str, ListOfDocArrayProto] = dict()
         any_columns_proto: Dict[str, ListOfAnyProto] = dict()
 
-        for field, col_doc in self._storage.doc_columns.items():
+        for field, col_doc in self_._storage.doc_columns.items():
             if col_doc is None:
                 # put dummy empty DocVecProto for serialization
                 doc_columns_proto[field] = _none_docvec_proto()
             else:
                 doc_columns_proto[field] = col_doc.to_protobuf()
-        for field, col_tens in self._storage.tensor_columns.items():
+        for field, col_tens in self_._storage.tensor_columns.items():
             if col_tens is None:
                 # put dummy empty NdArrayProto for serialization
                 tensor_columns_proto[field] = _none_ndarray_proto()
@@ -267,7 +281,7 @@ class IOMixinDocVec(IOMixinDocList):
                 tensor_columns_proto[field] = (
                     col_tens.to_protobuf() if col_tens is not None else None
                 )
-        for field, col_da in self._storage.docs_vec_columns.items():
+        for field, col_da in self_._storage.docs_vec_columns.items():
             list_proto = ListOfDocVecProto()
             if col_da:
                 for docs in col_da:
@@ -276,7 +290,7 @@ class IOMixinDocVec(IOMixinDocList):
                 # put dummy empty ListOfDocVecProto for serialization
                 list_proto = _none_list_of_docvec_proto()
             da_columns_proto[field] = list_proto
-        for field, col_any in self._storage.any_columns.items():
+        for field, col_any in self_._storage.any_columns.items():
             list_proto = ListOfAnyProto()
             for data in col_any:
                 list_proto.data.append(_type_to_protobuf(data))
