@@ -94,6 +94,7 @@ class InMemoryExactNNIndex(BaseDocIndex, Generic[TSchema]):
                 )()
 
         self._embedding_map: Dict[str, Tuple[AnyTensor, Optional[List[int]]]] = {}
+        self._ids_to_positions: Dict[str, int] = {}
 
     def python_type_to_db_type(self, python_type: Type) -> Any:
         """Map python type to database type.
@@ -163,7 +164,13 @@ class InMemoryExactNNIndex(BaseDocIndex, Generic[TSchema]):
         """
         # implementing the public option because conversion to column dict is not needed
         docs = self._validate_docs(docs)
-        self._docs.extend(docs)
+        ids_to_positions = self._get_ids_to_positions()
+        for doc in docs:
+            if doc.id in ids_to_positions:
+                self._docs[ids_to_positions[doc.id]] = doc
+            else:
+                self._docs.append(doc)
+                self._ids_to_positions[str(doc.id)] = len(self._ids_to_positions)
 
         # Add parent_id to all sub-index documents and store sub-index documents
         data_by_columns = self._get_col_value_dict(docs)
@@ -216,6 +223,7 @@ class InMemoryExactNNIndex(BaseDocIndex, Generic[TSchema]):
                 indices.append(i)
 
         del self._docs[indices]
+        self._update_ids_to_positions()
         self._rebuild_embedding()
 
     def _ori_items(self, doc: BaseDoc) -> BaseDoc:
@@ -259,15 +267,18 @@ class InMemoryExactNNIndex(BaseDocIndex, Generic[TSchema]):
         """
 
         out_docs = []
-        for i, doc in enumerate(self._docs):
-            if doc.id in doc_ids:
-                if raw:
-                    out_docs.append(doc)
-                else:
-                    ori_doc = self._ori_items(doc)
-                    schema_cls = cast(Type[BaseDoc], self.out_schema)
-                    new_doc = schema_cls(**ori_doc.__dict__)
-                    out_docs.append(new_doc)
+        ids_to_positions = self._get_ids_to_positions()
+        for doc_id in doc_ids:
+            if doc_id not in ids_to_positions:
+                continue
+            doc = self._docs[ids_to_positions[doc_id]]
+            if raw:
+                out_docs.append(doc)
+            else:
+                ori_doc = self._ori_items(doc)
+                schema_cls = cast(Type[BaseDoc], self.out_schema)
+                new_doc = schema_cls(**ori_doc.__dict__)
+                out_docs.append(new_doc)
 
         return out_docs
 
@@ -461,7 +472,7 @@ class InMemoryExactNNIndex(BaseDocIndex, Generic[TSchema]):
         raise NotImplementedError(f'{type(self)} does not support text search.')
 
     def _doc_exists(self, doc_id: str) -> bool:
-        return any(doc.id == doc_id for doc in self._docs)
+        return doc_id in self._get_ids_to_positions()
 
     def persist(self, file: Optional[str] = None) -> None:
         """Persist InMemoryExactNNIndex into a binary file."""
@@ -500,3 +511,21 @@ class InMemoryExactNNIndex(BaseDocIndex, Generic[TSchema]):
                 id, fields[0], '__'.join(fields[1:])
             )
             return self._get_root_doc_id(cur_root_id, root, '')
+
+    def _get_ids_to_positions(self) -> Dict[str, int]:
+        """
+        Obtains a mapping between document IDs and their respective positions
+        within the DocList. If this mapping hasn't been initialized, it will be created.
+
+        :return: A dictionary mapping each document ID to its corresponding position.
+        """
+        if not self._ids_to_positions:
+            self._update_ids_to_positions()
+        return self._ids_to_positions
+
+    def _update_ids_to_positions(self) -> None:
+        """
+        Generates or updates the mapping between document IDs and their corresponding
+        positions within the DocList.
+        """
+        self._ids_to_positions = {doc.id: pos for pos, doc in enumerate(self._docs)}
