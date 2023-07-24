@@ -5,7 +5,7 @@ import pytest
 
 from docarray import BaseDoc, DocList, DocVec
 from docarray.documents import ImageDoc
-from docarray.typing import NdArray
+from docarray.typing import NdArray, TorchTensor
 
 
 class MyDoc(BaseDoc):
@@ -96,3 +96,27 @@ def test_array_save_load_binary_streaming(
         assert doc.image.url == da[i].image.url
 
     assert i == 99
+
+
+@pytest.mark.parametrize('tensor_type', [NdArray, TorchTensor])
+def test_save_load_tensor_type(tensor_type, tmp_path):
+    tmp_file = os.path.join(tmp_path, 'test123')
+
+    class MyDoc(BaseDoc):
+        embedding: tensor_type
+        text: str
+        image: ImageDoc
+
+    da = DocVec[MyDoc](
+        [
+            MyDoc(
+                embedding=[1, 2, 3, 4, 5], text='hello', image=ImageDoc(url='aux.png')
+            ),
+            MyDoc(embedding=[5, 4, 3, 2, 1], text='hello world', image=ImageDoc()),
+        ],
+        tensor_type=tensor_type,
+    )
+    da.save_binary(tmp_file)
+    da2 = DocVec[MyDoc].load_binary(tmp_file, tensor_type=tensor_type)
+    assert da2.tensor_type == tensor_type
+    assert isinstance(da2.embedding, tensor_type)

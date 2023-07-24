@@ -90,6 +90,23 @@ def test_from_to_base64_tensor_type(tensor_type):
     assert isinstance(da2.embedding, tensor_type)
 
 
+@pytest.mark.parametrize('tensor_type', [NdArray, TorchTensor])
+def test_from_to_bytes_tensor_type(tensor_type):
+    da = DocVec[MyDoc](
+        [
+            MyDoc(
+                embedding=[1, 2, 3, 4, 5], text='hello', image=ImageDoc(url='aux.png')
+            ),
+            MyDoc(embedding=[5, 4, 3, 2, 1], text='hello world', image=ImageDoc()),
+        ],
+        tensor_type=tensor_type,
+    )
+    bytes_da = da.to_bytes()
+    da2 = DocVec[MyDoc].from_bytes(bytes_da, tensor_type=tensor_type)
+    assert da2.tensor_type == tensor_type
+    assert isinstance(da2.embedding, tensor_type)
+
+
 def test_union_type_error(tmp_path):
     from typing import Union
 
