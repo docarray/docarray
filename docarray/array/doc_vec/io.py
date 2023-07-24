@@ -368,5 +368,9 @@ class IOMixinDocVec(IOMixinDocList):
         )
 
     @classmethod
-    def from_dataframe(cls: Type['T'], df: 'pd.DataFrame') -> 'T':
-        return cls(super().from_dataframe(df))
+    def from_dataframe(
+        cls: Type['T'],
+        df: 'pd.DataFrame',
+        tensor_type: Type['AbstractTensor'] = NdArray,
+    ) -> 'T':
+        return cls(super().from_dataframe(df), tensor_type=tensor_type)
