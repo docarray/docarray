@@ -103,6 +103,8 @@ nav:
           - user_guide/storing/index_weaviate.md
           - user_guide/storing/index_elastic.md
           - user_guide/storing/index_qdrant.md
+          - user_guide/storing/index_redis.md
+          - user_guide/storing/index_milvus.md
       - DocStore - Bulk storage:
         - user_guide/storing/doc_store/store_file.md
         - user_guide/storing/doc_store/store_jac.md
