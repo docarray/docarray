@@ -1,12 +1,18 @@
 import base64
+import io
+import pathlib
 from contextlib import nullcontext
-from typing import TYPE_CHECKING, Any, Dict, Optional, Type, TypeVar, Union
+from typing import TYPE_CHECKING, Any, Dict, Generator, Optional, Type, TypeVar, Union
 
 import numpy as np
 import orjson
 from pydantic import parse_obj_as
 
-from docarray.array.doc_list.io import IOMixinDocList
+from docarray.array.doc_list.io import (
+    SINGLE_PROTOCOLS,
+    IOMixinDocList,
+    _LazyRequestReader,
+)
 from docarray.array.doc_vec.column_storage import ColumnStorage
 from docarray.array.list_advance_indexing import ListAdvancedIndexing
 from docarray.base_doc import BaseDoc
@@ -374,3 +380,60 @@ class IOMixinDocVec(IOMixinDocList):
         tensor_type: Type['AbstractTensor'] = NdArray,
     ) -> 'T':
         return cls(super().from_dataframe(df), tensor_type=tensor_type)
+
+    @classmethod
+    def load_binary(
+        cls: Type[T],
+        file: Union[str, bytes, pathlib.Path, io.BufferedReader, _LazyRequestReader],
+        protocol: str = 'protobuf-array',
+        compress: Optional[str] = None,
+        show_progress: bool = False,
+        streaming: bool = False,
+        tensor_type: Type['AbstractTensor'] = NdArray,
+    ) -> Union[T, Generator['T_doc', None, None]]:
+        """Load doc_vec elements from a compressed binary file.
+
+        In case protocol is pickle the `Documents` are streamed from disk to save memory usage
+
+        !!! note
+            If `file` is `str` it can specify `protocol` and `compress` as file extensions.
+            This functionality assumes `file=file_name.$protocol.$compress` where `$protocol` and `$compress` refer to a
+            string interpolation of the respective `protocol` and `compress` methods.
+            For example if `file=my_docarray.protobuf.lz4` then the binary data will be loaded assuming `protocol=protobuf`
+            and `compress=lz4`.
+
+        :param file: File or filename or serialized bytes where the data is stored.
+        :param protocol: protocol to use. It can be 'pickle-array', 'protobuf-array', 'pickle' or 'protobuf'
+        :param compress: compress algorithm to use between `lz4`, `bz2`, `lzma`, `zlib`, `gzip`
+        :param show_progress: show progress bar, only works when protocol is `pickle` or `protobuf`
+        :param streaming: if `True` returns a generator over `Document` objects.
+        :param tensor_type: the tensor type of the resulting DocVEc
+
+        :return: a `DocVec` object
+
+        """
+        file_ctx, load_protocol, load_compress = cls._get_file_context(
+            file, protocol, compress
+        )
+        if streaming:
+            if load_protocol not in SINGLE_PROTOCOLS:
+                raise ValueError(
+                    f'`streaming` is only available when using {" or ".join(map(lambda x: f"`{x}`", SINGLE_PROTOCOLS))} as protocol, '
+                    f'got {load_protocol}'
+                )
+            else:
+                # TODO(johannes): handle tensor_type for this case
+                return cls._load_binary_stream(
+                    file_ctx,
+                    protocol=load_protocol,
+                    compress=load_compress,
+                    show_progress=show_progress,
+                )
+        else:
+            return cls._load_binary_all(
+                file_ctx,
+                load_protocol,
+                load_compress,
+                show_progress,
+                tensor_type=tensor_type,
+            )

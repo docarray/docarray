@@ -734,6 +734,27 @@ class IOMixinDocList(Iterable[T_doc]):
                             t, advance=1, total_size=str(filesize.decimal(_total_size))
                         )
 
+    @staticmethod
+    def _get_file_context(
+        file: Union[str, bytes, pathlib.Path, io.BufferedReader, _LazyRequestReader],
+        protocol: str,
+        compress: str,
+    ) -> Tuple[ContextManager, str, str]:
+        load_protocol: Optional[str] = protocol
+        load_compress: Optional[str] = compress
+        file_ctx: Union[nullcontext, io.BufferedReader]
+        if isinstance(file, (io.BufferedReader, _LazyRequestReader, bytes)):
+            file_ctx = nullcontext(file)
+        # by checking path existence we allow file to be of type Path, LocalPath, PurePath and str
+        elif isinstance(file, (str, pathlib.Path)) and os.path.exists(file):
+            load_protocol, load_compress = _protocol_and_compress_from_file_path(
+                file, protocol, compress
+            )
+            file_ctx = open(file, 'rb')
+        else:
+            raise FileNotFoundError(f'cannot find file {file}')
+        return file_ctx, load_protocol, load_compress
+
     @classmethod
     def load_binary(
         cls: Type[T],
@@ -763,19 +784,9 @@ class IOMixinDocList(Iterable[T_doc]):
         :return: a `DocList` object
 
         """
-        load_protocol: Optional[str] = protocol
-        load_compress: Optional[str] = compress
-        file_ctx: Union[nullcontext, io.BufferedReader]
-        if isinstance(file, (io.BufferedReader, _LazyRequestReader, bytes)):
-            file_ctx = nullcontext(file)
-        # by checking path existence we allow file to be of type Path, LocalPath, PurePath and str
-        elif isinstance(file, (str, pathlib.Path)) and os.path.exists(file):
-            load_protocol, load_compress = _protocol_and_compress_from_file_path(
-                file, protocol, compress
-            )
-            file_ctx = open(file, 'rb')
-        else:
-            raise FileNotFoundError(f'cannot find file {file}')
+        file_ctx, load_protocol, load_compress = cls._get_file_context(
+            file, protocol, compress
+        )
         if streaming:
             if load_protocol not in SINGLE_PROTOCOLS:
                 raise ValueError(
