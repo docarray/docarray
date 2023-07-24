@@ -498,7 +498,7 @@ class MyDoc(BaseDoc):
 
 
 # create a Document Index
-doc_index = MilvusDocumentIndex[MyDoc](index_name='tmp4')
+doc_index = MilvusDocumentIndex[MyDoc](index_name='tmp5')
 doc_index.configure(MilvusDocumentIndex.RuntimeConfig(batch_size=10))
 
 
@@ -515,17 +515,17 @@ index_docs = [
                                 url=f'http://example.ai/images/{i}-{j}-{k}',
                                 tensor_image=np.ones(64),
                             )
-                            for k in range(10)
+                            for k in range(5)
                         ]
                     ),
                     tensor_video=np.ones(128),
                 )
-                for j in range(10)
+                for j in range(5)
             ]
         ),
         tensor=np.ones(256),
     )
-    for i in range(10)
+    for i in range(5)
 ]
 
 # index the Documents
@@ -539,64 +539,11 @@ You can perform search on any subindex level by using `find_subindex()` method a
 ```python
 # find by the `VideoDoc` tensor
 root_docs, sub_docs, scores = doc_index.find_subindex(
-    np.ones(128), subindex='docs', search_field='tensor_video', limit=3
+    np.ones(128), subindex='docs', limit=3
 )
 
 # find by the `ImageDoc` tensor
 root_docs, sub_docs, scores = doc_index.find_subindex(
-    np.ones(64), subindex='docs__images', search_field='tensor_image', limit=3
+    np.ones(64), subindex='docs__images', limit=3
 )
 ```
-
-### Update elements
-In order to update a Document inside the index, you only need to reindex it with the updated attributes.
-
-First lets create a schema for our Index
-```python
-import numpy as np
-from docarray import BaseDoc, DocList
-from docarray.typing import NdArray
-from docarray.index import MilvusDocumentIndex
-class MyDoc(BaseDoc):
-    text: str
-    embedding: NdArray[128]
-```
-Now we can instantiate our Index and index some data.
-
-```python
-docs = DocList[MyDoc](
-    [MyDoc(embedding=np.random.rand(128), text=f'I am the first version of Document {i}') for i in range(100)]
-)
-index = MilvusDocumentIndex[MyDoc]()
-index.index(docs)
-assert index.num_docs() == 100
-```
-
-Now we can find relevant documents
-
-```python
-res = index.find(query=docs[0], search_field='embedding', limit=100)
-assert len(res.documents) == 100
-for doc in res.documents:
-    assert 'I am the first version' in doc.text
-```
-
-and update all of the text of this documents and reindex them
-
-```python
-for i, doc in enumerate(docs):
-    doc.text = f'I am the second version of Document {i}'
-
-index.index(docs)
-assert index.num_docs() == 100
-```
-
-When we retrieve them again we can see that their text attribute has been updated accordingly
-
-```python
-res = index.find(query=docs[0], search_field='embedding', limit=100)
-assert len(res.documents) == 100
-for doc in res.documents:
-    assert 'I am the second version' in doc.text
-```
-
