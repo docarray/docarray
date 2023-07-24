@@ -604,12 +604,19 @@ class IOMixinDocList(Iterable[T_doc]):
             proto = cls._get_proto_class()()
             proto.ParseFromString(d)
 
-            return cls.from_protobuf(proto)
+            if tensor_type is not None:
+                # TODO(johannes): can we solve this more cleanly in an OOP way?
+                return cls.from_protobuf(proto, tensor_type=tensor_type)
+            else:
+                return cls.from_protobuf(proto)
         elif protocol is not None and protocol == 'pickle-array':
-            return pickle.loads(d)
+            return pickle.loads(d)  # TODO(johannes): handle tensor type
 
         elif protocol is not None and protocol == 'json-array':
-            return cls.from_json(d)
+            if tensor_type is not None:
+                return cls.from_json(d, tensor_type=tensor_type)
+            else:
+                return cls.from_json(d)
 
         # Binary format for streaming case
         else:
