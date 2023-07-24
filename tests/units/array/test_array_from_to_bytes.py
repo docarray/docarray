@@ -74,7 +74,13 @@ def test_from_to_base64(protocol, compress, show_progress, array_cls):
 
 
 @pytest.mark.parametrize('tensor_type', [NdArray, TorchTensor])
-def test_from_to_base64_tensor_type(tensor_type):
+@pytest.mark.parametrize('protocol', ['protobuf-array', 'pickle-array'])
+def test_from_to_base64_tensor_type(tensor_type, protocol):
+    class MyDoc(BaseDoc):
+        embedding: tensor_type
+        text: str
+        image: ImageDoc
+
     da = DocVec[MyDoc](
         [
             MyDoc(
@@ -84,8 +90,10 @@ def test_from_to_base64_tensor_type(tensor_type):
         ],
         tensor_type=tensor_type,
     )
-    bytes_da = da.to_base64()
-    da2 = DocVec[MyDoc].from_base64(bytes_da, tensor_type=tensor_type)
+    bytes_da = da.to_base64(protocol=protocol)
+    da2 = DocVec[MyDoc].from_base64(
+        bytes_da, tensor_type=tensor_type, protocol=protocol
+    )
     assert da2.tensor_type == tensor_type
     assert isinstance(da2.embedding, tensor_type)
 

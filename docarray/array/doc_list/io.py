@@ -610,7 +610,7 @@ class IOMixinDocList(Iterable[T_doc]):
             else:
                 return cls.from_protobuf(proto)
         elif protocol is not None and protocol == 'pickle-array':
-            return pickle.loads(d)  # TODO(johannes): handle tensor type
+            return pickle.loads(d)
 
         elif protocol is not None and protocol == 'json-array':
             if tensor_type is not None:
