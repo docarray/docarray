@@ -422,7 +422,6 @@ class IOMixinDocVec(IOMixinDocList):
                     f'got {load_protocol}'
                 )
             else:
-                # TODO(johannes): handle tensor_type for this case
                 return cls._load_binary_stream(
                     file_ctx,
                     protocol=load_protocol,
