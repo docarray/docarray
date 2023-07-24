@@ -23,6 +23,7 @@ from typing import (
     Type,
     TypeVar,
     Union,
+    cast,
 )
 
 import orjson
@@ -40,6 +41,8 @@ from docarray.utils._internal.misc import import_library
 if TYPE_CHECKING:
     import pandas as pd
 
+    from docarray.array.doc_vec.doc_vec import DocVec
+    from docarray.array.doc_vec.io import IOMixinDocVec
     from docarray.proto import DocListProto
     from docarray.typing.tensor.abstract_tensor import AbstractTensor
 
@@ -606,7 +609,8 @@ class IOMixinDocList(Iterable[T_doc]):
 
             if tensor_type is not None:
                 # TODO(johannes): can we solve this more cleanly in an OOP way?
-                return cls.from_protobuf(proto, tensor_type=tensor_type)
+                cls_ = cast('IOMixinDocVec', cls)
+                return cls_.from_protobuf(proto, tensor_type=tensor_type)
             else:
                 return cls.from_protobuf(proto)
         elif protocol is not None and protocol == 'pickle-array':
@@ -614,7 +618,8 @@ class IOMixinDocList(Iterable[T_doc]):
 
         elif protocol is not None and protocol == 'json-array':
             if tensor_type is not None:
-                return cls.from_json(d, tensor_type=tensor_type)
+                cls_ = cast('IOMixinDocVec', cls)
+                return cls_.from_json(d, tensor_type=tensor_type)
             else:
                 return cls.from_json(d)
 
@@ -667,7 +672,9 @@ class IOMixinDocList(Iterable[T_doc]):
                         t, advance=1, total_size=str(filesize.decimal(_total_size))
                     )
             if tensor_type is not None:
-                return cls(docs, tensor_type=tensor_type)
+                cls_ = cast('DocVec', cls)
+                # mypy wants explicit __init__ call here
+                return cls_.__init__(docs, tensor_type=tensor_type)
             return cls(docs)
 
     @classmethod
@@ -738,8 +745,8 @@ class IOMixinDocList(Iterable[T_doc]):
     def _get_file_context(
         file: Union[str, bytes, pathlib.Path, io.BufferedReader, _LazyRequestReader],
         protocol: str,
-        compress: str,
-    ) -> Tuple[ContextManager, str, str]:
+        compress: Optional[str] = None,
+    ) -> Tuple[Union[nullcontext, io.BufferedReader], Optional[str], Optional[str]]:
         load_protocol: Optional[str] = protocol
         load_compress: Optional[str] = compress
         file_ctx: Union[nullcontext, io.BufferedReader]
