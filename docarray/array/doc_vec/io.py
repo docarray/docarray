@@ -1,6 +1,7 @@
 import base64
 import io
 import pathlib
+from abc import abstractmethod
 from contextlib import nullcontext
 from typing import (
     TYPE_CHECKING,
@@ -100,6 +101,16 @@ def _is_none_list_of_docvec_proto(proto: 'ListOfDocVecProto') -> bool:
 
 class IOMixinDocVec(IOMixinDocList):
     @classmethod
+    @abstractmethod
+    def from_columns_storage(cls: Type[T], storage: ColumnStorage) -> T:
+        ...
+
+    @classmethod
+    @abstractmethod
+    def __class_getitem__(cls, item: Union[Type[BaseDoc], TypeVar, str]):
+        ...
+
+    @classmethod
     def from_json(
         cls: Type[T],
         file: Union[str, bytes, bytearray],
@@ -122,7 +133,6 @@ class IOMixinDocVec(IOMixinDocList):
         json_columns: Dict[str, Any],
         tensor_type: Type[AbstractTensor] = NdArray,
     ) -> T:
-        cls_ = cast(Type[DocVec], cls)
 
         tensor_cols = json_columns['tensor_columns']
         doc_cols = json_columns['doc_columns']
@@ -138,9 +148,9 @@ class IOMixinDocVec(IOMixinDocList):
         for key, col in doc_cols.items():
             if col is not None:
                 col_doc_type = cls.doc_type._get_field_type(key)
-                doc_cols[key] = cls_.__class_getitem__(
-                    col_doc_type
-                )._from_json_col_dict(col, tensor_type=tensor_type)
+                doc_cols[key] = cls.__class_getitem__(col_doc_type)._from_json_col_dict(
+                    col, tensor_type=tensor_type
+                )
             else:
                 doc_cols[key] = None
 
@@ -148,7 +158,7 @@ class IOMixinDocVec(IOMixinDocList):
             if col is not None:
                 col_doc_type = cls.doc_type._get_field_type(key).doc_type
                 col_ = ListAdvancedIndexing(
-                    cls_.__class_getitem__(col_doc_type)._from_json_col_dict(
+                    cls.__class_getitem__(col_doc_type)._from_json_col_dict(
                         vec, tensor_type=tensor_type
                     )
                     for vec in col
@@ -170,7 +180,7 @@ class IOMixinDocVec(IOMixinDocList):
             else:
                 any_cols[key] = None
 
-        return cls_.from_columns_storage(
+        return cls.from_columns_storage(
             ColumnStorage(
                 tensor_cols, doc_cols, docs_vec_cols, any_cols, tensor_type=tensor_type
             )
@@ -178,7 +188,7 @@ class IOMixinDocVec(IOMixinDocList):
 
     @classmethod
     def from_protobuf(
-        cls: Type[T], pb_msg: 'DocVecProto', tensor_type: Type[AbstractTensor] = NdArray
+        cls: Type[T], pb_msg: 'DocVecProto', tensor_type: Type[AbstractTensor] = NdArray  # type: ignore
     ) -> T:
         """create a DocVec from a protobuf message
         :param pb_msg: the protobuf message to deserialize
@@ -187,8 +197,6 @@ class IOMixinDocVec(IOMixinDocList):
             All tensors of the output DocVec will be of this type.
         :return: The deserialized DocVec
         """
-        cls_ = cast(Type[DocVec], cls)
-
         tensor_columns: Dict[str, Optional[AbstractTensor]] = {}
         doc_columns: Dict[str, Optional['DocVec']] = {}
         docs_vec_columns: Dict[str, Optional[ListAdvancedIndexing['DocVec']]] = {}
@@ -209,7 +217,7 @@ class IOMixinDocVec(IOMixinDocList):
                 doc_columns[doc_col_name] = None
             else:
                 col_doc_type: Type = cls.doc_type._get_field_type(doc_col_name)
-                doc_columns[doc_col_name] = cls_.__class_getitem__(
+                doc_columns[doc_col_name] = cls.__class_getitem__(
                     col_doc_type
                 ).from_protobuf(doc_col_proto, tensor_type=tensor_type)
 
@@ -225,7 +233,7 @@ class IOMixinDocVec(IOMixinDocList):
                         docs_vec_col_name
                     ).doc_type
                     vec_list.append(
-                        cls_.__class_getitem__(col_doc_type).from_protobuf(
+                        cls.__class_getitem__(col_doc_type).from_protobuf(
                             doc_list_proto, tensor_type=tensor_type
                         )
                     )
@@ -248,7 +256,7 @@ class IOMixinDocVec(IOMixinDocList):
             tensor_type=tensor_type,
         )
 
-        return cls_.from_columns_storage(storage)
+        return cls.from_columns_storage(storage)
 
     def to_protobuf(self) -> 'DocVecProto':
         """Convert DocVec into a Protobuf message"""

@@ -579,7 +579,7 @@ class IOMixinDocList(Iterable[T_doc]):
         protocol: Optional[str],
         compress: Optional[str],
         show_progress: bool,
-        tensor_type: Type['AbstractTensor'] = None,
+        tensor_type: Optional[Type['AbstractTensor']] = None,
     ):
         """Read a `DocList` object from a binary file
         :param protocol: protocol to use. It can be 'pickle-array', 'protobuf-array', 'pickle' or 'protobuf'
@@ -608,7 +608,6 @@ class IOMixinDocList(Iterable[T_doc]):
             proto.ParseFromString(d)
 
             if tensor_type is not None:
-                # TODO(johannes): can we solve this more cleanly in an OOP way?
                 cls_ = cast('IOMixinDocVec', cls)
                 return cls_.from_protobuf(proto, tensor_type=tensor_type)
             else:
@@ -672,9 +671,9 @@ class IOMixinDocList(Iterable[T_doc]):
                         t, advance=1, total_size=str(filesize.decimal(_total_size))
                     )
             if tensor_type is not None:
-                cls_ = cast('DocVec', cls)
-                # mypy wants explicit __init__ call here
-                return cls_.__init__(docs, tensor_type=tensor_type)
+                cls__ = cast(Type['DocVec'], cls)
+                # mypy doesn't realize that cls_ is callable
+                return cls__(docs, tensor_type=tensor_type)  # type: ignore
             return cls(docs)
 
     @classmethod
