@@ -217,6 +217,7 @@ class HnswDocumentIndex(BaseDocIndex, Generic[TSchema]):
             if safe_issubclass(python_type, allowed_type):
                 return np.ndarray
 
+        # types allowed for filtering
         type_map = {
             int: 'INTEGER',
             float: 'REAL',

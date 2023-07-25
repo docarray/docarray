@@ -184,3 +184,19 @@ def test_query_find_filter_not(doc_index):
     assert len(docs) <= 5
     for doc in docs:
         assert doc.price != 3
+
+
+@pytest.mark.parametrize(
+    'find_limit, filter_limit, expected_docs', [(10, 3, 3), (5, 8, 5)]
+)
+def test_query_builder_limits(find_limit, filter_limit, expected_docs, doc_index):
+    q = (
+        doc_index.build_query()
+        .filter(filter_query={'price': {'$lte': 5}}, limit=filter_limit)
+        .find(query=np.random.rand(10), search_field='tensor', limit=find_limit)
+        .build()
+    )
+
+    docs, scores = doc_index.execute_query(q)
+
+    assert len(docs) == expected_docs
