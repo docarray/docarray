@@ -268,7 +268,7 @@ class IOMixinDocVec(IOMixinDocList):
             NdArrayProto,
         )
 
-        self_ = cast(DocVec, self)
+        self_ = cast('DocVec', self)
 
         doc_columns_proto: Dict[str, DocVecProto] = dict()
         tensor_columns_proto: Dict[str, NdArrayProto] = dict()
@@ -384,7 +384,7 @@ class IOMixinDocVec(IOMixinDocList):
         :param protocol: protocol that was used to serialize
         :param compress: compression algorithm that was used to serialize between `lz4`, `bz2`, `lzma`, `zlib`, `gzip`
         :param show_progress: show progress bar, only works when protocol is `pickle` or `protobuf`
-        :param tensor_type: the tensor type of the resulting DocVEc
+        :param tensor_type: the tensor type of the resulting DocVec
         :return: the deserialized `DocVec`
         """
         return cls._load_binary_all(
@@ -401,7 +401,50 @@ class IOMixinDocVec(IOMixinDocList):
         df: 'pd.DataFrame',
         tensor_type: Type['AbstractTensor'] = NdArray,
     ) -> 'T':
-        return cls(super().from_dataframe(df), tensor_type=tensor_type)
+        """
+        Load a `DocVec` from a `pandas.DataFrame` following the schema
+        defined in the [`.doc_type`][docarray.DocVec] attribute.
+        Every row of the dataframe will be mapped to one Document in the doc_vec.
+        The column names of the dataframe have to match the field names of the
+        Document type.
+        For nested fields use "__"-separated access paths as column names,
+        such as `'image__url'`.
+
+        List-like fields (including field of type DocList) are not supported.
+
+        ---
+
+        ```python
+        import pandas as pd
+
+        from docarray import BaseDoc, DocVec
+
+
+        class Person(BaseDoc):
+            name: str
+            follower: int
+
+
+        df = pd.DataFrame(
+            data=[['Maria', 12345], ['Jake', 54321]], columns=['name', 'follower']
+        )
+
+        docs = DocVec[Person].from_dataframe(df)
+
+        assert docs.name == ['Maria', 'Jake']
+        assert docs.follower == [12345, 54321]
+        ```
+
+        ---
+
+        :param df: `pandas.DataFrame` to extract Document's information from
+        :param tensor_type: the tensor type of the resulting DocVec
+        :return: `DocList` where each Document contains the information of one
+            corresponding row of the `pandas.DataFrame`.
+        """
+        # type ignore could be avoided by simply putting this implementation in the DocVec class
+        # but leaving it here for code separation
+        return cls(super().from_dataframe(df), tensor_type=tensor_type)  # type: ignore
 
     @classmethod
     def load_binary(

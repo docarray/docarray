@@ -56,7 +56,8 @@ T_io_mixin = TypeVar('T_io_mixin', bound='IOMixinDocVec')
 IndexIterType = Union[slice, Iterable[int], Iterable[bool], None]
 
 
-class DocVec(IOMixinDocVec, AnyDocArray[T_doc]):
+# type ignore because from_protobuf has a different signature
+class DocVec(IOMixinDocVec, AnyDocArray[T_doc]):  # type: ignore
     """
     DocVec is a container of Documents appropriates to perform
     computation that require batches of data (ex: matrix multiplication, distance
@@ -627,3 +628,8 @@ class DocVec(IOMixinDocVec, AnyDocArray[T_doc]):
             return flattened[0]
         else:
             return flattened
+
+    @classmethod
+    def __class_getitem__(cls, item: Union[Type[BaseDoc], TypeVar, str]):
+        # call implementation in AnyDocArray
+        return super(IOMixinDocVec, cls).__class_getitem__(item)
