@@ -28,7 +28,7 @@ class Book(BaseDoc):
     author: str
     year: int
 ```
-Next, load the content of the CSV file to a [`DocList`][docarray.DocList] instance of `Book`s via [`.from_csv()`][docarray.array.doc_list.io.IOMixinArray.from_csv]:
+Next, load the content of the CSV file to a [`DocList`][docarray.DocList] instance of `Book`s via [`.from_csv()`][docarray.array.doc_list.io.IOMixinDocList.from_csv]:
 
 ```python
 from docarray import DocList
@@ -64,7 +64,7 @@ The resulting [`DocList`][docarray.DocList] object contains three `Book`s, since
 
 ## Save to CSV file
 
-Vice versa, you can also store your [`DocList`][docarray.DocList] data in a `.csv` file using [`.to_csv()`][docarray.array.doc_list.io.IOMixinArray.to_csv]:
+Vice versa, you can also store your [`DocList`][docarray.DocList] data in a `.csv` file using [`.to_csv()`][docarray.array.doc_list.io.IOMixinDocList.to_csv]:
 
 ``` { .python }
 docs.to_csv(file_path='/path/to/my_file.csv')
@@ -126,8 +126,8 @@ addca0475756fc12cdec8faf8fb10d71,03194cec1b75927c2259b3c0fff1ab6f,A little life,
 ## Handle TSV tables
 
 Not only can you load and save comma-separated values (`CSV`) data, but also tab-separated values (`TSV`), 
-by adjusting the `dialect` parameter in [`.from_csv()`][docarray.array.doc_list.io.IOMixinArray.from_csv] 
-and [`.to_csv()`][docarray.array.doc_list.io.IOMixinArray.to_csv].
+by adjusting the `dialect` parameter in [`.from_csv()`][docarray.array.doc_list.io.IOMixinDocList.from_csv] 
+and [`.to_csv()`][docarray.array.doc_list.io.IOMixinDocList.to_csv].
 
 The dialect defaults to `'excel'`, which refers to comma-separated values. For tab-separated values, you can use 
 `'excel-tab'`.
@@ -200,7 +200,7 @@ class SemicolonSeparator(csv.Dialect):
     quoting = csv.QUOTE_MINIMAL
 ```
 
-Finally, you can load your data by setting the `dialect` parameter in [`.from_csv()`][docarray.array.doc_list.io.IOMixinArray.from_csv] to an instance of your `SemicolonSeparator`.
+Finally, you can load your data by setting the `dialect` parameter in [`.from_csv()`][docarray.array.doc_list.io.IOMixinDocList.from_csv] to an instance of your `SemicolonSeparator`.
 
 ```python
 docs = DocList[Book].from_csv(
