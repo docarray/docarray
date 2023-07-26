@@ -185,7 +185,7 @@ docs = DocList[MyDoc](
 doc_index.index(docs)
 ```
 
-That call to [index()][docarray.index.backends.qdrant.QdrantDocumentIndex.index] stores all Documents in `docs` into the Document Index,
+That call to `index()` stores all Documents in `docs` into the Document Index,
 ready to be retrieved in the next step.
 
 As you can see, `DocList[MyDoc]` and `QdrantDocumentIndex[MyDoc]` are both parameterized with `MyDoc`.

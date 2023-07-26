@@ -1,11 +1,11 @@
 # In-Memory Document Index
 
 
-[InMemoryExactNNIndex][docarray.index.backends.in_memory.InMemoryExactNNIndex] stores all Documents in DocLists in memory. 
+[InMemoryExactNNIndex][docarray.index.backends.in_memory.InMemoryExactNNIndex] stores all Documents in memory using DocLists. 
 It is a great starting point for small datasets, where you may not want to launch a database server.
 
-For vector search and filtering the InMemoryExactNNIndex utilizes DocArray's [`find()`][docarray.utils.find.find] and 
-[`filter_docs()`][docarray.utils.filter.filter_docs] functions.
+For vector search and filtering the [InMemoryExactNNIndex][docarray.index.backends.in_memory.InMemoryExactNNIndex] 
+utilizes DocArray's [`find()`][docarray.utils.find.find] and [`filter_docs()`][docarray.utils.filter.filter_docs] functions.
 
 !!! note "Production readiness"
     [InMemoryExactNNIndex][docarray.index.backends.in_memory.InMemoryExactNNIndex] is a great starting point
@@ -183,8 +183,9 @@ need to have compatible schemas.
 
 Now that you have indexed your data, you can perform vector similarity search using the [find()][docarray.index.abstract.BaseDocIndex.find] method.
 
-By using a document of type `MyDoc`, [find()][docarray.index.abstract.BaseDocIndex.find], you can find
-similar Documents in the Document Index:
+You can use the [find()][docarray.index.abstract.BaseDocIndex.find] function with a document of the type `MyDoc` 
+to find similar documents within the Document Index:
+
 
 === "Search by Document"
 

@@ -40,7 +40,7 @@ class MyDoc(BaseDoc):
 docs = DocList[MyDoc](MyDoc(title=f'title #{i}', embedding=np.random.rand(128)) for i in range(10))
 
 # Initialize a new HnswDocumentIndex instance and add the documents to the index.
-doc_index = HnswDocumentIndex[MyDoc](work_dir='./my_index')
+doc_index = HnswDocumentIndex[MyDoc](work_dir='./tmp_0')
 doc_index.index(docs)
 
 # Perform a vector search.
@@ -63,7 +63,7 @@ class MyDoc(BaseDoc):
     text: str
 
 
-db = HnswDocumentIndex[MyDoc](work_dir='./my_test_db')
+db = HnswDocumentIndex[MyDoc](work_dir='./tmp_1')
 ```
 
 ### Schema definition
@@ -105,7 +105,7 @@ You can work around this problem by subclassing the predefined Document and addi
         embedding: NdArray[128]
 
 
-    db = HnswDocumentIndex[MyDoc](work_dir='test_db')
+    db = HnswDocumentIndex[MyDoc](work_dir='./tmp_2')
     ```
 
 === "Using Field()"
@@ -120,7 +120,7 @@ You can work around this problem by subclassing the predefined Document and addi
         embedding: AnyTensor = Field(dim=128)
 
 
-    db = HnswDocumentIndex[MyDoc](work_dir='test_db3')
+    db = HnswDocumentIndex[MyDoc](work_dir='./tmp_3')
     ```
 
 Once the schema of your Document Index is defined in this way, the data that you are indexing can be either of the
@@ -187,8 +187,8 @@ need to have compatible schemas.
 
 Now that you have indexed your data, you can perform vector similarity search using the [find()][docarray.index.abstract.BaseDocIndex.find] method.
 
-By using a document of type `MyDoc`, [find()][docarray.index.abstract.BaseDocIndex.find], you can find
-similar Documents in the Document Index:
+You can use the [find()][docarray.index.abstract.BaseDocIndex.find] function with a document of the type `MyDoc` 
+to find similar documents within the Document Index:
 
 === "Search by Document"
 
@@ -272,8 +272,6 @@ a list of `DocList`s, one for each query, containing the closest matching docume
 
 ## Filter
 
-To filter Documents, the `InMemoryExactNNIndex` uses DocArray's [`filter_docs()`][docarray.utils.filter.filter_docs] function.
-
 You can filter your documents by using the `filter()` or `filter_batched()` method with a corresponding  filter query. 
 The query should follow the query language of the DocArray's [`filter_docs()`][docarray.utils.filter.filter_docs] function.
 
@@ -289,10 +287,10 @@ class Book(BaseDoc):
 
 
 books = DocList[Book]([Book(title=f'title {i}', price=i * 10) for i in range(10)])
-book_index = HnswDocumentIndex[Book](work_dir='./tmp_0')
+book_index = HnswDocumentIndex[Book](work_dir='./tmp_4')
 
 # filter for books that are cheaper than 29 dollars
-query = {'price': {'$lte': 29}}
+query = {'price': {'$lt': 29}}
 cheap_books = book_index.filter(query)
 
 assert len(cheap_books) == 3
@@ -331,7 +329,7 @@ class SimpleSchema(BaseDoc):
 # Create dummy documents.
 docs = DocList[SimpleSchema](SimpleSchema(year=2000-i, price=i, embedding=np.random.rand(128)) for i in range(10))
 
-doc_index = HnswDocumentIndex[SimpleSchema](work_dir='./tmp_9')
+doc_index = HnswDocumentIndex[SimpleSchema](work_dir='./tmp_5')
 doc_index.index(docs)
 
 query = (
@@ -467,7 +465,7 @@ class MyDoc(BaseDoc):
     text: str
 
 
-db = HnswDocumentIndex[MyDoc](work_dir='./path/to/db')
+db = HnswDocumentIndex[MyDoc](work_dir='./tmp_6')
 ```
 
 To load existing data, you can specify a directory that stores data from a previous session.
@@ -488,7 +486,7 @@ import numpy as np
 
 
 db = HnswDocumentIndex[MyDoc](
-    work_dir='/tmp/my_db',
+    work_dir='./tmp_7',
     default_column_config={
         np.ndarray: {
             'dim': -1,
@@ -537,7 +535,7 @@ class Schema(BaseDoc):
     tens_two: NdArray[10] = Field(M=4, space='ip')
 
 
-db = HnswDocumentIndex[Schema](work_dir='/tmp/my_db')
+db = HnswDocumentIndex[Schema](work_dir='./tmp_8')
 ```
 
 In the example above you can see how to configure two different vector fields, with two different sets of settings.
@@ -611,7 +609,7 @@ class YouTubeVideoDoc(BaseDoc):
 
 
 # create a Document Index
-doc_index = HnswDocumentIndex[YouTubeVideoDoc](work_dir='./tmp2')
+doc_index = HnswDocumentIndex[YouTubeVideoDoc](work_dir='./tmp_9')
 
 # create some data
 index_docs = [
@@ -688,7 +686,7 @@ class MyDoc(BaseDoc):
 
 
 # create a Document Index
-doc_index = HnswDocumentIndex[MyDoc](work_dir='./tmp3')
+doc_index = HnswDocumentIndex[MyDoc](work_dir='./tmp_10')
 
 # create some data
 index_docs = [

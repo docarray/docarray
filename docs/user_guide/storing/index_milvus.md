@@ -12,6 +12,10 @@ focusing on special features and configurations of Milvus.
 
 
 ## Basic Usage
+!!! note "Single Search Field Requirement"
+    In order to utilize vector search, it's necessary to define 'is_embedding' for one field only. 
+    This is due to Milvus' configuration, which permits a single vector for each data object.
+
 ```python
 from docarray import BaseDoc, DocList
 from docarray.index import MilvusDocumentIndex
@@ -204,13 +208,6 @@ similar Documents in the Document Index:
     print(f'{matches.title=}')
     print(f'{scores=}')
     ```
-
-To succesfully peform a vector search, you need to specify a `search_field`. This is the field that serves as the
-basis of comparison between your query and the documents in the Document Index.
-
-In this particular example you only have one field (`embedding`) that is a vector, so you can trivially choose that one.
-In general, you could have multiple fields of type `NdArray` or `TorchTensor` or `TensorFlowTensor`, and you can choose
-which one to use for the search.
 
 The [find()][docarray.index.abstract.BaseDocIndex.find] method returns a named tuple containing the closest
 matching documents and their associated similarity scores.

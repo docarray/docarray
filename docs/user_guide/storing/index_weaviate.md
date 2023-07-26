@@ -12,6 +12,10 @@ focusing on special features and configurations of Weaviate.
 
 
 ## Basic Usage
+!!! note "Single Search Field Requirement"
+    In order to utilize vector search, it's necessary to define 'is_embedding' for one field only. 
+    This is due to Weaviate's configuration, which permits a single vector for each data object.
+
 ```python
 from docarray import BaseDoc, DocList
 from docarray.index import WeaviateDocumentIndex

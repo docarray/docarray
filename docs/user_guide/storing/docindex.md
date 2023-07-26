@@ -45,17 +45,17 @@ Currently, DocArray supports the following vector databases:
 
 ## Basic Usage
 
-For this user guide you will use the [InMemoryExactNNIndex][docarray.index.backends.in_memory.InMemoryExactNNIndex]
-because it doesn't require you to launch a database server. Instead, it will store your data locally.
+Let's learn basic capabilities of Document Index with [InMemoryExactNNIndex][docarray.index.backends.in_memory.InMemoryExactNNIndex]. 
+It's easy because you don't need a database server, instead it saves your data locally.
+
 
 !!! note "Using a different vector database"
-    You can easily use Weaviate, Qdrant, or Elasticsearch instead -- they share the same API!
+    You can easily use Weaviate, Qdrant, Redis, Milvus or Elasticsearch instead -- they share the same API!
     To do so, check their respective documentation sections.
 
-!!! note "InMemory-specific settings"
-    The following sections explain the general concept of Document Index by using
-    `InMemoryExactNNIndex` as an example.
-    For InMemory-specific settings, check out the `InMemoryExactNNIndex` documentation
+!!! note "InMemoryExactNNIndex in more detail"
+    The following section only covers the basics of InMemoryExactNNIndex. 
+    For a deeper understanding, please look into its documentation 
     [here](index_in_memory.md).
 
 ### Define Document Schema and Create Data
