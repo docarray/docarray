@@ -37,6 +37,8 @@ Currently, DocArray supports the following vector databases:
 - [Weaviate](https://weaviate.io/)  |  [Docs](index_weaviate.md)
 - [Qdrant](https://qdrant.tech/)  |  [Docs](index_qdrant.md)
 - [Elasticsearch](https://www.elastic.co/elasticsearch/) v7 and v8  |  [Docs](index_elastic.md)
+- [Redis](https://redis.com/)  |  [Docs](index_redis.md)
+- [Milvus](https://milvus.io/)  |  [Docs](index_milvus.md)
 - [HNSWlib](https://github.com/nmslib/hnswlib)  |  [Docs](index_hnswlib.md)
 - InMemoryExactNNIndex  |  [Docs](index_in_memory.md)
 
@@ -56,6 +58,7 @@ because it doesn't require you to launch a database server. Instead, it will sto
     For InMemory-specific settings, check out the `InMemoryExactNNIndex` documentation
     [here](index_in_memory.md).
 
+### Define Document Schema and Create Data
 ```python
 from docarray import BaseDoc, DocList
 from docarray.index import InMemoryExactNNIndex
@@ -70,19 +73,31 @@ class MyDoc(BaseDoc):
 
 # Create documents (using dummy/random vectors)
 docs = DocList[MyDoc](MyDoc(title=f'title #{i}', price=i, embedding=np.random.rand(128)) for i in range(10))
+```
 
+### Initialize the Document Index and Add Data
+```python
 # Initialize a new InMemoryExactNNIndex instance and add the documents to the index.
 doc_index = InMemoryExactNNIndex[MyDoc]()
 doc_index.index(docs)
+```
 
+### Perform a Vector Similarity Search
+```python
 # Perform a vector search.
 query = np.ones(128)
 retrieved_docs, scores = doc_index.find(query, search_field='embedding', limit=10)
+```
 
+### Filter Documents
+```python
 # Perform filtering (price < 5)
 query = {'price': {'$lt': 5}}
 filtered_docs = doc_index.filter(query, limit=10)
+```
 
+### Combine Different Search Methods
+```python
 # Perform a hybrid search - combining vector search with filtering
 query = (
     doc_index.build_query()  # get empty query object

@@ -121,7 +121,7 @@ You can work around this problem by subclassing the predefined Document and addi
 Once the schema of your Document Index is defined in this way, the data that you are indexing can be either of the
 predefined Document type, or your custom Document type.
 
-The [next section](#index-data) goes into more detail about data indexing, but note that if you have some `TextDoc`s, `ImageDoc`s etc. that you want to index, you _don't_ need to cast them to `MyDoc`:
+The [next section](#index) goes into more detail about data indexing, but note that if you have some `TextDoc`s, `ImageDoc`s etc. that you want to index, you _don't_ need to cast them to `MyDoc`:
 
 ```python
 from docarray import DocList
@@ -224,7 +224,7 @@ matching documents and their associated similarity scores.
 
 When searching on subindex level, you can use [find_subindex()][docarray.index.abstract.BaseDocIndex.find_subindex] method, which returns a named tuple containing the subindex documents, similarity scores and their associated root documents.
 
-How these scores are calculated depends on the backend, and can usually be [configured](#customize-configurations).
+How these scores are calculated depends on the backend, and can usually be [configured](#configuration).
 
 You can also search for multiple documents at once, in a batch, using the [find_batched()][docarray.index.abstract.BaseDocIndex.find_batched] method.
 
@@ -319,7 +319,6 @@ to obtain a combined set of results.
 
 The kinds of atomic queries that can be combined in this way depends on the backend.
 Some backends can combine text search and vector search, while others can perform filters and vectors search, etc.
-To see what backend can do what, check out the [specific docs](#document-index).
 
 
 ## Access Documents
@@ -362,6 +361,56 @@ db.index(data)
 del db[ids[0]]  # del by single id
 del db[ids[1:]]  # del by list of ids
 ```
+
+## Update elements
+In order to update a Document inside the index, you only need to re-index it with the updated attributes.
+
+First, let's create a schema for our Document Index:
+```python
+import numpy as np
+from docarray import BaseDoc, DocList
+from docarray.typing import NdArray
+from docarray.index import RedisDocumentIndex
+class MyDoc(BaseDoc):
+    text: str
+    embedding: NdArray[128]
+```
+
+Now, we can instantiate our Index and add some data:
+```python
+docs = DocList[MyDoc](
+    [MyDoc(embedding=np.random.rand(128), text=f'I am the first version of Document {i}') for i in range(100)]
+)
+index = RedisDocumentIndex[MyDoc]()
+index.index(docs)
+assert index.num_docs() == 100
+```
+
+Let's retrieve our data and check its content:
+```python
+res = index.find(query=docs[0], search_field='embedding', limit=100)
+assert len(res.documents) == 100
+for doc in res.documents:
+    assert 'I am the first version' in doc.text
+```
+
+Then, let's update all of the text of this documents and re-index them:
+```python
+for i, doc in enumerate(docs):
+    doc.text = f'I am the second version of Document {i}'
+
+index.index(docs)
+assert index.num_docs() == 100
+```
+
+When we retrieve them again we can see that their text attribute has been updated accordingly:
+```python
+res = index.find(query=docs[0], search_field='embedding', limit=100)
+assert len(res.documents) == 100
+for doc in res.documents:
+    assert 'I am the second version' in doc.text
+```
+
 
 ## Configuration
 
@@ -571,56 +620,3 @@ root_docs, sub_docs, scores = doc_index.find_subindex(
     np.ones(64), subindex='docs__images', search_field='tensor_image', limit=3
 )
 ```
-
-### Update elements
-In order to update a Document inside the index, you only need to reindex it with the updated attributes.
-
-First lets create a schema for our Index
-```python
-import numpy as np
-from docarray import BaseDoc, DocList
-from docarray.typing import NdArray
-from docarray.index import RedisDocumentIndex
-class MyDoc(BaseDoc):
-    text: str
-    embedding: NdArray[128]
-```
-Now we can instantiate our Index and index some data.
-
-```python
-docs = DocList[MyDoc](
-    [MyDoc(embedding=np.random.rand(128), text=f'I am the first version of Document {i}') for i in range(100)]
-)
-index = RedisDocumentIndex[MyDoc]()
-index.index(docs)
-assert index.num_docs() == 100
-```
-
-Now we can find relevant documents
-
-```python
-res = index.find(query=docs[0], search_field='embedding', limit=100)
-assert len(res.documents) == 100
-for doc in res.documents:
-    assert 'I am the first version' in doc.text
-```
-
-and update all of the text of this documents and reindex them
-
-```python
-for i, doc in enumerate(docs):
-    doc.text = f'I am the second version of Document {i}'
-
-index.index(docs)
-assert index.num_docs() == 100
-```
-
-When we retrieve them again we can see that their text attribute has been updated accordingly
-
-```python
-res = index.find(query=docs[0], search_field='embedding', limit=100)
-assert len(res.documents) == 100
-for doc in res.documents:
-    assert 'I am the second version' in doc.text
-```
-

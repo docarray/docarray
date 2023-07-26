@@ -217,7 +217,7 @@ matching documents and their associated similarity scores.
 
 When searching on subindex level, you can use [find_subindex()][docarray.index.abstract.BaseDocIndex.find_subindex] method, which returns a named tuple containing the subindex documents, similarity scores and their associated root documents.
 
-How these scores are calculated depends on the backend, and can usually be [configured](#customize-configurations).
+How these scores are calculated depends on the backend, and can usually be [configured](#configuration).
 
 You can also search for multiple documents at once, in a batch, using the [find_batched()][docarray.index.abstract.BaseDocIndex.find_batched] method.
 
@@ -298,7 +298,6 @@ to obtain a combined set of results.
 
 The kinds of atomic queries that can be combined in this way depends on the backend.
 Some backends can combine text search and vector search, while others can perform filters and vectors search, etc.
-To see what backend can do what, check out the [specific docs](#document-index).
 
 
 ## Access Documents

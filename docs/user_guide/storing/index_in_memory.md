@@ -15,6 +15,9 @@ For vector search and filtering the InMemoryExactNNIndex utilizes DocArray's [`f
     - [QdrantDocumentIndex][docarray.index.backends.qdrant.QdrantDocumentIndex]
     - [WeaviateDocumentIndex][docarray.index.backends.weaviate.WeaviateDocumentIndex]
     - [ElasticDocumentIndex][docarray.index.backends.elastic.ElasticDocIndex]
+    - [RedisDocumentIndex][docarray.index.backends.redis.RedisDocumentIndex]
+    - [MilvusDocumentIndex][docarray.index.backends.milvus.MilvusDocumentIndex]
+
 
 
 ## Basic usage
@@ -136,20 +139,6 @@ data = DocList[MyDoc](
 
 # you can index this into Document Index of type MyDoc
 db.index(data)
-```
-
-
-**Persist and Load**
-
-Further, you can pass an `index_file_path` argument to make sure that the index can be restored if persisted from that specific file.
-```python
-doc_index = InMemoryExactNNIndex[MyDoc](index_file_path='docs.bin')
-doc_index.index(docs)
-
-doc_index.persist()
-
-# Initialize a new document index using the saved binary file
-new_doc_index = InMemoryExactNNIndex[MyDoc](index_file_path='docs.bin')
 ```
 
 ## Index
@@ -327,19 +316,27 @@ To combine these operations into a single, hybrid search query, you can use the 
 through [build_query()][docarray.index.abstract.BaseDocIndex.build_query]:
 
 ```python
-# prepare a query
-q_doc = MyDoc(embedding=np.random.rand(128), text='query')
+# Define the document schema.
+class SimpleSchema(BaseDoc):
+    year: int
+    price: int
+    embedding: NdArray[128]
+
+# Create dummy documents.
+docs = DocList[SimpleSchema](SimpleSchema(year=2000-i, price=i, embedding=np.random.rand(128)) for i in range(10))
+
+doc_index = InMemoryExactNNIndex[SimpleSchema](docs)
 
 query = (
-    db.build_query()  # get empty query object
-    .find(query=q_doc, search_field='embedding')  # add vector similarity search
-    .filter(filter_query={'text': {'$exists': True}})  # add filter search
-    .build()  # build the query
+    doc_index.build_query()  # get empty query object
+    .filter(filter_query={'year': {'$gt': 1994}})  # pre-filtering
+    .find(query=np.random.rand(128), search_field='embedding')  # add vector similarity search
+    .filter(filter_query={'price': {'$lte': 3}})  # post-filtering
+    .build()
 )
-
 # execute the combined query and return the results
-retrieved_docs, scores = db.execute_query(query)
-print(f'{retrieved_docs=}')
+results = doc_index.execute_query(query)
+print(f'{results=}')
 ```
 
 In the example above you can see how to form a hybrid query that combines vector similarity search and filtered search
@@ -347,7 +344,6 @@ to obtain a combined set of results.
 
 The kinds of atomic queries that can be combined in this way depends on the backend.
 Some backends can combine text search and vector search, while others can perform filters and vectors search, etc.
-To see what backend can do what, check out the [specific docs](#document-index).
 
 
 ## Access Documents
@@ -390,6 +386,56 @@ db.index(data)
 del db[ids[0]]  # del by single id
 del db[ids[1:]]  # del by list of ids
 ```
+
+## Update Documents
+In order to update a Document inside the index, you only need to re-index it with the updated attributes.
+
+First, let's create a schema for our Document Index:
+```python
+import numpy as np
+from docarray import BaseDoc, DocList
+from docarray.typing import NdArray
+from docarray.index import InMemoryExactNNIndex
+class MyDoc(BaseDoc):
+    text: str
+    embedding: NdArray[128]
+```
+
+Now, we can instantiate our Index and add some data:
+```python
+docs = DocList[MyDoc](
+    [MyDoc(embedding=np.random.rand(128), text=f'I am the first version of Document {i}') for i in range(100)]
+)
+index = InMemoryExactNNIndex[MyDoc]()
+index.index(docs)
+assert index.num_docs() == 100
+```
+
+Let's retrieve our data and check its content:
+```python
+res = index.find(query=docs[0], search_field='embedding', limit=100)
+assert len(res.documents) == 100
+for doc in res.documents:
+    assert 'I am the first version' in doc.text
+```
+
+Then, let's update all of the text of this documents and re-index them:
+```python
+for i, doc in enumerate(docs):
+    doc.text = f'I am the second version of Document {i}'
+
+index.index(docs)
+assert index.num_docs() == 100
+```
+
+When we retrieve them again we can see that their text attribute has been updated accordingly
+```python
+res = index.find(query=docs[0], search_field='embedding', limit=100)
+assert len(res.documents) == 100
+for doc in res.documents:
+    assert 'I am the second version' in doc.text
+```
+
 
 ## Configuration
 
@@ -442,6 +488,20 @@ class Schema(BaseDoc):
 ```
 
 In the example above you can see how to configure two different vector fields, with two different sets of settings.
+
+
+### Persist and Load
+You can pass an `index_file_path` argument to make sure that the index can be restored if persisted from that specific file.
+```python
+doc_index = InMemoryExactNNIndex[MyDoc](index_file_path='docs.bin')
+doc_index.index(docs)
+
+doc_index.persist()
+
+# Initialize a new document index using the saved binary file
+new_doc_index = InMemoryExactNNIndex[MyDoc](index_file_path='docs.bin')
+```
+
 
 ## Nested data
 

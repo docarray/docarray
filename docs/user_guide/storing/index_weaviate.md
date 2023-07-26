@@ -45,7 +45,7 @@ retrieved_docs = doc_index.find(query, limit=10)
 To use [WeaviateDocumentIndex][docarray.index.backends.weaviate.WeaviateDocumentIndex], DocArray needs to hook into a running Weaviate service.
 There are multiple ways to start a Weaviate instance, depending on your use case.
 
-#### Options - Overview
+**Options - Overview**
 
 | Instance type | General use case | Configurability | Notes | 
 | ----- | ----- | ----- | ----- | 
@@ -56,13 +56,13 @@ There are multiple ways to start a Weaviate instance, depending on your use case
 
 ### Instantiation instructions
 
-#### WCS (managed instance)
+**WCS (managed instance)**
 
 Go to the [WCS console](https://console.weaviate.cloud) and create an instance using the visual interface, following [this guide](https://weaviate.io/developers/wcs/guides/create-instance). 
 
 Weaviate instances on WCS come pre-configured, so no further configuration is required.
 
-#### Docker-Compose (self-managed)
+**Docker-Compose (self-managed)**
 
 Get a configuration file (`docker-compose.yaml`). You can build it using [this interface](https://weaviate.io/developers/weaviate/installation/docker-compose), or download it directly with:
 
@@ -76,7 +76,7 @@ Where `v<WEAVIATE_VERSION>` is the actual version, such as `v1.18.3`.
 curl -o docker-compose.yml "https://configuration.weaviate.io/v2/docker-compose/docker-compose.yml?modules=standalone&runtime=docker-compose&weaviate_version=v1.18.3"
 ```
 
-##### Start up Weaviate with Docker-Compose
+**Start up Weaviate with Docker-Compose**
 
 Then you can start up Weaviate by running from a shell:
 
@@ -84,7 +84,7 @@ Then you can start up Weaviate by running from a shell:
 docker-compose up -d
 ```
 
-##### Shut down Weaviate
+**Shut down Weaviate**
 
 Then you can shut down Weaviate by running from a shell:
 
@@ -92,7 +92,7 @@ Then you can shut down Weaviate by running from a shell:
 docker-compose down
 ```
 
-#### Notes
+**Notes**
 
 Unless data persistence or backups are set up, shutting down the Docker instance will remove all its data. 
 
@@ -102,7 +102,7 @@ See documentation on [Persistent volume](https://weaviate.io/developers/weaviate
 docker-compose up -d
 ```
 
-#### Embedded Weaviate (from the application)
+**Embedded Weaviate (from the application)**
 
 With Embedded Weaviate, Weaviate database server can be launched from the client, using:
 
@@ -150,7 +150,7 @@ dbconfig = WeaviateDocumentIndex.DBConfig(
 )  # Replace with your endpoint)
 ```
 
-#### OIDC with username + password
+**OIDC with username + password**
 
 To authenticate against a Weaviate instance with OIDC username & password:
 
@@ -170,7 +170,7 @@ dbconfig = WeaviateDocumentIndex.DBConfig(
 # )
 ```
 
-#### API key-based authentication
+**API key-based authentication**
 
 To authenticate against a Weaviate instance an API key:
 

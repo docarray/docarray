@@ -41,5 +41,7 @@ use a vector search library locally (HNSWLib, Exact NN search):
 - [Weaviate](https://weaviate.io/)  |  [Docs](index_weaviate.md)
 - [Qdrant](https://qdrant.tech/)  |  [Docs](index_qdrant.md)
 - [Elasticsearch](https://www.elastic.co/elasticsearch/) v7 and v8  |  [Docs](index_elastic.md)
+- [Redis](https://redis.com/)  |  [Docs](index_redis.md)
+- [Milvus](https://milvus.io/)  |  [Docs](index_milvus.md)
 - [Hnswlib](https://github.com/nmslib/hnswlib)  |  [Docs](index_hnswlib.md)
 - InMemoryExactNNSearch  |  [Docs](index_in_memory.md)

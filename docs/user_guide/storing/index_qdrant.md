@@ -149,7 +149,7 @@ You can work around this problem by subclassing the predefined Document and addi
 Once the schema of your Document Index is defined in this way, the data that you are indexing can be either of the
 predefined Document type, or your custom Document type.
 
-The [next section](#index-data) goes into more detail about data indexing, but note that if you have some `TextDoc`s, `ImageDoc`s etc. that you want to index, you _don't_ need to cast them to `MyDoc`:
+The [next section](#index) goes into more detail about data indexing, but note that if you have some `TextDoc`s, `ImageDoc`s etc. that you want to index, you _don't_ need to cast them to `MyDoc`:
 
 ```python
 from docarray import DocList
@@ -253,7 +253,7 @@ matching documents and their associated similarity scores.
 
 When searching on subindex level, you can use [find_subindex()][docarray.index.abstract.BaseDocIndex.find_subindex] method, which returns a named tuple containing the subindex documents, similarity scores and their associated root documents.
 
-How these scores are calculated depends on the backend, and can usually be [configured](#customize-configurations).
+How these scores are calculated depends on the backend, and can usually be [configured](#configuration).
 
 You can also search for multiple documents at once, in a batch, using the [find_batched()][docarray.index.abstract.BaseDocIndex.find_batched] method.
 
@@ -388,6 +388,55 @@ del doc_index[index_docs[16].id]
 
 # delete multiple Docs
 del doc_index[index_docs[17].id, index_docs[18].id]
+```
+
+## Update elements
+In order to update a Document inside the index, you only need to re-index it with the updated attributes.
+
+First, let's create a schema for our Document Index:
+```python
+import numpy as np
+from docarray import BaseDoc, DocList
+from docarray.typing import NdArray
+from docarray.index import QdrantDocumentIndex
+class MyDoc(BaseDoc):
+    text: str
+    embedding: NdArray[128]
+```
+
+Now, we can instantiate our Index and add some data:
+```python
+docs = DocList[MyDoc](
+    [MyDoc(embedding=np.random.rand(10), text=f'I am the first version of Document {i}') for i in range(100)]
+)
+index = QdrantDocumentIndex[MyDoc]()
+index.index(docs)
+assert index.num_docs() == 100
+```
+
+Let's retrieve our data and check its content:
+```python
+res = index.find(query=docs[0], search_field='embedding', limit=100)
+assert len(res.documents) == 100
+for doc in res.documents:
+    assert 'I am the first version' in doc.text
+```
+
+Then, let's update all of the text of this documents and re-index them:
+```python
+for i, doc in enumerate(docs):
+    doc.text = f'I am the second version of Document {i}'
+
+index.index(docs)
+assert index.num_docs() == 100
+```
+
+When we retrieve them again we can see that their text attribute has been updated accordingly:
+```python
+res = index.find(query=docs[0], search_field='embedding', limit=100)
+assert len(res.documents) == 100
+for doc in res.documents:
+    assert 'I am the second version' in doc.text
 ```
 
 
@@ -570,57 +619,5 @@ root_docs, sub_docs, scores = doc_index.find_subindex(
 root_docs, sub_docs, scores = doc_index.find_subindex(
     np.ones(64), subindex='docs__images', search_field='tensor_image', limit=3
 )
-```
-
-### Update elements
-In order to update a Document inside the index, you only need to reindex it with the updated attributes.
-
-First lets create a schema for our Index
-```python
-import numpy as np
-from docarray import BaseDoc, DocList
-from docarray.typing import NdArray
-from docarray.index import QdrantDocumentIndex
-class MyDoc(BaseDoc):
-    text: str
-    embedding: NdArray[128]
-```
-Now we can instantiate our Index and index some data.
-
-```python
-docs = DocList[MyDoc](
-    [MyDoc(embedding=np.random.rand(10), text=f'I am the first version of Document {i}') for i in range(100)]
-)
-index = QdrantDocumentIndex[MyDoc]()
-index.index(docs)
-assert index.num_docs() == 100
-```
-
-Now we can find relevant documents
-
-```python
-res = index.find(query=docs[0], search_field='embedding', limit=100)
-assert len(res.documents) == 100
-for doc in res.documents:
-    assert 'I am the first version' in doc.text
-```
-
-and update all of the text of this documents and reindex them
-
-```python
-for i, doc in enumerate(docs):
-    doc.text = f'I am the second version of Document {i}'
-
-index.index(docs)
-assert index.num_docs() == 100
-```
-
-When we retrieve them again we can see that their text attribute has been updated accordingly
-
-```python
-res = index.find(query=docs[0], search_field='embedding', limit=100)
-assert len(res.documents) == 100
-for doc in res.documents:
-    assert 'I am the second version' in doc.text
 ```
 

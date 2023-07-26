@@ -166,7 +166,7 @@ You can work around this problem by subclassing the predefined Document and addi
 Once the schema of your Document Index is defined in this way, the data that you are indexing can be either of the
 predefined Document type, or your custom Document type.
 
-The [next section](#index-data) goes into more detail about data indexing, but note that if you have some `TextDoc`s, `ImageDoc`s etc. that you want to index, you _don't_ need to cast them to `MyDoc`:
+The [next section](#index) goes into more detail about data indexing, but note that if you have some `TextDoc`s, `ImageDoc`s etc. that you want to index, you _don't_ need to cast them to `MyDoc`:
 
 ```python
 from docarray import DocList

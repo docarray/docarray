@@ -20,6 +20,8 @@ It stores vectors on disk in [hnswlib](https://github.com/nmslib/hnswlib), and s
     - [QdrantDocumentIndex][docarray.index.backends.qdrant.QdrantDocumentIndex]
     - [WeaviateDocumentIndex][docarray.index.backends.weaviate.WeaviateDocumentIndex]
     - [ElasticDocumentIndex][docarray.index.backends.elastic.ElasticDocIndex]
+    - [RedisDocumentIndex][docarray.index.backends.redis.RedisDocumentIndex]
+    - [MilvusDocumentIndex][docarray.index.backends.milvus.MilvusDocumentIndex]
 
 ## Basic Usage
 
@@ -124,7 +126,7 @@ You can work around this problem by subclassing the predefined Document and addi
 Once the schema of your Document Index is defined in this way, the data that you are indexing can be either of the
 predefined Document type, or your custom Document type.
 
-The [next section](#index-data) goes into more detail about data indexing, but note that if you have some `TextDoc`s, `ImageDoc`s etc. that you want to index, you _don't_ need to cast them to `MyDoc`:
+The [next section](#index) goes into more detail about data indexing, but note that if you have some `TextDoc`s, `ImageDoc`s etc. that you want to index, you _don't_ need to cast them to `MyDoc`:
 
 ```python
 from docarray import DocList
@@ -141,20 +143,6 @@ data = DocList[TextDoc](
 # you can index this into Document Index of type MyDoc
 db.index(data)
 ```
-
-
-**Database location:**
-
-For `HnswDocumentIndex` you need to specify a `work_dir` where the data will be stored; for other backends you
-usually specify a `host` and a `port` instead.
-
-In addition to a host and a port, most backends can also take an `index_name`, `table_name`, `collection_name` or similar.
-This specifies the name of the index/table/collection that will be created in the database.
-You don't have to specify this though: By default, this name will be taken from the name of the Document type that you use as schema.
-For example, for `WeaviateDocumentIndex[MyDoc](...)` the data will be stored in a Weaviate Class of name `MyDoc`.
-
-In any case, if the location does not yet contain any data, we start from a blank slate.
-If the location already contains data from a previous session, it will be accessible through the Document Index.
 
 
 ## Index
@@ -242,7 +230,7 @@ matching documents and their associated similarity scores.
 
 When searching on subindex level, you can use [find_subindex()][docarray.index.abstract.BaseDocIndex.find_subindex] method, which returns a named tuple containing the subindex documents, similarity scores and their associated root documents.
 
-How these scores are calculated depends on the backend, and can usually be [configured](#customize-configurations).
+How these scores are calculated depends on the backend, and can usually be [configured](#configuration).
 
 ### Batched Search
 
@@ -284,14 +272,33 @@ a list of `DocList`s, one for each query, containing the closest matching docume
 
 ## Filter
 
-In addition to vector similarity search, the Document Index interface offers methods for filtered search:
-[filter()][docarray.index.abstract.BaseDocIndex.filter],
-as well as the batched version [filter_batched()][docarray.index.abstract.BaseDocIndex.filter_batched]. [filter_subindex()][docarray.index.abstract.BaseDocIndex.filter_subindex] is for filter on subindex level.
+To filter Documents, the `InMemoryExactNNIndex` uses DocArray's [`filter_docs()`][docarray.utils.filter.filter_docs] function.
 
-!!! note
-    The [HnswDocumentIndex][docarray.index.backends.hnswlib.HnswDocumentIndex] implementation does not offer support for filter search.
+You can filter your documents by using the `filter()` or `filter_batched()` method with a corresponding  filter query. 
+The query should follow the query language of the DocArray's [`filter_docs()`][docarray.utils.filter.filter_docs] function.
 
-    To see how to perform filter search, you can check out other backends that offer support.
+In the following example let's filter for all the books that are cheaper than 29 dollars:
+
+```python
+from docarray import BaseDoc, DocList
+
+
+class Book(BaseDoc):
+    title: str
+    price: int
+
+
+books = DocList[Book]([Book(title=f'title {i}', price=i * 10) for i in range(10)])
+book_index = HnswDocumentIndex[Book](work_dir='./tmp_0')
+
+# filter for books that are cheaper than 29 dollars
+query = {'price': {'$lte': 29}}
+cheap_books = book_index.filter(query)
+
+assert len(cheap_books) == 3
+for doc in cheap_books:
+    doc.summary()
+```
 
 
 
@@ -315,19 +322,28 @@ To combine these operations into a single, hybrid search query, you can use the 
 through [build_query()][docarray.index.abstract.BaseDocIndex.build_query]:
 
 ```python
-# prepare a query
-q_doc = MyDoc(embedding=np.random.rand(128), text='query')
+# Define the document schema.
+class SimpleSchema(BaseDoc):
+    year: int
+    price: int
+    embedding: NdArray[128]
+
+# Create dummy documents.
+docs = DocList[SimpleSchema](SimpleSchema(year=2000-i, price=i, embedding=np.random.rand(128)) for i in range(10))
+
+doc_index = HnswDocumentIndex[SimpleSchema](work_dir='./tmp_9')
+doc_index.index(docs)
 
 query = (
-    db.build_query()  # get empty query object
-    .find(query=q_doc, search_field='embedding')  # add vector similarity search
-    .filter(filter_query={'text': {'$exists': True}})  # add filter search
-    .build()  # build the query
+    doc_index.build_query()  # get empty query object
+    .filter(filter_query={'year': {'$gt': 1994}})  # pre-filtering
+    .find(query=np.random.rand(128), search_field='embedding')  # add vector similarity search
+    .filter(filter_query={'price': {'$lte': 3}})  # post-filtering
+    .build()
 )
-
 # execute the combined query and return the results
-retrieved_docs, scores = db.execute_query(query)
-print(f'{retrieved_docs=}')
+results = doc_index.execute_query(query)
+print(f'{results=}')
 ```
 
 In the example above you can see how to form a hybrid query that combines vector similarity search and filtered search
@@ -335,7 +351,6 @@ to obtain a combined set of results.
 
 The kinds of atomic queries that can be combined in this way depends on the backend.
 Some backends can combine text search and vector search, while others can perform filters and vectors search, etc.
-To see what backend can do what, check out the [specific docs](#document-index).
 
 
 ## Access Documents
@@ -379,6 +394,54 @@ del db[ids[0]]  # del by single id
 del db[ids[1:]]  # del by list of ids
 ```
 
+## Update Documents
+In order to update a Document inside the index, you only need to re-index it with the updated attributes.
+
+First, let's create a schema for our Document Index:
+```python
+import numpy as np
+from docarray import BaseDoc, DocList
+from docarray.typing import NdArray
+from docarray.index import HnswDocumentIndex
+class MyDoc(BaseDoc):
+    text: str
+    embedding: NdArray[128]
+```
+
+Now, we can instantiate our Index and add some data:
+```python
+docs = DocList[MyDoc](
+    [MyDoc(embedding=np.random.rand(128), text=f'I am the first version of Document {i}') for i in range(100)]
+)
+index = HnswDocumentIndex[MyDoc]()
+index.index(docs)
+assert index.num_docs() == 100
+```
+
+Let's retrieve our data and check its content:
+```python
+res = index.find(query=docs[0], search_field='embedding', limit=100)
+assert len(res.documents) == 100
+for doc in res.documents:
+    assert 'I am the first version' in doc.text
+```
+
+Then, let's update all of the text of this documents and re-index them:
+```python
+for i, doc in enumerate(docs):
+    doc.text = f'I am the second version of Document {i}'
+
+index.index(docs)
+assert index.num_docs() == 100
+```
+
+When we retrieve them again we can see that their text attribute has been updated accordingly:
+```python
+res = index.find(query=docs[0], search_field='embedding', limit=100)
+assert len(res.documents) == 100
+for doc in res.documents:
+    assert 'I am the second version' in doc.text
+```
 
 ## Configuration
 
@@ -459,7 +522,7 @@ For more information on these settings, see [below](#field-wise-configurations).
 Fields that are not vector fields (e.g. of type `str` or `int` etc.) do not offer any configuration, as they are simply
 stored as-is in a SQLite database.
 
-### Field-wise configurations
+### Field-wise Configurations
 
 There are various setting that you can tweak for every vector field that you index into Hnswlib.
 
@@ -496,6 +559,20 @@ In this way, you can pass [all options that Hnswlib supports](https://github.com
     In HnswLibDocIndex  `space='cosine'` refers to cosine distance, not to cosine similarity, as it does for the other backends. 
 
 You can find more details on the parameters [here](https://github.com/nmslib/hnswlib/blob/master/ALGO_PARAMS.md).
+
+
+### Database location
+
+For `HnswDocumentIndex` you need to specify a `work_dir` where the data will be stored; for other backends you
+usually specify a `host` and a `port` instead.
+
+In addition to a host and a port, most backends can also take an `index_name`, `table_name`, `collection_name` or similar.
+This specifies the name of the index/table/collection that will be created in the database.
+You don't have to specify this though: By default, this name will be taken from the name of the Document type that you use as schema.
+For example, for `WeaviateDocumentIndex[MyDoc](...)` the data will be stored in a Weaviate Class of name `MyDoc`.
+
+In any case, if the location does not yet contain any data, we start from a blank slate.
+If the location already contains data from a previous session, it will be accessible through the Document Index.
 
 
 
@@ -657,56 +734,4 @@ root_docs, sub_docs, scores = doc_index.find_subindex(
 root_docs, sub_docs, scores = doc_index.find_subindex(
     np.ones(64), subindex='docs__images', search_field='tensor_image', limit=3
 )
-```
-
-### Update elements
-In order to update a Document inside the index, you only need to reindex it with the updated attributes.
-
-First lets create a schema for our Index
-```python
-import numpy as np
-from docarray import BaseDoc, DocList
-from docarray.typing import NdArray
-from docarray.index import HnswDocumentIndex
-class MyDoc(BaseDoc):
-    text: str
-    embedding: NdArray[128]
-```
-Now we can instantiate our Index and index some data.
-
-```python
-docs = DocList[MyDoc](
-    [MyDoc(embedding=np.random.rand(128), text=f'I am the first version of Document {i}') for i in range(100)]
-)
-index = HnswDocumentIndex[MyDoc]()
-index.index(docs)
-assert index.num_docs() == 100
-```
-
-Now we can find relevant documents
-
-```python
-res = index.find(query=docs[0], search_field='embedding', limit=100)
-assert len(res.documents) == 100
-for doc in res.documents:
-    assert 'I am the first version' in doc.text
-```
-
-and update all of the text of this documents and reindex them
-
-```python
-for i, doc in enumerate(docs):
-    doc.text = f'I am the second version of Document {i}'
-
-index.index(docs)
-assert index.num_docs() == 100
-```
-
-When we retrieve them again we can see that their text attribute has been updated accordingly
-
-```python
-res = index.find(query=docs[0], search_field='embedding', limit=100)
-assert len(res.documents) == 100
-for doc in res.documents:
-    assert 'I am the second version' in doc.text
 ```
