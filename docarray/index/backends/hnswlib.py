@@ -608,7 +608,7 @@ class HnswDocumentIndex(BaseDocIndex, Generic[TSchema]):
             return _FindResultBatched(documents=[], scores=[])  # type: ignore
 
         # Set limit as the minimum of the provided limit and the total number of documents
-        limit = limit
+        limit = min(limit, self.num_docs())
 
         # Ensure the search field is in the HNSW indices
         if search_field not in self._hnsw_indices:
