@@ -2,6 +2,7 @@ import glob
 import hashlib
 import os
 import sqlite3
+from collections import OrderedDict
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import (
@@ -34,7 +35,7 @@ from docarray.index.backends.helper import (
     _collect_query_args,
     _execute_find_and_filter_query,
 )
-from docarray.proto import DocProto
+from docarray.proto import DocProto, NdArrayProto, NodeProto
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
 from docarray.typing.tensor.ndarray import NdArray
 from docarray.utils._internal._typing import safe_issubclass
@@ -62,7 +63,6 @@ if torch is not None:
 if tf is not None:
     HNSWLIB_PY_VEC_TYPES.append(tf.Tensor)
     HNSWLIB_PY_VEC_TYPES.append(TensorFlowTensor)
-
 
 TSchema = TypeVar('TSchema', bound=BaseDoc)
 T = TypeVar('T', bound='HnswDocumentIndex')
@@ -127,7 +127,6 @@ class HnswDocumentIndex(BaseDocIndex, Generic[TSchema]):
         self._sqlite_cursor = self._sqlite_conn.cursor()
         self._create_docs_table()
         self._sqlite_conn.commit()
-        self._num_docs = self._get_num_docs_sqlite()
         self._logger.info(f'{self.__class__.__name__} has been initialized')
 
     @property
@@ -255,12 +254,9 @@ class HnswDocumentIndex(BaseDocIndex, Generic[TSchema]):
         docs_validated = self._validate_docs(docs)
         self._update_subindex_data(docs_validated)
         data_by_columns = self._get_col_value_dict(docs_validated)
-
         self._index(data_by_columns, docs_validated, **kwargs)
-
         self._send_docs_to_sqlite(docs_validated)
         self._sqlite_conn.commit()
-        self._num_docs = self._get_num_docs_sqlite()
 
     def execute_query(self, query: List[Tuple[str, Dict]], *args, **kwargs) -> Any:
         """
@@ -293,10 +289,6 @@ class HnswDocumentIndex(BaseDocIndex, Generic[TSchema]):
         limit: int,
         search_field: str = '',
     ) -> _FindResultBatched:
-        if self.num_docs() == 0:
-            return _FindResultBatched(documents=[], scores=[])  # type: ignore
-
-        limit = min(limit, self.num_docs())
 
         index = self._hnsw_indices[search_field]
         labels, distances = index.knn_query(queries, k=int(limit))
@@ -311,9 +303,6 @@ class HnswDocumentIndex(BaseDocIndex, Generic[TSchema]):
     def _find(
         self, query: np.ndarray, limit: int, search_field: str = ''
     ) -> _FindResult:
-        if self.num_docs() == 0:
-            return _FindResult(documents=[], scores=[])  # type: ignore
-
         query_batched = np.expand_dims(query, axis=0)
         docs, scores = self._find_batched(
             queries=query_batched, limit=limit, search_field=search_field
@@ -381,7 +370,6 @@ class HnswDocumentIndex(BaseDocIndex, Generic[TSchema]):
 
         self._delete_docs_from_sqlite(doc_ids)
         self._sqlite_conn.commit()
-        self._num_docs = self._get_num_docs_sqlite()
 
     def _get_items(self, doc_ids: Sequence[str], out: bool = True) -> Sequence[TSchema]:
         """Get Documents from the hnswlib index, by `id`.
@@ -406,7 +394,7 @@ class HnswDocumentIndex(BaseDocIndex, Generic[TSchema]):
         """
         Get the number of documents.
         """
-        return self._num_docs
+        return self._get_num_docs_sqlite()
 
     ###############################################
     # Helpers                                     #
@@ -471,10 +459,19 @@ class HnswDocumentIndex(BaseDocIndex, Generic[TSchema]):
         self._sqlite_cursor.execute(
             'SELECT data FROM docs WHERE doc_id IN %s' % sql_id_list,
         )
+        embeddings: OrderedDict[str, list] = OrderedDict()
+        for col_name, index in self._hnsw_indices.items():
+            embeddings[col_name] = index.get_items(univ_ids)
         rows = self._sqlite_cursor.fetchall()
         schema = self.out_schema if out else self._schema
-        docs_cls = DocList.__class_getitem__(cast(Type[BaseDoc], schema))
-        return docs_cls([self._doc_from_bytes(row[0], out) for row in rows])
+        docs = DocList.__class_getitem__(cast(Type[BaseDoc], schema))()
+        for i, row in enumerate(rows):
+            reconstruct_embeddings = {}
+            for col_name in embeddings.keys():
+                reconstruct_embeddings[col_name] = embeddings[col_name][i]
+            docs.append(self._doc_from_bytes(row[0], reconstruct_embeddings, out))
+
+        return docs
 
     def _get_docs_sqlite_doc_id(
         self, doc_ids: Sequence[str], out: bool = True
@@ -509,12 +506,30 @@ class HnswDocumentIndex(BaseDocIndex, Generic[TSchema]):
 
     # serialization helpers
     def _doc_to_bytes(self, doc: BaseDoc) -> bytes:
-        return doc.to_protobuf().SerializeToString()
+        pb = doc.to_protobuf()
+        for col_name in self._hnsw_indices.keys():
+            pb.data[col_name].Clear()
+        return pb.SerializeToString()
 
-    def _doc_from_bytes(self, data: bytes, out: bool = True) -> BaseDoc:
+    def _doc_from_bytes(
+        self, data: bytes, reconstruct_embeddings: Dict, out: bool = True
+    ) -> BaseDoc:
         schema = self.out_schema if out else self._schema
         schema_cls = cast(Type[BaseDoc], schema)
-        return schema_cls.from_protobuf(DocProto.FromString(data))
+        pb = DocProto.FromString(data)
+        for k, v in reconstruct_embeddings.items():
+            nd_proto = NdArrayProto()
+            np_array = np.array(v)
+            nd_proto.dense.buffer = np_array.tobytes()
+            nd_proto.dense.ClearField('shape')
+            nd_proto.dense.shape.extend(list(np_array.shape))
+            nd_proto.dense.dtype = np_array.dtype.str
+            node_proto = NodeProto(ndarray=nd_proto, type='ndarray')
+
+            pb.data[k].MergeFrom(node_proto)
+
+        doc = schema_cls.from_protobuf(pb)
+        return doc
 
     def _get_root_doc_id(self, id: str, root: str, sub: str) -> str:
         """Get the root_id given the id of a subindex Document and the root and subindex name for hnswlib.
