@@ -5273,4 +5273,4 @@ web = ["fastapi"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.8,<4.0"
-content-hash = "3f67aa7266b35860429a1911f5acdbef0db4b0ec2b5151ae2f563030c177c19e"
+content-hash = "acf833d086fbe0c98e995ca60533883e5d90f24d2bba29ef7910b2bedabb93cb"
