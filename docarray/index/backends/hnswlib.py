@@ -35,7 +35,7 @@ from docarray.index.abstract import (
 from docarray.index.backends.helper import (
     _collect_query_args,
 )
-from docarray.proto import DocProto, NdArrayProto, NodeProto
+from docarray.proto import DocProto
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
 from docarray.typing.tensor.ndarray import NdArray
 from docarray.utils._internal._typing import safe_issubclass
@@ -571,16 +571,15 @@ class HnswDocumentIndex(BaseDocIndex, Generic[TSchema]):
     ) -> BaseDoc:
         schema = self.out_schema if out else self._schema
         schema_cls = cast(Type[BaseDoc], schema)
-        pb = DocProto.FromString(data)
+        pb = DocProto.FromString(
+            data
+        )  # I cannot reconstruct directly the DA object because it may fail at validation because embedding may not be Optional
         for k, v in reconstruct_embeddings.items():
-            nd_proto = NdArrayProto()
-            np_array = np.array(v)
-            nd_proto.dense.buffer = np_array.tobytes()
-            nd_proto.dense.ClearField('shape')
-            nd_proto.dense.shape.extend(list(np_array.shape))
-            nd_proto.dense.dtype = np_array.dtype.str
-            node_proto = NodeProto(ndarray=nd_proto, type='ndarray')
-
+            node_proto = (
+                self.out_schema.__fields__[k]
+                .type_._docarray_from_ndarray(np.array(v))
+                ._to_node_protobuf()
+            )
             pb.data[k].MergeFrom(node_proto)
 
         doc = schema_cls.from_protobuf(pb)
