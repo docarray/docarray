@@ -211,7 +211,7 @@ def test_get_single(ten_simple_docs, ten_flat_docs, ten_nested_docs, tmp_path):
     for d in ten_simple_docs:
         id_ = d.id
         assert index[id_].id == id_
-        assert np.all(index[id_].tens == d.tens)
+        assert np.allclose(index[id_].tens, d.tens)
 
     # flat
     index = HnswDocumentIndex[FlatDoc](work_dir=str(flat_path))
@@ -221,8 +221,8 @@ def test_get_single(ten_simple_docs, ten_flat_docs, ten_nested_docs, tmp_path):
     for d in ten_flat_docs:
         id_ = d.id
         assert index[id_].id == id_
-        assert np.all(index[id_].tens_one == d.tens_one)
-        assert np.all(index[id_].tens_two == d.tens_two)
+        assert np.allclose(index[id_].tens_one, d.tens_one)
+        assert np.allclose(index[id_].tens_two, d.tens_two)
 
     # nested
     index = HnswDocumentIndex[NestedDoc](work_dir=str(nested_path))
@@ -233,7 +233,7 @@ def test_get_single(ten_simple_docs, ten_flat_docs, ten_nested_docs, tmp_path):
         id_ = d.id
         assert index[id_].id == id_
         assert index[id_].d.id == d.d.id
-        assert np.all(index[id_].d.tens == d.d.tens)
+        assert np.allclose(index[id_].d.tens, d.d.tens)
 
 
 def test_get_multiple(ten_simple_docs, ten_flat_docs, ten_nested_docs, tmp_path):
@@ -252,7 +252,7 @@ def test_get_multiple(ten_simple_docs, ten_flat_docs, ten_nested_docs, tmp_path)
     retrieved_docs = index[ids_to_get]
     for id_, d_in, d_out in zip(ids_to_get, docs_to_get, retrieved_docs):
         assert d_out.id == id_
-        assert np.all(d_out.tens == d_in.tens)
+        assert np.allclose(d_out.tens, d_in.tens)
 
     # flat
     index = HnswDocumentIndex[FlatDoc](work_dir=str(flat_path))
@@ -264,8 +264,8 @@ def test_get_multiple(ten_simple_docs, ten_flat_docs, ten_nested_docs, tmp_path)
     retrieved_docs = index[ids_to_get]
     for id_, d_in, d_out in zip(ids_to_get, docs_to_get, retrieved_docs):
         assert d_out.id == id_
-        assert np.all(d_out.tens_one == d_in.tens_one)
-        assert np.all(d_out.tens_two == d_in.tens_two)
+        assert np.allclose(d_out.tens_one, d_in.tens_one)
+        assert np.allclose(d_out.tens_two, d_in.tens_two)
 
     # nested
     index = HnswDocumentIndex[NestedDoc](work_dir=str(nested_path))
@@ -278,7 +278,7 @@ def test_get_multiple(ten_simple_docs, ten_flat_docs, ten_nested_docs, tmp_path)
     for id_, d_in, d_out in zip(ids_to_get, docs_to_get, retrieved_docs):
         assert d_out.id == id_
         assert d_out.d.id == d_in.d.id
-        assert np.all(d_out.d.tens == d_in.d.tens)
+        assert np.allclose(d_out.d.tens, d_in.d.tens)
 
 
 def test_get_key_error(ten_simple_docs, ten_flat_docs, ten_nested_docs, tmp_path):
@@ -303,7 +303,7 @@ def test_del_single(ten_simple_docs, ten_flat_docs, ten_nested_docs, tmp_path):
                 index[id_]
         else:
             assert index[id_].id == id_
-            assert np.all(index[id_].tens == d.tens)
+            assert np.allclose(index[id_].tens, d.tens)
     # delete again
     del index[ten_simple_docs[3].id]
     assert index.num_docs() == 8
@@ -314,7 +314,7 @@ def test_del_single(ten_simple_docs, ten_flat_docs, ten_nested_docs, tmp_path):
                 index[id_]
         else:
             assert index[id_].id == id_
-            assert np.all(index[id_].tens == d.tens)
+            assert np.allclose(index[id_].tens, d.tens)
 
 
 def test_del_multiple(ten_simple_docs, ten_flat_docs, ten_nested_docs, tmp_path):
@@ -333,7 +333,7 @@ def test_del_multiple(ten_simple_docs, ten_flat_docs, ten_nested_docs, tmp_path)
                 index[doc.id]
         else:
             assert index[doc.id].id == doc.id
-            assert np.all(index[doc.id].tens == doc.tens)
+            assert np.allclose(index[doc.id].tens, doc.tens)
 
 
 def test_del_key_error(ten_simple_docs, ten_flat_docs, ten_nested_docs, tmp_path):

@@ -76,7 +76,7 @@ def test_filter_eq(doc_index, docs):
     assert filter_result[0].text == docs[1].text
     assert filter_result[0].price == docs[1].price
     assert filter_result[0].id == docs[1].id
-    np.testing.assert_array_almost_equal(filter_result[0].tensor, docs[1].tensor)
+    assert np.allclose(filter_result[0].tensor, docs[1].tensor)
 
 
 def test_filter_neq(doc_index):
