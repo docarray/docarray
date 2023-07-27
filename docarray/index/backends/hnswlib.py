@@ -512,19 +512,22 @@ class HnswDocumentIndex(BaseDocIndex, Generic[TSchema]):
             assert isinstance(id_, int) or is_np_int(id_)
         sql_id_list = '(' + ', '.join(str(id_) for id_ in univ_ids) + ')'
         self._sqlite_cursor.execute(
-            'SELECT data FROM docs WHERE doc_id IN %s' % sql_id_list,
+            'SELECT doc_id, data FROM docs WHERE doc_id IN %s' % sql_id_list,
         )
+        rows = (
+            self._sqlite_cursor.fetchall()
+        )  # doc_ids do not come back in the same order
         embeddings: OrderedDict[str, list] = OrderedDict()
         for col_name, index in self._hnsw_indices.items():
-            embeddings[col_name] = index.get_items(univ_ids)
-        rows = self._sqlite_cursor.fetchall()
+            embeddings[col_name] = index.get_items([row[0] for row in rows])
+
         schema = self.out_schema if out else self._schema
         docs = DocList.__class_getitem__(cast(Type[BaseDoc], schema))()
-        for i, row in enumerate(rows):
+        for i, (_, data_bytes) in enumerate(rows):
             reconstruct_embeddings = {}
             for col_name in embeddings.keys():
                 reconstruct_embeddings[col_name] = embeddings[col_name][i]
-            docs.append(self._doc_from_bytes(row[0], reconstruct_embeddings, out))
+            docs.append(self._doc_from_bytes(data_bytes, reconstruct_embeddings, out))
 
         return docs
 
@@ -575,6 +578,7 @@ class HnswDocumentIndex(BaseDocIndex, Generic[TSchema]):
             data
         )  # I cannot reconstruct directly the DA object because it may fail at validation because embedding may not be Optional
         for k, v in reconstruct_embeddings.items():
+            print(f'v {v}')
             node_proto = (
                 self.out_schema.__fields__[k]
                 .type_._docarray_from_ndarray(np.array(v))
@@ -583,6 +587,7 @@ class HnswDocumentIndex(BaseDocIndex, Generic[TSchema]):
             pb.data[k].MergeFrom(node_proto)
 
         doc = schema_cls.from_protobuf(pb)
+        print(f'doc {doc}')
         return doc
 
     def _get_root_doc_id(self, id: str, root: str, sub: str) -> str:
