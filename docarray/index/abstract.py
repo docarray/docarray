@@ -994,7 +994,7 @@ class BaseDocIndex(ABC, Generic[TSchema]):
                 # see schema translation ideas in the design doc
                 names_compatible = reference_names == input_names
                 types_compatible = all(
-                    (issubclass(t2, t1))
+                    (safe_issubclass(t2, t1))
                     for (t1, t2) in zip(reference_types, input_types)
                 )
                 if names_compatible and types_compatible:
