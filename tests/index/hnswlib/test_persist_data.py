@@ -22,7 +22,7 @@ def test_persist_and_restore(tmp_path):
     query = SimpleDoc(tens=np.random.random((10,)))
 
     # create index
-    index = HnswDocumentIndex[SimpleDoc](work_dir=str(tmp_path))
+    _ = HnswDocumentIndex[SimpleDoc](work_dir=str(tmp_path))
 
     # load existing index file
     index = HnswDocumentIndex[SimpleDoc](work_dir=str(tmp_path))
@@ -38,7 +38,7 @@ def test_persist_and_restore(tmp_path):
     find_results_after = index.find(query, search_field='tens', limit=5)
     for doc_before, doc_after in zip(find_results_before[0], find_results_after[0]):
         assert doc_before.id == doc_after.id
-        assert (doc_before.tens == doc_after.tens).all()
+        assert np.allclose(doc_before.tens == doc_after.tens)
 
     # add new data
     index.index([SimpleDoc(tens=np.random.random((10,))) for _ in range(5)])
@@ -70,7 +70,7 @@ def test_persist_and_restore_nested(tmp_path):
     find_results_after = index.find(query, search_field='d__tens', limit=5)
     for doc_before, doc_after in zip(find_results_before[0], find_results_after[0]):
         assert doc_before.id == doc_after.id
-        assert (doc_before.tens == doc_after.tens).all()
+        assert np.allclose(doc_before.tens == doc_after.tens)
 
     # delete and restore
     index.index(
