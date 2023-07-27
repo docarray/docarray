@@ -136,7 +136,6 @@ class ElasticDocIndex(BaseDocIndex, Generic[TSchema]):
             self._logger.error(err_msg)
             raise ValueError(err_msg)
         index_name = self._db_config.index_name or default_index_name
-        self._logger.debug(f'Retrieved index name: {index_name}')
         return index_name
 
     ###############################################
