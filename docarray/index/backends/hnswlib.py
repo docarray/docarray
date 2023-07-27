@@ -138,6 +138,7 @@ class HnswDocumentIndex(BaseDocIndex, Generic[TSchema]):
         self._column_names: List[str] = []
         self._create_docs_table()
         self._sqlite_conn.commit()
+        self._num_docs = 0  # recompute again when needed
         self._logger.info(f'{self.__class__.__name__} has been initialized')
 
     @property
@@ -279,6 +280,7 @@ class HnswDocumentIndex(BaseDocIndex, Generic[TSchema]):
         self._index(data_by_columns, docs_validated, **kwargs)
         self._send_docs_to_sqlite(docs_validated)
         self._sqlite_conn.commit()
+        self._num_docs = 0  # recompute again when needed
 
     def execute_query(self, query: List[Tuple[str, Dict]], *args, **kwargs) -> Any:
         """
@@ -329,7 +331,19 @@ class HnswDocumentIndex(BaseDocIndex, Generic[TSchema]):
         limit: int,
     ) -> DocList:
         rows = self._execute_filter(filter_query=filter_query, limit=limit)
-        return DocList[self.out_schema](self._doc_from_bytes(blob) for _, blob in rows)  # type: ignore[name-defined]
+        hashed_ids = [doc_id for doc_id, _ in rows]
+        embeddings: OrderedDict[str, list] = OrderedDict()
+        for col_name, index in self._hnsw_indices.items():
+            embeddings[col_name] = index.get_items(hashed_ids)
+
+        docs = DocList.__class_getitem__(cast(Type[BaseDoc], self.out_schema))()
+        for i, row in enumerate(rows):
+            reconstruct_embeddings = {}
+            for col_name in embeddings.keys():
+                reconstruct_embeddings[col_name] = embeddings[col_name][i]
+            docs.append(self._doc_from_bytes(row[1], reconstruct_embeddings))
+
+        return docs
 
     def _filter_batched(
         self,
@@ -379,6 +393,7 @@ class HnswDocumentIndex(BaseDocIndex, Generic[TSchema]):
 
         self._delete_docs_from_sqlite(doc_ids)
         self._sqlite_conn.commit()
+        self._num_docs = 0  # recompute again when needed
 
     def _get_items(self, doc_ids: Sequence[str], out: bool = True) -> Sequence[TSchema]:
         """Get Documents from the hnswlib index, by `id`.
@@ -403,7 +418,9 @@ class HnswDocumentIndex(BaseDocIndex, Generic[TSchema]):
         """
         Get the number of documents.
         """
-        return self._get_num_docs_sqlite()
+        if self._num_docs == 0:
+            self._num_docs = self._get_num_docs_sqlite()
+        return self._num_docs
 
     ###############################################
     # Helpers                                     #
@@ -641,15 +658,18 @@ class HnswDocumentIndex(BaseDocIndex, Generic[TSchema]):
             """Accepts IDs that are in hashed_ids."""
             return id in hashed_ids  # type: ignore[operator]
 
-        # Choose the appropriate filter function based on whether hashed_ids was provided
-        extra_kwargs = {}
-        if hashed_ids:
-            extra_kwargs['filter'] = accept_hashed_ids
+        extra_kwargs = {'filter': accept_hashed_ids} if hashed_ids else {}
 
         # If hashed_ids is provided, k is the minimum of limit and the length of hashed_ids; else it is limit
         k = min(limit, len(hashed_ids)) if hashed_ids else limit
         index = self._hnsw_indices[search_field]
-        labels, distances = index.knn_query(queries, k=int(limit), **extra_kwargs)
+
+        try:
+            labels, distances = index.knn_query(queries, k=k, **extra_kwargs)
+        except RuntimeError:
+            k = min(k, self.num_docs())
+            labels, distances = index.knn_query(queries, k=k, **extra_kwargs)
+
         result_das = [
             self._get_docs_sqlite_hashed_id(
                 ids_per_query.tolist(),

@@ -69,10 +69,14 @@ def test_build_query_invalid_query():
         HnswDocumentIndex._build_filter_query(query, param_values)
 
 
-def test_filter_eq(doc_index):
-    docs = doc_index.filter({'text': {'$eq': 'text 1'}})
-    assert len(docs) == 1
-    assert docs[0].text == 'text 1'
+def test_filter_eq(doc_index, docs):
+    filter_result = doc_index.filter({'text': {'$eq': 'text 1'}})
+    assert len(filter_result) == 1
+    assert filter_result[0].text == 'text 1'
+    assert filter_result[0].text == docs[1].text
+    assert filter_result[0].price == docs[1].price
+    assert filter_result[0].id == docs[1].id
+    np.testing.assert_array_almost_equal(filter_result[0].tensor, docs[1].tensor)
 
 
 def test_filter_neq(doc_index):
