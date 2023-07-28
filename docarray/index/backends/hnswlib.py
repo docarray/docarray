@@ -567,6 +567,7 @@ class HnswDocumentIndex(BaseDocIndex, Generic[TSchema]):
         pb = doc.to_protobuf()
         for col_name in self._hnsw_indices.keys():
             pb.data[col_name].Clear()
+            pb.data[col_name].Clear()
         return pb.SerializeToString()
 
     def _doc_from_bytes(
@@ -578,6 +579,17 @@ class HnswDocumentIndex(BaseDocIndex, Generic[TSchema]):
             data
         )  # I cannot reconstruct directly the DA object because it may fail at validation because embedding may not be Optional
         for k, v in reconstruct_embeddings.items():
+            print(f' k {k}')
+            # access = k.split('__')
+            # proto = pb
+            # python_schema = self.out_schema
+            # for field in access:
+            #     print(f' field {field} and {python_schema} and {proto}')
+            #     proto = proto.data[field]
+            #     python_schema = python_schema._get_field_type(field)
+            # node_proto = python_schema._docarray_from_ndarray(np.array(v))._to_node_protobuf()
+            # proto.MergeFrom(node_proto)
+
             print(f'v {v}')
             node_proto = (
                 self.out_schema.__fields__[k]
