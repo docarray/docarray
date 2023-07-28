@@ -410,5 +410,5 @@ def test_update_embedding(tmp_path):
     for doc in res.documents:
         if doc.id == docs[0].id:
             found = True
-            assert (doc.tens == new_tensor).all()
+            assert np.allclose(doc.tens, new_tensor)
     assert found

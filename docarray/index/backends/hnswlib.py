@@ -108,7 +108,11 @@ class HnswDocumentIndex(BaseDocIndex, Generic[TSchema]):
             if col.config
         }
         self._hnsw_indices = {}
+        sub_docs_exist = False
+        cosine_metric_index_exist = False
         for col_name, col in self._column_infos.items():
+            if '__' in col_name:
+                sub_docs_exist = True
             if safe_issubclass(col.docarray_type, AnyDocArray):
                 continue
             if not col.config:
@@ -128,7 +132,12 @@ class HnswDocumentIndex(BaseDocIndex, Generic[TSchema]):
             else:
                 self._hnsw_indices[col_name] = self._create_index(col_name, col)
                 self._logger.info(f'Created a new index for column `{col_name}`')
+            if self._hnsw_indices[col_name].space == 'cosine':
+                cosine_metric_index_exist = True
 
+        self._apply_optim_no_embedding_in_sqlite = (
+            not sub_docs_exist and not cosine_metric_index_exist
+        )  # optimization consisting in not serializing embeddings to SQLite because they are expensive to send and they can be reconstructed from the HNSW index itself.
         # SQLite setup
         self._sqlite_db_path = os.path.join(self._work_dir, 'docs_sqlite.db')
         self._logger.debug(f'DB path set to {self._sqlite_db_path}')
@@ -565,9 +574,10 @@ class HnswDocumentIndex(BaseDocIndex, Generic[TSchema]):
     # serialization helpers
     def _doc_to_bytes(self, doc: BaseDoc) -> bytes:
         pb = doc.to_protobuf()
-        for col_name in self._hnsw_indices.keys():
-            pb.data[col_name].Clear()
-            pb.data[col_name].Clear()
+        if self._apply_optim_no_embedding_in_sqlite:
+            for col_name in self._hnsw_indices.keys():
+                pb.data[col_name].Clear()
+                pb.data[col_name].Clear()
         return pb.SerializeToString()
 
     def _doc_from_bytes(
@@ -578,13 +588,14 @@ class HnswDocumentIndex(BaseDocIndex, Generic[TSchema]):
         pb = DocProto.FromString(
             data
         )  # I cannot reconstruct directly the DA object because it may fail at validation because embedding may not be Optional
-        for k, v in reconstruct_embeddings.items():
-            node_proto = (
-                self.out_schema.__fields__[k]
-                .type_._docarray_from_ndarray(np.array(v))
-                ._to_node_protobuf()
-            )
-            pb.data[k].MergeFrom(node_proto)
+        if self._apply_optim_no_embedding_in_sqlite:
+            for k, v in reconstruct_embeddings.items():
+                node_proto = (
+                    schema_cls._get_field_type(k)
+                    ._docarray_from_ndarray(np.array(v))
+                    ._to_node_protobuf()
+                )
+                pb.data[k].MergeFrom(node_proto)
 
         doc = schema_cls.from_protobuf(pb)
         return doc
