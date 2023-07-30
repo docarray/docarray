@@ -1,6 +1,7 @@
 from docarray import DocList, BaseDoc
 from docarray.typing import AnyTensor
 from pydantic import create_model
+from pydantic.fields import FieldInfo
 from typing import Dict, List, Any, Union, Optional, Type
 from docarray.utils._internal._typing import safe_issubclass
 
@@ -36,14 +37,15 @@ def create_pure_python_type_model(model: Any) -> BaseDoc:
     """
     fields: Dict[str, Any] = {}
     for field_name, field in model.__annotations__.items():
+        field_info = model.__fields__[field_name].field_info
         try:
             if safe_issubclass(field, DocList):
                 t: Any = field.doc_type
-                fields[field_name] = (List[t], {})
+                fields[field_name] = (List[t], field_info)
             else:
-                fields[field_name] = (field, {})
+                fields[field_name] = (field, field_info)
         except TypeError:
-            fields[field_name] = (field, {})
+            fields[field_name] = (field, field_info)
     return create_model(
         model.__name__, __base__=model, __validators__=model.__validators__, **fields
     )
@@ -222,6 +224,7 @@ def create_base_doc_from_schema(
     if base_doc_name in cached_models:
         return cached_models[base_doc_name]
     for field_name, field_schema in schema.get('properties', {}).items():
+
         field_type = _get_field_type_from_schema(
             field_schema=field_schema,
             field_name=field_name,
@@ -230,7 +233,10 @@ def create_base_doc_from_schema(
             is_tensor=False,
             num_recursions=0,
         )
-        fields[field_name] = (field_type, field_schema.get('description'))
+        fields[field_name] = (
+            field_type,
+            FieldInfo(default=field_schema.pop('default', None), **field_schema),
+        )
 
     model = create_model(base_doc_name, __base__=BaseDoc, **fields)
     cached_models[base_doc_name] = model
