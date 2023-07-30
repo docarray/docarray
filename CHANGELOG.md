@@ -1,14 +1,3 @@
-
-
-
-
-
-
-
-
-
-
-
 <a name=release-note-0-30-0></a>
 ## Release Note (`0.30.0`)
 

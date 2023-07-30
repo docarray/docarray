@@ -44,6 +44,7 @@ else:
         from docarray.typing import TorchTensor
 
 T = TypeVar('T', bound='IOMixin')
+Protocols = Literal['pickle', 'protobuf']
 
 
 def _type_to_protobuf(value: Any) -> 'NodeProto':
@@ -146,7 +147,10 @@ class IOMixin(Iterable[Tuple[str, Any]]):
         return self.to_bytes()
 
     def to_bytes(
-        self, protocol: str = 'protobuf', compress: Optional[str] = None
+        self,
+        data,
+        protocol: Protocols = 'protobuf',
+        compress: Optional[str] = None,
     ) -> bytes:
         """Serialize itself into bytes.
 
@@ -156,8 +160,7 @@ class IOMixin(Iterable[Tuple[str, Any]]):
         :param compress: compression algorithm to use
         :return: the binary serialization in bytes
         """
-        import pickle
-
+        bstr = _decompress_bytes(data, algorithm=compress)
         if protocol == 'pickle':
             bstr = pickle.dumps(self)
         elif protocol == 'protobuf':
@@ -173,7 +176,7 @@ class IOMixin(Iterable[Tuple[str, Any]]):
     def from_bytes(
         cls: Type[T],
         data: bytes,
-        protocol: str = 'protobuf',
+        protocol: Protocols = 'protobuf',
         compress: Optional[str] = None,
     ) -> T:
         """Build Document object from binary bytes
@@ -199,7 +202,9 @@ class IOMixin(Iterable[Tuple[str, Any]]):
             )
 
     def to_base64(
-        self, protocol: str = 'protobuf', compress: Optional[str] = None
+        self,
+        protocol: Protocols = 'protobuf',
+        compress: Optional[str] = None,
     ) -> str:
         """Serialize a Document object into as base64 string
 
@@ -213,7 +218,7 @@ class IOMixin(Iterable[Tuple[str, Any]]):
     def from_base64(
         cls: Type[T],
         data: str,
-        protocol: Literal['pickle', 'protobuf'] = 'pickle',
+        protocol: Protocols = 'protobuf',
         compress: Optional[str] = None,
     ) -> T:
         """Build Document object from binary bytes
