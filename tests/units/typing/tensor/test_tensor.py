@@ -44,4 +44,5 @@ def test_tensorflow_to_any_tensor():
 
 
 def test_equals_type():
+    # see https://github.com/docarray/docarray/pull/1739
     assert not (TorchTensor == type)
