@@ -6,6 +6,19 @@ from typing import Dict, List, Any, Union, Optional, Type
 from docarray.utils._internal._typing import safe_issubclass
 
 
+RESERVED_KEYS = [
+    'type',
+    'anyOf',
+    '$ref',
+    'additionalProperties',
+    'allOf',
+    'items',
+    'definitions',
+    'properties',
+    'default',
+]
+
+
 def create_pure_python_type_model(model: Any) -> BaseDoc:
     """
     Take a Pydantic model and cast DocList fields into List fields.
@@ -239,5 +252,11 @@ def create_base_doc_from_schema(
         )
 
     model = create_model(base_doc_name, __base__=BaseDoc, **fields)
+    model.__config__.title = schema.get('title', model.__config__.title)
+
+    for k in RESERVED_KEYS:
+        if k in schema:
+            schema.pop(k)
+    model.__config__.schema_extra = schema
     cached_models[base_doc_name] = model
     return model
