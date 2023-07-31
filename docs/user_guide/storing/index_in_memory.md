@@ -47,7 +47,7 @@ retrieved_docs, scores = doc_index.find(query, search_field='embedding', limit=1
 
 ## Initialize
 
-To create a Document Index, you first need a document that defines the schema of your index:
+To create a Document Index, you first need a document class that defines the schema of your index:
 
 ```python
 from docarray import BaseDoc
@@ -120,8 +120,7 @@ You can work around this problem by subclassing the predefined Document and addi
     db = InMemoryExactNNIndex[MyDoc]()
     ```
 
-Once the schema of your Document Index is defined in this way, the data that you are indexing can be either of the
-predefined Document type, or your custom Document type.
+Once you have defined the schema of your Document Index in this way, the data that you index can be either the predefined Document type or your custom Document type.
 
 The [next section](#index) goes into more detail about data indexing, but note that if you have some `TextDoc`s, `ImageDoc`s etc. that you want to index, you _don't_ need to cast them to `MyDoc`:
 
@@ -143,7 +142,7 @@ db.index(data)
 
 ## Index
 
-Now that you have a Document Index, you can add data to it, using the [index()][docarray.index.abstract.BaseDocIndex.index] method:
+Now that you have a Document Index, you can add data to it, using the [`index()`][docarray.index.abstract.BaseDocIndex.index] method:
 
 ```python
 import numpy as np
@@ -158,12 +157,11 @@ docs = DocList[MyDoc](
 db.index(docs)
 ```
 
-That call to [index()][docarray.index.backends.in_memory.InMemoryExactNNIndex.index] stores all Documents in `docs` into the Document Index,
+That call to [`index()`][docarray.index.backends.in_memory.InMemoryExactNNIndex.index] stores all Documents in `docs` in the Document Index,
 ready to be retrieved in the next step.
 
-As you can see, `DocList[MyDoc]` and `InMemoryExactNNIndex[MyDoc]` are both parameterized with `MyDoc`.
-This means that they share the same schema, and in general, the schema of a Document Index and the data that you want to store
-need to have compatible schemas.
+As you can see, `DocList[MyDoc]` and `InMemoryExactNNIndex[MyDoc]` both have `MyDoc` as a parameter.
+This means that they share the same schema, and in general, both the Document Index and the data that you want to store need to have compatible schemas.
 
 !!! question "When are two schemas compatible?"
     The schemas of your Document Index and data need to be compatible with each other.
@@ -181,9 +179,9 @@ need to have compatible schemas.
 
 ## Vector Search
 
-Now that you have indexed your data, you can perform vector similarity search using the [find()][docarray.index.abstract.BaseDocIndex.find] method.
+Now that you have indexed your data, you can perform vector similarity search using the [`find()`][docarray.index.abstract.BaseDocIndex.find] method.
 
-You can use the [find()][docarray.index.abstract.BaseDocIndex.find] function with a document of the type `MyDoc` 
+You can use the [`find()`][docarray.index.abstract.BaseDocIndex.find] function with a document of the type `MyDoc` 
 to find similar documents within the Document Index:
 
 
@@ -222,10 +220,10 @@ In this particular example you only have one field (`embedding`) that is a vecto
 In general, you could have multiple fields of type `NdArray` or `TorchTensor` or `TensorFlowTensor`, and you can choose
 which one to use for the search.
 
-The [find()][docarray.index.abstract.BaseDocIndex.find] method returns a named tuple containing the closest
+The [`find()`][docarray.index.abstract.BaseDocIndex.find] method returns a named tuple containing the closest
 matching documents and their associated similarity scores.
 
-When searching on subindex level, you can use [find_subindex()][docarray.index.abstract.BaseDocIndex.find_subindex] method, which returns a named tuple containing the subindex documents, similarity scores and their associated root documents.
+When searching on the subindex level, you can use the [`find_subindex()`][docarray.index.abstract.BaseDocIndex.find_subindex] method, which returns a named tuple containing the subindex documents, similarity scores and their associated root documents.
 
 How these scores are calculated depends on the backend, and can usually be [configured](#configuration).
 
@@ -272,7 +270,7 @@ a list of `DocList`s, one for each query, containing the closest matching docume
 To filter Documents, the `InMemoryExactNNIndex` uses DocArray's [`filter_docs()`][docarray.utils.filter.filter_docs] function.
 
 You can filter your documents by using the `filter()` or `filter_batched()` method with a corresponding  filter query. 
-The query should follow the query language of the DocArray's [`filter_docs()`][docarray.utils.filter.filter_docs] function.
+The query should follow the query language of DocArray's [`filter_docs()`][docarray.utils.filter.filter_docs] function.
 
 In the following example let's filter for all the books that are cheaper than 29 dollars:
 
@@ -304,7 +302,7 @@ In addition to vector similarity search, the Document Index interface offers met
 as well as the batched version [text_search_batched()][docarray.index.abstract.BaseDocIndex.text_search_batched].
 
 !!! note
-    The [InMemoryExactNNIndex][docarray.index.backends.in_memory.InMemoryExactNNIndex] implementation does not offer support for text search.
+    The [InMemoryExactNNIndex][docarray.index.backends.in_memory.InMemoryExactNNIndex] implementation does not support text search.
 
     To see how to perform text search, you can check out other backends that offer support.
 
@@ -349,7 +347,7 @@ Some backends can combine text search and vector search, while others can perfor
 
 ## Access Documents
 
-To retrieve a document from a Document Index, you don't necessarily need to perform a fancy search.
+To retrieve a document from a Document Index you don't necessarily need to perform a fancy search.
 
 You can also access data by the `id` that was assigned to each document:
 
@@ -371,7 +369,7 @@ docs = db[ids]  # get by list of ids
 
 ## Delete Documents
 
-In the same way you can access Documents by id, you can also delete them:
+In the same way you can access Documents by `id`, you can also delete them:
 
 ```python
 # prepare some data
@@ -420,7 +418,7 @@ for doc in res.documents:
     assert 'I am the first version' in doc.text
 ```
 
-Then, let's update all of the text of this documents and re-index them:
+Then, let's update all of the text of these documents and re-index them:
 ```python
 for i, doc in enumerate(docs):
     doc.text = f'I am the second version of Document {i}'
@@ -468,7 +466,7 @@ For more information on these settings, see [below](#field-wise-configurations).
 Fields that are not vector fields (e.g. of type `str` or `int` etc.) do not offer any configuration.
 
 
-### Field-wise configurations
+### Field-wise configuration
 
 For a vector field you can adjust the `space` parameter. It can be one of:
 
@@ -588,9 +586,9 @@ docs, scores = doc_index.find(query_doc, search_field='video__tensor', limit=3)
 Documents can be nested by containing a `DocList` of other documents, which is a slightly more complicated scenario than the one [above](#nested-data).
 
 If a Document contains a DocList, it can still be stored in a Document Index.
-In this case, the DocList will be represented as a new index (or table, collection, etc., depending on the database backend), that is linked with the parent index (table, collection, ...).
+In this case, the DocList will be represented as a new index (or table, collection, etc., depending on the database backend), that is linked with the parent index (table, collection, etc).
 
-This still lets index and search through all of your data, but if you want to avoid the creation of additional indexes you could try to refactor your document schemas without the use of DocList.
+This still lets you index and search through all of your data, but if you want to avoid the creation of additional indexes you can refactor your document schemas without the use of DocLists.
 
 
 **Index**

@@ -43,22 +43,21 @@ Currently, DocArray supports the following vector databases:
 - InMemoryExactNNIndex  |  [Docs](index_in_memory.md)
 
 
-## Basic Usage
+## Basic usage
 
-Let's learn basic capabilities of Document Index with [InMemoryExactNNIndex][docarray.index.backends.in_memory.InMemoryExactNNIndex]. 
-It's easy because you don't need a database server, instead it saves your data locally.
+Let's learn the basic capabilities of Document Index with [InMemoryExactNNIndex][docarray.index.backends.in_memory.InMemoryExactNNIndex]. 
+This doesn't require a database server - rather, it saves your data locally.
 
 
 !!! note "Using a different vector database"
-    You can easily use Weaviate, Qdrant, Redis, Milvus or Elasticsearch instead -- they share the same API!
+    You can easily use Weaviate, Qdrant, Redis, Milvus or Elasticsearch instead -- their APIs are largely identical!
     To do so, check their respective documentation sections.
 
 !!! note "InMemoryExactNNIndex in more detail"
     The following section only covers the basics of InMemoryExactNNIndex. 
-    For a deeper understanding, please look into its documentation 
-    [here](index_in_memory.md).
+    For a deeper understanding, please look into its [documentation](index_in_memory.md).
 
-### Define Document Schema and Create Data
+### Define document schema and create data
 ```python
 from docarray import BaseDoc, DocList
 from docarray.index import InMemoryExactNNIndex
@@ -72,31 +71,34 @@ class MyDoc(BaseDoc):
     embedding: NdArray[128]
 
 # Create documents (using dummy/random vectors)
-docs = DocList[MyDoc](MyDoc(title=f'title #{i}', price=i, embedding=np.random.rand(128)) for i in range(10))
+docs = DocList[MyDoc](
+    MyDoc(title=f"title #{i}", price=i, embedding=np.random.rand(128))
+    for i in range(10)
+)
 ```
 
-### Initialize the Document Index and Add Data
+### Initialize the Document Index and add data
 ```python
 # Initialize a new InMemoryExactNNIndex instance and add the documents to the index.
 doc_index = InMemoryExactNNIndex[MyDoc]()
 doc_index.index(docs)
 ```
 
-### Perform a Vector Similarity Search
+### Perform a vector similarity search
 ```python
 # Perform a vector search.
 query = np.ones(128)
 retrieved_docs, scores = doc_index.find(query, search_field='embedding', limit=10)
 ```
 
-### Filter Documents
+### Filter documents
 ```python
 # Perform filtering (price < 5)
 query = {'price': {'$lt': 5}}
 filtered_docs = doc_index.filter(query, limit=10)
 ```
 
-### Combine Different Search Methods
+### Combine different search methods
 ```python
 # Perform a hybrid search - combining vector search with filtering
 query = (

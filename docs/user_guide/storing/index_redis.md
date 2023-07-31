@@ -118,8 +118,7 @@ You can work around this problem by subclassing the predefined Document and addi
     doc_index = RedisDocumentIndex[MyDoc]()
     ```
 
-Once the schema of your Document Index is defined in this way, the data that you are indexing can be either of the
-predefined Document type, or your custom Document type.
+Once you have defined the schema of your Document Index in this way, the data that you index can be either the predefined Document type or your custom Document type.
 
 The [next section](#index) goes into more detail about data indexing, but note that if you have some `TextDoc`s, `ImageDoc`s etc. that you want to index, you _don't_ need to cast them to `MyDoc`:
 
@@ -141,7 +140,7 @@ doc_index.index(data)
 
 ## Index
 
-Now that you have a Document Index, you can add data to it, using the [index()][docarray.index.abstract.BaseDocIndex.index] method:
+Now that you have a Document Index, you can add data to it, using the [`index()`][docarray.index.abstract.BaseDocIndex.index] method:
 
 ```python
 import numpy as np
@@ -156,12 +155,11 @@ docs = DocList[MyDoc](
 doc_index.index(docs)
 ```
 
-That call to [index()][docarray.index.backends.redis.RedisDocumentIndex.index] stores all Documents in `docs` into the Document Index,
+That call to [`index()`][docarray.index.backends.redis.RedisDocumentIndex.index] stores all Documents in `docs` in the Document Index,
 ready to be retrieved in the next step.
 
-As you can see, `DocList[MyDoc]` and `RedisDocumentIndex[MyDoc]` are both parameterized with `MyDoc`.
-This means that they share the same schema, and in general, the schema of a Document Index and the data that you want to store
-need to have compatible schemas.
+As you can see, `DocList[MyDoc]` and `RedisDocumentIndex[MyDoc]` both have `MyDoc` as a parameter.
+This means that they share the same schema, and in general, both the Document Index and the data that you want to store need to have compatible schemas.
 
 !!! question "When are two schemas compatible?"
     The schemas of your Document Index and data need to be compatible with each other.
@@ -179,9 +177,9 @@ need to have compatible schemas.
 
 ## Vector Search
 
-Now that you have indexed your data, you can perform vector similarity search using the [find()][docarray.index.abstract.BaseDocIndex.find] method.
+Now that you have indexed your data, you can perform vector similarity search using the [`find()`][docarray.index.abstract.BaseDocIndex.find] method.
 
-By using a document of type `MyDoc`, [find()][docarray.index.abstract.BaseDocIndex.find], you can find
+By using a document of type `MyDoc`, [`find()`][docarray.index.abstract.BaseDocIndex.find], you can find
 similar Documents in the Document Index:
 
 === "Search by Document"
@@ -219,10 +217,10 @@ In this particular example you only have one field (`embedding`) that is a vecto
 In general, you could have multiple fields of type `NdArray` or `TorchTensor` or `TensorFlowTensor`, and you can choose
 which one to use for the search.
 
-The [find()][docarray.index.abstract.BaseDocIndex.find] method returns a named tuple containing the closest
+The [`find()`][docarray.index.abstract.BaseDocIndex.find] method returns a named tuple containing the closest
 matching documents and their associated similarity scores.
 
-When searching on subindex level, you can use [find_subindex()][docarray.index.abstract.BaseDocIndex.find_subindex] method, which returns a named tuple containing the subindex documents, similarity scores and their associated root documents.
+When searching on the subindex level, you can use the [`find_subindex()`][docarray.index.abstract.BaseDocIndex.find_subindex] method, which returns a named tuple containing the subindex documents, similarity scores and their associated root documents.
 
 How these scores are calculated depends on the backend, and can usually be [configured](#configuration).
 
@@ -323,7 +321,7 @@ Some backends can combine text search and vector search, while others can perfor
 
 ## Access Documents
 
-To retrieve a document from a Document Index, you don't necessarily need to perform a fancy search.
+To retrieve a document from a Document Index you don't necessarily need to perform a fancy search.
 
 You can also access data by the `id` that was assigned to each document:
 
@@ -345,7 +343,7 @@ docs = db[ids]  # get by list of ids
 
 ## Delete Documents
 
-In the same way you can access Documents by id, you can also delete them:
+In the same way you can access Documents by `id`, you can also delete them:
 
 ```python
 # prepare some data
@@ -394,7 +392,7 @@ for doc in res.documents:
     assert 'I am the first version' in doc.text
 ```
 
-Then, let's update all of the text of this documents and re-index them:
+Then, let's update all of the text of these documents and re-index them:
 ```python
 for i, doc in enumerate(docs):
     doc.text = f'I am the second version of Document {i}'
@@ -433,7 +431,7 @@ The following configs can be set in `DBConfig`:
 You can pass any of the above as keyword arguments to the `__init__()` method or pass an entire configuration object.
 
 
-### Field-wise configurations
+### Field-wise configuration
 
 
 `default_column_config` is the default configurations for every column type. Since there are many column types in Redis, you can also consider changing the column config when defining the schema.
@@ -545,9 +543,9 @@ docs, scores = doc_index.find(query_doc, search_field='video__tensor', limit=3)
 Documents can be nested by containing a `DocList` of other documents, which is a slightly more complicated scenario than the one [above](#nested-data).
 
 If a Document contains a DocList, it can still be stored in a Document Index.
-In this case, the DocList will be represented as a new index (or table, collection, etc., depending on the database backend), that is linked with the parent index (table, collection, ...).
+In this case, the DocList will be represented as a new index (or table, collection, etc., depending on the database backend), that is linked with the parent index (table, collection, etc).
 
-This still lets index and search through all of your data, but if you want to avoid the creation of additional indexes you could try to refactor your document schemas without the use of DocList.
+This still lets you index and search through all of your data, but if you want to avoid the creation of additional indexes you can refactor your document schemas without the use of DocLists.
 
 
 **Index**

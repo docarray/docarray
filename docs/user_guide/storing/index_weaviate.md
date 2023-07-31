@@ -323,7 +323,7 @@ You can find the documentation for [Weaviate's GraphQL API here](https://weaviat
 
 ## Access Documents
 
-To retrieve a document from a Document Index, you don't necessarily need to perform a fancy search.
+To retrieve a document from a Document Index you don't necessarily need to perform a fancy search.
 
 You can also access data by the `id` that was assigned to each document:
 
@@ -345,7 +345,7 @@ docs = doc_index[ids]  # get by list of ids
 
 ## Delete Documents
 
-In the same way you can access Documents by id, you can also delete them:
+In the same way you can access Documents by `id`, you can also delete them:
 
 ```python
 # prepare some data
@@ -534,9 +534,9 @@ docs, scores = doc_index.find(query_doc, limit=3)
 Documents can be nested by containing a `DocList` of other documents, which is a slightly more complicated scenario than the one [above](#nested-data).
 
 If a Document contains a DocList, it can still be stored in a Document Index.
-In this case, the DocList will be represented as a new index (or table, collection, etc., depending on the database backend), that is linked with the parent index (table, collection, ...).
+In this case, the DocList will be represented as a new index (or table, collection, etc., depending on the database backend), that is linked with the parent index (table, collection, etc).
 
-This still lets index and search through all of your data, but if you want to avoid the creation of additional indexes you could try to refactor your document schemas without the use of DocList.
+This still lets you index and search through all of your data, but if you want to avoid the creation of additional indexes you can refactor your document schemas without the use of DocLists.
 
 
 **Index**

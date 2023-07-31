@@ -163,8 +163,7 @@ You can work around this problem by subclassing the predefined Document and addi
     db = ElasticDocIndex[MyDoc](index_name='test_db3')
     ```
 
-Once the schema of your Document Index is defined in this way, the data that you are indexing can be either of the
-predefined Document type, or your custom Document type.
+Once you have defined the schema of your Document Index in this way, the data that you index can be either the predefined Document type or your custom Document type.
 
 The [next section](#index) goes into more detail about data indexing, but note that if you have some `TextDoc`s, `ImageDoc`s etc. that you want to index, you _don't_ need to cast them to `MyDoc`:
 
@@ -188,7 +187,7 @@ db.index(data)
 ## Index
 
 Use `.index()` to add documents into the index.
-The`.num_docs()` method returns the total number of documents in the index.
+The `.num_docs()` method returns the total number of documents in the index.
 
 ```python
 index_docs = [SimpleDoc(tensor=np.ones(128)) for _ in range(64)]
@@ -224,7 +223,7 @@ You can also search for multiple documents at once, in a batch, using the [find_
 ## Filter
 
 You can filter your documents by using the `filter()` or `filter_batched()` method with a corresponding filter query. 
-The query should follow the [query language of Elastic](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-filter-context.html).
+The query should follow [Elastic's query language](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-filter-context.html).
 
 The `filter()` method accepts queries that follow the [Elasticsearch Query DSL](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl.html) and consists of leaf and compound clauses.
 
@@ -390,7 +389,7 @@ You can also manually build a valid ES query and directly pass it to the `execut
 
 ## Access documents
 
-To access the `Doc`, you need to specify the `id`. You can also pass a list of `id` to access multiple documents.
+To access a document, you need to specify its `id`. You can also pass a list of `id` to access multiple documents.
 
 ```python
 # access a single Doc
@@ -402,7 +401,7 @@ doc_index[index_docs[2].id, index_docs[3].id]
 
 ## Delete documents
 
-To delete the documents, use the built-in function `del` with the `id` of the Documents that you want to delete.
+To delete documents, use the built-in function `del` with the `id` of the documents that you want to delete.
 You can also pass a list of `id`s to delete multiple documents.
 
 ```python
@@ -457,8 +456,8 @@ See [here](docindex.md#configuration-options#customize-configurations) for more 
 
 ### Persistence
 
-You can hook into a database index that was persisted during a previous session.
-To do so, you need to specify `index_name` and the `hosts`:
+You can hook into a database index that was persisted during a previous session by 
+specifying the `index_name` and `hosts`:
 
 ```python
 doc_index = ElasticDocIndex[MyDoc](
@@ -476,7 +475,7 @@ print(f'number of docs in the persisted index: {doc_index2.num_docs()}')
 
 ## Nested data
 
-When using the index you can define multiple fields, including nesting documents inside another document.
+When using the index you can define multiple fields, including nesting documents inside a parent document.
 
 Consider the following example:
 
@@ -546,7 +545,7 @@ docs, scores = doc_index.find(query_doc, search_field='video__tensor', limit=3)
 To delete a nested data, you need to specify the `id`.
 
 !!! note
-    You can only delete `Doc` at the top level. Deletion of `Doc`s on lower levels is not yet supported.
+    You can only delete top-level documents. Deleting nested documents is not yet supported.
 
 ```python
 # example of delete nested and flat index
