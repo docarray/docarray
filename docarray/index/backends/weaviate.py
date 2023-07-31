@@ -258,6 +258,16 @@ class WeaviateDocumentIndex(BaseDocIndex, Generic[TSchema]):
             }
         )
 
+        def __post_init__(self):
+            # To prevent errors, it is important to capitalize the provided index name
+            # when working with Weaviate, as it stores index names in a capitalized format.
+            # Can't use .capitalize() because it modifies the whole string (See test).
+            self.index_name = (
+                self.index_name[0].upper() + self.index_name[1:]
+                if self.index_name
+                else None
+            )
+
     @dataclass
     class RuntimeConfig(BaseDocIndex.RuntimeConfig):
         """Dataclass that contains all "dynamic" configurations of WeaviateDocumentIndex."""
@@ -761,25 +771,20 @@ class WeaviateDocumentIndex(BaseDocIndex, Generic[TSchema]):
         ]
         return ids
 
-    def __contains__(self, item: BaseDoc) -> bool:
-        if safe_issubclass(type(item), BaseDoc):
-            result = (
-                self._client.query.get(self.index_name, ['docarrayid'])
-                .with_where(
-                    {
-                        "path": ['docarrayid'],
-                        "operator": "Equal",
-                        "valueString": f'{item.id}',
-                    }
-                )
-                .do()
+    def _doc_exists(self, doc_id: str) -> bool:
+        result = (
+            self._client.query.get(self.index_name, ['docarrayid'])
+            .with_where(
+                {
+                    "path": ['docarrayid'],
+                    "operator": "Equal",
+                    "valueString": f'{doc_id}',
+                }
             )
-            docs = result["data"]["Get"][self.index_name]
-            return docs is not None and len(docs) > 0
-        else:
-            raise TypeError(
-                f"item must be an instance of BaseDoc or its subclass, not '{type(item).__name__}'"
-            )
+            .do()
+        )
+        docs = result["data"]["Get"][self.index_name]
+        return docs is not None and len(docs) > 0
 
     class QueryBuilder(BaseDocIndex.QueryBuilder):
         def __init__(self, document_index):

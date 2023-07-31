@@ -8,6 +8,7 @@
 
 
 
+
 <a name=release-note-0-30-0></a>
 ## Release Note (`0.30.0`)
 
@@ -466,4 +467,52 @@
  - [[```3f089e52```](https://github.com/jina-ai/docarray/commit/3f089e5237c84e2ada367e30820d96018a7954d0)] __-__ update version to 0.35.0 (#1684) (*Joan Fontanals*)
  - [[```3fc6ecb7```](https://github.com/jina-ai/docarray/commit/3fc6ecb71bdc0095f2c405c17492debcc3d8412d)] __-__ fix docarray v1v2 terms (#1668) (*Han Xiao*)
  - [[```f507a5f7```](https://github.com/jina-ai/docarray/commit/f507a5f72548a5235e60f15dbcee2c35930c60c1)] __-__ __version__: the next version will be 0.34.1 (*Jina Dev Bot*)
+
+<a name=release-note-0-36-0></a>
+## Release Note (`0.36.0`)
+
+> Release time: 2023-07-18 14:43:28
+
+
+
+🙇 We'd like to thank all contributors for this new release! In particular,
+ Joan Fontanals,  Saba Sturua,  Aman Agarwal,  Shukri,  samsja,  Puneeth K,  Jina Dev Bot,  🙇
+
+
+### 🆕 New Features
+
+ - [[```b306c80b```](https://github.com/jina-ai/docarray/commit/b306c80b334a1d1b2bc865d53d7e9733f27445f5)] __-__ add JAX as Computation Backend  (#1646) (*Aman Agarwal*)
+ - [[```069aa3aa```](https://github.com/jina-ai/docarray/commit/069aa3aa2d2eae3a1a0dca574e266a33b1edf9c9)] __-__ support redis (#1550) (*Saba Sturua*)
+
+### 🐞 Bug fixes
+
+ - [[```15e3ed69```](https://github.com/jina-ai/docarray/commit/15e3ed6905025ba3490607eb9659c1cfe7600160)] __-__ weaviate handles lowercase index names (#1711) (*Saba Sturua*)
+ - [[```c5664016```](https://github.com/jina-ai/docarray/commit/c56640160d54ccfd2e699f7f65103672cf77f32b)] __-__ slow hnsw by caching num docs (#1706) (*Saba Sturua*)
+ - [[```d2e18580```](https://github.com/jina-ai/docarray/commit/d2e1858078049217b16db0d05bc6a02be3043934)] __-__ qdrant unable to see index_name (#1705) (*Saba Sturua*)
+ - [[```94a479eb```](https://github.com/jina-ai/docarray/commit/94a479eb1e1bf5e5715f61767992061f61003115)] __-__ fix search in memory with AnyEmbedding (#1696) (*Joan Fontanals*)
+ - [[```62ad22aa```](https://github.com/jina-ai/docarray/commit/62ad22aa8ae3617b9464b904cd33b3115d011781)] __-__ use safe_issubclass everywhere (#1691) (*Joan Fontanals*)
+ - [[```f6ce2833```](https://github.com/jina-ai/docarray/commit/f6ce2833886468e03b8eafec222be7cef3fe62e2)] __-__ avoid converting doclists in the base index (#1685) (*Saba Sturua*)
+
+### 🧼 Code Refactoring
+
+ - [[```0ea68467```](https://github.com/jina-ai/docarray/commit/0ea6846783a1450dc92e4ce181b430f02e32df10)] __-__ contains method in the base class (#1701) (*Saba Sturua*)
+ - [[```0a1da307```](https://github.com/jina-ai/docarray/commit/0a1da3071e2f7dbcd655c2243732a2a07c95f01f)] __-__ more robust method to detect duplicate index (#1651) (*Shukri*)
+
+### 📗 Documentation
+
+ - [[```5089bdae```](https://github.com/jina-ai/docarray/commit/5089bdaea955f77c31495535bf99da37b85edb3b)] __-__ add docs for dict() method (#1643) (*Puneeth K*)
+
+### 🏁 Unit Test and CICD
+
+ - [[```e0afb5e7```](https://github.com/jina-ai/docarray/commit/e0afb5e723a7a2f3a1346eec554c7183868b98e5)] __-__ do not require black for tests more (#1694) (*Joan Fontanals*)
+ - [[```0dd49538```](https://github.com/jina-ai/docarray/commit/0dd4953866faff685173ac5b6871279d545b2a50)] __-__ do not require black for tests (#1693) (*Joan Fontanals*)
+
+### 🍹 Other Improvements
+
+ - [[```ddc73e19```](https://github.com/jina-ai/docarray/commit/ddc73e19024e2c63071fc17792bcf616b6931b0a)] __-__ upgrade version in pyproject (#1712) (*Joan Fontanals*)
+ - [[```528adfc8```](https://github.com/jina-ai/docarray/commit/528adfc8f3b09fc6f3b9d65b31ca256ef34a819f)] __-__ upgrade version to 0.36 (#1710) (*Joan Fontanals*)
+ - [[```a3f6998a```](https://github.com/jina-ai/docarray/commit/a3f6998a9427bc8d23bab1c4ddccd69dec220c8f)] __-__ remove one of the codecov badges (#1700) (*Joan Fontanals*)
+ - [[```b364ae1a```](https://github.com/jina-ai/docarray/commit/b364ae1ae8daff4890d3fddde88ed4fe4c7e3a7c)] __-__ add codecov (#1699) (*Joan Fontanals*)
+ - [[```64bbf14a```](https://github.com/jina-ai/docarray/commit/64bbf14a8d8854b95ec1c9f90ffa8c8b8a04515b)] __-__ add code of conduct (#1688) (*samsja*)
+ - [[```d2655238```](https://github.com/jina-ai/docarray/commit/d2655238858a7838ca4787187aa9491d4a769e02)] __-__ __version__: the next version will be 0.35.1 (*Jina Dev Bot*)
 

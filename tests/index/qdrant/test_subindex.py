@@ -222,3 +222,36 @@ def test_subindex_contain(index):
     # Empty index
     empty_index = QdrantDocumentIndex[MyDoc]()
     assert (empty_doc in empty_index) is False
+
+
+def test_subindex_collections():
+    from typing import Optional
+    from docarray.typing.tensor import AnyTensor
+    from pydantic import Field
+
+    class MetaPathDoc(BaseDoc):
+        path_id: str
+        level: int
+        text: str
+        embedding: Optional[AnyTensor] = Field(space='cosine', dim=128)
+
+    class MetaCategoryDoc(BaseDoc):
+        node_id: Optional[str]
+        node_name: Optional[str]
+        name: Optional[str]
+        product_type_definitions: Optional[str]
+        leaf: bool
+        paths: Optional[DocList[MetaPathDoc]]
+        embedding: Optional[AnyTensor] = Field(space='cosine', dim=128)
+        channel: str
+        lang: str
+
+    db_config = QdrantDocumentIndex.DBConfig(
+        host='localhost',
+        collection_name="channel_category",
+    )
+
+    doc_index = QdrantDocumentIndex[MetaCategoryDoc](db_config)
+
+    assert doc_index._subindices["paths"].index_name == 'channel_category__paths'
+    assert doc_index._subindices["paths"].collection_name == 'channel_category__paths'

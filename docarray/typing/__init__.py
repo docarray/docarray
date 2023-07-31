@@ -24,12 +24,20 @@ from docarray.utils._internal.misc import (
 
 if TYPE_CHECKING:
     from docarray.typing.tensor import TensorFlowTensor  # noqa:  F401
-    from docarray.typing.tensor import TorchEmbedding, TorchTensor  # noqa: F401
+    from docarray.typing.tensor import (  # noqa: F401
+        JaxArray,
+        JaxArrayEmbedding,
+        TorchEmbedding,
+        TorchTensor,
+    )
+    from docarray.typing.tensor.audio import AudioJaxArray  # noqa: F401
     from docarray.typing.tensor.audio import AudioTensorFlowTensor  # noqa: F401
     from docarray.typing.tensor.audio import AudioTorchTensor  # noqa: F401
     from docarray.typing.tensor.embedding import TensorFlowEmbedding  # noqa: F401
+    from docarray.typing.tensor.image import ImageJaxArray  # noqa: F401
     from docarray.typing.tensor.image import ImageTensorFlowTensor  # noqa: F401
     from docarray.typing.tensor.image import ImageTorchTensor  # noqa: F401
+    from docarray.typing.tensor.video import VideoJaxArray  # noqa: F401
     from docarray.typing.tensor.video import VideoTensorFlowTensor  # noqa: F401
     from docarray.typing.tensor.video import VideoTorchTensor  # noqa: F401
 
@@ -73,6 +81,15 @@ _tf_tensors = [
     'AudioTensorFlowTensor',
     'VideoTensorFlowTensor',
 ]
+
+_jax_tensors = [
+    'JaxArray',
+    'JaxArrayEmbedding',
+    'VideoJaxArray',
+    'AudioJaxArray',
+    'ImageJaxArray',
+]
+
 __all_test__ = __all__ + _torch_tensors
 
 
@@ -81,6 +98,8 @@ def __getattr__(name: str):
         import_library('torch', raise_error=True)
     elif name in _tf_tensors:
         import_library('tensorflow', raise_error=True)
+    elif name in _jax_tensors:
+        import_library('jax', raise_error=True)
     else:
         raise ImportError(
             f'cannot import name \'{name}\' from \'{_get_path_from_docarray_root_level(__file__)}\''

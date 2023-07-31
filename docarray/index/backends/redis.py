@@ -1,4 +1,3 @@
-import uuid
 from collections import defaultdict
 from typing import (
     TypeVar,
@@ -93,11 +92,6 @@ class RedisDocumentIndex(BaseDocIndex, Generic[TSchema]):
         )
         self._create_index()
         self._logger.info(f'{self.__class__.__name__} has been initialized')
-
-    @staticmethod
-    def _random_name() -> str:
-        """Generate a random index name."""
-        return uuid.uuid4().hex
 
     def _create_index(self) -> None:
         """Create a new index in the Redis database if it doesn't already exist."""
@@ -220,7 +214,7 @@ class RedisDocumentIndex(BaseDocIndex, Generic[TSchema]):
         :param host: The host address for the Redis server. Default is 'localhost'.
         :param port: The port number for the Redis server. Default is 6379.
         :param index_name: The name of the index in the Redis database.
-            In case it's not provided, a random index name will be generated.
+            If not provided, default index name will be used.
         :param username: The username for the Redis server. Default is None.
         :param password: The password for the Redis server. Default is None.
         :param text_scorer: The method for scoring text during text search.
@@ -377,7 +371,7 @@ class RedisDocumentIndex(BaseDocIndex, Generic[TSchema]):
             ):
                 self._client.delete(*batch)
 
-    def _doc_exists(self, doc_id) -> bool:
+    def _doc_exists(self, doc_id: str) -> bool:
         """
         Checks if a document exists in the index.
 
@@ -610,18 +604,3 @@ class RedisDocumentIndex(BaseDocIndex, Generic[TSchema]):
             scores.append(results.scores)
 
         return _FindResultBatched(documents=docs, scores=scores)
-
-    def __contains__(self, item: BaseDoc) -> bool:
-        """
-        Checks if a given document exists in the index.
-
-        :param item: The document to check.
-            It must be an instance of BaseDoc or its subclass.
-        :return: True if the document exists in the index, False otherwise.
-        """
-        if safe_issubclass(type(item), BaseDoc):
-            return self._doc_exists(item.id)
-        else:
-            raise TypeError(
-                f"item must be an instance of BaseDoc or its subclass, not '{type(item).__name__}'"
-            )

@@ -9,6 +9,7 @@ from typing import Optional
 from docarray import BaseDoc, DocList
 from docarray.typing import AnyTensor, ImageUrl
 from docarray.documents import TextDoc
+from pydantic import Field
 
 
 @pytest.mark.parametrize('transformation', ['proto', 'json'])
@@ -238,3 +239,26 @@ def test_create_empty_doc_list_from_schema(transformation):
 
     assert len(original_back) == 0
     assert len(custom_da) == 0
+
+
+def test_create_with_field_info():
+    class CustomDoc(BaseDoc):
+        """Here I have the description of the class"""
+
+        a: str = Field(examples=['Example here'], another_extra='I am another extra')
+
+    CustomDocCopy = create_pure_python_type_model(CustomDoc)
+    new_custom_doc_model = create_base_doc_from_schema(
+        CustomDocCopy.schema(), 'CustomDoc'
+    )
+    assert new_custom_doc_model.schema().get('properties')['a']['examples'] == [
+        'Example here'
+    ]
+    assert (
+        new_custom_doc_model.schema().get('properties')['a']['another_extra']
+        == 'I am another extra'
+    )
+    assert (
+        new_custom_doc_model.schema().get('description')
+        == 'Here I have the description of the class'
+    )

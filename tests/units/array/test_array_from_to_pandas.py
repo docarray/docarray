@@ -5,6 +5,7 @@ import pytest
 
 from docarray import BaseDoc, DocList, DocVec
 from docarray.documents import ImageDoc
+from docarray.typing import NdArray, TorchTensor
 
 
 @pytest.fixture()
@@ -132,3 +133,25 @@ def test_union_type_error():
     docs_basic = DocList[BasisUnion]([BasisUnion(ud="hello")])
     docs_copy = DocList[BasisUnion].from_dataframe(docs_basic.to_dataframe())
     assert docs_copy == docs_basic
+
+
+@pytest.mark.parametrize('tensor_type', [NdArray, TorchTensor])
+def test_from_to_pandas_tensor_type(tensor_type):
+    class MyDoc(BaseDoc):
+        embedding: tensor_type
+        text: str
+        image: ImageDoc
+
+    da = DocVec[MyDoc](
+        [
+            MyDoc(
+                embedding=[1, 2, 3, 4, 5], text='hello', image=ImageDoc(url='aux.png')
+            ),
+            MyDoc(embedding=[5, 4, 3, 2, 1], text='hello world', image=ImageDoc()),
+        ],
+        tensor_type=tensor_type,
+    )
+    df_da = da.to_dataframe()
+    da2 = DocVec[MyDoc].from_dataframe(df_da, tensor_type=tensor_type)
+    assert da2.tensor_type == tensor_type
+    assert isinstance(da2.embedding, tensor_type)

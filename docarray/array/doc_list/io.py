@@ -23,6 +23,7 @@ from typing import (
     Type,
     TypeVar,
     Union,
+    cast,
 )
 
 import orjson
@@ -40,9 +41,12 @@ from docarray.utils._internal.misc import import_library
 if TYPE_CHECKING:
     import pandas as pd
 
+    from docarray.array.doc_vec.doc_vec import DocVec
+    from docarray.array.doc_vec.io import IOMixinDocVec
     from docarray.proto import DocListProto
+    from docarray.typing.tensor.abstract_tensor import AbstractTensor
 
-T = TypeVar('T', bound='IOMixinArray')
+T = TypeVar('T', bound='IOMixinDocList')
 T_doc = TypeVar('T_doc', bound=BaseDoc)
 
 ARRAY_PROTOCOLS = {'protobuf-array', 'pickle-array', 'json-array'}
@@ -96,7 +100,7 @@ class _LazyRequestReader:
         return self.content[item]
 
 
-class IOMixinArray(Iterable[T_doc]):
+class IOMixinDocList(Iterable[T_doc]):
     doc_type: Type[T_doc]
 
     @abstractmethod
@@ -515,8 +519,6 @@ class IOMixinArray(Iterable[T_doc]):
             doc_dict = _access_path_dict_to_nested_dict(access_path2val)
             docs.append(doc_type.parse_obj(doc_dict))
 
-        if not isinstance(docs, cls):
-            return cls(docs)
         return docs
 
     def to_dataframe(self) -> 'pd.DataFrame':
@@ -577,11 +579,13 @@ class IOMixinArray(Iterable[T_doc]):
         protocol: Optional[str],
         compress: Optional[str],
         show_progress: bool,
+        tensor_type: Optional[Type['AbstractTensor']] = None,
     ):
         """Read a `DocList` object from a binary file
         :param protocol: protocol to use. It can be 'pickle-array', 'protobuf-array', 'pickle' or 'protobuf'
         :param compress: compress algorithm to use between `lz4`, `bz2`, `lzma`, `zlib`, `gzip`
         :param show_progress: show progress bar, only works when protocol is `pickle` or `protobuf`
+        :param tensor_type: only relevant for DocVec; tensor_type of the DocVec
         :return: a `DocList`
         """
         with file_ctx as fp:
@@ -603,12 +607,20 @@ class IOMixinArray(Iterable[T_doc]):
             proto = cls._get_proto_class()()
             proto.ParseFromString(d)
 
-            return cls.from_protobuf(proto)
+            if tensor_type is not None:
+                cls_ = cast('IOMixinDocVec', cls)
+                return cls_.from_protobuf(proto, tensor_type=tensor_type)
+            else:
+                return cls.from_protobuf(proto)
         elif protocol is not None and protocol == 'pickle-array':
             return pickle.loads(d)
 
         elif protocol is not None and protocol == 'json-array':
-            return cls.from_json(d)
+            if tensor_type is not None:
+                cls_ = cast('IOMixinDocVec', cls)
+                return cls_.from_json(d, tensor_type=tensor_type)
+            else:
+                return cls.from_json(d)
 
         # Binary format for streaming case
         else:
@@ -658,6 +670,10 @@ class IOMixinArray(Iterable[T_doc]):
                     pbar.update(
                         t, advance=1, total_size=str(filesize.decimal(_total_size))
                     )
+            if tensor_type is not None:
+                cls__ = cast(Type['DocVec'], cls)
+                # mypy doesn't realize that cls_ is callable
+                return cls__(docs, tensor_type=tensor_type)  # type: ignore
             return cls(docs)
 
     @classmethod
@@ -724,6 +740,27 @@ class IOMixinArray(Iterable[T_doc]):
                             t, advance=1, total_size=str(filesize.decimal(_total_size))
                         )
 
+    @staticmethod
+    def _get_file_context(
+        file: Union[str, bytes, pathlib.Path, io.BufferedReader, _LazyRequestReader],
+        protocol: str,
+        compress: Optional[str] = None,
+    ) -> Tuple[Union[nullcontext, io.BufferedReader], Optional[str], Optional[str]]:
+        load_protocol: Optional[str] = protocol
+        load_compress: Optional[str] = compress
+        file_ctx: Union[nullcontext, io.BufferedReader]
+        if isinstance(file, (io.BufferedReader, _LazyRequestReader, bytes)):
+            file_ctx = nullcontext(file)
+        # by checking path existence we allow file to be of type Path, LocalPath, PurePath and str
+        elif isinstance(file, (str, pathlib.Path)) and os.path.exists(file):
+            load_protocol, load_compress = _protocol_and_compress_from_file_path(
+                file, protocol, compress
+            )
+            file_ctx = open(file, 'rb')
+        else:
+            raise FileNotFoundError(f'cannot find file {file}')
+        return file_ctx, load_protocol, load_compress
+
     @classmethod
     def load_binary(
         cls: Type[T],
@@ -753,19 +790,9 @@ class IOMixinArray(Iterable[T_doc]):
         :return: a `DocList` object
 
         """
-        load_protocol: Optional[str] = protocol
-        load_compress: Optional[str] = compress
-        file_ctx: Union[nullcontext, io.BufferedReader]
-        if isinstance(file, (io.BufferedReader, _LazyRequestReader, bytes)):
-            file_ctx = nullcontext(file)
-        # by checking path existence we allow file to be of type Path, LocalPath, PurePath and str
-        elif isinstance(file, (str, pathlib.Path)) and os.path.exists(file):
-            load_protocol, load_compress = _protocol_and_compress_from_file_path(
-                file, protocol, compress
-            )
-            file_ctx = open(file, 'rb')
-        else:
-            raise FileNotFoundError(f'cannot find file {file}')
+        file_ctx, load_protocol, load_compress = cls._get_file_context(
+            file, protocol, compress
+        )
         if streaming:
             if load_protocol not in SINGLE_PROTOCOLS:
                 raise ValueError(
