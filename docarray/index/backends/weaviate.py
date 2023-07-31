@@ -211,12 +211,17 @@ class WeaviateDocumentIndex(BaseDocIndex, Generic[TSchema]):
                 self.bytes_columns.append(column_name)
             if column_info.db_type == 'number[]':
                 self.nonembedding_array_columns.append(column_name)
-            prop = {
-                "name": column_name
-                if column_name != 'id'
-                else DOCUMENTID,  # in weaviate, id and _id is a reserved keyword
-                "dataType": [column_info.db_type],
-            }
+
+            if column_name == 'id':
+                # treat id differently because in weaviate, id and _id is a reserved keyword
+                prop = {
+                    "name": DOCUMENTID,
+                    "dataType": [column_info.db_type],
+                    "tokenization": "field",
+                }
+            else:
+                prop = {"name": column_name, "dataType": [column_info.db_type]}
+
             properties.append(prop)
 
         # TODO: What is the best way to specify other config that is part of schema?
