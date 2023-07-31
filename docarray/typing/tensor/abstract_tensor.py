@@ -59,8 +59,8 @@ class _ParametrizedMeta(type):
 
     def _equals_special_case(cls, other):
         is_type = isinstance(other, type)
-        is_tensor = is_type and AbstractTensor in other.mro()
-        same_parents = is_tensor and cls.mro()[1:] == other.mro()[1:]
+        is_tensor = is_type and AbstractTensor in other.__mro__
+        same_parents = is_tensor and cls.mro()[1:] == other.__mro__[1:]
 
         subclass_target_shape = getattr(other, '__docarray_target_shape__', False)
         self_target_shape = getattr(cls, '__docarray_target_shape__', False)
@@ -92,9 +92,11 @@ class _ParametrizedMeta(type):
                     return False
                 return any(
                     safe_issubclass(candidate, _cls.__unparametrizedcls__)
-                    for candidate in type(instance).mro()
+                    for candidate in type(instance).__mro__
                 )
-            return any(issubclass(candidate, cls) for candidate in type(instance).mro())
+            return any(
+                issubclass(candidate, cls) for candidate in type(instance).__mro__
+            )
         return super().__instancecheck__(instance)
 
     def __eq__(cls, other):
