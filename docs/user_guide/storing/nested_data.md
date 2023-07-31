@@ -14,8 +14,12 @@ In the following example you can see a complex schema that contains nested docum
 The `YouTubeVideoDoc` contains a `VideoDoc` and an `ImageDoc`, alongside some "basic" fields:
 
 ```python
-from docarray.typing import ImageUrl, VideoUrl, AnyTensor
+import numpy as np
+from pydantic import Field
 
+from docarray import BaseDoc, DocList
+from docarray.index import InMemoryExactNNIndex
+from docarray.typing import AnyTensor, ImageUrl, VideoUrl
 
 # define a nested schema
 class ImageDoc(BaseDoc):
