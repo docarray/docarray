@@ -72,7 +72,7 @@ class BaseDoc(BaseModel, IOMixin, UpdateMixin, BaseNode):
     https://docs.pydantic.dev/usage/models/) and can be used in a similar way.
     """
 
-    id: Optional[ID] = Field(default_factory=lambda: ID(os.urandom(16).hex()))
+    id: Optional[ID] = Field(default_factory=lambda: ID(os.urandom(16).hex()), example=os.urandom(16).hex())
 
     class Config:
         json_loads = orjson.loads
