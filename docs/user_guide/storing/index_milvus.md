@@ -11,7 +11,7 @@ This is the user guide for the [MilvusDocumentIndex][docarray.index.backends.mil
 focusing on special features and configurations of Milvus.
 
 
-## Basic Usage
+## Basic usage
 !!! note "Single Search Field Requirement"
     In order to utilize vector search, it's necessary to define 'is_embedding' for one field only. 
     This is due to Milvus' configuration, which permits a single vector for each data object.
@@ -88,16 +88,16 @@ the database will store vectors with 128 dimensions.
     Instead of using `NdArray` you can use `TorchTensor` or `TensorFlowTensor` and the Document Index will handle that
     for you. This is supported for all Document Index backends. No need to convert your tensors to NumPy arrays manually!
 
-### Using a predefined Document as schema
+### Using a predefined document as schema
 
-DocArray offers a number of predefined Documents, like [ImageDoc][docarray.documents.ImageDoc] and [TextDoc][docarray.documents.TextDoc].
+DocArray offers a number of predefined documents, like [ImageDoc][docarray.documents.ImageDoc] and [TextDoc][docarray.documents.TextDoc].
 If you try to use these directly as a schema for a Document Index, you will get unexpected behavior:
 Depending on the backend, an exception will be raised, or no vector index for ANN lookup will be built.
 
 The reason for this is that predefined Documents don't hold information about the dimensionality of their `.embedding`
 field. But this is crucial information for any vector database to work properly!
 
-You can work around this problem by subclassing the predefined Document and adding the dimensionality information:
+You can work around this problem by subclassing the predefined document and adding the dimensionality information:
 
 === "Using type hint"
     ```python
@@ -173,12 +173,12 @@ This means that they share the same schema, and in general, both the Document In
     In particular, this means that you can easily [index predefined Documents](#using-a-predefined-document-as-schema) into a Document Index.
 
 
-## Vector Search
+## Vector search
 
 Now that you have indexed your data, you can perform vector similarity search using the [`find()`][docarray.index.abstract.BaseDocIndex.find] method.
 
-By using a document of type `MyDoc`, [`find()`][docarray.index.abstract.BaseDocIndex.find], you can find
-similar Documents in the Document Index:
+You can perform a similarity search and find relevant documents by passing `MyDoc` or a raw vector to 
+the [`find()`][docarray.index.abstract.BaseDocIndex.find] method:
 
 === "Search by Document"
 
@@ -247,19 +247,20 @@ for doc in cheap_books:
     doc.summary()
 ```
 
-## Text Search
-
-In addition to vector similarity search, the Document Index interface offers methods for text search:
-[text_search()][docarray.index.abstract.BaseDocIndex.text_search],
-as well as the batched version [text_search_batched()][docarray.index.abstract.BaseDocIndex.text_search_batched].
+## Text search
 
 !!! note
     The [MilvusDocumentIndex][docarray.index.backends.milvus.MilvusDocumentIndex] implementation does not support text search.
 
     To see how to perform text search, you can check out other backends that offer support.
 
+In addition to vector similarity search, the Document Index interface offers methods for text search:
+[text_search()][docarray.index.abstract.BaseDocIndex.text_search],
+as well as the batched version [text_search_batched()][docarray.index.abstract.BaseDocIndex.text_search_batched].
 
-## Hybrid Search
+
+
+## Hybrid search
 
 Document Index supports atomic operations for vector similarity search, text search and filter search.
 
@@ -296,7 +297,7 @@ The kinds of atomic queries that can be combined in this way depends on the back
 Some backends can combine text search and vector search, while others can perform filters and vectors search, etc.
 
 
-## Access Documents
+## Access documents
 
 To retrieve a document from a Document Index you don't necessarily need to perform a fancy search.
 
@@ -318,7 +319,7 @@ docs = doc_index[ids]  # get by list of ids
 ```
 
 
-## Delete Documents
+## Delete documents
 
 In the same way you can access Documents by `id`, you can also delete them:
 
@@ -350,9 +351,9 @@ The following configs can be set in `DBConfig`:
 |-------------------------|------------------------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------|
 | `host`                  | The host address for the Milvus server.                                                                                      | `localhost`                                                                    |
 | `port`                  | The port number for the Milvus server                                                                                         | 19530                                                                          |
-| `index_name`            | The name of the index in the Milvus database                                                                                  | None. Data will be stored in an index named after the Document type used as schema. |
-| `user`              | The username for the Milvus server                                                                                            | None                                                                           |
-| `password`              | The password for the Milvus server                                                                                            | None                                                                           |
+| `index_name`            | The name of the index in the Milvus database                                                                                  | `None`. Data will be stored in an index named after the Document type used as schema. |
+| `user`              | The username for the Milvus server                                                                                            | `None`                                                                           |
+| `password`              | The password for the Milvus server                                                                                            | `None`                                                                           |
 | `token`              | Token for secure connection                                                                                            | ''                                                                             |
 | `collection_description`              | Description of the collection in the database                                                                                            | ''                                                                             |
 | `default_column_config` | The default configurations for every column type.                                                                            | dict                                                                           |
@@ -387,10 +388,10 @@ doc_index.configure(MilvusDocumentIndex.RuntimeConfig(batch_size=128))
 You can pass the above as keyword arguments to the `configure()` method or pass an entire configuration object.
 
 
-## Nested Data and Subindex Search
+## Nested data and subindex search
 
 The examples provided primarily operate on a basic schema where each field corresponds to a straightforward type such as `str` or `NdArray`. 
 However, it is also feasible to represent and store nested documents in a Document Index, including scenarios where a document 
 contains a `DocList` of other documents. 
 
-Go to [Nested Data](nested_data.md) section to learn more.
+Go to the [Nested Data](nested_data.md) section to learn more.

@@ -1,7 +1,7 @@
 # In-Memory Document Index
 
 
-[InMemoryExactNNIndex][docarray.index.backends.in_memory.InMemoryExactNNIndex] stores all Documents in memory using DocLists. 
+[InMemoryExactNNIndex][docarray.index.backends.in_memory.InMemoryExactNNIndex] stores all documents in memory using DocLists. 
 It is a great starting point for small datasets, where you may not want to launch a database server.
 
 For vector search and filtering the [InMemoryExactNNIndex][docarray.index.backends.in_memory.InMemoryExactNNIndex] 
@@ -80,16 +80,16 @@ the database will store vectors with 128 dimensions.
     for you. This is supported for all Document Index backends. No need to convert your tensors to NumPy arrays manually!
 
 
-### Using a predefined Document as schema
+### Using a predefined document as schema
 
-DocArray offers a number of predefined Documents, like [ImageDoc][docarray.documents.ImageDoc] and [TextDoc][docarray.documents.TextDoc].
+DocArray offers a number of predefined documents, like [ImageDoc][docarray.documents.ImageDoc] and [TextDoc][docarray.documents.TextDoc].
 If you try to use these directly as a schema for a Document Index, you will get unexpected behavior:
 Depending on the backend, an exception will be raised, or no vector index for ANN lookup will be built.
 
-The reason for this is that predefined Documents don't hold information about the dimensionality of their `.embedding`
+The reason for this is that predefined documents don't hold information about the dimensionality of their `.embedding`
 field. But this is crucial information for any vector database to work properly!
 
-You can work around this problem by subclassing the predefined Document and adding the dimensionality information:
+You can work around this problem by subclassing the predefined document and adding the dimensionality information:
 
 === "Using type hint"
     ```python
@@ -174,10 +174,10 @@ This means that they share the same schema, and in general, both the Document In
     - A and B have the same field names and field types
     - A and B have the same field names, and, for every field, the type of B is a subclass of the type of A
 
-    In particular, this means that you can easily [index predefined Documents](#using-a-predefined-document-as-schema) into a Document Index.
+    In particular, this means that you can easily [index predefined documents](#using-a-predefined-document-as-schema) into a Document Index.
 
 
-## Vector Search
+## Vector search
 
 Now that you have indexed your data, you can perform vector similarity search using the [`find()`][docarray.index.abstract.BaseDocIndex.find] method.
 
@@ -191,7 +191,7 @@ to find similar documents within the Document Index:
     # create a query Document
     query = MyDoc(embedding=np.random.rand(128), text='query')
 
-    # find similar Documents
+    # find similar documents
     matches, scores = db.find(query, search_field='embedding', limit=5)
 
     print(f'{matches=}')
@@ -205,7 +205,7 @@ to find similar documents within the Document Index:
     # create a query vector
     query = np.random.rand(128)
 
-    # find similar Documents
+    # find similar documents
     matches, scores = db.find(query, search_field='embedding', limit=5)
 
     print(f'{matches=}')
@@ -213,7 +213,7 @@ to find similar documents within the Document Index:
     print(f'{scores=}')
     ```
 
-To succesfully peform a vector search, you need to specify a `search_field`. This is the field that serves as the
+To peform a vector search, you need to specify a `search_field`. This is the field that serves as the
 basis of comparison between your query and the documents in the Document Index.
 
 In this particular example you only have one field (`embedding`) that is a vector, so you can trivially choose that one.
@@ -231,15 +231,15 @@ How these scores are calculated depends on the backend, and can usually be [conf
 
 You can also search for multiple documents at once, in a batch, using the [find_batched()][docarray.index.abstract.BaseDocIndex.find_batched] method.
 
-=== "Search by Documents"
+=== "Search by documents"
 
     ```python
-    # create some query Documents
+    # create some query documents
     queries = DocList[MyDoc](
         MyDoc(embedding=np.random.rand(128), text=f'query {i}') for i in range(3)
     )
 
-    # find similar Documents
+    # find similar documents
     matches, scores = db.find_batched(queries, search_field='embedding', limit=5)
 
     print(f'{matches=}')
@@ -253,7 +253,7 @@ You can also search for multiple documents at once, in a batch, using the [find_
     # create some query vectors
     query = np.random.rand(3, 128)
 
-    # find similar Documents
+    # find similar documents
     matches, scores = db.find_batched(query, search_field='embedding', limit=5)
 
     print(f'{matches=}')
@@ -295,19 +295,20 @@ for doc in cheap_books:
     doc.summary()
 ```
 
-## Text Search
-
-In addition to vector similarity search, the Document Index interface offers methods for text search:
-[text_search()][docarray.index.abstract.BaseDocIndex.text_search],
-as well as the batched version [text_search_batched()][docarray.index.abstract.BaseDocIndex.text_search_batched].
+## Text search
 
 !!! note
     The [InMemoryExactNNIndex][docarray.index.backends.in_memory.InMemoryExactNNIndex] implementation does not support text search.
 
     To see how to perform text search, you can check out other backends that offer support.
 
+In addition to vector similarity search, the Document Index interface offers methods for text search:
+[text_search()][docarray.index.abstract.BaseDocIndex.text_search],
+as well as the batched version [text_search_batched()][docarray.index.abstract.BaseDocIndex.text_search_batched].
 
-## Hybrid Search
+
+
+## Hybrid search
 
 Document Index supports atomic operations for vector similarity search, text search and filter search.
 
@@ -345,7 +346,7 @@ The kinds of atomic queries that can be combined in this way depends on the back
 Some backends can combine text search and vector search, while others can perform filters and vectors search, etc.
 
 
-## Access Documents
+## Access documents
 
 To retrieve a document from a Document Index you don't necessarily need to perform a fancy search.
 
@@ -367,7 +368,7 @@ docs = db[ids]  # get by list of ids
 ```
 
 
-## Delete Documents
+## Delete documents
 
 In the same way you can access Documents by `id`, you can also delete them:
 
@@ -386,7 +387,7 @@ del db[ids[0]]  # del by single id
 del db[ids[1:]]  # del by list of ids
 ```
 
-## Update Documents
+## Update documents
 In order to update a Document inside the index, you only need to re-index it with the updated attributes.
 
 First, let's create a schema for our Document Index:
@@ -502,10 +503,10 @@ new_doc_index = InMemoryExactNNIndex[MyDoc](index_file_path='docs.bin')
 ```
 
 
-## Nested Data and Subindex Search
+## Nested data and subindex search
 
 The examples provided primarily operate on a basic schema where each field corresponds to a straightforward type such as `str` or `NdArray`. 
 However, it is also feasible to represent and store nested documents in a Document Index, including scenarios where a document 
 contains a `DocList` of other documents. 
 
-Go to [Nested Data](nested_data.md) section to learn more.
+Go to the [Nested Data](nested_data.md) section to learn more.

@@ -1,6 +1,6 @@
 # Introduction
 
-A Document Index lets you store your Documents and search through them using vector similarity.
+A Document Index lets you store your documents and search through them using vector similarity.
 
 This is useful if you want to store a bunch of data, and at a later point retrieve documents that are similar to
 some query that you provide.

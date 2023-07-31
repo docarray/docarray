@@ -34,7 +34,7 @@ The following example is based on [ElasticDocIndex][docarray.index.backends.elas
 but will also work for [ElasticV7DocIndex][docarray.index.backends.elasticv7.ElasticV7DocIndex].
 
 
-## Basic Usage
+## Basic usage
 
 ```python
 from docarray import BaseDoc, DocList
@@ -123,16 +123,16 @@ class SimpleDoc(BaseDoc):
 doc_index = ElasticDocIndex[SimpleDoc](hosts='http://localhost:9200')
 ```
 
-### Using a predefined Document as schema
+### Using a predefined document as schema
 
-DocArray offers a number of predefined Documents, like [ImageDoc][docarray.documents.ImageDoc] and [TextDoc][docarray.documents.TextDoc].
+DocArray offers a number of predefined documents, like [ImageDoc][docarray.documents.ImageDoc] and [TextDoc][docarray.documents.TextDoc].
 If you try to use these directly as a schema for a Document Index, you will get unexpected behavior:
 Depending on the backend, an exception will be raised, or no vector index for ANN lookup will be built.
 
-The reason for this is that predefined Documents don't hold information about the dimensionality of their `.embedding`
+The reason for this is that predefined documents don't hold information about the dimensionality of their `.embedding`
 field. But this is crucial information for any vector database to work properly!
 
-You can work around this problem by subclassing the predefined Document and adding the dimensionality information:
+You can work around this problem by subclassing the predefined document and adding the dimensionality information:
 
 === "Using type hint"
     ```python
@@ -197,12 +197,12 @@ doc_index.index(index_docs)
 print(f'number of docs in the index: {doc_index.num_docs()}')
 ```
 
-## Vector Search
+## Vector search
 
 The `.find()` method is used to find the nearest neighbors of a vector.
 
 You need to specify the `search_field` that is used when performing the vector search.
-This is the field that serves as the basis of comparison between your query and indexed Documents.
+This is the field that serves as the basis of comparison between your query and indexed documents.
 
 You can use the `limit` argument to configure how many documents to return.
 
@@ -324,7 +324,7 @@ docs = doc_index.filter(query)
 ```
 
 
-## Text Search
+## Text search
 
 In addition to vector similarity search, the Document Index interface offers methods for text search:
 [text_search()][docarray.index.abstract.BaseDocIndex.text_search],
@@ -351,7 +351,7 @@ docs, scores = doc_index.text_search(query, search_field='text')
 ```
 
 
-## Hybrid Search
+## Hybrid search
 
 Document Index supports atomic operations for vector similarity search, text search and filter search.
 
@@ -389,7 +389,7 @@ You can also manually build a valid ES query and directly pass it to the `execut
 
 ## Access documents
 
-To access a document, you need to specify its `id`. You can also pass a list of `id` to access multiple documents.
+To access a document, you need to specify its `id`. You can also pass a list of `id`s to access multiple documents.
 
 ```python
 # access a single Doc
@@ -422,8 +422,8 @@ The following configs can be set in `DBConfig`:
 | Name              | Description                                                                                                                            | Default                 |
 |-------------------|----------------------------------------------------------------------------------------------------------------------------------------|-------------------------|
 | `hosts`           | Hostname of the Elasticsearch server                                                                                                   | `http://localhost:9200` |
-| `es_config`       | Other ES [configuration options](https://www.elastic.co/guide/en/elasticsearch/client/python-api/8.6/config.html) in a Dict and pass to `Elasticsearch` client constructor, e.g. `cloud_id`, `api_key` | None |
-| `index_name`      | Elasticsearch index name, the name of Elasticsearch index object                                       | None. Data will be stored in an index named after the Document type used as schema. |
+| `es_config`       | Other ES [configuration options](https://www.elastic.co/guide/en/elasticsearch/client/python-api/8.6/config.html) in a Dict and pass to `Elasticsearch` client constructor, e.g. `cloud_id`, `api_key` | `None` |
+| `index_name`      | Elasticsearch index name, the name of Elasticsearch index object                                       | `None`. Data will be stored in an index named after the Document type used as schema. |
 | `index_settings`  | Other [index settings](https://www.elastic.co/guide/en/elasticsearch/reference/8.6/index-modules.html#index-modules-settings) in a Dict for creating the index    | dict  |
 | `index_mappings`  | Other [index mappings](https://www.elastic.co/guide/en/elasticsearch/reference/8.6/mapping.html) in a Dict for creating the index | dict  |
 | `default_column_config`  | The default configurations for every column type. | dict  |
@@ -473,10 +473,10 @@ print(f'number of docs in the persisted index: {doc_index2.num_docs()}')
 ```
 
 
-## Nested Data and Subindex Search
+## Nested data and subindex search
 
 The examples provided primarily operate on a basic schema where each field corresponds to a straightforward type such as `str` or `NdArray`. 
 However, it is also feasible to represent and store nested documents in a Document Index, including scenarios where a document 
 contains a `DocList` of other documents. 
 
-Go to [Nested Data](nested_data.md) section to learn more.
+Go to the [Nested Data](nested_data.md) section to learn more.

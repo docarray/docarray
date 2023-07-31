@@ -1,4 +1,4 @@
-# Nested data
+# Nested Data
 
 Most of the examples you've seen operate on a simple schema: each field corresponds to a "basic" type, such as `str` or `NdArray`.
 

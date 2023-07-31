@@ -11,7 +11,7 @@ This is the user guide for the [RedisDocumentIndex][docarray.index.backends.redi
 focusing on special features and configurations of Redis.
 
 
-## Basic Usage
+## Basic usage
 ```python
 from docarray import BaseDoc, DocList
 from docarray.index import RedisDocumentIndex
@@ -78,7 +78,7 @@ the database will store vectors with 128 dimensions.
     for you. This is supported for all Document Index backends. No need to convert your tensors to NumPy arrays manually!
 
 
-### Using a predefined Document as schema
+### Using a predefined document as schema
 
 DocArray offers a number of predefined Documents, like [ImageDoc][docarray.documents.ImageDoc] and [TextDoc][docarray.documents.TextDoc].
 If you try to use these directly as a schema for a Document Index, you will get unexpected behavior:
@@ -87,7 +87,7 @@ Depending on the backend, an exception will be raised, or no vector index for AN
 The reason for this is that predefined Documents don't hold information about the dimensionality of their `.embedding`
 field. But this is crucial information for any vector database to work properly!
 
-You can work around this problem by subclassing the predefined Document and adding the dimensionality information:
+You can work around this problem by subclassing the predefined document and adding the dimensionality information:
 
 === "Using type hint"
     ```python
@@ -175,12 +175,12 @@ This means that they share the same schema, and in general, both the Document In
     In particular, this means that you can easily [index predefined Documents](#using-a-predefined-document-as-schema) into a Document Index.
 
 
-## Vector Search
+## Vector search
 
 Now that you have indexed your data, you can perform vector similarity search using the [`find()`][docarray.index.abstract.BaseDocIndex.find] method.
 
-By using a document of type `MyDoc`, [`find()`][docarray.index.abstract.BaseDocIndex.find], you can find
-similar Documents in the Document Index:
+You can perform a similarity search and find relevant documents by passing `MyDoc` or a raw vector to 
+the [`find()`][docarray.index.abstract.BaseDocIndex.find] method:
 
 === "Search by Document"
 
@@ -210,7 +210,7 @@ similar Documents in the Document Index:
     print(f'{scores=}')
     ```
 
-To succesfully peform a vector search, you need to specify a `search_field`. This is the field that serves as the
+To peform a vector search, you need to specify a `search_field`. This is the field that serves as the
 basis of comparison between your query and the documents in the Document Index.
 
 In this particular example you only have one field (`embedding`) that is a vector, so you can trivially choose that one.
@@ -256,7 +256,7 @@ for doc in cheap_books:
     doc.summary()
 ```
 
-## Text Search
+## Text search
 
 In addition to vector similarity search, the Document Index interface offers methods for text search:
 [text_search()][docarray.index.abstract.BaseDocIndex.text_search],
@@ -282,7 +282,7 @@ query = 'finance'
 docs, scores = doc_index.text_search(query, search_field='text')
 ```
 
-## Hybrid Search
+## Hybrid search
 
 Document Index supports atomic operations for vector similarity search, text search and filter search.
 
@@ -319,7 +319,7 @@ The kinds of atomic queries that can be combined in this way depends on the back
 Some backends can combine text search and vector search, while others can perform filters and vectors search, etc.
 
 
-## Access Documents
+## Access documents
 
 To retrieve a document from a Document Index you don't necessarily need to perform a fancy search.
 
@@ -341,7 +341,7 @@ docs = db[ids]  # get by list of ids
 ```
 
 
-## Delete Documents
+## Delete documents
 
 In the same way you can access Documents by `id`, you can also delete them:
 
@@ -360,7 +360,7 @@ del db[ids[0]]  # del by single id
 del db[ids[1:]]  # del by list of ids
 ```
 
-## Update elements
+## Update documents
 In order to update a Document inside the index, you only need to re-index it with the updated attributes.
 
 First, let's create a schema for our Document Index:
@@ -422,9 +422,9 @@ The following configs can be set in `DBConfig`:
 |-------------------------|----------------------------------------------------|-------------------------------------------------------------------------------------|
 | `host`                  | The host address for the Redis server.             | `localhost`                                                                         |
 | `port`                  | The port number for the Redis server               | 6379                                                                                |
-| `index_name`            | The name of the index in the Redis database        | None. Data will be stored in an index named after the Document type used as schema. |
-| `username`              | The username for the Redis server                  | None                                                                                |
-| `password`              | The password for the Redis server                  | None                                                                                |
+| `index_name`            | The name of the index in the Redis database        | `None`. Data will be stored in an index named after the Document type used as schema. |
+| `username`              | The username for the Redis server                  | `None`                                                                                |
+| `password`              | The password for the Redis server                  | `None`                                                                                |
 | `text_scorer`           | The method for [scoring text](https://redis.io/docs/interact/search-and-query/advanced-concepts/scoring/) during text search | `BM25`                                                                              |
 | `default_column_config` | The default configurations for every column type.  | dict                                                                                |
 
@@ -459,10 +459,10 @@ You can pass the above as keyword arguments to the `configure()` method or pass 
 
 
 
-## Nested Data and Subindex Search
+## Nested data and subindex search
 
 The examples provided primarily operate on a basic schema where each field corresponds to a straightforward type such as `str` or `NdArray`. 
 However, it is also feasible to represent and store nested documents in a Document Index, including scenarios where a document 
 contains a `DocList` of other documents. 
 
-Go to [Nested Data](nested_data.md) section to learn more.
+Go to the [Nested Data](nested_data.md) section to learn more.

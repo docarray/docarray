@@ -11,7 +11,7 @@ This is the user guide for the [WeaviateDocumentIndex][docarray.index.backends.w
 focusing on special features and configurations of Weaviate.
 
 
-## Basic Usage
+## Basic usage
 !!! note "Single Search Field Requirement"
     In order to utilize vector search, it's necessary to define 'is_embedding' for one field only. 
     This is due to Weaviate's configuration, which permits a single vector for each data object.
@@ -250,7 +250,7 @@ store.index(docs)
     - This will however mean that the document will not be vectorized and cannot be searched using vector search. 
 
 
-## Vector Search
+## Vector search
 
 To perform a vector similarity search, follow the below syntax. 
 
@@ -321,7 +321,7 @@ Note that running a raw GraphQL query will return Weaviate-type responses, rathe
 
 You can find the documentation for [Weaviate's GraphQL API here](https://weaviate.io/developers/weaviate/api/graphql).
 
-## Access Documents
+## Access documents
 
 To retrieve a document from a Document Index you don't necessarily need to perform a fancy search.
 
@@ -337,15 +337,15 @@ data = DocList[MyDoc](
 ids = data.id
 doc_index.index(data)
 
-# access the Documents by id
+# access the documents by id
 doc = doc_index[ids[0]]  # get by single id
 docs = doc_index[ids]  # get by list of ids
 ```
 
 
-## Delete Documents
+## Delete documents
 
-In the same way you can access Documents by `id`, you can also delete them:
+In the same way you can access documents by `id`, you can also delete them:
 
 ```python
 # prepare some data
@@ -357,7 +357,7 @@ data = DocList[MyDoc](
 ids = data.id
 doc_index.index(data)
 
-# access the Documents by id
+# access the documents by id
 del doc_index[ids[0]]  # del by single id
 del doc_index[ids[1:]]  # del by list of ids
 ```
@@ -389,13 +389,13 @@ Additionally, you can specify the below settings when you instantiate a configur
 | **Category: General** |
 | host | str | Weaviate instance url | http://localhost:8080                                                  |
 | **Category: Authentication** |
-| username | str | Username known to the specified authentication provider (e.g. WCS) | None                                                                   | `jp@weaviate.io` |
-| password | str | Corresponding password | None                                                                   | `p@ssw0rd` |
-| auth_api_key | str | API key known to the Weaviate instance | None                                                                   | `mys3cretk3y` | 
+| username | str | Username known to the specified authentication provider (e.g. WCS) | `None`                                                                   | `jp@weaviate.io` |
+| password | str | Corresponding password | `None`                                                                   | `p@ssw0rd` |
+| auth_api_key | str | API key known to the Weaviate instance | `None`                                                                   | `mys3cretk3y` | 
 | **Category: Data schema** |
 | index_name | str | Class name to use to store the document| The document class name, e.g. `MyDoc` for `WeaviateDocumentIndex[MyDoc]` | `Document` |
 | **Category: Embedded Weaviate** |
-| embedded_options| EmbeddedOptions | Options for embedded weaviate | None                                                                   |
+| embedded_options| EmbeddedOptions | Options for embedded weaviate | `None`                                                                   |
 
 The type `EmbeddedOptions` can be specified as described [here](https://weaviate.io/developers/weaviate/installation/embedded#embedded-options)
 
@@ -456,10 +456,10 @@ class StringDoc(BaseDoc):
 A list of available Weaviate data types [is here](https://weaviate.io/developers/weaviate/config-refs/datatypes).
 
 
-## Nested Data and Subindex Search
+## Nested data and subindex search
 
 The examples provided primarily operate on a basic schema where each field corresponds to a straightforward type such as `str` or `NdArray`. 
 However, it is also feasible to represent and store nested documents in a Document Index, including scenarios where a document 
 contains a `DocList` of other documents. 
 
-Go to [Nested Data](nested_data.md) section to learn more.
+Go to the [Nested Data](nested_data.md) section to learn more.
