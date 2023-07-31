@@ -30,6 +30,52 @@ class MyDoc(BaseDoc):
     my_tens: NdArray[30] = Field(dim=30, is_embedding=True)
 
 
+@pytest.fixture(scope='session')
+def index_docs():
+    my_docs = [
+        MyDoc(
+            id=f'{i}',
+            docs=DocList[SimpleDoc](
+                [
+                    SimpleDoc(
+                        id=f'docs-{i}-{j}',
+                        simple_tens=np.ones(10) * (j + 1),
+                        simple_text=f'hello {j}',
+                    )
+                    for j in range(5)
+                ]
+            ),
+            list_docs=DocList[ListDoc](
+                [
+                    ListDoc(
+                        id=f'list_docs-{i}-{j}',
+                        docs=DocList[SimpleDoc](
+                            [
+                                SimpleDoc(
+                                    id=f'list_docs-docs-{i}-{j}-{k}',
+                                    simple_tens=np.ones(10) * (k + 1),
+                                    simple_text=f'hello {k}',
+                                )
+                                for k in range(5)
+                            ]
+                        ),
+                        simple_doc=SimpleDoc(
+                            id=f'list_docs-simple_doc-{i}-{j}',
+                            simple_tens=np.ones(10) * (j + 1),
+                            simple_text=f'hello {j}',
+                        ),
+                        list_tens=np.ones(20) * (j + 1),
+                    )
+                    for j in range(5)
+                ]
+            ),
+            my_tens=np.ones((30,)) * (i + 1),
+        )
+        for i in range(5)
+    ]
+    return my_docs
+
+
 @pytest.fixture
 def index():
     dbconfig = WeaviateDocumentIndex.DBConfig(index_name='Test')
@@ -80,7 +126,10 @@ def index():
     return index
 
 
-def test_subindex_init(index):
+def test_subindex_init(index_docs):
+    dbconfig = WeaviateDocumentIndex.DBConfig(index_name='Test0')
+    index = WeaviateDocumentIndex[MyDoc](db_config=dbconfig)
+    index.index(index_docs)
     assert isinstance(index._subindices['docs'], WeaviateDocumentIndex)
     assert isinstance(index._subindices['list_docs'], WeaviateDocumentIndex)
     assert isinstance(
@@ -88,14 +137,20 @@ def test_subindex_init(index):
     )
 
 
-def test_subindex_index(index):
+def test_subindex_index(index_docs):
+    dbconfig = WeaviateDocumentIndex.DBConfig(index_name='Test1')
+    index = WeaviateDocumentIndex[MyDoc](db_config=dbconfig)
+    index.index(index_docs)
     assert index.num_docs() == 5
     assert index._subindices['docs'].num_docs() == 25
     assert index._subindices['list_docs'].num_docs() == 25
     assert index._subindices['list_docs']._subindices['docs'].num_docs() == 125
 
 
-def test_subindex_get(index):
+def test_subindex_get(index_docs):
+    dbconfig = WeaviateDocumentIndex.DBConfig(index_name='Test2')
+    index = WeaviateDocumentIndex[MyDoc](db_config=dbconfig)
+    index.index(index_docs)
     doc = index['1']
     assert type(doc) == MyDoc
     assert doc.id == '1'
@@ -128,7 +183,10 @@ def test_subindex_get(index):
     assert np.allclose(doc.my_tens, np.ones(30) * 2)
 
 
-def test_find_subindex(index):
+def test_find_subindex(index_docs):
+    dbconfig = WeaviateDocumentIndex.DBConfig(index_name='Test3')
+    index = WeaviateDocumentIndex[MyDoc](db_config=dbconfig)
+    index.index(index_docs)
     # root level
     query = np.ones((30,))
     with pytest.raises(ValueError):
@@ -160,7 +218,10 @@ def test_find_subindex(index):
         assert root_doc.id == f'{doc.id.split("-")[2]}'
 
 
-def test_subindex_filter(index):
+def test_subindex_filter(index_docs):
+    dbconfig = WeaviateDocumentIndex.DBConfig(index_name='Test4')
+    index = WeaviateDocumentIndex[MyDoc](db_config=dbconfig)
+    index.index(index_docs)
     query = {
         'path': ['simple_doc__simple_text'],
         'operator': 'Equal',
@@ -180,7 +241,10 @@ def test_subindex_filter(index):
         assert doc.id.split('-')[-1] == '0'
 
 
-def test_subindex_del(index):
+def test_subindex_del(index_docs):
+    dbconfig = WeaviateDocumentIndex.DBConfig(index_name='Test5')
+    index = WeaviateDocumentIndex[MyDoc](db_config=dbconfig)
+    index.index(index_docs)
     del index['0']
     assert index.num_docs() == 4
     assert index._subindices['docs'].num_docs() == 20
@@ -188,7 +252,10 @@ def test_subindex_del(index):
     assert index._subindices['list_docs']._subindices['docs'].num_docs() == 100
 
 
-def test_subindex_contain(index):
+def test_subindex_contain(index_docs):
+    dbconfig = WeaviateDocumentIndex.DBConfig(index_name='Test6')
+    index = WeaviateDocumentIndex[MyDoc](db_config=dbconfig)
+    index.index(index_docs)
     # Checks for individual simple_docs within list_docs
     for i in range(4):
         doc = index[f'{i + 1}']
