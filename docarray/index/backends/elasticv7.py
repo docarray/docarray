@@ -130,19 +130,6 @@ class ElasticV7DocIndex(ElasticDocIndex):
     # Helpers                                     #
     ###############################################
 
-    # ElasticSearch helpers
-    def _create_index_mapping(self, col: '_ColumnInfo') -> Dict[str, Any]:
-        """Create a new HNSW index for a column, and initialize it."""
-
-        index = col.config.copy()
-        if 'type' not in index:
-            index['type'] = col.db_type
-
-        if col.db_type == 'dense_vector' and col.n_dim:
-            index['dims'] = col.n_dim
-
-        return index
-
     def _form_search_body(self, query: np.ndarray, limit: int, search_field: str = '') -> Dict[str, Any]:  # type: ignore
         body = {
             'size': limit,
