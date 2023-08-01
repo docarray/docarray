@@ -79,22 +79,22 @@ docs = DocList[MyDoc](
 ```
 
 ### Initialize the Document Index and add data
-Here we initialize an `InMemoryExactNNIndex` instance with the document schema defined previously, and add the created documents to this index.
+Here we initialize an `InMemoryExactNNIndex` instance with the document schema we defined previously, and add the created documents to this index.
 ```python
 doc_index = InMemoryExactNNIndex[MyDoc]()
 doc_index.index(docs)
 ```
 
 ### Perform a vector similarity search
-Now, let's perform a similarity search on the document embeddings using a query vector of ones. 
-As a result, we'll retrieve the top 10 most similar documents and their corresponding similarity scores.
+Now, let's perform a similarity search on the document embeddings. 
+As a result, we'll retrieve ten most similar documents and their corresponding similarity scores.
 ```python
 query = np.ones(128)
 retrieved_docs, scores = doc_index.find(query, search_field='embedding', limit=10)
 ```
 
 ### Filter documents
-In this segment, we filter the indexed documents based on their price field, specifically retrieving documents with a price less than 5.
+In this snippet, we filter the indexed documents based on their price field, specifically retrieving documents with a price less than 5:
 ```python
 query = {'price': {'$lt': 5}}
 filtered_docs = doc_index.filter(query, limit=10)
@@ -102,7 +102,7 @@ filtered_docs = doc_index.filter(query, limit=10)
 
 ### Combine different search methods
 The final snippet combines the vector similarity search and filtering operations into a single query. 
-We first perform a similarity search on the document embeddings and then apply a filter to return only those documents with a price greater than or equal to 2.
+We first perform a similarity search on the document embeddings and then apply a filter to return only those documents with a price greater than or equal to 2:
 ```python
 query = (
     doc_index.build_query()  # get empty query object
@@ -114,7 +114,7 @@ retrieved_docs, scores = doc_index.execute_query(query)
 ```
 
 ## Learn more
-The code snippets presented above just scratch the surface of what a Document Index can do. 
+The code snippets above just scratch the surface of what a Document Index can do. 
 To learn more and get the most out of `DocArray`, take a look at the detailed guides for the vector database backends you're interested in:
 
 - [Weaviate](https://weaviate.io/)  |  [Docs](index_weaviate.md)

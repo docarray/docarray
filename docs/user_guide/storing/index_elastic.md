@@ -37,7 +37,7 @@ but will also work for [ElasticV7DocIndex][docarray.index.backends.elasticv7.Ela
 ## Basic usage
 This snippet demonstrates the basic usage of [ElasticDocIndex][docarray.index.backends.elastic.ElasticDocIndex]. It defines a document schema with a title and an embedding, 
 creates ten dummy documents with random embeddings, initializes an instance of [ElasticDocIndex][docarray.index.backends.elastic.ElasticDocIndex] to index these documents, 
-and performs a vector similarity search to retrieve the top 10 most similar documents to a given query vector.
+and performs a vector similarity search to retrieve ten most similar documents to a given query vector.
 
 ```python
 from docarray import BaseDoc, DocList
@@ -238,7 +238,7 @@ You can use the `limit` argument to configure how many documents to return.
 === "Search by Document"
 
     ```python
-    # create a query Document
+    # create a query document
     query = SimpleDoc(tensor=np.ones(128))
 
     # find similar documents
@@ -266,7 +266,7 @@ You can use the `limit` argument to configure how many documents to return.
 To peform a vector search, you need to specify a `search_field`. This is the field that serves as the
 basis of comparison between your query and the documents in the Document Index.
 
-In this particular example you only have one field (`tensor`) that is a vector, so you can trivially choose that one.
+In this example you only have one field (`tensor`) that is a vector, so you can trivially choose that one.
 In general, you could have multiple fields of type `NdArray` or `TorchTensor` or `TensorFlowTensor`, and you can choose
 which one to use for the search.
 
@@ -280,7 +280,7 @@ How these scores are calculated depends on the backend, and can usually be [conf
 
 ### Batched search
 
-You can also search for multiple documents at once, in a batch, using the [find_batched()][docarray.index.abstract.BaseDocIndex.find_batched] method.
+You can also search for multiple documents at once, in a batch, using the [`find_batched()`][docarray.index.abstract.BaseDocIndex.find_batched] method.
 
 === "Search by Documents"
 
@@ -290,7 +290,7 @@ You can also search for multiple documents at once, in a batch, using the [find_
         SimpleDoc(tensor=np.random.rand(128)) for i in range(3)
     )
 
-    # find similar Documents
+    # find similar documents
     matches, scores = doc_index.find_batched(queries, search_field='tensor', limit=5)
 
     print(f'{matches=}')
@@ -304,7 +304,7 @@ You can also search for multiple documents at once, in a batch, using the [find_
     # create some query vectors
     query = np.random.rand(3, 128)
 
-    # find similar Documents
+    # find similar documents
     matches, scores = doc_index.find_batched(query, search_field='tensor', limit=5)
 
     print(f'{matches=}')
@@ -312,7 +312,7 @@ You can also search for multiple documents at once, in a batch, using the [find_
     print(f'{scores=}')
     ```
 
-The [find_batched()][docarray.index.abstract.BaseDocIndex.find_batched] method returns a named tuple containing
+The [`find_batched()`][docarray.index.abstract.BaseDocIndex.find_batched] method returns a named tuple containing
 a list of `DocList`s, one for each query, containing the closest matching documents and their similarity scores.
 
 
@@ -424,8 +424,8 @@ docs = doc_index.filter(query)
 ## Text search
 
 In addition to vector similarity search, the Document Index interface offers methods for text search:
-[text_search()][docarray.index.abstract.BaseDocIndex.text_search],
-as well as the batched version [text_search_batched()][docarray.index.abstract.BaseDocIndex.text_search_batched].
+[`text_search()`][docarray.index.abstract.BaseDocIndex.text_search],
+as well as the batched version [`text_search_batched()`][docarray.index.abstract.BaseDocIndex.text_search_batched].
 
 As in "pure" Elasticsearch, you can use text search directly on the field of type `str`:
 
@@ -453,7 +453,7 @@ docs, scores = doc_index.text_search(query, search_field='text')
 Document Index supports atomic operations for vector similarity search, text search and filter search.
 
 To combine these operations into a single, hybrid search query, you can use the query builder that is accessible
-through [build_query()][docarray.index.abstract.BaseDocIndex.build_query]:
+through [`build_query()`][docarray.index.abstract.BaseDocIndex.build_query]:
 
 For example, you can build a hybrid serach query that performs range filtering, vector search and text search:
 

@@ -66,7 +66,7 @@ You can perform search on any nesting level by using the dunder operator to spec
 In the following example, you can see how to perform vector search on the `tensor` field of the `YouTubeVideoDoc` or on the `tensor` field of the nested `thumbnail` and `video` fields:
 
 ```python
-# create a query Document
+# create a query document
 query_doc = YouTubeVideoDoc(
     title=f'video query',
     description=f'this is a query video',

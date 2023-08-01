@@ -14,7 +14,7 @@ focusing on special features and configurations of Milvus.
 ## Basic usage
 This snippet demonstrates the basic usage of [MilvusDocumentIndex][docarray.index.backends.milvus.MilvusDocumentIndex]. It defines a document schema with a title and an embedding, 
 creates ten dummy documents with random embeddings, initializes an instance of [MilvusDocumentIndex][docarray.index.backends.milvus.MilvusDocumentIndex] to index these documents, 
-and performs a vector similarity search to retrieve the top 10 most similar documents to a given query vector.
+and performs a vector similarity search to retrieve ten most similar documents to a given query vector.
 
 !!! note "Single Search Field Requirement"
     In order to utilize vector search, it's necessary to define 'is_embedding' for one field only. 
@@ -187,10 +187,10 @@ the [`find()`][docarray.index.abstract.BaseDocIndex.find] method:
 === "Search by Document"
 
     ```python
-    # create a query Document
+    # create a query document
     query = MyDoc(embedding=np.random.rand(128), title='query')
 
-    # find similar Documents
+    # find similar documents
     matches, scores = doc_index.find(query, limit=5)
 
     print(f'{matches=}')
@@ -204,7 +204,7 @@ the [`find()`][docarray.index.abstract.BaseDocIndex.find] method:
     # create a query vector
     query = np.random.rand(128)
 
-    # find similar Documents
+    # find similar documents
     matches, scores = doc_index.find(query, limit=5)
 
     print(f'{matches=}')
@@ -215,13 +215,13 @@ the [`find()`][docarray.index.abstract.BaseDocIndex.find] method:
 The [`find()`][docarray.index.abstract.BaseDocIndex.find] method returns a named tuple containing the closest
 matching documents and their associated similarity scores.
 
-When searching on the subindex level, you can use the [`find_subindex()]`[docarray.index.abstract.BaseDocIndex.find_subindex] method, which returns a named tuple containing the subindex documents, similarity scores and their associated root documents.
+When searching on the subindex level, you can use the [`find_subindex()`][docarray.index.abstract.BaseDocIndex.find_subindex] method, which returns a named tuple containing the subindex documents, similarity scores and their associated root documents.
 
 How these scores are calculated depends on the backend, and can usually be [configured](#configuration).
 
-### Batched Search
+### Batched search
 
-You can also search for multiple documents at once, in a batch, using the [find_batched()][docarray.index.abstract.BaseDocIndex.find_batched] method.
+You can also search for multiple documents at once, in a batch, using the [`find_batched()`][docarray.index.abstract.BaseDocIndex.find_batched] method.
 
 === "Search by documents"
 
@@ -253,7 +253,7 @@ You can also search for multiple documents at once, in a batch, using the [find_
     print(f'{scores=}')
     ```
 
-The [find_batched()][docarray.index.abstract.BaseDocIndex.find_batched] method returns a named tuple containing
+The [`find_batched()`][docarray.index.abstract.BaseDocIndex.find_batched] method returns a named tuple containing
 a list of `DocList`s, one for each query, containing the closest matching documents and their similarity scores.
 
 
@@ -294,8 +294,8 @@ for doc in cheap_books:
     To see how to perform text search, you can check out other backends that offer support.
 
 In addition to vector similarity search, the Document Index interface offers methods for text search:
-[text_search()][docarray.index.abstract.BaseDocIndex.text_search],
-as well as the batched version [text_search_batched()][docarray.index.abstract.BaseDocIndex.text_search_batched].
+[`text_search()`][docarray.index.abstract.BaseDocIndex.text_search],
+as well as the batched version [`text_search_batched()`][docarray.index.abstract.BaseDocIndex.text_search_batched].
 
 
 
@@ -304,7 +304,7 @@ as well as the batched version [text_search_batched()][docarray.index.abstract.B
 Document Index supports atomic operations for vector similarity search, text search and filter search.
 
 To combine these operations into a single, hybrid search query, you can use the query builder that is accessible
-through [build_query()][docarray.index.abstract.BaseDocIndex.build_query]:
+through [`build_query()`][docarray.index.abstract.BaseDocIndex.build_query]:
 
 ```python
 # Define the document schema.
