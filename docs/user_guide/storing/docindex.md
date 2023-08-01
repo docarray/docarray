@@ -58,19 +58,20 @@ This doesn't require a database server - rather, it saves your data locally.
     For a deeper understanding, please look into its [documentation](index_in_memory.md).
 
 ### Define document schema and create data
+The following code snippet defines a document schema using the `BaseDoc` class. Each document consists of a title (a string), 
+a price (an integer), and an embedding (a 128-dimensional array). It also creates a list of ten documents with dummy titles, 
+prices ranging from 0 to 9, and randomly generated embeddings.
 ```python
 from docarray import BaseDoc, DocList
 from docarray.index import InMemoryExactNNIndex
 from docarray.typing import NdArray
 import numpy as np
 
-# Define the document schema.
 class MyDoc(BaseDoc):
     title: str
     price: int
     embedding: NdArray[128]
 
-# Create documents (using dummy/random vectors)
 docs = DocList[MyDoc](
     MyDoc(title=f"title #{i}", price=i, embedding=np.random.rand(128))
     for i in range(10)
@@ -78,29 +79,31 @@ docs = DocList[MyDoc](
 ```
 
 ### Initialize the Document Index and add data
+Here we initialize an `InMemoryExactNNIndex` instance with the document schema defined previously, and add the created documents to this index.
 ```python
-# Initialize a new InMemoryExactNNIndex instance and add the documents to the index.
 doc_index = InMemoryExactNNIndex[MyDoc]()
 doc_index.index(docs)
 ```
 
 ### Perform a vector similarity search
+Now, let's perform a similarity search on the document embeddings using a query vector of ones. 
+As a result, we'll retrieve the top 10 most similar documents and their corresponding similarity scores.
 ```python
-# Perform a vector search.
 query = np.ones(128)
 retrieved_docs, scores = doc_index.find(query, search_field='embedding', limit=10)
 ```
 
 ### Filter documents
+In this segment, we filter the indexed documents based on their price field, specifically retrieving documents with a price less than 5.
 ```python
-# Perform filtering (price < 5)
 query = {'price': {'$lt': 5}}
 filtered_docs = doc_index.filter(query, limit=10)
 ```
 
 ### Combine different search methods
+The final snippet combines the vector similarity search and filtering operations into a single query. 
+We first perform a similarity search on the document embeddings and then apply a filter to return only those documents with a price greater than or equal to 2.
 ```python
-# Perform a hybrid search - combining vector search with filtering
 query = (
     doc_index.build_query()  # get empty query object
     .find(query=np.ones(128), search_field='embedding')  # add vector similarity search
@@ -109,3 +112,15 @@ query = (
 )
 retrieved_docs, scores = doc_index.execute_query(query)
 ```
+
+## Learn more
+The code snippets presented above just scratch the surface of what a Document Index can do. 
+To learn more and get the most out of `DocArray`, take a look at the detailed guides for the vector database backends you're interested in:
+
+- [Weaviate](https://weaviate.io/)  |  [Docs](index_weaviate.md)
+- [Qdrant](https://qdrant.tech/)  |  [Docs](index_qdrant.md)
+- [Elasticsearch](https://www.elastic.co/elasticsearch/) v7 and v8  |  [Docs](index_elastic.md)
+- [Redis](https://redis.com/)  |  [Docs](index_redis.md)
+- [Milvus](https://milvus.io/)  |  [Docs](index_milvus.md)
+- [HNSWlib](https://github.com/nmslib/hnswlib)  |  [Docs](index_hnswlib.md)
+- InMemoryExactNNIndex  |  [Docs](index_in_memory.md)

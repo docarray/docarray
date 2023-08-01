@@ -35,6 +35,9 @@ but will also work for [ElasticV7DocIndex][docarray.index.backends.elasticv7.Ela
 
 
 ## Basic usage
+This snippet demonstrates the basic usage of [ElasticDocIndex][docarray.index.backends.elastic.ElasticDocIndex]. It defines a document schema with a title and an embedding, 
+creates ten dummy documents with random embeddings, initializes an instance of [ElasticDocIndex][docarray.index.backends.elastic.ElasticDocIndex] to index these documents, 
+and performs a vector similarity search to retrieve the top 10 most similar documents to a given query vector.
 
 ```python
 from docarray import BaseDoc, DocList
@@ -186,23 +189,44 @@ db.index(data)
 
 ## Index
 
-Use `.index()` to add documents into the index.
+Now that you have a Document Index, you can add data to it, using the [`index()`][docarray.index.abstract.BaseDocIndex.index] method.
 The `.num_docs()` method returns the total number of documents in the index.
 
 ```python
-index_docs = [SimpleDoc(tensor=np.ones(128)) for _ in range(64)]
+from docarray import DocList
 
-doc_index.index(index_docs)
+# create some random data
+docs = DocList[SimpleDoc]([SimpleDoc(tensor=np.ones(128)) for _ in range(64)])
+
+doc_index.index(docs)
 
 print(f'number of docs in the index: {doc_index.num_docs()}')
 ```
 
+As you can see, `DocList[SimpleDoc]` and `ElasticDocIndex[SimpleDoc]` both have `SimpleDoc` as a parameter.
+This means that they share the same schema, and in general, both the Document Index and the data that you want to store need to have compatible schemas.
+
+!!! question "When are two schemas compatible?"
+    The schemas of your Document Index and data need to be compatible with each other.
+    
+    Let's say A is the schema of your Document Index and B is the schema of your data.
+    There are a few rules that determine if schema A is compatible with schema B.
+    If _any_ of the following are true, then A and B are compatible:
+
+    - A and B are the same class
+    - A and B have the same field names and field types
+    - A and B have the same field names, and, for every field, the type of B is a subclass of the type of A
+
+    In particular, this means that you can easily [index predefined documents](#using-a-predefined-document-as-schema) into a Document Index.
+
+
+
 ## Vector search
 
-The `.find()` method is used to find the nearest neighbors of a vector.
+Now that you have indexed your data, you can perform vector similarity search using the [`find()`][docarray.index.abstract.BaseDocIndex.find] method.
 
-You need to specify the `search_field` that is used when performing the vector search.
-This is the field that serves as the basis of comparison between your query and indexed documents.
+You can use the [`find()`][docarray.index.abstract.BaseDocIndex.find] function with a document of the type `MyDoc` 
+to find similar documents within the Document Index:
 
 You can use the `limit` argument to configure how many documents to return.
 
@@ -211,13 +235,86 @@ You can use the `limit` argument to configure how many documents to return.
     This can lead to poor performance when the search involves many vectors.
     [ElasticDocIndex][docarray.index.backends.elastic.ElasticDocIndex] does not have this limitation.
 
-```python
-query = SimpleDoc(tensor=np.ones(128))
+=== "Search by Document"
 
-docs, scores = doc_index.find(query, limit=5, search_field='tensor')
-```
+    ```python
+    # create a query Document
+    query = SimpleDoc(tensor=np.ones(128))
+
+    # find similar documents
+    matches, scores = doc_index.find(query, search_field='tensor', limit=5)
+
+    print(f'{matches=}')
+    print(f'{matches.text=}')
+    print(f'{scores=}')
+    ```
+
+=== "Search by raw vector"
+
+    ```python
+    # create a query vector
+    query = np.random.rand(128)
+
+    # find similar documents
+    matches, scores = doc_index.find(query, search_field='tensor', limit=5)
+
+    print(f'{matches=}')
+    print(f'{matches.text=}')
+    print(f'{scores=}')
+    ```
+
+To peform a vector search, you need to specify a `search_field`. This is the field that serves as the
+basis of comparison between your query and the documents in the Document Index.
+
+In this particular example you only have one field (`tensor`) that is a vector, so you can trivially choose that one.
+In general, you could have multiple fields of type `NdArray` or `TorchTensor` or `TensorFlowTensor`, and you can choose
+which one to use for the search.
+
+The [`find()`][docarray.index.abstract.BaseDocIndex.find] method returns a named tuple containing the closest
+matching documents and their associated similarity scores.
+
+When searching on the subindex level, you can use the [`find_subindex()`][docarray.index.abstract.BaseDocIndex.find_subindex] method, which returns a named tuple containing the subindex documents, similarity scores and their associated root documents.
+
+How these scores are calculated depends on the backend, and can usually be [configured](#configuration).
+
+
+### Batched search
 
 You can also search for multiple documents at once, in a batch, using the [find_batched()][docarray.index.abstract.BaseDocIndex.find_batched] method.
+
+=== "Search by Documents"
+
+    ```python
+    # create some query Documents
+    queries = DocList[SimpleDoc](
+        SimpleDoc(tensor=np.random.rand(128)) for i in range(3)
+    )
+
+    # find similar Documents
+    matches, scores = doc_index.find_batched(queries, search_field='tensor', limit=5)
+
+    print(f'{matches=}')
+    print(f'{matches[0].text=}')
+    print(f'{scores=}')
+    ```
+
+=== "Search by raw vectors"
+
+    ```python
+    # create some query vectors
+    query = np.random.rand(3, 128)
+
+    # find similar Documents
+    matches, scores = doc_index.find_batched(query, search_field='tensor', limit=5)
+
+    print(f'{matches=}')
+    print(f'{matches[0].text=}')
+    print(f'{scores=}')
+    ```
+
+The [find_batched()][docarray.index.abstract.BaseDocIndex.find_batched] method returns a named tuple containing
+a list of `DocList`s, one for each query, containing the closest matching documents and their similarity scores.
+
 
 
 ## Filter

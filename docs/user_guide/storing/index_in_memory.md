@@ -21,6 +21,9 @@ utilizes DocArray's [`find()`][docarray.utils.find.find] and [`filter_docs()`][d
 
 
 ## Basic usage
+This snippet demonstrates the basic usage of [InMemoryExactNNIndex][docarray.index.backends.in_memory.InMemoryExactNNIndex]. It defines a document schema with a title and an embedding, 
+creates ten dummy documents with random embeddings, initializes an instance of [InMemoryExactNNIndex][docarray.index.backends.in_memory.InMemoryExactNNIndex] to index these documents, 
+and performs a vector similarity search to retrieve the top 10 most similar documents to a given query vector.
 
 ```python
 from docarray import BaseDoc, DocList

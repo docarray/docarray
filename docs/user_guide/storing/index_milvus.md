@@ -12,6 +12,10 @@ focusing on special features and configurations of Milvus.
 
 
 ## Basic usage
+This snippet demonstrates the basic usage of [MilvusDocumentIndex][docarray.index.backends.milvus.MilvusDocumentIndex]. It defines a document schema with a title and an embedding, 
+creates ten dummy documents with random embeddings, initializes an instance of [MilvusDocumentIndex][docarray.index.backends.milvus.MilvusDocumentIndex] to index these documents, 
+and performs a vector similarity search to retrieve the top 10 most similar documents to a given query vector.
+
 !!! note "Single Search Field Requirement"
     In order to utilize vector search, it's necessary to define 'is_embedding' for one field only. 
     This is due to Milvus' configuration, which permits a single vector for each data object.
@@ -215,7 +219,42 @@ When searching on the subindex level, you can use the [`find_subindex()]`[docarr
 
 How these scores are calculated depends on the backend, and can usually be [configured](#configuration).
 
+### Batched Search
+
 You can also search for multiple documents at once, in a batch, using the [find_batched()][docarray.index.abstract.BaseDocIndex.find_batched] method.
+
+=== "Search by documents"
+
+    ```python
+    # create some query documents
+    queries = DocList[MyDoc](
+        MyDoc(embedding=np.random.rand(128), text=f'query {i}') for i in range(3)
+    )
+
+    # find similar documents
+    matches, scores = doc_index.find_batched(queries, limit=5)
+
+    print(f'{matches=}')
+    print(f'{matches[0].text=}')
+    print(f'{scores=}')
+    ```
+
+=== "Search by raw vectors"
+
+    ```python
+    # create some query vectors
+    query = np.random.rand(3, 128)
+
+    # find similar documents
+    matches, scores = doc_index.find_batched(query, limit=5)
+
+    print(f'{matches=}')
+    print(f'{matches[0].text=}')
+    print(f'{scores=}')
+    ```
+
+The [find_batched()][docarray.index.abstract.BaseDocIndex.find_batched] method returns a named tuple containing
+a list of `DocList`s, one for each query, containing the closest matching documents and their similarity scores.
 
 
 ## Filter
