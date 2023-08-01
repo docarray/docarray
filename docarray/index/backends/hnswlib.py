@@ -115,7 +115,7 @@ class HnswDocumentIndex(BaseDocIndex, Generic[TSchema]):
                 sub_docs_exist = True
             if safe_issubclass(col.docarray_type, AnyDocArray):
                 continue
-            if not col.config:
+            if not col.config or 'dim' not in col.config:
                 # non-tensor type; don't create an index
                 continue
             if not load_existing and (

@@ -1,13 +1,13 @@
 import warnings
 from dataclasses import dataclass
-from typing import Any, Dict, List, Optional, Sequence, TypeVar, Union
+from typing import Any, Dict, List, Optional, Sequence, TypeVar, Union, Tuple
 
 import numpy as np
 from pydantic import parse_obj_as
 
 from docarray import BaseDoc
 from docarray.index import ElasticDocIndex
-from docarray.index.abstract import BaseDocIndex, _ColumnInfo
+from docarray.index.abstract import BaseDocIndex
 from docarray.typing import AnyTensor
 from docarray.typing.tensor.ndarray import NdArray
 from docarray.utils.find import _FindResult
@@ -17,6 +17,9 @@ T = TypeVar('T', bound='ElasticV7DocIndex')
 
 
 class ElasticV7DocIndex(ElasticDocIndex):
+    _index_vector_params: Optional[Tuple[str]] = ('dims',)
+    _index_vector_options: Optional[Tuple[str]] = None
+
     def __init__(self, db_config=None, **kwargs):
         """Initialize ElasticV7DocIndex"""
         from elasticsearch import __version__ as __es__version__
@@ -129,19 +132,6 @@ class ElasticV7DocIndex(ElasticDocIndex):
     ###############################################
     # Helpers                                     #
     ###############################################
-
-    # ElasticSearch helpers
-    def _create_index_mapping(self, col: '_ColumnInfo') -> Dict[str, Any]:
-        """Create a new HNSW index for a column, and initialize it."""
-
-        index = col.config.copy()
-        if 'type' not in index:
-            index['type'] = col.db_type
-
-        if col.db_type == 'dense_vector' and col.n_dim:
-            index['dims'] = col.n_dim
-
-        return index
 
     def _form_search_body(self, query: np.ndarray, limit: int, search_field: str = '') -> Dict[str, Any]:  # type: ignore
         body = {

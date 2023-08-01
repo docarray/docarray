@@ -67,6 +67,9 @@ if tf is not None:
 
 
 class ElasticDocIndex(BaseDocIndex, Generic[TSchema]):
+    _index_vector_params: Optional[Tuple[str]] = ('dims', 'similarity', 'index')
+    _index_vector_options: Optional[Tuple[str]] = ('m', 'ef_construction')
+
     def __init__(self, db_config=None, **kwargs):
         """Initialize ElasticDocIndex"""
         super().__init__(db_config=db_config, **kwargs)
@@ -82,9 +85,6 @@ class ElasticDocIndex(BaseDocIndex, Generic[TSchema]):
         self._logger.debug('ElasticSearch client has been created')
 
         # ElasticSearh index setup
-        self._index_vector_params = ('dims', 'similarity', 'index')
-        self._index_vector_options = ('m', 'ef_construction')
-
         mappings: Dict[str, Any] = {
             'dynamic': True,
             '_source': {'enabled': 'true'},
@@ -572,20 +572,23 @@ class ElasticDocIndex(BaseDocIndex, Generic[TSchema]):
     # Helpers                                     #
     ###############################################
 
-    def _create_index_mapping(self, col: '_ColumnInfo') -> Dict[str, Any]:
+    @classmethod
+    def _create_index_mapping(cls, col: '_ColumnInfo') -> Dict[str, Any]:
         """Create a new HNSW index for a column, and initialize it."""
 
         index = {'type': col.config['type'] if 'type' in col.config else col.db_type}
 
         if col.db_type == 'dense_vector':
-            for k in self._index_vector_params:
-                index[k] = col.config[k]
+            if cls._index_vector_params is not None:
+                for k in cls._index_vector_params:
+                    index[k] = col.config[k]
             if col.n_dim:
                 index['dims'] = col.n_dim
-            index['index_options'] = dict(
-                (k, col.config[k]) for k in self._index_vector_options
-            )
-            index['index_options']['type'] = 'hnsw'
+            if cls._index_vector_options is not None:
+                index['index_options'] = dict(
+                    (k, col.config[k]) for k in cls._index_vector_options
+                )
+                index['index_options']['type'] = 'hnsw'
         return index
 
     def _send_requests(
