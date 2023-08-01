@@ -72,7 +72,11 @@ class BaseDoc(BaseModel, IOMixin, UpdateMixin, BaseNode):
     https://docs.pydantic.dev/usage/models/) and can be used in a similar way.
     """
 
-    id: Optional[ID] = Field(default_factory=lambda: ID(os.urandom(16).hex()))
+    id: Optional[ID] = Field(
+        description='The ID of the BaseDoc. This is useful for indexing in vector stores. If not set by user, it will automatically be assigned a random value',
+        default_factory=lambda: ID(os.urandom(16).hex()),
+        example=os.urandom(16).hex(),
+    )
 
     class Config:
         json_loads = orjson.loads

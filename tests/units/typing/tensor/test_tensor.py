@@ -41,3 +41,8 @@ def test_tensorflow_to_any_tensor():
     assert isinstance(doc.tensor, TensorFlowTensor)
     assert isinstance(doc.tensor.tensor, tf.Tensor)
     assert tnp.allclose(doc.tensor.tensor, tf.zeros((1000, 2)))
+
+
+def test_equals_type():
+    # see https://github.com/docarray/docarray/pull/1739
+    assert not (TorchTensor == type)
