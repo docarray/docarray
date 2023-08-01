@@ -1,24 +1,24 @@
-# Qdrant Document Index
+# Redis Document Index
 
 !!! note "Install dependencies"
-    To use [QdrantDocumentIndex][docarray.index.backends.qdrant.QdrantDocumentIndex], you need to install extra dependencies with the following command:
+    To use [RedisDocumentIndex][docarray.index.backends.redis.RedisDocumentIndex], you need to install extra dependencies with the following command:
 
     ```console
-    pip install "docarray[qdrant]"
+    pip install "docarray[redis]"
     ```
 
-The following is a starter script for using the [QdrantDocumentIndex][docarray.index.backends.qdrant.QdrantDocumentIndex],
-based on the [Qdrant](https://qdrant.tech/) vector search engine.
+This is the user guide for the [RedisDocumentIndex][docarray.index.backends.redis.RedisDocumentIndex],
+focusing on special features and configurations of Redis.
 
 
 ## Basic usage
-This snippet demonstrates the basic usage of [QdrantDocumentIndex][docarray.index.backends.qdrant.QdrantDocumentIndex]. It defines a document schema with a title and an embedding, 
-creates ten dummy documents with random embeddings, initializes an instance of [QdrantDocumentIndex][docarray.index.backends.qdrant.QdrantDocumentIndex] to index these documents, 
+This snippet demonstrates the basic usage of [RedisDocumentIndex][docarray.index.backends.redis.RedisDocumentIndex]. It defines a document schema with a title and an embedding, 
+creates ten dummy documents with random embeddings, initializes an instance of [RedisDocumentIndex][docarray.index.backends.redis.RedisDocumentIndex] to index these documents, 
 and performs a vector similarity search to retrieve the ten most similar documents to a given query vector.
 
 ```python
 from docarray import BaseDoc, DocList
-from docarray.index import QdrantDocumentIndex
+from docarray.index import RedisDocumentIndex
 from docarray.typing import NdArray
 import numpy as np
 
@@ -30,73 +30,44 @@ class MyDoc(BaseDoc):
 # Create dummy documents.
 docs = DocList[MyDoc](MyDoc(title=f'title #{i}', embedding=np.random.rand(128)) for i in range(10))
 
-# Initialize a new QdrantDocumentIndex instance and add the documents to the index.
-doc_index = QdrantDocumentIndex[MyDoc](host='localhost')
+# Initialize a new RedisDocumentIndex instance and add the documents to the index.
+doc_index = RedisDocumentIndex[MyDoc](host='localhost')
 doc_index.index(docs)
 
 # Perform a vector search.
 query = np.ones(128)
-retrieved_docs, scores = doc_index.find(query, search_field='embedding', limit=10)
+retrieved_docs = doc_index.find(query, search_field='embedding', limit=10)
 ```
+
 
 ## Initialize
 
-You can initialize [QdrantDocumentIndex][docarray.index.backends.qdrant.QdrantDocumentIndex] in three different ways:
+Before initializing [RedisDocumentIndex][docarray.index.backends.redis.RedisDocumentIndex], 
+make sure that you have a Redis service that you can connect to. 
 
+You can create a local Redis service with the following command:
 
-**Connecting to a local Qdrant instance running as a Docker container**
-
-You can use docker-compose to create a local Qdrant service with the following `docker-compose.yml`.
-
-```yaml
-version: '3.8'
-
-services:
-  qdrant:
-    image: qdrant/qdrant:v1.1.2
-    ports:
-      - "6333:6333"
-      - "6334:6334"
-    ulimits: # Only required for tests, as there are a lot of collections created
-      nofile:
-        soft: 65535
-        hard: 65535
+```shell
+docker run --name redis-stack-server -p 6379:6379 -d redis/redis-stack-server:7.2.0-RC2
 ```
-
-Run the following command in the folder of the above `docker-compose.yml` to start the service:
-
-```bash
-docker-compose up
-```
-
-Next, you can create a [QdrantDocumentIndex][docarray.index.backends.qdrant.QdrantDocumentIndex] instance using:
-
+Next, you can create [RedisDocumentIndex][docarray.index.backends.redis.RedisDocumentIndex]:
 ```python
-qdrant_config = QdrantDocumentIndex.DBConfig('localhost')
-doc_index = QdrantDocumentIndex[MyDoc](qdrant_config)
+from docarray import BaseDoc
+from docarray.index import RedisDocumentIndex
+from docarray.typing import NdArray
 
-# or just
-doc_index = QdrantDocumentIndex[MyDoc](host='localhost')
+
+class MyDoc(BaseDoc):
+    embedding: NdArray[128]
+    text: str
+
+
+doc_index = RedisDocumentIndex[MyDoc](host='localhost')
 ```
 
-
-**Creating an in-memory Qdrant document index**
-```python
-qdrant_config = QdrantDocumentIndex.DBConfig(location=":memory:")
-doc_index = QdrantDocumentIndex[MyDoc](qdrant_config)
-```
-
-**Connecting to Qdrant Cloud service**
-```python
-qdrant_config = QdrantDocumentIndex.DBConfig(
-    "https://YOUR-CLUSTER-URL.aws.cloud.qdrant.io", 
-    api_key="<your-api-key>",
-)
-doc_index = QdrantDocumentIndex[MyDoc](qdrant_config)
-```
 
 ### Schema definition
-In this code snippet, `QdrantDocumentIndex` takes a schema of the form of `MyDoc`.
+In this code snippet, `RedisDocumentIndex` takes a schema of the form of `MyDoc`.
 The Document Index then _creates a column for each field in `MyDoc`_.
 
 The column types in the backend database are determined by the type hints of the document's fields.
@@ -110,13 +81,14 @@ the database will store vectors with 128 dimensions.
     Instead of using `NdArray` you can use `TorchTensor` or `TensorFlowTensor` and the Document Index will handle that
     for you. This is supported for all Document Index backends. No need to convert your tensors to NumPy arrays manually!
 
+
 ### Using a predefined document as schema
 
-DocArray offers a number of predefined documents, like [ImageDoc][docarray.documents.ImageDoc] and [TextDoc][docarray.documents.TextDoc].
+DocArray offers a number of predefined Documents, like [ImageDoc][docarray.documents.ImageDoc] and [TextDoc][docarray.documents.TextDoc].
 If you try to use these directly as a schema for a Document Index, you will get unexpected behavior:
 Depending on the backend, an exception will be raised, or no vector index for ANN lookup will be built.
 
-The reason for this is that predefined documents don't hold information about the dimensionality of their `.embedding`
+The reason for this is that predefined Documents don't hold information about the dimensionality of their `.embedding`
 field. But this is crucial information for any vector database to work properly!
 
 You can work around this problem by subclassing the predefined document and adding the dimensionality information:
@@ -125,21 +97,21 @@ You can work around this problem by subclassing the predefined document and addi
     ```python
     from docarray.documents import TextDoc
     from docarray.typing import NdArray
-    from docarray.index import QdrantDocumentIndex
+    from docarray.index import RedisDocumentIndex
 
 
     class MyDoc(TextDoc):
         embedding: NdArray[128]
 
 
-    doc_index = QdrantDocumentIndex[MyDoc](host='localhost')
+    doc_index = RedisDocumentIndex[MyDoc]()
     ```
 
 === "Using Field()"
     ```python
     from docarray.documents import TextDoc
     from docarray.typing import AnyTensor
-    from docarray.index import QdrantDocumentIndex
+    from docarray.index import RedisDocumentIndex
     from pydantic import Field
 
 
@@ -147,7 +119,7 @@ You can work around this problem by subclassing the predefined document and addi
         embedding: AnyTensor = Field(dim=128)
 
 
-    doc_index = QdrantDocumentIndex[MyDoc](host='localhost')
+    doc_index = RedisDocumentIndex[MyDoc]()
     ```
 
 Once you have defined the schema of your Document Index in this way, the data that you index can be either the predefined Document type or your custom Document type.
@@ -170,7 +142,6 @@ data = DocList[TextDoc](
 doc_index.index(data)
 ```
 
-
 ## Index
 
 Now that you have a Document Index, you can add data to it, using the [`index()`][docarray.index.abstract.BaseDocIndex.index] method:
@@ -188,10 +159,10 @@ docs = DocList[MyDoc](
 doc_index.index(docs)
 ```
 
-That call to `index()` stores all documents in `docs` in the Document Index,
+That call to [`index()`][docarray.index.backends.redis.RedisDocumentIndex.index] stores all Documents in `docs` in the Document Index,
 ready to be retrieved in the next step.
 
-As you can see, `DocList[MyDoc]` and `QdrantDocumentIndex[MyDoc]` both have `MyDoc` as a parameter.
+As you can see, `DocList[MyDoc]` and `RedisDocumentIndex[MyDoc]` both have `MyDoc` as a parameter.
 This means that they share the same schema, and in general, both the Document Index and the data that you want to store need to have compatible schemas.
 
 !!! question "When are two schemas compatible?"
@@ -205,7 +176,7 @@ This means that they share the same schema, and in general, both the Document In
     - A and B have the same field names and field types
     - A and B have the same field names, and, for every field, the type of B is a subclass of the type of A
 
-    In particular, this means that you can easily [index predefined documents](#using-a-predefined-document-as-schema) into a Document Index.
+    In particular, this means that you can easily [index predefined Documents](#using-a-predefined-document-as-schema) into a Document Index.
 
 
 ## Vector search
@@ -298,13 +269,12 @@ a list of `DocList`s, one for each query, containing the closest matching docume
 ## Filter
 
 You can filter your documents by using the `filter()` or `filter_batched()` method with a corresponding  filter query. 
-The query should follow the [query language of Qdrant](https://qdrant.tech/documentation/concepts/filtering/).
+The query should follow the [query language of the Redis](https://redis.io/docs/interact/search-and-query/query/).
 
 In the following example let's filter for all the books that are cheaper than 29 dollars:
 
 ```python
 from docarray import BaseDoc, DocList
-from qdrant_client.http import models as rest
 
 
 class Book(BaseDoc):
@@ -313,13 +283,11 @@ class Book(BaseDoc):
 
 
 books = DocList[Book]([Book(title=f'title {i}', price=i * 10) for i in range(10)])
-book_index = QdrantDocumentIndex[Book]()
+book_index = RedisDocumentIndex[Book]()
 book_index.index(books)
 
 # filter for books that are cheaper than 29 dollars
-query = rest.Filter(
-        must=[rest.FieldCondition(key='price', range=rest.Range(lt=29))]
-    )
+query = '@price:[-inf 29]'
 cheap_books = book_index.filter(filter_query=query)
 
 assert len(cheap_books) == 3
@@ -340,7 +308,7 @@ class NewsDoc(BaseDoc):
     text: str
 
 
-doc_index = QdrantDocumentIndex[NewsDoc](host='localhost')
+doc_index = RedisDocumentIndex[NewsDoc]()
 index_docs = [
     NewsDoc(id='0', text='this is a news for sport'),
     NewsDoc(id='1', text='this is a news for finance'),
@@ -353,7 +321,6 @@ query = 'finance'
 docs, scores = doc_index.text_search(query, search_field='text')
 ```
 
-
 ## Hybrid search
 
 Document Index supports atomic operations for vector similarity search, text search and filter search.
@@ -361,71 +328,75 @@ Document Index supports atomic operations for vector similarity search, text sea
 To combine these operations into a single, hybrid search query, you can use the query builder that is accessible
 through [`build_query()`][docarray.index.abstract.BaseDocIndex.build_query]:
 
-For example, you can build a hybrid serach query that performs range filtering, vector search and text search:
-
 ```python
-class SimpleDoc(BaseDoc):
-    tens: NdArray[10]
-    num: int
-    text: str
+# Define the document schema.
+class SimpleSchema(BaseDoc):
+    price: int
+    embedding: NdArray[128]
 
+# Create dummy documents.
+docs = DocList[SimpleSchema](SimpleSchema(price=i, embedding=np.random.rand(128)) for i in range(10))
 
-doc_index = QdrantDocumentIndex[SimpleDoc](host='localhost')
-index_docs = [
-    SimpleDoc(id=f'{i}', tens=np.ones(10) * i, num=int(i / 2), text=f'Lorem ipsum {int(i/2)}')
-    for i in range(10)
-]
-doc_index.index(index_docs)
-
-find_query = np.ones(10)
-text_search_query = 'ipsum 1'
-filter_query = rest.Filter(
-        must=[
-            rest.FieldCondition(
-                key='num',
-                range=rest.Range(
-                    gte=1,
-                    lt=5,
-                ),
-            )
-        ]
-    )
+doc_index = RedisDocumentIndex[SimpleSchema](host='localhost')
+doc_index.index(docs)
 
 query = (
-    doc_index.build_query()
-    .find(find_query, search_field='tens')
-    .text_search(text_search_query, search_field='text')
-    .filter(filter_query)
-    .build(limit=5)
+    doc_index.build_query()  # get empty query object
+    .find(query=np.random.rand(128), search_field='embedding')  # add vector similarity search
+    .filter(filter_query='@price:[-inf 3]')  # add filter search
+    .build()
 )
-
-docs = doc_index.execute_query(query)
+# execute the combined query and return the results
+results = doc_index.execute_query(query)
+print(f'{results=}')
 ```
+
+In the example above you can see how to form a hybrid query that combines vector similarity search and filtered search
+to obtain a combined set of results.
+
+The kinds of atomic queries that can be combined in this way depends on the backend.
+Some backends can combine text search and vector search, while others can perform filters and vectors search, etc.
 
 
 ## Access documents
 
-To access a document, you need to specify its `id`. You can also pass a list of `id`s to access multiple documents.
+To retrieve a document from a Document Index you don't necessarily need to perform a fancy search.
+
+You can also access data by the `id` that was assigned to each document:
 
 ```python
-# access a single Doc
-doc_index[index_docs[16].id]
+# prepare some data
+data = DocList[MyDoc](
+    MyDoc(embedding=np.random.rand(128), text=f'query {i}') for i in range(3)
+)
 
-# access multiple Docs
-doc_index[index_docs[16].id, index_docs[17].id]
+# remember the Document ids and index the data
+ids = data.id
+db.index(data)
+
+# access the Documents by id
+doc = db[ids[0]]  # get by single id
+docs = db[ids]  # get by list of ids
 ```
+
 
 ## Delete documents
 
-To delete documents, use the built-in function `del` with the `id` of the documents that you want to delete.
-You can also pass a list of `id`s to delete multiple documents.
+In the same way you can access Documents by `id`, you can also delete them:
 
 ```python
-# delete a single Doc
-del doc_index[index_docs[16].id]
+# prepare some data
+data = DocList[MyDoc](
+    MyDoc(embedding=np.random.rand(128), text=f'query {i}') for i in range(3)
+)
 
-# delete multiple Docs
-del doc_index[index_docs[17].id, index_docs[18].id]
+# remember the Document ids and index the data
+ids = data.id
+db.index(data)
+
+# access the Documents by id
+del db[ids[0]]  # del by single id
+del db[ids[1:]]  # del by list of ids
 ```
 
 ## Update documents
@@ -436,7 +407,7 @@ First, let's create a schema for our Document Index:
 import numpy as np
 from docarray import BaseDoc, DocList
 from docarray.typing import NdArray
-from docarray.index import QdrantDocumentIndex
+from docarray.index import RedisDocumentIndex
 class MyDoc(BaseDoc):
     text: str
     embedding: NdArray[128]
@@ -445,9 +416,9 @@ class MyDoc(BaseDoc):
 Now, we can instantiate our Index and add some data:
 ```python
 docs = DocList[MyDoc](
-    [MyDoc(embedding=np.random.rand(10), text=f'I am the first version of Document {i}') for i in range(100)]
+    [MyDoc(embedding=np.random.rand(128), text=f'I am the first version of Document {i}') for i in range(100)]
 )
-index = QdrantDocumentIndex[MyDoc]()
+index = RedisDocumentIndex[MyDoc]()
 index.index(docs)
 assert index.num_docs() == 100
 ```
@@ -480,23 +451,51 @@ for doc in res.documents:
 
 ## Configuration
 
-!!! tip "See all configuration options" To see all configuration options for the [QdrantDocumentIndex][docarray.index.backends.qdrant.QdrantDocumentIndex], you can do the following:
+This section lays out the configurations and options that are specific to [RedisDocumentIndex][docarray.index.backends.redis.RedisDocumentIndex].
+
+### DBConfig
+
+The following configs can be set in `DBConfig`:
+
+| Name                    | Description                                        | Default                                                                             |
+|-------------------------|----------------------------------------------------|-------------------------------------------------------------------------------------|
+| `host`                  | The host address for the Redis server.             | `localhost`                                                                         |
+| `port`                  | The port number for the Redis server               | 6379                                                                                |
+| `index_name`            | The name of the index in the Redis database        | `None`. Data will be stored in an index named after the Document type used as schema. |
+| `username`              | The username for the Redis server                  | `None`                                                                                |
+| `password`              | The password for the Redis server                  | `None`                                                                                |
+| `text_scorer`           | The method for [scoring text](https://redis.io/docs/interact/search-and-query/advanced-concepts/scoring/) during text search | `BM25`                                                                              |
+| `default_column_config` | The default configurations for every column type.  | dict                                                                                |
+
+You can pass any of the above as keyword arguments to the `__init__()` method or pass an entire configuration object.
+
+
+### Field-wise configuration
+
+
+`default_column_config` is the default configurations for every column type. Since there are many column types in Redis, you can also consider changing the column config when defining the schema.
 
 ```python
-from docarray.index import QdrantDocumentIndex
+class SimpleDoc(BaseDoc):
+    tensor: NdArray[128] = Field(algorithm='FLAT', distance='COSINE')
 
-# the following can be passed to the __init__() method
-db_config = QdrantDocumentIndex.DBConfig()
-print(db_config)  # shows default values
 
-# the following can be passed to the configure() method
-runtime_config = QdrantDocumentIndex.RuntimeConfig()
-print(runtime_config)  # shows default values
+doc_index = RedisDocumentIndex[SimpleDoc]()
 ```
 
-Note that the collection_name from the DBConfig is an Optional[str] with `None` as default value. This is because
-the QdrantDocumentIndex will take the name the Document type that you use as schema. For example, for QdrantDocumentIndex[MyDoc](...) 
-the data will be stored in a collection name MyDoc if no specific collection_name is passed in the DBConfig.
+
+### RuntimeConfig
+
+The `RuntimeConfig` dataclass of `RedisDocumentIndex` consists of `batch_size` index/get/del operations. 
+You can change `batch_size` in the following way:
+
+```python
+doc_index = RedisDocumentIndex[SimpleDoc]()
+doc_index.configure(RedisDocumentIndex.RuntimeConfig(batch_size=128))
+```
+
+You can pass the above as keyword arguments to the `configure()` method or pass an entire configuration object.
+
 
 
 ## Nested data and subindex search

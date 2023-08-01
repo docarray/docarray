@@ -393,7 +393,6 @@ query = dl[0]
 results, scores = index.find(query, limit=10, search_field='embedding')
 ```
 
-
 ---
 
 ## Learn DocArray
