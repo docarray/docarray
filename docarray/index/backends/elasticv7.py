@@ -1,13 +1,13 @@
 import warnings
 from dataclasses import dataclass
-from typing import Any, Dict, List, Optional, Sequence, TypeVar, Union
+from typing import Any, Dict, List, Optional, Sequence, TypeVar, Union, Tuple
 
 import numpy as np
 from pydantic import parse_obj_as
 
 from docarray import BaseDoc
 from docarray.index import ElasticDocIndex
-from docarray.index.abstract import BaseDocIndex, _ColumnInfo
+from docarray.index.abstract import BaseDocIndex
 from docarray.typing import AnyTensor
 from docarray.typing.tensor.ndarray import NdArray
 from docarray.utils.find import _FindResult
@@ -17,6 +17,9 @@ T = TypeVar('T', bound='ElasticV7DocIndex')
 
 
 class ElasticV7DocIndex(ElasticDocIndex):
+    _index_vector_params: Optional[Tuple[str]] = ('dims',)
+    _index_vector_options: Optional[Tuple[str]] = None
+
     def __init__(self, db_config=None, **kwargs):
         """Initialize ElasticV7DocIndex"""
         from elasticsearch import __version__ as __es__version__
