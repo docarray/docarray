@@ -14,7 +14,7 @@ focusing on special features and configurations of Redis.
 ## Basic usage
 This snippet demonstrates the basic usage of [RedisDocumentIndex][docarray.index.backends.redis.RedisDocumentIndex]. It defines a document schema with a title and an embedding, 
 creates ten dummy documents with random embeddings, initializes an instance of [RedisDocumentIndex][docarray.index.backends.redis.RedisDocumentIndex] to index these documents, 
-and performs a vector similarity search to retrieve ten most similar documents to a given query vector.
+and performs a vector similarity search to retrieve the ten most similar documents to a given query vector.
 
 ```python
 from docarray import BaseDoc, DocList

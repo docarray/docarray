@@ -37,7 +37,7 @@ but will also work for [ElasticV7DocIndex][docarray.index.backends.elasticv7.Ela
 ## Basic usage
 This snippet demonstrates the basic usage of [ElasticDocIndex][docarray.index.backends.elastic.ElasticDocIndex]. It defines a document schema with a title and an embedding, 
 creates ten dummy documents with random embeddings, initializes an instance of [ElasticDocIndex][docarray.index.backends.elastic.ElasticDocIndex] to index these documents, 
-and performs a vector similarity search to retrieve ten most similar documents to a given query vector.
+and performs a vector similarity search to retrieve the ten most similar documents to a given query vector.
 
 ```python
 from docarray import BaseDoc, DocList

@@ -14,7 +14,7 @@ focusing on special features and configurations of Weaviate.
 ## Basic usage
 This snippet demonstrates the basic usage of [WeaviateDocumentIndex][docarray.index.backends.weaviate.WeaviateDocumentIndex]. It defines a document schema with a title and an embedding, 
 creates ten dummy documents with random embeddings, initializes an instance of [WeaviateDocumentIndex][docarray.index.backends.weaviate.WeaviateDocumentIndex] to index these documents, 
-and performs a vector similarity search to retrieve ten most similar documents to a given query vector.
+and performs a vector similarity search to retrieve the ten most similar documents to a given query vector.
 
 !!! note "Single Search Field Requirement"
     In order to utilize vector search, it's necessary to define 'is_embedding' for one field only. 

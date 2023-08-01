@@ -87,7 +87,7 @@ doc_index.index(docs)
 
 ### Perform a vector similarity search
 Now, let's perform a similarity search on the document embeddings. 
-As a result, we'll retrieve ten most similar documents and their corresponding similarity scores.
+As a result, we'll retrieve the ten most similar documents and their corresponding similarity scores.
 ```python
 query = np.ones(128)
 retrieved_docs, scores = doc_index.find(query, search_field='embedding', limit=10)

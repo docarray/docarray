@@ -4,7 +4,7 @@
 [InMemoryExactNNIndex][docarray.index.backends.in_memory.InMemoryExactNNIndex] stores all documents in memory using DocLists. 
 It is a great starting point for small datasets, where you may not want to launch a database server.
 
-For vector search and filtering the [InMemoryExactNNIndex][docarray.index.backends.in_memory.InMemoryExactNNIndex] 
+For vector search and filtering [InMemoryExactNNIndex][docarray.index.backends.in_memory.InMemoryExactNNIndex] 
 utilizes DocArray's [`find()`][docarray.utils.find.find] and [`filter_docs()`][docarray.utils.filter.filter_docs] functions.
 
 !!! note "Production readiness"
@@ -23,7 +23,7 @@ utilizes DocArray's [`find()`][docarray.utils.find.find] and [`filter_docs()`][d
 ## Basic usage
 This snippet demonstrates the basic usage of [InMemoryExactNNIndex][docarray.index.backends.in_memory.InMemoryExactNNIndex]. It defines a document schema with a title and an embedding, 
 creates ten dummy documents with random embeddings, initializes an instance of [InMemoryExactNNIndex][docarray.index.backends.in_memory.InMemoryExactNNIndex] to index these documents, 
-and performs a vector similarity search to retrieve ten most similar documents to a given query vector.
+and performs a vector similarity search to retrieve the ten most similar documents to a given query vector.
 
 ```python
 from docarray import BaseDoc, DocList

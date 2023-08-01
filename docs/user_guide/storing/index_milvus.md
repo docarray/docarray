@@ -14,7 +14,7 @@ focusing on special features and configurations of Milvus.
 ## Basic usage
 This snippet demonstrates the basic usage of [MilvusDocumentIndex][docarray.index.backends.milvus.MilvusDocumentIndex]. It defines a document schema with a title and an embedding, 
 creates ten dummy documents with random embeddings, initializes an instance of [MilvusDocumentIndex][docarray.index.backends.milvus.MilvusDocumentIndex] to index these documents, 
-and performs a vector similarity search to retrieve ten most similar documents to a given query vector.
+and performs a vector similarity search to retrieve the ten most similar documents to a given query vector.
 
 !!! note "Single Search Field Requirement"
     In order to utilize vector search, it's necessary to define 'is_embedding' for one field only. 

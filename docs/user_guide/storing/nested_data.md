@@ -153,7 +153,8 @@ doc_index.index(index_docs)
 
 ### Search
 
-You can perform search on any level by using `find_subindex()` method and the dunder operator `'root__subindex'` to specify the index to search on.
+You can perform search on any level by using [`find_subindex()`][docarray.index.abstract.BaseDocIndex.find_subindex] method 
+and the dunder operator `'root__subindex'` to specify the index to search on:
 
 ```python
 # find by the `VideoDoc` tensor

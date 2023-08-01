@@ -14,7 +14,7 @@ based on the [Qdrant](https://qdrant.tech/) vector search engine.
 ## Basic usage
 This snippet demonstrates the basic usage of [QdrantDocumentIndex][docarray.index.backends.qdrant.QdrantDocumentIndex]. It defines a document schema with a title and an embedding, 
 creates ten dummy documents with random embeddings, initializes an instance of [QdrantDocumentIndex][docarray.index.backends.qdrant.QdrantDocumentIndex] to index these documents, 
-and performs a vector similarity search to retrieve ten most similar documents to a given query vector.
+and performs a vector similarity search to retrieve the ten most similar documents to a given query vector.
 
 ```python
 from docarray import BaseDoc, DocList
