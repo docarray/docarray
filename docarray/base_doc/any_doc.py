@@ -1,5 +1,7 @@
 from typing import Type
 
+from docarray.utils._internal.pydantic import is_pydantic_v2
+
 from .doc import BaseDoc
 
 
@@ -32,3 +34,10 @@ class AnyDoc(BaseDoc):
         from docarray import DocList
 
         return DocList
+
+    if is_pydantic_v2:
+
+        def dict(self, *args, **kwargs):
+            raise NotImplementedError(
+                "dict() method is not implemented for pydantic v2. Now pydantic require the schema to dump the dict but AnyDoc is schemaless"
+            )

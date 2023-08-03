@@ -314,7 +314,7 @@ def test_any_doc_proto():
     doc = AnyDoc(hello='world')
     pt = doc.to_protobuf()
     doc2 = AnyDoc.from_protobuf(pt)
-    assert doc2.dict()['hello'] == 'world'
+    assert doc2.hello == 'world'
 
 
 @pytest.mark.proto
