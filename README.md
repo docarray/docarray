@@ -42,6 +42,7 @@ New to DocArray? Depending on your use case and background, there are multiple w
 - [Coming from pure PyTorch or TensorFlow](#coming-from-pytorch)
 - [Coming from Pydantic](#coming-from-pydantic)
 - [Coming from FastAPI](#coming-from-fastapi)
+- [Coming from Jina](#coming-from-jina)
 - [Coming from a vector database](#coming-from-a-vector-database)
 - [Coming from Langchain](#coming-from-langchain)
 
@@ -681,7 +682,7 @@ from fastapi import FastAPI
 from docarray.base_doc import DocArrayResponse
 from docarray import BaseDoc
 from docarray.documents import ImageDoc
-from docarray.typing import NdArray
+from docarray.typing import NdArray, ImageTensor
 
 
 class InputDoc(BaseDoc):
@@ -712,12 +713,77 @@ async def create_item(doc: InputDoc) -> OutputDoc:
     )
     return doc
 
+input_doc = InputDoc(text='', img=ImageDoc(tensor=np.random.random((3, 224, 224))))
 
 async with AsyncClient(app=app, base_url="http://test") as ac:
     response = await ac.post("/embed/", data=input_doc.json())
 ```
 
 Just like a vanilla Pydantic model!
+
+</details>
+
+### Coming from Jina
+
+<details markdown="1">
+  <summary>Click to expand</summary>
+
+Jina has adopted docarray as their library for representing and serializing Documents.
+
+Jina allows to serve models and services that are built with DocArray allowing you to serve and scale these applications
+making full use of DocArray's serialization capabilites. 
+
+```python
+import numpy as np
+from jina import Deployment, Executor, requests
+from docarray import BaseDoc, DocList
+from docarray.documents import ImageDoc
+from docarray.typing import NdArray, ImageTensor
+
+
+class InputDoc(BaseDoc):
+    img: ImageDoc
+    text: str
+
+
+class OutputDoc(BaseDoc):
+    embedding_clip: NdArray
+    embedding_bert: NdArray
+
+
+def model_img(img: ImageTensor) -> NdArray:
+    return np.zeros((100, 1))
+
+
+def model_text(text: str) -> NdArray:
+    return np.zeros((100, 1))
+
+
+class MyEmbeddingExecutor(Executor):
+    @requests(on='/embed')
+    def encode(self, docs: DocList[InputDoc], **kwargs) -> DocList[OutputDoc]:
+        ret = DocList[OutputDoc]()
+        for doc in docs:
+            output = OutputDoc(
+                embedding_clip=model_img(doc.img.tensor),
+                embedding_bert=model_text(doc.text),
+            )
+            ret.append(output)
+        return ret
+
+
+with Deployment(
+    protocols=['grpc', 'http'], ports=[12345, 12346], uses=MyEmbeddingExecutor
+) as dep:
+    resp = dep.post(
+        on='/embed',
+        inputs=DocList[InputDoc](
+            [InputDoc(text='', img=ImageDoc(tensor=np.random.random((3, 224, 224))))]
+        ),
+        return_type=DocList[OutputDoc],
+    )
+    print(resp)
+```
 
 </details>
 
@@ -774,12 +840,11 @@ Currently, DocArray supports the following vector databases:
 - [Qdrant](https://qdrant.tech/)
 - [Elasticsearch](https://www.elastic.co/elasticsearch/) v8 and v7
 - [Redis](https://redis.io/)
+- [Milvus](https://milvus.io)
 - ExactNNMemorySearch as a local alternative with exact kNN search.
 - [HNSWlib](https://github.com/nmslib/hnswlib) as a local-first ANN alternative
 
 An integration of [OpenSearch](https://opensearch.org/) is currently in progress.
-
-DocArray <=0.21 also support [Milvus](https://milvus.io/), but this is not yet supported in the current version.
 
 Of course this is only one of the things that DocArray can do, so we encourage you to check out the rest of this readme!
 
