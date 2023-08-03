@@ -113,7 +113,7 @@ def test_proto_with_chunks_doc_pytorch():
 @pytest.mark.proto
 def test_optional_field_in_doc():
     class CustomDoc(BaseDoc):
-        text: Optional[str]
+        text: Optional[str] = None
 
     CustomDoc.from_protobuf(CustomDoc().to_protobuf())
 
@@ -124,7 +124,7 @@ def test_optional_field_nested_in_doc():
         title: str
 
     class CustomDoc(BaseDoc):
-        text: Optional[InnerDoc]
+        text: Optional[InnerDoc] = None
 
     CustomDoc.from_protobuf(CustomDoc().to_protobuf())
 
