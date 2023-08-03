@@ -730,10 +730,8 @@ Just like a vanilla Pydantic model!
 
 Jina has adopted docarray as their library for representing and serializing Documents.
 
-Jina allows to serve models and services that are built with `docarray` allowing you to serve and scale these applications
-making full use of `docarray`'s serialization capabilites. 
- 
-how easily documents slot into your FastAPI app:
+Jina allows to serve models and services that are built with DocArray allowing you to serve and scale these applications
+making full use of DocArray's serialization capabilites. 
 
 ```python
 import numpy as np
@@ -786,8 +784,6 @@ with Deployment(
     )
     print(resp)
 ```
-
-Just like a vanilla Pydantic model!
 
 </details>
 
