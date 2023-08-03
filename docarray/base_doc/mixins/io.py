@@ -333,8 +333,13 @@ class IOMixin(Iterable[Tuple[str, Any]]):
                 if field_name and field_name in cls._docarray_fields:
 
                     if is_pydantic_v2:
-                        dict_annotation = cls._docarray_fields[field_name].annotation
-                        field_type = get_args(dict_annotation)[1]
+                        dict_args = get_args(
+                            cls._docarray_fields[field_name].annotation
+                        )
+                        if len(dict_args) < 2:
+                            field_type = Any
+                        else:
+                            field_type = dict_args[1]
                     else:
                         field_type = cls._docarray_fields[field_name].type_
 
