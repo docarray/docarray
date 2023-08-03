@@ -564,6 +564,12 @@
         
           
         
+          
+        
+          
+        
+          
+        
       
       
         <label class="md-nav__link" for="__nav_2_4_2" id="__nav_2_4_2_label" tabindex="0">
@@ -618,23 +624,44 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#create-a-document-index" class="md-nav__link">
-    Create a Document Index
+  <a href="#basic-usage" class="md-nav__link">
+    Basic usage
   </a>
   
-    <nav class="md-nav" aria-label="Create a Document Index">
+    <nav class="md-nav" aria-label="Basic usage">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#schema-definition" class="md-nav__link">
-    Schema definition
+  <a href="#define-document-schema-and-create-data" class="md-nav__link">
+    Define document schema and create data
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#using-a-predefined-document-as-schema" class="md-nav__link">
-    Using a predefined Document as schema
+  <a href="#initialize-the-document-index-and-add-data" class="md-nav__link">
+    Initialize the Document Index and add data
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#perform-a-vector-similarity-search" class="md-nav__link">
+    Perform a vector similarity search
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#filter-documents" class="md-nav__link">
+    Filter documents
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#combine-different-search-methods" class="md-nav__link">
+    Combine different search methods
   </a>
   
 </li>
@@ -645,111 +672,9 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#index-data" class="md-nav__link">
-    Index data
+  <a href="#learn-more" class="md-nav__link">
+    Learn more
   </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#vector-similarity-search" class="md-nav__link">
-    Vector similarity search
-  </a>
-  
-    <nav class="md-nav" aria-label="Vector similarity search">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#batched-search" class="md-nav__link">
-    Batched search
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#filter-search-and-text-search" class="md-nav__link">
-    Filter search and text search
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#hybrid-search-through-the-query-builder" class="md-nav__link">
-    Hybrid search through the query builder
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#access-documents-by-id" class="md-nav__link">
-    Access documents by id
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#delete-documents" class="md-nav__link">
-    Delete Documents
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#customize-configurations" class="md-nav__link">
-    Customize configurations
-  </a>
-  
-    <nav class="md-nav" aria-label="Customize configurations">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#database-configurations" class="md-nav__link">
-    Database configurations
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#runtime-configurations" class="md-nav__link">
-    Runtime configurations
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#column-configurations" class="md-nav__link">
-    Column configurations
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#nested-data" class="md-nav__link">
-    Nested data
-  </a>
-  
-    <nav class="md-nav" aria-label="Nested data">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#nested-data-with-subindex" class="md-nav__link">
-    Nested data with subindex
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
@@ -826,6 +751,48 @@
     <li class="md-nav__item">
       <a href="../index_qdrant/" class="md-nav__link">
         Qdrant Document Index
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../index_redis/" class="md-nav__link">
+        Redis Document Index
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../index_milvus/" class="md-nav__link">
+        Milvus Document Index
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../nested_data/" class="md-nav__link">
+        Nested Data
       </a>
     </li>
   
@@ -1526,6 +1493,10 @@
         
           
         
+          
+        
+          
+        
       
       
         <label class="md-nav__link" for="__nav_6_4_2" id="__nav_6_4_2_label" tabindex="0">
@@ -1602,8 +1573,36 @@
   
   
     <li class="md-nav__item">
+      <a href="../../../API_reference/doc_index/backends/milvus/" class="md-nav__link">
+        MilvusDocumentIndex
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../../API_reference/doc_index/backends/qdrant/" class="md-nav__link">
         QdrantDocumentIndex
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../API_reference/doc_index/backends/redis/" class="md-nav__link">
+        RedisDocumentIndex
       </a>
     </li>
   
@@ -2155,23 +2154,44 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#create-a-document-index" class="md-nav__link">
-    Create a Document Index
+  <a href="#basic-usage" class="md-nav__link">
+    Basic usage
   </a>
   
-    <nav class="md-nav" aria-label="Create a Document Index">
+    <nav class="md-nav" aria-label="Basic usage">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#schema-definition" class="md-nav__link">
-    Schema definition
+  <a href="#define-document-schema-and-create-data" class="md-nav__link">
+    Define document schema and create data
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#using-a-predefined-document-as-schema" class="md-nav__link">
-    Using a predefined Document as schema
+  <a href="#initialize-the-document-index-and-add-data" class="md-nav__link">
+    Initialize the Document Index and add data
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#perform-a-vector-similarity-search" class="md-nav__link">
+    Perform a vector similarity search
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#filter-documents" class="md-nav__link">
+    Filter documents
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#combine-different-search-methods" class="md-nav__link">
+    Combine different search methods
   </a>
   
 </li>
@@ -2182,111 +2202,9 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#index-data" class="md-nav__link">
-    Index data
+  <a href="#learn-more" class="md-nav__link">
+    Learn more
   </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#vector-similarity-search" class="md-nav__link">
-    Vector similarity search
-  </a>
-  
-    <nav class="md-nav" aria-label="Vector similarity search">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#batched-search" class="md-nav__link">
-    Batched search
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#filter-search-and-text-search" class="md-nav__link">
-    Filter search and text search
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#hybrid-search-through-the-query-builder" class="md-nav__link">
-    Hybrid search through the query builder
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#access-documents-by-id" class="md-nav__link">
-    Access documents by id
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#delete-documents" class="md-nav__link">
-    Delete Documents
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#customize-configurations" class="md-nav__link">
-    Customize configurations
-  </a>
-  
-    <nav class="md-nav" aria-label="Customize configurations">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#database-configurations" class="md-nav__link">
-    Database configurations
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#runtime-configurations" class="md-nav__link">
-    Runtime configurations
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#column-configurations" class="md-nav__link">
-    Column configurations
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#nested-data" class="md-nav__link">
-    Nested data
-  </a>
-  
-    <nav class="md-nav" aria-label="Nested data">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#nested-data-with-subindex" class="md-nav__link">
-    Nested data with subindex
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
@@ -2306,7 +2224,7 @@
 
 
 <div><h1 id="introduction">Introduction</h1>
-<p>A Document Index lets you store your Documents and search through them using vector similarity.</p>
+<p>A Document Index lets you store your documents and search through them using vector similarity.</p>
 <p>This is useful if you want to store a bunch of data, and at a later point retrieve documents that are similar to
 some query that you provide.
 Relevant concrete examples are neural search applications, augmenting LLMs and chatbots with domain knowledge (<a href="https://arxiv.org/abs/2005.11401">Retrieval-Augmented Generation</a>),
@@ -2336,609 +2254,82 @@ In fact, you can think of Document Index as an <strong><a href="https://sqlmodel
 <li><a href="https://weaviate.io/">Weaviate</a>  |  <a href="../index_weaviate/">Docs</a></li>
 <li><a href="https://qdrant.tech/">Qdrant</a>  |  <a href="../index_qdrant/">Docs</a></li>
 <li><a href="https://www.elastic.co/elasticsearch/">Elasticsearch</a> v7 and v8  |  <a href="../index_elastic/">Docs</a></li>
+<li><a href="https://redis.com/">Redis</a>  |  <a href="../index_redis/">Docs</a></li>
+<li><a href="https://milvus.io/">Milvus</a>  |  <a href="../index_milvus/">Docs</a></li>
 <li><a href="https://github.com/nmslib/hnswlib">HNSWlib</a>  |  <a href="../index_hnswlib/">Docs</a></li>
+<li>InMemoryExactNNIndex  |  <a href="../index_in_memory/">Docs</a></li>
 </ul>
-<p>For this user guide you will use the <a class="autorefs autorefs-internal" href="../../../API_reference/doc_index/backends/hnswlib/#docarray.index.backends.hnswlib.HnswDocumentIndex">HnswDocumentIndex</a>
-because it doesn't require you to launch a database server. Instead, it will store your data locally.</p>
+<h2 id="basic-usage">Basic usage</h2>
+<p>Let's learn the basic capabilities of Document Index with <a class="autorefs autorefs-internal" href="../../../API_reference/doc_index/backends/in_memory/#docarray.index.backends.in_memory.InMemoryExactNNIndex">InMemoryExactNNIndex</a>. 
+This doesn't require a database server - rather, it saves your data locally.</p>
 <div class="admonition note">
 <p class="admonition-title">Using a different vector database</p>
-<p>You can easily use Weaviate, Qdrant, or Elasticsearch instead -- they share the same API!
+<p>You can easily use Weaviate, Qdrant, Redis, Milvus or Elasticsearch instead -- their APIs are largely identical!
 To do so, check their respective documentation sections.</p>
 </div>
 <div class="admonition note">
-<p class="admonition-title">Hnswlib-specific settings</p>
-<p>The following sections explain the general concept of Document Index by using
-<a class="autorefs autorefs-internal" href="../../../API_reference/doc_index/backends/hnswlib/#docarray.index.backends.hnswlib.HnswDocumentIndex">HnswDocumentIndex</a> as an example.
-For HNSWLib-specific settings, check out the <a class="autorefs autorefs-internal" href="../../../API_reference/doc_index/backends/hnswlib/#docarray.index.backends.hnswlib.HnswDocumentIndex">HnswDocumentIndex</a> documentation
-<a href="../index_hnswlib/">here</a>.</p>
+<p class="admonition-title">InMemoryExactNNIndex in more detail</p>
+<p>The following section only covers the basics of InMemoryExactNNIndex. 
+For a deeper understanding, please look into its <a href="../index_in_memory/">documentation</a>.</p>
 </div>
-<h2 id="create-a-document-index">Create a Document Index</h2>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>To use <a class="autorefs autorefs-internal" href="../../../API_reference/doc_index/backends/hnswlib/#docarray.index.backends.hnswlib.HnswDocumentIndex">HnswDocumentIndex</a>, you need to install extra dependencies with the following command:</p>
-<div class="language-console highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="go">pip install "docarray[hnswlib]"</span>
+<h3 id="define-document-schema-and-create-data">Define document schema and create data</h3>
+<p>The following code snippet defines a document schema using the <code>BaseDoc</code> class. Each document consists of a title (a string), 
+a price (an integer), and an embedding (a 128-dimensional array). It also creates a list of ten documents with dummy titles, 
+prices ranging from 0 to 9, and randomly generated embeddings.
+</p><div class="language-python highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">BaseDoc</span><span class="p">,</span> <span class="n">DocList</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="kn">from</span> <span class="nn">docarray.index</span> <span class="kn">import</span> <span class="n">InMemoryExactNNIndex</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="kn">from</span> <span class="nn">docarray.typing</span> <span class="kn">import</span> <span class="n">NdArray</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="k">class</span> <span class="nc">MyDoc</span><span class="p">(</span><span class="n">BaseDoc</span><span class="p">):</span>
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>    <span class="n">title</span><span class="p">:</span> <span class="nb">str</span>
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>    <span class="n">price</span><span class="p">:</span> <span class="nb">int</span>
+</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>    <span class="n">embedding</span><span class="p">:</span> <span class="n">NdArray</span><span class="p">[</span><span class="mi">128</span><span class="p">]</span>
+</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>
+</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="n">docs</span> <span class="o">=</span> <span class="n">DocList</span><span class="p">[</span><span class="n">MyDoc</span><span class="p">](</span>
+</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>    <span class="n">MyDoc</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="sa">f</span><span class="s2">"title #</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span> <span class="n">price</span><span class="o">=</span><span class="n">i</span><span class="p">,</span> <span class="n">embedding</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">128</span><span class="p">))</span>
+</span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+</span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a><span class="p">)</span>
 </span></code></pre></div>
-</div>
-<p>To create a Document Index, you first need a document that defines the schema of your index:</p>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">BaseDoc</span>
-</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="kn">from</span> <span class="nn">docarray.index</span> <span class="kn">import</span> <span class="n">HnswDocumentIndex</span>
-</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="kn">from</span> <span class="nn">docarray.typing</span> <span class="kn">import</span> <span class="n">NdArray</span>
-</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>
-</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>
-</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="k">class</span> <span class="nc">MyDoc</span><span class="p">(</span><span class="n">BaseDoc</span><span class="p">):</span>
-</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a>    <span class="n">embedding</span><span class="p">:</span> <span class="n">NdArray</span><span class="p">[</span><span class="mi">128</span><span class="p">]</span>
-</span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a>    <span class="n">text</span><span class="p">:</span> <span class="nb">str</span>
-</span><span id="__span-1-9"><a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a>
-</span><span id="__span-1-10"><a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a>
-</span><span id="__span-1-11"><a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a><span class="n">db</span> <span class="o">=</span> <span class="n">HnswDocumentIndex</span><span class="p">[</span><span class="n">MyDoc</span><span class="p">](</span><span class="n">work_dir</span><span class="o">=</span><span class="s1">'./my_test_db'</span><span class="p">)</span>
+<h3 id="initialize-the-document-index-and-add-data">Initialize the Document Index and add data</h3>
+<p>Here we initialize an <code>InMemoryExactNNIndex</code> instance with the document schema we defined previously, and add the created documents to this index.
+</p><div class="language-python highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="n">doc_index</span> <span class="o">=</span> <span class="n">InMemoryExactNNIndex</span><span class="p">[</span><span class="n">MyDoc</span><span class="p">]()</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="n">doc_index</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">docs</span><span class="p">)</span>
 </span></code></pre></div>
-<h3 id="schema-definition">Schema definition</h3>
-<p>In this code snippet, <code>HnswDocumentIndex</code> takes a schema of the form of <code>MyDoc</code>.
-The Document Index then <em>creates a column for each field in <code>MyDoc</code></em>.</p>
-<p>The column types in the backend database are determined by the type hints of the document's fields.
-Optionally, you can <a href="#customize-configurations">customize the database types for every field</a>.</p>
-<p>Most vector databases need to know the dimensionality of the vectors that will be stored.
-Here, that is automatically inferred from the type hint of the <code>embedding</code> field: <code>NdArray[128]</code> means that
-the database will store vectors with 128 dimensions.</p>
-<div class="admonition note">
-<p class="admonition-title">PyTorch and TensorFlow support</p>
-<p>Instead of using <code>NdArray</code> you can use <code>TorchTensor</code> or <code>TensorFlowTensor</code> and the Document Index will handle that
-for you. This is supported for all Document Index backends. No need to convert your tensors to NumPy arrays manually!</p>
-</div>
-<h3 id="using-a-predefined-document-as-schema">Using a predefined Document as schema</h3>
-<p>DocArray offers a number of predefined Documents, like <a class="autorefs autorefs-internal" href="../../../API_reference/documents/documents/#docarray.documents.ImageDoc">ImageDoc</a> and <a class="autorefs autorefs-internal" href="../../../API_reference/documents/documents/#docarray.documents.TextDoc">TextDoc</a>.
-If you try to use these directly as a schema for a Document Index, you will get unexpected behavior:
-Depending on the backend, an exception will be raised, or no vector index for ANN lookup will be built.</p>
-<p>The reason for this is that predefined Documents don't hold information about the dimensionality of their <code>.embedding</code>
-field. But this is crucial information for any vector database to work properly!</p>
-<p>You can work around this problem by subclassing the predefined Document and adding the dimensionality information:</p>
-<div class="tabbed-set tabbed-alternate" data-tabs="1:2"><input checked id="__tabbed_1_1" name="__tabbed_1" type="radio"><input id="__tabbed_1_2" name="__tabbed_1" type="radio"><div class="tabbed-labels"><label for="__tabbed_1_1">Using type hint</label><label for="__tabbed_1_2">Using Field()</label></div>
-<div class="tabbed-content">
-<div class="tabbed-block">
-<div class="language-python highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="kn">from</span> <span class="nn">docarray.documents</span> <span class="kn">import</span> <span class="n">TextDoc</span>
-</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="kn">from</span> <span class="nn">docarray.typing</span> <span class="kn">import</span> <span class="n">NdArray</span>
-</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="kn">from</span> <span class="nn">docarray.index</span> <span class="kn">import</span> <span class="n">HnswDocumentIndex</span>
-</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>
-</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>
-</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="k">class</span> <span class="nc">MyDoc</span><span class="p">(</span><span class="n">TextDoc</span><span class="p">):</span>
-</span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a>    <span class="n">embedding</span><span class="p">:</span> <span class="n">NdArray</span><span class="p">[</span><span class="mi">128</span><span class="p">]</span>
-</span><span id="__span-2-8"><a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a>
-</span><span id="__span-2-9"><a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a>
-</span><span id="__span-2-10"><a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a><span class="n">db</span> <span class="o">=</span> <span class="n">HnswDocumentIndex</span><span class="p">[</span><span class="n">MyDoc</span><span class="p">](</span><span class="n">work_dir</span><span class="o">=</span><span class="s1">'test_db'</span><span class="p">)</span>
+<h3 id="perform-a-vector-similarity-search">Perform a vector similarity search</h3>
+<p>Now, let's perform a similarity search on the document embeddings. 
+As a result, we'll retrieve the ten most similar documents and their corresponding similarity scores.
+</p><div class="language-python highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="n">query</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="mi">128</span><span class="p">)</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="n">retrieved_docs</span><span class="p">,</span> <span class="n">scores</span> <span class="o">=</span> <span class="n">doc_index</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="n">search_field</span><span class="o">=</span><span class="s1">'embedding'</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
 </span></code></pre></div>
-</div>
-<div class="tabbed-block">
-<div class="language-python highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="kn">from</span> <span class="nn">docarray.documents</span> <span class="kn">import</span> <span class="n">TextDoc</span>
-</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="kn">from</span> <span class="nn">docarray.typing</span> <span class="kn">import</span> <span class="n">AnyTensor</span>
-</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="kn">from</span> <span class="nn">docarray.index</span> <span class="kn">import</span> <span class="n">HnswDocumentIndex</span>
-</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="kn">from</span> <span class="nn">pydantic</span> <span class="kn">import</span> <span class="n">Field</span>
-</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>
-</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a>
-</span><span id="__span-3-7"><a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="k">class</span> <span class="nc">MyDoc</span><span class="p">(</span><span class="n">TextDoc</span><span class="p">):</span>
-</span><span id="__span-3-8"><a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a>    <span class="n">embedding</span><span class="p">:</span> <span class="n">AnyTensor</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="mi">128</span><span class="p">)</span>
-</span><span id="__span-3-9"><a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a>
-</span><span id="__span-3-10"><a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a>
-</span><span id="__span-3-11"><a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a><span class="n">db</span> <span class="o">=</span> <span class="n">HnswDocumentIndex</span><span class="p">[</span><span class="n">MyDoc</span><span class="p">](</span><span class="n">work_dir</span><span class="o">=</span><span class="s1">'test_db3'</span><span class="p">)</span>
+<h3 id="filter-documents">Filter documents</h3>
+<p>In this snippet, we filter the indexed documents based on their price field, specifically retrieving documents with a price less than 5:
+</p><div class="language-python highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="n">query</span> <span class="o">=</span> <span class="p">{</span><span class="s1">'price'</span><span class="p">:</span> <span class="p">{</span><span class="s1">'$lt'</span><span class="p">:</span> <span class="mi">5</span><span class="p">}}</span>
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="n">filtered_docs</span> <span class="o">=</span> <span class="n">doc_index</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
 </span></code></pre></div>
-</div>
-</div>
-</div>
-<p>Once the schema of your Document Index is defined in this way, the data that you are indexing can be either of the
-predefined Document type, or your custom Document type.</p>
-<p>The <a href="#index-data">next section</a> goes into more detail about data indexing, but note that if you have some <code>TextDoc</code>s, <code>ImageDoc</code>s etc. that you want to index, you <em>don't</em> need to cast them to <code>MyDoc</code>:</p>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">DocList</span>
-</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>
-</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="c1"># data of type TextDoc</span>
-</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="n">data</span> <span class="o">=</span> <span class="n">DocList</span><span class="p">[</span><span class="n">TextDoc</span><span class="p">](</span>
-</span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a>    <span class="p">[</span>
-</span><span id="__span-4-6"><a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a>        <span class="n">TextDoc</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s1">'hello world'</span><span class="p">,</span> <span class="n">embedding</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">128</span><span class="p">)),</span>
-</span><span id="__span-4-7"><a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a>        <span class="n">TextDoc</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s1">'hello world'</span><span class="p">,</span> <span class="n">embedding</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">128</span><span class="p">)),</span>
-</span><span id="__span-4-8"><a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a>        <span class="n">TextDoc</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s1">'hello world'</span><span class="p">,</span> <span class="n">embedding</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">128</span><span class="p">)),</span>
-</span><span id="__span-4-9"><a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a>    <span class="p">]</span>
-</span><span id="__span-4-10"><a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a><span class="p">)</span>
-</span><span id="__span-4-11"><a id="__codelineno-4-11" name="__codelineno-4-11" href="#__codelineno-4-11"></a>
-</span><span id="__span-4-12"><a id="__codelineno-4-12" name="__codelineno-4-12" href="#__codelineno-4-12"></a><span class="c1"># you can index this into Document Index of type MyDoc</span>
-</span><span id="__span-4-13"><a id="__codelineno-4-13" name="__codelineno-4-13" href="#__codelineno-4-13"></a><span class="n">db</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+<h3 id="combine-different-search-methods">Combine different search methods</h3>
+<p>The final snippet combines the vector similarity search and filtering operations into a single query. 
+We first perform a similarity search on the document embeddings and then apply a filter to return only those documents with a price greater than or equal to 2:
+</p><div class="language-python highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="n">query</span> <span class="o">=</span> <span class="p">(</span>
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>    <span class="n">doc_index</span><span class="o">.</span><span class="n">build_query</span><span class="p">()</span>  <span class="c1"># get empty query object</span>
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>    <span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">query</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="mi">128</span><span class="p">),</span> <span class="n">search_field</span><span class="o">=</span><span class="s1">'embedding'</span><span class="p">)</span>  <span class="c1"># add vector similarity search</span>
+</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>    <span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">filter_query</span><span class="o">=</span><span class="p">{</span><span class="s1">'price'</span><span class="p">:</span> <span class="p">{</span><span class="s1">'$gte'</span><span class="p">:</span> <span class="mi">2</span><span class="p">}})</span>  <span class="c1"># add filter search</span>
+</span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a>    <span class="o">.</span><span class="n">build</span><span class="p">()</span>  <span class="c1"># build the query</span>
+</span><span id="__span-4-6"><a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a><span class="p">)</span>
+</span><span id="__span-4-7"><a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a><span class="n">retrieved_docs</span><span class="p">,</span> <span class="n">scores</span> <span class="o">=</span> <span class="n">doc_index</span><span class="o">.</span><span class="n">execute_query</span><span class="p">(</span><span class="n">query</span><span class="p">)</span>
 </span></code></pre></div>
-<p><strong>Database location:</strong></p>
-<p>For <code>HnswDocumentIndex</code> you need to specify a <code>work_dir</code> where the data will be stored; for other backends you
-usually specify a <code>host</code> and a <code>port</code> instead.</p>
-<p>In addition to a host and a port, most backends can also take an <code>index_name</code>, <code>table_name</code>, <code>collection_name</code> or similar.
-This specifies the name of the index/table/collection that will be created in the database.
-You don't have to specify this though: By default, this name will be taken from the name of the Document type that you use as schema.
-For example, for <code>WeaviateDocumentIndex[MyDoc](...)</code> the data will be stored in a Weaviate Class of name <code>MyDoc</code>.</p>
-<p>In any case, if the location does not yet contain any data, we start from a blank slate.
-If the location already contains data from a previous session, it will be accessible through the Document Index.</p>
-<h2 id="index-data">Index data</h2>
-<p>Now that you have a Document Index, you can add data to it, using the <a class="autorefs autorefs-internal" href="../../../API_reference/doc_index/doc_index/#docarray.index.abstract.BaseDocIndex.index">index()</a> method:</p>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">DocList</span>
-</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>
-</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="c1"># create some random data</span>
-</span><span id="__span-5-5"><a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="n">docs</span> <span class="o">=</span> <span class="n">DocList</span><span class="p">[</span><span class="n">MyDoc</span><span class="p">](</span>
-</span><span id="__span-5-6"><a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a>    <span class="p">[</span><span class="n">MyDoc</span><span class="p">(</span><span class="n">embedding</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">128</span><span class="p">),</span> <span class="n">text</span><span class="o">=</span><span class="sa">f</span><span class="s1">'text </span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s1">'</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">100</span><span class="p">)]</span>
-</span><span id="__span-5-7"><a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a><span class="p">)</span>
-</span><span id="__span-5-8"><a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a>
-</span><span id="__span-5-9"><a id="__codelineno-5-9" name="__codelineno-5-9" href="#__codelineno-5-9"></a><span class="c1"># index the data</span>
-</span><span id="__span-5-10"><a id="__codelineno-5-10" name="__codelineno-5-10" href="#__codelineno-5-10"></a><span class="n">db</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">docs</span><span class="p">)</span>
-</span></code></pre></div>
-<p>That call to <a class="autorefs autorefs-internal" href="../../../API_reference/doc_index/backends/hnswlib/#docarray.index.backends.hnswlib.HnswDocumentIndex.index">index()</a> stores all Documents in <code>docs</code> into the Document Index,
-ready to be retrieved in the next step.</p>
-<p>As you can see, <code>DocList[MyDoc]</code> and <code>HnswDocumentIndex[MyDoc]</code> are both parameterized with <code>MyDoc</code>.
-This means that they share the same schema, and in general, the schema of a Document Index and the data that you want to store
-need to have compatible schemas.</p>
-<div class="admonition question">
-<p class="admonition-title">When are two schemas compatible?</p>
-<p>The schemas of your Document Index and data need to be compatible with each other.</p>
-<p>Let's say A is the schema of your Document Index and B is the schema of your data.
-There are a few rules that determine if schema A is compatible with schema B.
-If <em>any</em> of the following are true, then A and B are compatible:</p>
+<h2 id="learn-more">Learn more</h2>
+<p>The code snippets above just scratch the surface of what a Document Index can do. 
+To learn more and get the most out of <code>DocArray</code>, take a look at the detailed guides for the vector database backends you're interested in:</p>
 <ul>
-<li>A and B are the same class</li>
-<li>A and B have the same field names and field types</li>
-<li>A and B have the same field names, and, for every field, the type of B is a subclass of the type of A</li>
-</ul>
-<p>In particular, this means that you can easily <a href="#using-a-predefined-document-as-schema">index predefined Documents</a> into a Document Index.</p>
-</div>
-<h2 id="vector-similarity-search">Vector similarity search</h2>
-<p>Now that you have indexed your data, you can perform vector similarity search using the <a class="autorefs autorefs-internal" href="../../../API_reference/doc_index/doc_index/#docarray.index.abstract.BaseDocIndex.find">find()</a> method.</p>
-<p>By using a document of type <code>MyDoc</code>, <a class="autorefs autorefs-internal" href="../../../API_reference/doc_index/doc_index/#docarray.index.abstract.BaseDocIndex.find">find()</a>, you can find
-similar Documents in the Document Index:</p>
-<div class="tabbed-set tabbed-alternate" data-tabs="2:2"><input checked id="__tabbed_2_1" name="__tabbed_2" type="radio"><input id="__tabbed_2_2" name="__tabbed_2" type="radio"><div class="tabbed-labels"><label for="__tabbed_2_1">Search by Document</label><label for="__tabbed_2_2">Search by raw vector</label></div>
-<div class="tabbed-content">
-<div class="tabbed-block">
-<div class="language-python highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="c1"># create a query Document</span>
-</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="n">query</span> <span class="o">=</span> <span class="n">MyDoc</span><span class="p">(</span><span class="n">embedding</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">128</span><span class="p">),</span> <span class="n">text</span><span class="o">=</span><span class="s1">'query'</span><span class="p">)</span>
-</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>
-</span><span id="__span-6-4"><a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="c1"># find similar Documents</span>
-</span><span id="__span-6-5"><a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a><span class="n">matches</span><span class="p">,</span> <span class="n">scores</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="n">search_field</span><span class="o">=</span><span class="s1">'embedding'</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
-</span><span id="__span-6-6"><a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a>
-</span><span id="__span-6-7"><a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">'</span><span class="si">{</span><span class="n">matches</span><span class="si">=}</span><span class="s1">'</span><span class="p">)</span>
-</span><span id="__span-6-8"><a id="__codelineno-6-8" name="__codelineno-6-8" href="#__codelineno-6-8"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">'</span><span class="si">{</span><span class="n">matches</span><span class="o">.</span><span class="n">text</span><span class="si">=}</span><span class="s1">'</span><span class="p">)</span>
-</span><span id="__span-6-9"><a id="__codelineno-6-9" name="__codelineno-6-9" href="#__codelineno-6-9"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">'</span><span class="si">{</span><span class="n">scores</span><span class="si">=}</span><span class="s1">'</span><span class="p">)</span>
-</span></code></pre></div>
-</div>
-<div class="tabbed-block">
-<div class="language-python highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="c1"># create a query vector</span>
-</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="n">query</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">128</span><span class="p">)</span>
-</span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>
-</span><span id="__span-7-4"><a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a><span class="c1"># find similar Documents</span>
-</span><span id="__span-7-5"><a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a><span class="n">matches</span><span class="p">,</span> <span class="n">scores</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="n">search_field</span><span class="o">=</span><span class="s1">'embedding'</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
-</span><span id="__span-7-6"><a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a>
-</span><span id="__span-7-7"><a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">'</span><span class="si">{</span><span class="n">matches</span><span class="si">=}</span><span class="s1">'</span><span class="p">)</span>
-</span><span id="__span-7-8"><a id="__codelineno-7-8" name="__codelineno-7-8" href="#__codelineno-7-8"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">'</span><span class="si">{</span><span class="n">matches</span><span class="o">.</span><span class="n">text</span><span class="si">=}</span><span class="s1">'</span><span class="p">)</span>
-</span><span id="__span-7-9"><a id="__codelineno-7-9" name="__codelineno-7-9" href="#__codelineno-7-9"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">'</span><span class="si">{</span><span class="n">scores</span><span class="si">=}</span><span class="s1">'</span><span class="p">)</span>
-</span></code></pre></div>
-</div>
-</div>
-</div>
-<p>To succesfully peform a vector search, you need to specify a <code>search_field</code>. This is the field that serves as the
-basis of comparison between your query and the documents in the Document Index.</p>
-<p>In this particular example you only have one field (<code>embedding</code>) that is a vector, so you can trivially choose that one.
-In general, you could have multiple fields of type <code>NdArray</code> or <code>TorchTensor</code> or <code>TensorFlowTensor</code>, and you can choose
-which one to use for the search.</p>
-<p>The <a class="autorefs autorefs-internal" href="../../../API_reference/doc_index/doc_index/#docarray.index.abstract.BaseDocIndex.find">find()</a> method returns a named tuple containing the closest
-matching documents and their associated similarity scores.</p>
-<p>When searching on subindex level, you can use <a class="autorefs autorefs-internal" href="../../../API_reference/doc_index/doc_index/#docarray.index.abstract.BaseDocIndex.find_subindex">find_subindex()</a> method, which returns a named tuple containing the subindex documents, similarity scores and their associated root documents.</p>
-<p>How these scores are calculated depends on the backend, and can usually be <a href="#customize-configurations">configured</a>.</p>
-<h3 id="batched-search">Batched search</h3>
-<p>You can also search for multiple documents at once, in a batch, using the <a class="autorefs autorefs-internal" href="../../../API_reference/doc_index/doc_index/#docarray.index.abstract.BaseDocIndex.find_batched">find_batched()</a> method.</p>
-<div class="tabbed-set tabbed-alternate" data-tabs="3:2"><input checked id="__tabbed_3_1" name="__tabbed_3" type="radio"><input id="__tabbed_3_2" name="__tabbed_3" type="radio"><div class="tabbed-labels"><label for="__tabbed_3_1">Search by Documents</label><label for="__tabbed_3_2">Search by raw vectors</label></div>
-<div class="tabbed-content">
-<div class="tabbed-block">
-<div class="language-python highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="c1"># create some query Documents</span>
-</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="n">queries</span> <span class="o">=</span> <span class="n">DocList</span><span class="p">[</span><span class="n">MyDoc</span><span class="p">](</span>
-</span><span id="__span-8-3"><a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a>    <span class="n">MyDoc</span><span class="p">(</span><span class="n">embedding</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">128</span><span class="p">),</span> <span class="n">text</span><span class="o">=</span><span class="sa">f</span><span class="s1">'query </span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s1">'</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
-</span><span id="__span-8-4"><a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a><span class="p">)</span>
-</span><span id="__span-8-5"><a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a>
-</span><span id="__span-8-6"><a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a><span class="c1"># find similar Documents</span>
-</span><span id="__span-8-7"><a id="__codelineno-8-7" name="__codelineno-8-7" href="#__codelineno-8-7"></a><span class="n">matches</span><span class="p">,</span> <span class="n">scores</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">find_batched</span><span class="p">(</span><span class="n">queries</span><span class="p">,</span> <span class="n">search_field</span><span class="o">=</span><span class="s1">'embedding'</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
-</span><span id="__span-8-8"><a id="__codelineno-8-8" name="__codelineno-8-8" href="#__codelineno-8-8"></a>
-</span><span id="__span-8-9"><a id="__codelineno-8-9" name="__codelineno-8-9" href="#__codelineno-8-9"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">'</span><span class="si">{</span><span class="n">matches</span><span class="si">=}</span><span class="s1">'</span><span class="p">)</span>
-</span><span id="__span-8-10"><a id="__codelineno-8-10" name="__codelineno-8-10" href="#__codelineno-8-10"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">'</span><span class="si">{</span><span class="n">matches</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">text</span><span class="si">=}</span><span class="s1">'</span><span class="p">)</span>
-</span><span id="__span-8-11"><a id="__codelineno-8-11" name="__codelineno-8-11" href="#__codelineno-8-11"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">'</span><span class="si">{</span><span class="n">scores</span><span class="si">=}</span><span class="s1">'</span><span class="p">)</span>
-</span></code></pre></div>
-</div>
-<div class="tabbed-block">
-<div class="language-python highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="c1"># create some query vectors</span>
-</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a><span class="n">query</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">128</span><span class="p">)</span>
-</span><span id="__span-9-3"><a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a>
-</span><span id="__span-9-4"><a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a><span class="c1"># find similar Documents</span>
-</span><span id="__span-9-5"><a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a><span class="n">matches</span><span class="p">,</span> <span class="n">scores</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">find_batched</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="n">search_field</span><span class="o">=</span><span class="s1">'embedding'</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
-</span><span id="__span-9-6"><a id="__codelineno-9-6" name="__codelineno-9-6" href="#__codelineno-9-6"></a>
-</span><span id="__span-9-7"><a id="__codelineno-9-7" name="__codelineno-9-7" href="#__codelineno-9-7"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">'</span><span class="si">{</span><span class="n">matches</span><span class="si">=}</span><span class="s1">'</span><span class="p">)</span>
-</span><span id="__span-9-8"><a id="__codelineno-9-8" name="__codelineno-9-8" href="#__codelineno-9-8"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">'</span><span class="si">{</span><span class="n">matches</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">text</span><span class="si">=}</span><span class="s1">'</span><span class="p">)</span>
-</span><span id="__span-9-9"><a id="__codelineno-9-9" name="__codelineno-9-9" href="#__codelineno-9-9"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">'</span><span class="si">{</span><span class="n">scores</span><span class="si">=}</span><span class="s1">'</span><span class="p">)</span>
-</span></code></pre></div>
-</div>
-</div>
-</div>
-<p>The <a class="autorefs autorefs-internal" href="../../../API_reference/doc_index/doc_index/#docarray.index.abstract.BaseDocIndex.find_batched">find_batched()</a> method returns a named tuple containing
-a list of <code>DocList</code>s, one for each query, containing the closest matching documents and their similarity scores.</p>
-<h2 id="filter-search-and-text-search">Filter search and text search</h2>
-<p>In addition to vector similarity search, the Document Index interface offers methods for text search and filtered search:
-<a class="autorefs autorefs-internal" href="../../../API_reference/doc_index/doc_index/#docarray.index.abstract.BaseDocIndex.text_search">text_search()</a> and <a class="autorefs autorefs-internal" href="../../../API_reference/doc_index/doc_index/#docarray.index.abstract.BaseDocIndex.filter">filter()</a>,
-as well as their batched versions <a class="autorefs autorefs-internal" href="../../../API_reference/doc_index/doc_index/#docarray.index.abstract.BaseDocIndex.text_search_batched">text_search_batched()</a> and <a class="autorefs autorefs-internal" href="../../../API_reference/doc_index/doc_index/#docarray.index.abstract.BaseDocIndex.filter_batched">filter_batched()</a>. <a class="autorefs autorefs-internal" href="../../../API_reference/doc_index/doc_index/#docarray.index.abstract.BaseDocIndex.filter_subindex">filter_subindex()</a> is for filter on subindex level.</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>The <a class="autorefs autorefs-internal" href="../../../API_reference/doc_index/backends/hnswlib/#docarray.index.backends.hnswlib.HnswDocumentIndex">HnswDocumentIndex</a> implementation does not offer support for filter
-or text search.</p>
-<p>To see how to perform filter or text search, you can check out other backends that offer support.</p>
-</div>
-<h2 id="hybrid-search-through-the-query-builder">Hybrid search through the query builder</h2>
-<p>Document Index supports atomic operations for vector similarity search, text search and filter search.</p>
-<p>To combine these operations into a single, hybrid search query, you can use the query builder that is accessible
-through <a class="autorefs autorefs-internal" href="../../../API_reference/doc_index/doc_index/#docarray.index.abstract.BaseDocIndex.build_query">build_query()</a>:</p>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="c1"># prepare a query</span>
-</span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a><span class="n">q_doc</span> <span class="o">=</span> <span class="n">MyDoc</span><span class="p">(</span><span class="n">embedding</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">128</span><span class="p">),</span> <span class="n">text</span><span class="o">=</span><span class="s1">'query'</span><span class="p">)</span>
-</span><span id="__span-10-3"><a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a>
-</span><span id="__span-10-4"><a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a><span class="n">query</span> <span class="o">=</span> <span class="p">(</span>
-</span><span id="__span-10-5"><a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a>    <span class="n">db</span><span class="o">.</span><span class="n">build_query</span><span class="p">()</span>  <span class="c1"># get empty query object</span>
-</span><span id="__span-10-6"><a id="__codelineno-10-6" name="__codelineno-10-6" href="#__codelineno-10-6"></a>    <span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">query</span><span class="o">=</span><span class="n">q_doc</span><span class="p">,</span> <span class="n">search_field</span><span class="o">=</span><span class="s1">'embedding'</span><span class="p">)</span>  <span class="c1"># add vector similarity search</span>
-</span><span id="__span-10-7"><a id="__codelineno-10-7" name="__codelineno-10-7" href="#__codelineno-10-7"></a>    <span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">filter_query</span><span class="o">=</span><span class="p">{</span><span class="s1">'text'</span><span class="p">:</span> <span class="p">{</span><span class="s1">'$exists'</span><span class="p">:</span> <span class="kc">True</span><span class="p">}})</span>  <span class="c1"># add filter search</span>
-</span><span id="__span-10-8"><a id="__codelineno-10-8" name="__codelineno-10-8" href="#__codelineno-10-8"></a>    <span class="o">.</span><span class="n">build</span><span class="p">()</span>  <span class="c1"># build the query</span>
-</span><span id="__span-10-9"><a id="__codelineno-10-9" name="__codelineno-10-9" href="#__codelineno-10-9"></a><span class="p">)</span>
-</span><span id="__span-10-10"><a id="__codelineno-10-10" name="__codelineno-10-10" href="#__codelineno-10-10"></a>
-</span><span id="__span-10-11"><a id="__codelineno-10-11" name="__codelineno-10-11" href="#__codelineno-10-11"></a><span class="c1"># execute the combined query and return the results</span>
-</span><span id="__span-10-12"><a id="__codelineno-10-12" name="__codelineno-10-12" href="#__codelineno-10-12"></a><span class="n">results</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">execute_query</span><span class="p">(</span><span class="n">query</span><span class="p">)</span>
-</span><span id="__span-10-13"><a id="__codelineno-10-13" name="__codelineno-10-13" href="#__codelineno-10-13"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">'</span><span class="si">{</span><span class="n">results</span><span class="si">=}</span><span class="s1">'</span><span class="p">)</span>
-</span></code></pre></div>
-<p>In the example above you can see how to form a hybrid query that combines vector similarity search and filtered search
-to obtain a combined set of results.</p>
-<p>The kinds of atomic queries that can be combined in this way depends on the backend.
-Some backends can combine text search and vector search, while others can perform filters and vectors search, etc.
-To see what backend can do what, check out the <a href="#document-index">specific docs</a>.</p>
-<h2 id="access-documents-by-id">Access documents by <code>id</code></h2>
-<p>To retrieve a document from a Document Index, you don't necessarily need to perform a fancy search.</p>
-<p>You can also access data by the <code>id</code> that was assigned to each document:</p>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="c1"># prepare some data</span>
-</span><span id="__span-11-2"><a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a><span class="n">data</span> <span class="o">=</span> <span class="n">DocList</span><span class="p">[</span><span class="n">MyDoc</span><span class="p">](</span>
-</span><span id="__span-11-3"><a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a>    <span class="n">MyDoc</span><span class="p">(</span><span class="n">embedding</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">128</span><span class="p">),</span> <span class="n">text</span><span class="o">=</span><span class="sa">f</span><span class="s1">'query </span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s1">'</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
-</span><span id="__span-11-4"><a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a><span class="p">)</span>
-</span><span id="__span-11-5"><a id="__codelineno-11-5" name="__codelineno-11-5" href="#__codelineno-11-5"></a>
-</span><span id="__span-11-6"><a id="__codelineno-11-6" name="__codelineno-11-6" href="#__codelineno-11-6"></a><span class="c1"># remember the Document ids and index the data</span>
-</span><span id="__span-11-7"><a id="__codelineno-11-7" name="__codelineno-11-7" href="#__codelineno-11-7"></a><span class="n">ids</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">id</span>
-</span><span id="__span-11-8"><a id="__codelineno-11-8" name="__codelineno-11-8" href="#__codelineno-11-8"></a><span class="n">db</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
-</span><span id="__span-11-9"><a id="__codelineno-11-9" name="__codelineno-11-9" href="#__codelineno-11-9"></a>
-</span><span id="__span-11-10"><a id="__codelineno-11-10" name="__codelineno-11-10" href="#__codelineno-11-10"></a><span class="c1"># access the Documents by id</span>
-</span><span id="__span-11-11"><a id="__codelineno-11-11" name="__codelineno-11-11" href="#__codelineno-11-11"></a><span class="n">doc</span> <span class="o">=</span> <span class="n">db</span><span class="p">[</span><span class="n">ids</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>  <span class="c1"># get by single id</span>
-</span><span id="__span-11-12"><a id="__codelineno-11-12" name="__codelineno-11-12" href="#__codelineno-11-12"></a><span class="n">docs</span> <span class="o">=</span> <span class="n">db</span><span class="p">[</span><span class="n">ids</span><span class="p">]</span>  <span class="c1"># get by list of ids</span>
-</span></code></pre></div>
-<h2 id="delete-documents">Delete Documents</h2>
-<p>In the same way you can access Documents by id, you can also delete them:</p>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="c1"># prepare some data</span>
-</span><span id="__span-12-2"><a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a><span class="n">data</span> <span class="o">=</span> <span class="n">DocList</span><span class="p">[</span><span class="n">MyDoc</span><span class="p">](</span>
-</span><span id="__span-12-3"><a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a>    <span class="n">MyDoc</span><span class="p">(</span><span class="n">embedding</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">128</span><span class="p">),</span> <span class="n">text</span><span class="o">=</span><span class="sa">f</span><span class="s1">'query </span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s1">'</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
-</span><span id="__span-12-4"><a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a><span class="p">)</span>
-</span><span id="__span-12-5"><a id="__codelineno-12-5" name="__codelineno-12-5" href="#__codelineno-12-5"></a>
-</span><span id="__span-12-6"><a id="__codelineno-12-6" name="__codelineno-12-6" href="#__codelineno-12-6"></a><span class="c1"># remember the Document ids and index the data</span>
-</span><span id="__span-12-7"><a id="__codelineno-12-7" name="__codelineno-12-7" href="#__codelineno-12-7"></a><span class="n">ids</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">id</span>
-</span><span id="__span-12-8"><a id="__codelineno-12-8" name="__codelineno-12-8" href="#__codelineno-12-8"></a><span class="n">db</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
-</span><span id="__span-12-9"><a id="__codelineno-12-9" name="__codelineno-12-9" href="#__codelineno-12-9"></a>
-</span><span id="__span-12-10"><a id="__codelineno-12-10" name="__codelineno-12-10" href="#__codelineno-12-10"></a><span class="c1"># access the Documents by id</span>
-</span><span id="__span-12-11"><a id="__codelineno-12-11" name="__codelineno-12-11" href="#__codelineno-12-11"></a><span class="k">del</span> <span class="n">db</span><span class="p">[</span><span class="n">ids</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>  <span class="c1"># del by single id</span>
-</span><span id="__span-12-12"><a id="__codelineno-12-12" name="__codelineno-12-12" href="#__codelineno-12-12"></a><span class="k">del</span> <span class="n">db</span><span class="p">[</span><span class="n">ids</span><span class="p">[</span><span class="mi">1</span><span class="p">:]]</span>  <span class="c1"># del by list of ids</span>
-</span></code></pre></div>
-<h2 id="customize-configurations">Customize configurations</h2>
-<p>DocArray's philosophy is that each Document Index should "just work", meaning that it comes with a sane set of defaults
-that get you most of the way there.</p>
-<p>However, there are different configurations that you may want to tweak, including:</p>
-<ul>
-<li>The <a href="https://ignite.apache.org/docs/latest/machine-learning/binary-classification/ann">ANN</a> algorithm used, for example <a href="https://www.pinecone.io/learn/hnsw/">HNSW</a> or <a href="https://ai.googleblog.com/2020/07/announcing-scann-efficient-vector.html">ScaNN</a></li>
-<li>Hyperparameters of the ANN algorithm, such as <code>ef_construction</code> for HNSW</li>
-<li>The distance metric to use, such as cosine or L2 distance</li>
-<li>The data type of each column in the database</li>
-<li>And many more...</li>
-</ul>
-<p>The specific configurations that you can tweak depend on the backend, but the interface to do so is universal.</p>
-<p>Document Indexes differentiate between three different kind of configurations:</p>
-<h3 id="database-configurations">Database configurations</h3>
-<p><em>Database configurations</em> are configurations that pertain to the entire database or table (as opposed to just a specific column),
-and that you <em>don't</em> dynamically change at runtime.</p>
-<p>This commonly includes:</p>
-<ul>
-<li>host and port</li>
-<li>index or collection name</li>
-<li>authentication settings</li>
-<li>...</li>
-</ul>
-<p>For every backend, you can get a full list of configurations and their defaults:</p>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="kn">from</span> <span class="nn">docarray.index</span> <span class="kn">import</span> <span class="n">HnswDocumentIndex</span>
-</span><span id="__span-13-2"><a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a>
-</span><span id="__span-13-3"><a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a>
-</span><span id="__span-13-4"><a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a><span class="n">db_config</span> <span class="o">=</span> <span class="n">HnswDocumentIndex</span><span class="o">.</span><span class="n">DBConfig</span><span class="p">()</span>
-</span><span id="__span-13-5"><a id="__codelineno-13-5" name="__codelineno-13-5" href="#__codelineno-13-5"></a><span class="nb">print</span><span class="p">(</span><span class="n">db_config</span><span class="p">)</span>
-</span><span id="__span-13-6"><a id="__codelineno-13-6" name="__codelineno-13-6" href="#__codelineno-13-6"></a>
-</span><span id="__span-13-7"><a id="__codelineno-13-7" name="__codelineno-13-7" href="#__codelineno-13-7"></a><span class="c1"># &gt; HnswDocumentIndex.DBConfig(work_dir='.')</span>
-</span></code></pre></div>
-<p>As you can see, <code>HnswDocumentIndex.DBConfig</code> is a dataclass that contains only one possible configuration, <code>work_dir</code>,
-that defaults to <code>.</code>.</p>
-<p>You can customize every field in this configuration:</p>
-<div class="tabbed-set tabbed-alternate" data-tabs="4:2"><input checked id="__tabbed_4_1" name="__tabbed_4" type="radio"><input id="__tabbed_4_2" name="__tabbed_4" type="radio"><div class="tabbed-labels"><label for="__tabbed_4_1">Pass individual settings</label><label for="__tabbed_4_2">Pass entire configuration</label></div>
-<div class="tabbed-content">
-<div class="tabbed-block">
-<div class="language-python highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="n">db</span> <span class="o">=</span> <span class="n">HnswDocumentIndex</span><span class="p">[</span><span class="n">MyDoc</span><span class="p">](</span><span class="n">work_dir</span><span class="o">=</span><span class="s1">'/tmp/my_db'</span><span class="p">)</span>
-</span><span id="__span-14-2"><a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a>
-</span><span id="__span-14-3"><a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a><span class="n">custom_db_config</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">_db_config</span>
-</span><span id="__span-14-4"><a id="__codelineno-14-4" name="__codelineno-14-4" href="#__codelineno-14-4"></a><span class="nb">print</span><span class="p">(</span><span class="n">custom_db_config</span><span class="p">)</span>
-</span><span id="__span-14-5"><a id="__codelineno-14-5" name="__codelineno-14-5" href="#__codelineno-14-5"></a>
-</span><span id="__span-14-6"><a id="__codelineno-14-6" name="__codelineno-14-6" href="#__codelineno-14-6"></a><span class="c1"># &gt; HnswDocumentIndex.DBConfig(work_dir='/tmp/my_db')</span>
-</span></code></pre></div>
-</div>
-<div class="tabbed-block">
-<div class="language-python highlight"><pre><span></span><code><span id="__span-15-1"><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a><span class="n">custom_db_config</span> <span class="o">=</span> <span class="n">HnswDocumentIndex</span><span class="o">.</span><span class="n">DBConfig</span><span class="p">(</span><span class="n">work_dir</span><span class="o">=</span><span class="s1">'/tmp/my_db'</span><span class="p">)</span>
-</span><span id="__span-15-2"><a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a>
-</span><span id="__span-15-3"><a id="__codelineno-15-3" name="__codelineno-15-3" href="#__codelineno-15-3"></a><span class="n">db</span> <span class="o">=</span> <span class="n">HnswDocumentIndex</span><span class="p">[</span><span class="n">MyDoc</span><span class="p">](</span><span class="n">custom_db_config</span><span class="p">)</span>
-</span><span id="__span-15-4"><a id="__codelineno-15-4" name="__codelineno-15-4" href="#__codelineno-15-4"></a>
-</span><span id="__span-15-5"><a id="__codelineno-15-5" name="__codelineno-15-5" href="#__codelineno-15-5"></a><span class="nb">print</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">_db_config</span><span class="p">)</span>
-</span><span id="__span-15-6"><a id="__codelineno-15-6" name="__codelineno-15-6" href="#__codelineno-15-6"></a>
-</span><span id="__span-15-7"><a id="__codelineno-15-7" name="__codelineno-15-7" href="#__codelineno-15-7"></a><span class="c1"># &gt; HnswDocumentIndex.DBConfig(work_dir='/tmp/my_db')</span>
-</span></code></pre></div>
-</div>
-</div>
-</div>
-<h3 id="runtime-configurations">Runtime configurations</h3>
-<p><em>Runtime configurations</em> are configurations that relate to the way how an <code>instance</code> operates with respect to a specific 
-database. </p>
-<p>This commonly includes:
-- default batch size for batching operations
-- default consistency level for various database operations
-- ...</p>
-<p>For every backend, you can get the full list of configurations and their defaults:</p>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-16-1"><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a><span class="kn">from</span> <span class="nn">docarray.index</span> <span class="kn">import</span> <span class="n">ElasticDocIndex</span>
-</span><span id="__span-16-2"><a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a>
-</span><span id="__span-16-3"><a id="__codelineno-16-3" name="__codelineno-16-3" href="#__codelineno-16-3"></a>
-</span><span id="__span-16-4"><a id="__codelineno-16-4" name="__codelineno-16-4" href="#__codelineno-16-4"></a><span class="n">runtime_config</span> <span class="o">=</span> <span class="n">ElasticDocIndex</span><span class="o">.</span><span class="n">RuntimeConfig</span><span class="p">()</span>
-</span><span id="__span-16-5"><a id="__codelineno-16-5" name="__codelineno-16-5" href="#__codelineno-16-5"></a><span class="nb">print</span><span class="p">(</span><span class="n">runtime_config</span><span class="p">)</span>
-</span><span id="__span-16-6"><a id="__codelineno-16-6" name="__codelineno-16-6" href="#__codelineno-16-6"></a>
-</span><span id="__span-16-7"><a id="__codelineno-16-7" name="__codelineno-16-7" href="#__codelineno-16-7"></a><span class="c1"># &gt; ElasticDocIndex.RuntimeConfig(chunk_size=500)</span>
-</span></code></pre></div>
-<p>As you can see, <code>HnswDocumentIndex.RuntimeConfig</code> is a dataclass that contains only one configuration:
-<code>default_column_config</code>, which is a mapping from Python types to database column configurations.</p>
-<p>You can customize every field in this configuration using the <a class="autorefs autorefs-internal" href="../../../API_reference/doc_index/doc_index/#docarray.index.abstract.BaseDocIndex.configure">configure()</a> method:</p>
-<div class="tabbed-set tabbed-alternate" data-tabs="5:2"><input checked id="__tabbed_5_1" name="__tabbed_5" type="radio"><input id="__tabbed_5_2" name="__tabbed_5" type="radio"><div class="tabbed-labels"><label for="__tabbed_5_1">Pass individual settings</label><label for="__tabbed_5_2">Pass entire configuration</label></div>
-<div class="tabbed-content">
-<div class="tabbed-block">
-<div class="language-python highlight"><pre><span></span><code><span id="__span-17-1"><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a><span class="n">db</span> <span class="o">=</span> <span class="n">HnswDocumentIndex</span><span class="p">[</span><span class="n">MyDoc</span><span class="p">](</span><span class="n">work_dir</span><span class="o">=</span><span class="s1">'/tmp/my_db'</span><span class="p">)</span>
-</span><span id="__span-17-2"><a id="__codelineno-17-2" name="__codelineno-17-2" href="#__codelineno-17-2"></a>
-</span><span id="__span-17-3"><a id="__codelineno-17-3" name="__codelineno-17-3" href="#__codelineno-17-3"></a><span class="n">db</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span>
-</span><span id="__span-17-4"><a id="__codelineno-17-4" name="__codelineno-17-4" href="#__codelineno-17-4"></a>    <span class="n">default_column_config</span><span class="o">=</span><span class="p">{</span>
-</span><span id="__span-17-5"><a id="__codelineno-17-5" name="__codelineno-17-5" href="#__codelineno-17-5"></a>        <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span> <span class="p">{</span>
-</span><span id="__span-17-6"><a id="__codelineno-17-6" name="__codelineno-17-6" href="#__codelineno-17-6"></a>            <span class="s1">'dim'</span><span class="p">:</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
-</span><span id="__span-17-7"><a id="__codelineno-17-7" name="__codelineno-17-7" href="#__codelineno-17-7"></a>            <span class="s1">'index'</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
-</span><span id="__span-17-8"><a id="__codelineno-17-8" name="__codelineno-17-8" href="#__codelineno-17-8"></a>            <span class="s1">'space'</span><span class="p">:</span> <span class="s1">'ip'</span><span class="p">,</span>
-</span><span id="__span-17-9"><a id="__codelineno-17-9" name="__codelineno-17-9" href="#__codelineno-17-9"></a>            <span class="s1">'max_elements'</span><span class="p">:</span> <span class="mi">2048</span><span class="p">,</span>
-</span><span id="__span-17-10"><a id="__codelineno-17-10" name="__codelineno-17-10" href="#__codelineno-17-10"></a>            <span class="s1">'ef_construction'</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span>
-</span><span id="__span-17-11"><a id="__codelineno-17-11" name="__codelineno-17-11" href="#__codelineno-17-11"></a>            <span class="s1">'ef'</span><span class="p">:</span> <span class="mi">15</span><span class="p">,</span>
-</span><span id="__span-17-12"><a id="__codelineno-17-12" name="__codelineno-17-12" href="#__codelineno-17-12"></a>            <span class="s1">'M'</span><span class="p">:</span> <span class="mi">8</span><span class="p">,</span>
-</span><span id="__span-17-13"><a id="__codelineno-17-13" name="__codelineno-17-13" href="#__codelineno-17-13"></a>            <span class="s1">'allow_replace_deleted'</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
-</span><span id="__span-17-14"><a id="__codelineno-17-14" name="__codelineno-17-14" href="#__codelineno-17-14"></a>            <span class="s1">'num_threads'</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span>
-</span><span id="__span-17-15"><a id="__codelineno-17-15" name="__codelineno-17-15" href="#__codelineno-17-15"></a>        <span class="p">},</span>
-</span><span id="__span-17-16"><a id="__codelineno-17-16" name="__codelineno-17-16" href="#__codelineno-17-16"></a>        <span class="kc">None</span><span class="p">:</span> <span class="p">{},</span>
-</span><span id="__span-17-17"><a id="__codelineno-17-17" name="__codelineno-17-17" href="#__codelineno-17-17"></a>    <span class="p">}</span>
-</span><span id="__span-17-18"><a id="__codelineno-17-18" name="__codelineno-17-18" href="#__codelineno-17-18"></a><span class="p">)</span>
-</span><span id="__span-17-19"><a id="__codelineno-17-19" name="__codelineno-17-19" href="#__codelineno-17-19"></a>
-</span><span id="__span-17-20"><a id="__codelineno-17-20" name="__codelineno-17-20" href="#__codelineno-17-20"></a><span class="n">custom_runtime_config</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">_runtime_config</span>
-</span><span id="__span-17-21"><a id="__codelineno-17-21" name="__codelineno-17-21" href="#__codelineno-17-21"></a><span class="nb">print</span><span class="p">(</span><span class="n">custom_runtime_config</span><span class="p">)</span>
-</span><span id="__span-17-22"><a id="__codelineno-17-22" name="__codelineno-17-22" href="#__codelineno-17-22"></a>
-</span><span id="__span-17-23"><a id="__codelineno-17-23" name="__codelineno-17-23" href="#__codelineno-17-23"></a><span class="c1"># &gt; HnswDocumentIndex.RuntimeConfig(default_column_config={&lt;class 'numpy.ndarray'&gt;: {'dim': -1, 'index': True, 'space': 'ip', 'max_elements': 2048, 'ef_construction': 100, 'ef': 15, 'M': 8, 'allow_replace_deleted': True, 'num_threads': 5}, None: {}})</span>
-</span></code></pre></div>
-</div>
-<div class="tabbed-block">
-<div class="language-python highlight"><pre><span></span><code><span id="__span-18-1"><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a><span class="n">custom_runtime_config</span> <span class="o">=</span> <span class="n">HnswDocumentIndex</span><span class="o">.</span><span class="n">RuntimeConfig</span><span class="p">(</span>
-</span><span id="__span-18-2"><a id="__codelineno-18-2" name="__codelineno-18-2" href="#__codelineno-18-2"></a>    <span class="n">default_column_config</span><span class="o">=</span><span class="p">{</span>
-</span><span id="__span-18-3"><a id="__codelineno-18-3" name="__codelineno-18-3" href="#__codelineno-18-3"></a>        <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span> <span class="p">{</span>
-</span><span id="__span-18-4"><a id="__codelineno-18-4" name="__codelineno-18-4" href="#__codelineno-18-4"></a>            <span class="s1">'dim'</span><span class="p">:</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
-</span><span id="__span-18-5"><a id="__codelineno-18-5" name="__codelineno-18-5" href="#__codelineno-18-5"></a>            <span class="s1">'index'</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
-</span><span id="__span-18-6"><a id="__codelineno-18-6" name="__codelineno-18-6" href="#__codelineno-18-6"></a>            <span class="s1">'space'</span><span class="p">:</span> <span class="s1">'ip'</span><span class="p">,</span>
-</span><span id="__span-18-7"><a id="__codelineno-18-7" name="__codelineno-18-7" href="#__codelineno-18-7"></a>            <span class="s1">'max_elements'</span><span class="p">:</span> <span class="mi">2048</span><span class="p">,</span>
-</span><span id="__span-18-8"><a id="__codelineno-18-8" name="__codelineno-18-8" href="#__codelineno-18-8"></a>            <span class="s1">'ef_construction'</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span>
-</span><span id="__span-18-9"><a id="__codelineno-18-9" name="__codelineno-18-9" href="#__codelineno-18-9"></a>            <span class="s1">'ef'</span><span class="p">:</span> <span class="mi">15</span><span class="p">,</span>
-</span><span id="__span-18-10"><a id="__codelineno-18-10" name="__codelineno-18-10" href="#__codelineno-18-10"></a>            <span class="s1">'M'</span><span class="p">:</span> <span class="mi">8</span><span class="p">,</span>
-</span><span id="__span-18-11"><a id="__codelineno-18-11" name="__codelineno-18-11" href="#__codelineno-18-11"></a>            <span class="s1">'allow_replace_deleted'</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
-</span><span id="__span-18-12"><a id="__codelineno-18-12" name="__codelineno-18-12" href="#__codelineno-18-12"></a>            <span class="s1">'num_threads'</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span>
-</span><span id="__span-18-13"><a id="__codelineno-18-13" name="__codelineno-18-13" href="#__codelineno-18-13"></a>        <span class="p">},</span>
-</span><span id="__span-18-14"><a id="__codelineno-18-14" name="__codelineno-18-14" href="#__codelineno-18-14"></a>        <span class="kc">None</span><span class="p">:</span> <span class="p">{},</span>
-</span><span id="__span-18-15"><a id="__codelineno-18-15" name="__codelineno-18-15" href="#__codelineno-18-15"></a>    <span class="p">}</span>
-</span><span id="__span-18-16"><a id="__codelineno-18-16" name="__codelineno-18-16" href="#__codelineno-18-16"></a><span class="p">)</span>
-</span><span id="__span-18-17"><a id="__codelineno-18-17" name="__codelineno-18-17" href="#__codelineno-18-17"></a>
-</span><span id="__span-18-18"><a id="__codelineno-18-18" name="__codelineno-18-18" href="#__codelineno-18-18"></a><span class="n">db</span> <span class="o">=</span> <span class="n">HnswDocumentIndex</span><span class="p">[</span><span class="n">MyDoc</span><span class="p">](</span><span class="n">work_dir</span><span class="o">=</span><span class="s1">'/tmp/my_db'</span><span class="p">)</span>
-</span><span id="__span-18-19"><a id="__codelineno-18-19" name="__codelineno-18-19" href="#__codelineno-18-19"></a>
-</span><span id="__span-18-20"><a id="__codelineno-18-20" name="__codelineno-18-20" href="#__codelineno-18-20"></a><span class="n">db</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="n">custom_runtime_config</span><span class="p">)</span>
-</span><span id="__span-18-21"><a id="__codelineno-18-21" name="__codelineno-18-21" href="#__codelineno-18-21"></a>
-</span><span id="__span-18-22"><a id="__codelineno-18-22" name="__codelineno-18-22" href="#__codelineno-18-22"></a><span class="nb">print</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">_runtime_config</span><span class="p">)</span>
-</span><span id="__span-18-23"><a id="__codelineno-18-23" name="__codelineno-18-23" href="#__codelineno-18-23"></a>
-</span><span id="__span-18-24"><a id="__codelineno-18-24" name="__codelineno-18-24" href="#__codelineno-18-24"></a><span class="c1"># &gt; HHnswDocumentIndex.RuntimeConfig(default_column_config={&lt;class 'numpy.ndarray'&gt;: {'dim': -1, 'index': True, 'space': 'ip', 'max_elements': 2048, 'ef_construction': 100, 'ef': 15, 'M': 8, 'allow_replace_deleted': True, 'num_threads': 5}, None: {}})</span>
-</span></code></pre></div>
-</div>
-</div>
-</div>
-<p>After this change, the new setting will be applied to <em>every</em> column that corresponds to a <code>np.ndarray</code> type.</p>
-<h3 id="column-configurations">Column configurations</h3>
-<p>For many vector databases, individual columns can have different configurations.</p>
-<p>This commonly includes:
-- the data type of the column, e.g. <code>vector</code> vs <code>varchar</code>
-- the dimensionality of the vector (if it is a vector column)
-- whether an index should be built for a specific column</p>
-<p>The available configurations vary from backend to backend, but in any case you can pass them
-directly in the schema of your Document Index, using the <code>Field()</code> syntax:</p>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-19-1"><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a><span class="kn">from</span> <span class="nn">pydantic</span> <span class="kn">import</span> <span class="n">Field</span>
-</span><span id="__span-19-2"><a id="__codelineno-19-2" name="__codelineno-19-2" href="#__codelineno-19-2"></a>
-</span><span id="__span-19-3"><a id="__codelineno-19-3" name="__codelineno-19-3" href="#__codelineno-19-3"></a>
-</span><span id="__span-19-4"><a id="__codelineno-19-4" name="__codelineno-19-4" href="#__codelineno-19-4"></a><span class="k">class</span> <span class="nc">Schema</span><span class="p">(</span><span class="n">BaseDoc</span><span class="p">):</span>
-</span><span id="__span-19-5"><a id="__codelineno-19-5" name="__codelineno-19-5" href="#__codelineno-19-5"></a>    <span class="n">tens</span><span class="p">:</span> <span class="n">NdArray</span><span class="p">[</span><span class="mi">100</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">max_elements</span><span class="o">=</span><span class="mi">12</span><span class="p">,</span> <span class="n">space</span><span class="o">=</span><span class="s1">'cosine'</span><span class="p">)</span>
-</span><span id="__span-19-6"><a id="__codelineno-19-6" name="__codelineno-19-6" href="#__codelineno-19-6"></a>    <span class="n">tens_two</span><span class="p">:</span> <span class="n">NdArray</span><span class="p">[</span><span class="mi">10</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">M</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">space</span><span class="o">=</span><span class="s1">'ip'</span><span class="p">)</span>
-</span><span id="__span-19-7"><a id="__codelineno-19-7" name="__codelineno-19-7" href="#__codelineno-19-7"></a>
-</span><span id="__span-19-8"><a id="__codelineno-19-8" name="__codelineno-19-8" href="#__codelineno-19-8"></a>
-</span><span id="__span-19-9"><a id="__codelineno-19-9" name="__codelineno-19-9" href="#__codelineno-19-9"></a><span class="n">db</span> <span class="o">=</span> <span class="n">HnswDocumentIndex</span><span class="p">[</span><span class="n">Schema</span><span class="p">](</span><span class="n">work_dir</span><span class="o">=</span><span class="s1">'/tmp/my_db'</span><span class="p">)</span>
-</span></code></pre></div>
-<p>The <code>HnswDocumentIndex</code> above contains two columns which are configured differently:
-- <code>tens</code> has a dimensionality of <code>100</code>, can take up to <code>12</code> elements, and uses the <code>cosine</code> similarity space
-- <code>tens_two</code> has a dimensionality of <code>10</code>, and uses the <code>ip</code> similarity space, and an <code>M</code> hyperparameter of 4</p>
-<p>All configurations that are not explicitly set will be taken from the <code>default_column_config</code> of the <code>DBConfig</code>.
-You can modify these defaults in the following way:</p>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-20-1"><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-</span><span id="__span-20-2"><a id="__codelineno-20-2" name="__codelineno-20-2" href="#__codelineno-20-2"></a><span class="kn">from</span> <span class="nn">pydantic</span> <span class="kn">import</span> <span class="n">Field</span>
-</span><span id="__span-20-3"><a id="__codelineno-20-3" name="__codelineno-20-3" href="#__codelineno-20-3"></a>
-</span><span id="__span-20-4"><a id="__codelineno-20-4" name="__codelineno-20-4" href="#__codelineno-20-4"></a><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">BaseDoc</span>
-</span><span id="__span-20-5"><a id="__codelineno-20-5" name="__codelineno-20-5" href="#__codelineno-20-5"></a><span class="kn">from</span> <span class="nn">docarray.index</span> <span class="kn">import</span> <span class="n">HnswDocumentIndex</span>
-</span><span id="__span-20-6"><a id="__codelineno-20-6" name="__codelineno-20-6" href="#__codelineno-20-6"></a><span class="kn">from</span> <span class="nn">docarray.typing</span> <span class="kn">import</span> <span class="n">NdArray</span>
-</span><span id="__span-20-7"><a id="__codelineno-20-7" name="__codelineno-20-7" href="#__codelineno-20-7"></a>
-</span><span id="__span-20-8"><a id="__codelineno-20-8" name="__codelineno-20-8" href="#__codelineno-20-8"></a>
-</span><span id="__span-20-9"><a id="__codelineno-20-9" name="__codelineno-20-9" href="#__codelineno-20-9"></a><span class="k">class</span> <span class="nc">Schema</span><span class="p">(</span><span class="n">BaseDoc</span><span class="p">):</span>
-</span><span id="__span-20-10"><a id="__codelineno-20-10" name="__codelineno-20-10" href="#__codelineno-20-10"></a>    <span class="n">tens</span><span class="p">:</span> <span class="n">NdArray</span><span class="p">[</span><span class="mi">100</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">max_elements</span><span class="o">=</span><span class="mi">12</span><span class="p">,</span> <span class="n">space</span><span class="o">=</span><span class="s1">'cosine'</span><span class="p">)</span>
-</span><span id="__span-20-11"><a id="__codelineno-20-11" name="__codelineno-20-11" href="#__codelineno-20-11"></a>    <span class="n">tens_two</span><span class="p">:</span> <span class="n">NdArray</span><span class="p">[</span><span class="mi">10</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">M</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">space</span><span class="o">=</span><span class="s1">'ip'</span><span class="p">)</span>
-</span><span id="__span-20-12"><a id="__codelineno-20-12" name="__codelineno-20-12" href="#__codelineno-20-12"></a>
-</span><span id="__span-20-13"><a id="__codelineno-20-13" name="__codelineno-20-13" href="#__codelineno-20-13"></a>
-</span><span id="__span-20-14"><a id="__codelineno-20-14" name="__codelineno-20-14" href="#__codelineno-20-14"></a><span class="c1"># create a DBConfig for your Document Index</span>
-</span><span id="__span-20-15"><a id="__codelineno-20-15" name="__codelineno-20-15" href="#__codelineno-20-15"></a><span class="n">conf</span> <span class="o">=</span> <span class="n">HnswDocumentIndex</span><span class="o">.</span><span class="n">DBConfig</span><span class="p">(</span><span class="n">work_dir</span><span class="o">=</span><span class="s1">'/tmp/my_db'</span><span class="p">)</span>
-</span><span id="__span-20-16"><a id="__codelineno-20-16" name="__codelineno-20-16" href="#__codelineno-20-16"></a><span class="c1"># update the default max_elements for np.ndarray columns</span>
-</span><span id="__span-20-17"><a id="__codelineno-20-17" name="__codelineno-20-17" href="#__codelineno-20-17"></a><span class="n">conf</span><span class="o">.</span><span class="n">default_column_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">max_elements</span><span class="o">=</span><span class="mi">2048</span><span class="p">)</span>
-</span><span id="__span-20-18"><a id="__codelineno-20-18" name="__codelineno-20-18" href="#__codelineno-20-18"></a><span class="c1"># create Document Index</span>
-</span><span id="__span-20-19"><a id="__codelineno-20-19" name="__codelineno-20-19" href="#__codelineno-20-19"></a><span class="c1"># tens has a max_elements of 12, specified in the schema</span>
-</span><span id="__span-20-20"><a id="__codelineno-20-20" name="__codelineno-20-20" href="#__codelineno-20-20"></a><span class="c1"># tens_two has a max_elements of 2048, specified by the default in the DBConfig</span>
-</span><span id="__span-20-21"><a id="__codelineno-20-21" name="__codelineno-20-21" href="#__codelineno-20-21"></a><span class="n">db</span> <span class="o">=</span> <span class="n">HnswDocumentIndex</span><span class="p">[</span><span class="n">Schema</span><span class="p">](</span><span class="n">conf</span><span class="p">)</span>
-</span></code></pre></div>
-<p>For an explanation of the configurations that are tweaked in this example, see the <code>HnswDocumentIndex</code> <a href="../index_hnswlib/">documentation</a>.</p>
-<h2 id="nested-data">Nested data</h2>
-<p>The examples above all operate on a simple schema: All fields in <code>MyDoc</code> have "basic" types, such as <code>str</code> or <code>NdArray</code>.</p>
-<p><strong>Index nested data:</strong></p>
-<p>It is, however, also possible to represent nested Documents and store them in a Document Index.</p>
-<p>In the following example you can see a complex schema that contains nested Documents.
-The <code>YouTubeVideoDoc</code> contains a <code>VideoDoc</code> and an <code>ImageDoc</code>, alongside some "basic" fields:</p>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-21-1"><a id="__codelineno-21-1" name="__codelineno-21-1" href="#__codelineno-21-1"></a><span class="kn">from</span> <span class="nn">docarray.typing</span> <span class="kn">import</span> <span class="n">ImageUrl</span><span class="p">,</span> <span class="n">VideoUrl</span><span class="p">,</span> <span class="n">AnyTensor</span>
-</span><span id="__span-21-2"><a id="__codelineno-21-2" name="__codelineno-21-2" href="#__codelineno-21-2"></a>
-</span><span id="__span-21-3"><a id="__codelineno-21-3" name="__codelineno-21-3" href="#__codelineno-21-3"></a>
-</span><span id="__span-21-4"><a id="__codelineno-21-4" name="__codelineno-21-4" href="#__codelineno-21-4"></a><span class="c1"># define a nested schema</span>
-</span><span id="__span-21-5"><a id="__codelineno-21-5" name="__codelineno-21-5" href="#__codelineno-21-5"></a><span class="k">class</span> <span class="nc">ImageDoc</span><span class="p">(</span><span class="n">BaseDoc</span><span class="p">):</span>
-</span><span id="__span-21-6"><a id="__codelineno-21-6" name="__codelineno-21-6" href="#__codelineno-21-6"></a>    <span class="n">url</span><span class="p">:</span> <span class="n">ImageUrl</span>
-</span><span id="__span-21-7"><a id="__codelineno-21-7" name="__codelineno-21-7" href="#__codelineno-21-7"></a>    <span class="n">tensor</span><span class="p">:</span> <span class="n">AnyTensor</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">space</span><span class="o">=</span><span class="s1">'cosine'</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">64</span><span class="p">)</span>
-</span><span id="__span-21-8"><a id="__codelineno-21-8" name="__codelineno-21-8" href="#__codelineno-21-8"></a>
-</span><span id="__span-21-9"><a id="__codelineno-21-9" name="__codelineno-21-9" href="#__codelineno-21-9"></a>
-</span><span id="__span-21-10"><a id="__codelineno-21-10" name="__codelineno-21-10" href="#__codelineno-21-10"></a><span class="k">class</span> <span class="nc">VideoDoc</span><span class="p">(</span><span class="n">BaseDoc</span><span class="p">):</span>
-</span><span id="__span-21-11"><a id="__codelineno-21-11" name="__codelineno-21-11" href="#__codelineno-21-11"></a>    <span class="n">url</span><span class="p">:</span> <span class="n">VideoUrl</span>
-</span><span id="__span-21-12"><a id="__codelineno-21-12" name="__codelineno-21-12" href="#__codelineno-21-12"></a>    <span class="n">tensor</span><span class="p">:</span> <span class="n">AnyTensor</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">space</span><span class="o">=</span><span class="s1">'cosine'</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">128</span><span class="p">)</span>
-</span><span id="__span-21-13"><a id="__codelineno-21-13" name="__codelineno-21-13" href="#__codelineno-21-13"></a>
-</span><span id="__span-21-14"><a id="__codelineno-21-14" name="__codelineno-21-14" href="#__codelineno-21-14"></a>
-</span><span id="__span-21-15"><a id="__codelineno-21-15" name="__codelineno-21-15" href="#__codelineno-21-15"></a><span class="k">class</span> <span class="nc">YouTubeVideoDoc</span><span class="p">(</span><span class="n">BaseDoc</span><span class="p">):</span>
-</span><span id="__span-21-16"><a id="__codelineno-21-16" name="__codelineno-21-16" href="#__codelineno-21-16"></a>    <span class="n">title</span><span class="p">:</span> <span class="nb">str</span>
-</span><span id="__span-21-17"><a id="__codelineno-21-17" name="__codelineno-21-17" href="#__codelineno-21-17"></a>    <span class="n">description</span><span class="p">:</span> <span class="nb">str</span>
-</span><span id="__span-21-18"><a id="__codelineno-21-18" name="__codelineno-21-18" href="#__codelineno-21-18"></a>    <span class="n">thumbnail</span><span class="p">:</span> <span class="n">ImageDoc</span>
-</span><span id="__span-21-19"><a id="__codelineno-21-19" name="__codelineno-21-19" href="#__codelineno-21-19"></a>    <span class="n">video</span><span class="p">:</span> <span class="n">VideoDoc</span>
-</span><span id="__span-21-20"><a id="__codelineno-21-20" name="__codelineno-21-20" href="#__codelineno-21-20"></a>    <span class="n">tensor</span><span class="p">:</span> <span class="n">AnyTensor</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">space</span><span class="o">=</span><span class="s1">'cosine'</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">256</span><span class="p">)</span>
-</span><span id="__span-21-21"><a id="__codelineno-21-21" name="__codelineno-21-21" href="#__codelineno-21-21"></a>
-</span><span id="__span-21-22"><a id="__codelineno-21-22" name="__codelineno-21-22" href="#__codelineno-21-22"></a>
-</span><span id="__span-21-23"><a id="__codelineno-21-23" name="__codelineno-21-23" href="#__codelineno-21-23"></a><span class="c1"># create a Document Index</span>
-</span><span id="__span-21-24"><a id="__codelineno-21-24" name="__codelineno-21-24" href="#__codelineno-21-24"></a><span class="n">doc_index</span> <span class="o">=</span> <span class="n">HnswDocumentIndex</span><span class="p">[</span><span class="n">YouTubeVideoDoc</span><span class="p">](</span><span class="n">work_dir</span><span class="o">=</span><span class="s1">'/tmp2'</span><span class="p">)</span>
-</span><span id="__span-21-25"><a id="__codelineno-21-25" name="__codelineno-21-25" href="#__codelineno-21-25"></a>
-</span><span id="__span-21-26"><a id="__codelineno-21-26" name="__codelineno-21-26" href="#__codelineno-21-26"></a><span class="c1"># create some data</span>
-</span><span id="__span-21-27"><a id="__codelineno-21-27" name="__codelineno-21-27" href="#__codelineno-21-27"></a><span class="n">index_docs</span> <span class="o">=</span> <span class="p">[</span>
-</span><span id="__span-21-28"><a id="__codelineno-21-28" name="__codelineno-21-28" href="#__codelineno-21-28"></a>    <span class="n">YouTubeVideoDoc</span><span class="p">(</span>
-</span><span id="__span-21-29"><a id="__codelineno-21-29" name="__codelineno-21-29" href="#__codelineno-21-29"></a>        <span class="n">title</span><span class="o">=</span><span class="sa">f</span><span class="s1">'video </span><span class="si">{</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s1">'</span><span class="p">,</span>
-</span><span id="__span-21-30"><a id="__codelineno-21-30" name="__codelineno-21-30" href="#__codelineno-21-30"></a>        <span class="n">description</span><span class="o">=</span><span class="sa">f</span><span class="s1">'this is video from author </span><span class="si">{</span><span class="mi">10</span><span class="o">*</span><span class="n">i</span><span class="si">}</span><span class="s1">'</span><span class="p">,</span>
-</span><span id="__span-21-31"><a id="__codelineno-21-31" name="__codelineno-21-31" href="#__codelineno-21-31"></a>        <span class="n">thumbnail</span><span class="o">=</span><span class="n">ImageDoc</span><span class="p">(</span><span class="n">url</span><span class="o">=</span><span class="sa">f</span><span class="s1">'http://example.ai/images/</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s1">'</span><span class="p">,</span> <span class="n">tensor</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="mi">64</span><span class="p">)),</span>
-</span><span id="__span-21-32"><a id="__codelineno-21-32" name="__codelineno-21-32" href="#__codelineno-21-32"></a>        <span class="n">video</span><span class="o">=</span><span class="n">VideoDoc</span><span class="p">(</span><span class="n">url</span><span class="o">=</span><span class="sa">f</span><span class="s1">'http://example.ai/videos/</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s1">'</span><span class="p">,</span> <span class="n">tensor</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="mi">128</span><span class="p">)),</span>
-</span><span id="__span-21-33"><a id="__codelineno-21-33" name="__codelineno-21-33" href="#__codelineno-21-33"></a>        <span class="n">tensor</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="mi">256</span><span class="p">),</span>
-</span><span id="__span-21-34"><a id="__codelineno-21-34" name="__codelineno-21-34" href="#__codelineno-21-34"></a>    <span class="p">)</span>
-</span><span id="__span-21-35"><a id="__codelineno-21-35" name="__codelineno-21-35" href="#__codelineno-21-35"></a>    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">8</span><span class="p">)</span>
-</span><span id="__span-21-36"><a id="__codelineno-21-36" name="__codelineno-21-36" href="#__codelineno-21-36"></a><span class="p">]</span>
-</span><span id="__span-21-37"><a id="__codelineno-21-37" name="__codelineno-21-37" href="#__codelineno-21-37"></a>
-</span><span id="__span-21-38"><a id="__codelineno-21-38" name="__codelineno-21-38" href="#__codelineno-21-38"></a><span class="c1"># index the Documents</span>
-</span><span id="__span-21-39"><a id="__codelineno-21-39" name="__codelineno-21-39" href="#__codelineno-21-39"></a><span class="n">doc_index</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">index_docs</span><span class="p">)</span>
-</span></code></pre></div>
-<p><strong>Search nested data:</strong></p>
-<p>You can perform search on any nesting level by using the dunder operator to specify the field defined in the nested data.</p>
-<p>In the following example, you can see how to perform vector search on the <code>tensor</code> field of the <code>YouTubeVideoDoc</code> or on the <code>tensor</code> field of the nested <code>thumbnail</code> and <code>video</code> fields:</p>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-22-1"><a id="__codelineno-22-1" name="__codelineno-22-1" href="#__codelineno-22-1"></a><span class="c1"># create a query Document</span>
-</span><span id="__span-22-2"><a id="__codelineno-22-2" name="__codelineno-22-2" href="#__codelineno-22-2"></a><span class="n">query_doc</span> <span class="o">=</span> <span class="n">YouTubeVideoDoc</span><span class="p">(</span>
-</span><span id="__span-22-3"><a id="__codelineno-22-3" name="__codelineno-22-3" href="#__codelineno-22-3"></a>    <span class="n">title</span><span class="o">=</span><span class="sa">f</span><span class="s1">'video query'</span><span class="p">,</span>
-</span><span id="__span-22-4"><a id="__codelineno-22-4" name="__codelineno-22-4" href="#__codelineno-22-4"></a>    <span class="n">description</span><span class="o">=</span><span class="sa">f</span><span class="s1">'this is a query video'</span><span class="p">,</span>
-</span><span id="__span-22-5"><a id="__codelineno-22-5" name="__codelineno-22-5" href="#__codelineno-22-5"></a>    <span class="n">thumbnail</span><span class="o">=</span><span class="n">ImageDoc</span><span class="p">(</span><span class="n">url</span><span class="o">=</span><span class="sa">f</span><span class="s1">'http://example.ai/images/1024'</span><span class="p">,</span> <span class="n">tensor</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="mi">64</span><span class="p">)),</span>
-</span><span id="__span-22-6"><a id="__codelineno-22-6" name="__codelineno-22-6" href="#__codelineno-22-6"></a>    <span class="n">video</span><span class="o">=</span><span class="n">VideoDoc</span><span class="p">(</span><span class="n">url</span><span class="o">=</span><span class="sa">f</span><span class="s1">'http://example.ai/videos/1024'</span><span class="p">,</span> <span class="n">tensor</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="mi">128</span><span class="p">)),</span>
-</span><span id="__span-22-7"><a id="__codelineno-22-7" name="__codelineno-22-7" href="#__codelineno-22-7"></a>    <span class="n">tensor</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="mi">256</span><span class="p">),</span>
-</span><span id="__span-22-8"><a id="__codelineno-22-8" name="__codelineno-22-8" href="#__codelineno-22-8"></a><span class="p">)</span>
-</span><span id="__span-22-9"><a id="__codelineno-22-9" name="__codelineno-22-9" href="#__codelineno-22-9"></a>
-</span><span id="__span-22-10"><a id="__codelineno-22-10" name="__codelineno-22-10" href="#__codelineno-22-10"></a><span class="c1"># find by the `youtubevideo` tensor; root level</span>
-</span><span id="__span-22-11"><a id="__codelineno-22-11" name="__codelineno-22-11" href="#__codelineno-22-11"></a><span class="n">docs</span><span class="p">,</span> <span class="n">scores</span> <span class="o">=</span> <span class="n">doc_index</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">query_doc</span><span class="p">,</span> <span class="n">search_field</span><span class="o">=</span><span class="s1">'tensor'</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
-</span><span id="__span-22-12"><a id="__codelineno-22-12" name="__codelineno-22-12" href="#__codelineno-22-12"></a>
-</span><span id="__span-22-13"><a id="__codelineno-22-13" name="__codelineno-22-13" href="#__codelineno-22-13"></a><span class="c1"># find by the `thumbnail` tensor; nested level</span>
-</span><span id="__span-22-14"><a id="__codelineno-22-14" name="__codelineno-22-14" href="#__codelineno-22-14"></a><span class="n">docs</span><span class="p">,</span> <span class="n">scores</span> <span class="o">=</span> <span class="n">doc_index</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">query_doc</span><span class="p">,</span> <span class="n">search_field</span><span class="o">=</span><span class="s1">'thumbnail__tensor'</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
-</span><span id="__span-22-15"><a id="__codelineno-22-15" name="__codelineno-22-15" href="#__codelineno-22-15"></a>
-</span><span id="__span-22-16"><a id="__codelineno-22-16" name="__codelineno-22-16" href="#__codelineno-22-16"></a><span class="c1"># find by the `video` tensor; neseted level</span>
-</span><span id="__span-22-17"><a id="__codelineno-22-17" name="__codelineno-22-17" href="#__codelineno-22-17"></a><span class="n">docs</span><span class="p">,</span> <span class="n">scores</span> <span class="o">=</span> <span class="n">doc_index</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">query_doc</span><span class="p">,</span> <span class="n">search_field</span><span class="o">=</span><span class="s1">'video__tensor'</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
-</span></code></pre></div>
-<h3 id="nested-data-with-subindex">Nested data with subindex</h3>
-<p>Documents can be nested by containing a <code>DocList</code> of other documents, which is a slightly more complicated scenario than the one <a href="#nested-data">above</a>.</p>
-<p>If a Document contains a DocList, it can still be stored in a Document Index.
-In this case, the DocList will be represented as a new index (or table, collection, etc., depending on the database backend), that is linked with the parent index (table, collection, ...).</p>
-<p>This still lets index and search through all of your data, but if you want to avoid the creation of additional indexes you could try to refactor your document schemas without the use of DocList.</p>
-<p><strong>Index</strong></p>
-<p>In the following example you can see a complex schema that contains nested Documents with subindex.
-The <code>MyDoc</code> contains a <code>DocList</code> of <code>VideoDoc</code>, which contains a <code>DocList</code> of <code>ImageDoc</code>, alongside some "basic" fields:</p>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-23-1"><a id="__codelineno-23-1" name="__codelineno-23-1" href="#__codelineno-23-1"></a><span class="k">class</span> <span class="nc">ImageDoc</span><span class="p">(</span><span class="n">BaseDoc</span><span class="p">):</span>
-</span><span id="__span-23-2"><a id="__codelineno-23-2" name="__codelineno-23-2" href="#__codelineno-23-2"></a>    <span class="n">url</span><span class="p">:</span> <span class="n">ImageUrl</span>
-</span><span id="__span-23-3"><a id="__codelineno-23-3" name="__codelineno-23-3" href="#__codelineno-23-3"></a>    <span class="n">tensor_image</span><span class="p">:</span> <span class="n">AnyTensor</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">space</span><span class="o">=</span><span class="s1">'cosine'</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">64</span><span class="p">)</span>
-</span><span id="__span-23-4"><a id="__codelineno-23-4" name="__codelineno-23-4" href="#__codelineno-23-4"></a>
-</span><span id="__span-23-5"><a id="__codelineno-23-5" name="__codelineno-23-5" href="#__codelineno-23-5"></a>
-</span><span id="__span-23-6"><a id="__codelineno-23-6" name="__codelineno-23-6" href="#__codelineno-23-6"></a><span class="k">class</span> <span class="nc">VideoDoc</span><span class="p">(</span><span class="n">BaseDoc</span><span class="p">):</span>
-</span><span id="__span-23-7"><a id="__codelineno-23-7" name="__codelineno-23-7" href="#__codelineno-23-7"></a>    <span class="n">url</span><span class="p">:</span> <span class="n">VideoUrl</span>
-</span><span id="__span-23-8"><a id="__codelineno-23-8" name="__codelineno-23-8" href="#__codelineno-23-8"></a>    <span class="n">images</span><span class="p">:</span> <span class="n">DocList</span><span class="p">[</span><span class="n">ImageDoc</span><span class="p">]</span>
-</span><span id="__span-23-9"><a id="__codelineno-23-9" name="__codelineno-23-9" href="#__codelineno-23-9"></a>    <span class="n">tensor_video</span><span class="p">:</span> <span class="n">AnyTensor</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">space</span><span class="o">=</span><span class="s1">'cosine'</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">128</span><span class="p">)</span>
-</span><span id="__span-23-10"><a id="__codelineno-23-10" name="__codelineno-23-10" href="#__codelineno-23-10"></a>
-</span><span id="__span-23-11"><a id="__codelineno-23-11" name="__codelineno-23-11" href="#__codelineno-23-11"></a>
-</span><span id="__span-23-12"><a id="__codelineno-23-12" name="__codelineno-23-12" href="#__codelineno-23-12"></a><span class="k">class</span> <span class="nc">MyDoc</span><span class="p">(</span><span class="n">BaseDoc</span><span class="p">):</span>
-</span><span id="__span-23-13"><a id="__codelineno-23-13" name="__codelineno-23-13" href="#__codelineno-23-13"></a>    <span class="n">docs</span><span class="p">:</span> <span class="n">DocList</span><span class="p">[</span><span class="n">VideoDoc</span><span class="p">]</span>
-</span><span id="__span-23-14"><a id="__codelineno-23-14" name="__codelineno-23-14" href="#__codelineno-23-14"></a>    <span class="n">tensor</span><span class="p">:</span> <span class="n">AnyTensor</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">space</span><span class="o">=</span><span class="s1">'cosine'</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">256</span><span class="p">)</span>
-</span><span id="__span-23-15"><a id="__codelineno-23-15" name="__codelineno-23-15" href="#__codelineno-23-15"></a>
-</span><span id="__span-23-16"><a id="__codelineno-23-16" name="__codelineno-23-16" href="#__codelineno-23-16"></a>
-</span><span id="__span-23-17"><a id="__codelineno-23-17" name="__codelineno-23-17" href="#__codelineno-23-17"></a><span class="c1"># create a Document Index</span>
-</span><span id="__span-23-18"><a id="__codelineno-23-18" name="__codelineno-23-18" href="#__codelineno-23-18"></a><span class="n">doc_index</span> <span class="o">=</span> <span class="n">HnswDocumentIndex</span><span class="p">[</span><span class="n">MyDoc</span><span class="p">](</span><span class="n">work_dir</span><span class="o">=</span><span class="s1">'/tmp3'</span><span class="p">)</span>
-</span><span id="__span-23-19"><a id="__codelineno-23-19" name="__codelineno-23-19" href="#__codelineno-23-19"></a>
-</span><span id="__span-23-20"><a id="__codelineno-23-20" name="__codelineno-23-20" href="#__codelineno-23-20"></a><span class="c1"># create some data</span>
-</span><span id="__span-23-21"><a id="__codelineno-23-21" name="__codelineno-23-21" href="#__codelineno-23-21"></a><span class="n">index_docs</span> <span class="o">=</span> <span class="p">[</span>
-</span><span id="__span-23-22"><a id="__codelineno-23-22" name="__codelineno-23-22" href="#__codelineno-23-22"></a>    <span class="n">MyDoc</span><span class="p">(</span>
-</span><span id="__span-23-23"><a id="__codelineno-23-23" name="__codelineno-23-23" href="#__codelineno-23-23"></a>        <span class="n">docs</span><span class="o">=</span><span class="n">DocList</span><span class="p">[</span><span class="n">VideoDoc</span><span class="p">](</span>
-</span><span id="__span-23-24"><a id="__codelineno-23-24" name="__codelineno-23-24" href="#__codelineno-23-24"></a>            <span class="p">[</span>
-</span><span id="__span-23-25"><a id="__codelineno-23-25" name="__codelineno-23-25" href="#__codelineno-23-25"></a>                <span class="n">VideoDoc</span><span class="p">(</span>
-</span><span id="__span-23-26"><a id="__codelineno-23-26" name="__codelineno-23-26" href="#__codelineno-23-26"></a>                    <span class="n">url</span><span class="o">=</span><span class="sa">f</span><span class="s1">'http://example.ai/videos/</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s1">-</span><span class="si">{</span><span class="n">j</span><span class="si">}</span><span class="s1">'</span><span class="p">,</span>
-</span><span id="__span-23-27"><a id="__codelineno-23-27" name="__codelineno-23-27" href="#__codelineno-23-27"></a>                    <span class="n">images</span><span class="o">=</span><span class="n">DocList</span><span class="p">[</span><span class="n">ImageDoc</span><span class="p">](</span>
-</span><span id="__span-23-28"><a id="__codelineno-23-28" name="__codelineno-23-28" href="#__codelineno-23-28"></a>                        <span class="p">[</span>
-</span><span id="__span-23-29"><a id="__codelineno-23-29" name="__codelineno-23-29" href="#__codelineno-23-29"></a>                            <span class="n">ImageDoc</span><span class="p">(</span>
-</span><span id="__span-23-30"><a id="__codelineno-23-30" name="__codelineno-23-30" href="#__codelineno-23-30"></a>                                <span class="n">url</span><span class="o">=</span><span class="sa">f</span><span class="s1">'http://example.ai/images/</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s1">-</span><span class="si">{</span><span class="n">j</span><span class="si">}</span><span class="s1">-</span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s1">'</span><span class="p">,</span>
-</span><span id="__span-23-31"><a id="__codelineno-23-31" name="__codelineno-23-31" href="#__codelineno-23-31"></a>                                <span class="n">tensor_image</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="mi">64</span><span class="p">),</span>
-</span><span id="__span-23-32"><a id="__codelineno-23-32" name="__codelineno-23-32" href="#__codelineno-23-32"></a>                            <span class="p">)</span>
-</span><span id="__span-23-33"><a id="__codelineno-23-33" name="__codelineno-23-33" href="#__codelineno-23-33"></a>                            <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
-</span><span id="__span-23-34"><a id="__codelineno-23-34" name="__codelineno-23-34" href="#__codelineno-23-34"></a>                        <span class="p">]</span>
-</span><span id="__span-23-35"><a id="__codelineno-23-35" name="__codelineno-23-35" href="#__codelineno-23-35"></a>                    <span class="p">),</span>
-</span><span id="__span-23-36"><a id="__codelineno-23-36" name="__codelineno-23-36" href="#__codelineno-23-36"></a>                    <span class="n">tensor_video</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="mi">128</span><span class="p">),</span>
-</span><span id="__span-23-37"><a id="__codelineno-23-37" name="__codelineno-23-37" href="#__codelineno-23-37"></a>                <span class="p">)</span>
-</span><span id="__span-23-38"><a id="__codelineno-23-38" name="__codelineno-23-38" href="#__codelineno-23-38"></a>                <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
-</span><span id="__span-23-39"><a id="__codelineno-23-39" name="__codelineno-23-39" href="#__codelineno-23-39"></a>            <span class="p">]</span>
-</span><span id="__span-23-40"><a id="__codelineno-23-40" name="__codelineno-23-40" href="#__codelineno-23-40"></a>        <span class="p">),</span>
-</span><span id="__span-23-41"><a id="__codelineno-23-41" name="__codelineno-23-41" href="#__codelineno-23-41"></a>        <span class="n">tensor</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="mi">256</span><span class="p">),</span>
-</span><span id="__span-23-42"><a id="__codelineno-23-42" name="__codelineno-23-42" href="#__codelineno-23-42"></a>    <span class="p">)</span>
-</span><span id="__span-23-43"><a id="__codelineno-23-43" name="__codelineno-23-43" href="#__codelineno-23-43"></a>    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
-</span><span id="__span-23-44"><a id="__codelineno-23-44" name="__codelineno-23-44" href="#__codelineno-23-44"></a><span class="p">]</span>
-</span><span id="__span-23-45"><a id="__codelineno-23-45" name="__codelineno-23-45" href="#__codelineno-23-45"></a>
-</span><span id="__span-23-46"><a id="__codelineno-23-46" name="__codelineno-23-46" href="#__codelineno-23-46"></a><span class="c1"># index the Documents</span>
-</span><span id="__span-23-47"><a id="__codelineno-23-47" name="__codelineno-23-47" href="#__codelineno-23-47"></a><span class="n">doc_index</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">index_docs</span><span class="p">)</span>
-</span></code></pre></div>
-<p><strong>Search</strong></p>
-<p>You can perform search on any subindex level by using <code>find_subindex()</code> method and the dunder operator <code>'root__subindex'</code> to specify the index to search on.</p>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-24-1"><a id="__codelineno-24-1" name="__codelineno-24-1" href="#__codelineno-24-1"></a><span class="c1"># find by the `VideoDoc` tensor</span>
-</span><span id="__span-24-2"><a id="__codelineno-24-2" name="__codelineno-24-2" href="#__codelineno-24-2"></a><span class="n">root_docs</span><span class="p">,</span> <span class="n">sub_docs</span><span class="p">,</span> <span class="n">scores</span> <span class="o">=</span> <span class="n">doc_index</span><span class="o">.</span><span class="n">find_subindex</span><span class="p">(</span>
-</span><span id="__span-24-3"><a id="__codelineno-24-3" name="__codelineno-24-3" href="#__codelineno-24-3"></a>    <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="mi">128</span><span class="p">),</span> <span class="n">subindex</span><span class="o">=</span><span class="s1">'docs'</span><span class="p">,</span> <span class="n">search_field</span><span class="o">=</span><span class="s1">'tensor_video'</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="mi">3</span>
-</span><span id="__span-24-4"><a id="__codelineno-24-4" name="__codelineno-24-4" href="#__codelineno-24-4"></a><span class="p">)</span>
-</span><span id="__span-24-5"><a id="__codelineno-24-5" name="__codelineno-24-5" href="#__codelineno-24-5"></a>
-</span><span id="__span-24-6"><a id="__codelineno-24-6" name="__codelineno-24-6" href="#__codelineno-24-6"></a><span class="c1"># find by the `ImageDoc` tensor</span>
-</span><span id="__span-24-7"><a id="__codelineno-24-7" name="__codelineno-24-7" href="#__codelineno-24-7"></a><span class="n">root_docs</span><span class="p">,</span> <span class="n">sub_docs</span><span class="p">,</span> <span class="n">scores</span> <span class="o">=</span> <span class="n">doc_index</span><span class="o">.</span><span class="n">find_subindex</span><span class="p">(</span>
-</span><span id="__span-24-8"><a id="__codelineno-24-8" name="__codelineno-24-8" href="#__codelineno-24-8"></a>    <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="mi">64</span><span class="p">),</span> <span class="n">subindex</span><span class="o">=</span><span class="s1">'docs__images'</span><span class="p">,</span> <span class="n">search_field</span><span class="o">=</span><span class="s1">'tensor_image'</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="mi">3</span>
-</span><span id="__span-24-9"><a id="__codelineno-24-9" name="__codelineno-24-9" href="#__codelineno-24-9"></a><span class="p">)</span>
-</span></code></pre></div>
-<div class="admonition note">
-<p class="admonition-title">Subindex not supported with InMemoryExactNNIndex</p>
-<p>Currently, subindex feature is not available for InMemoryExactNNIndex</p>
-</div></div>
+<li><a href="https://weaviate.io/">Weaviate</a>  |  <a href="../index_weaviate/">Docs</a></li>
+<li><a href="https://qdrant.tech/">Qdrant</a>  |  <a href="../index_qdrant/">Docs</a></li>
+<li><a href="https://www.elastic.co/elasticsearch/">Elasticsearch</a> v7 and v8  |  <a href="../index_elastic/">Docs</a></li>
+<li><a href="https://redis.com/">Redis</a>  |  <a href="../index_redis/">Docs</a></li>
+<li><a href="https://milvus.io/">Milvus</a>  |  <a href="../index_milvus/">Docs</a></li>
+<li><a href="https://github.com/nmslib/hnswlib">HNSWlib</a>  |  <a href="../index_hnswlib/">Docs</a></li>
+<li>InMemoryExactNNIndex  |  <a href="../index_in_memory/">Docs</a></li>
+</ul></div>
 
 
   

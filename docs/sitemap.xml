@@ -2,312 +2,337 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
          <loc>https://docs.docarray.org/</loc>
-         <lastmod>2023-07-18</lastmod>
+         <lastmod>2023-08-03</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://docs.docarray.org/CONTRIBUTING/</loc>
-         <lastmod>2023-07-18</lastmod>
+         <lastmod>2023-08-03</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://docs.docarray.org/glossary/</loc>
-         <lastmod>2023-07-18</lastmod>
+         <lastmod>2023-08-03</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://docs.docarray.org/migration_guide/</loc>
-         <lastmod>2023-07-18</lastmod>
+         <lastmod>2023-08-03</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://docs.docarray.org/API_reference/array/any_da/</loc>
-         <lastmod>2023-07-18</lastmod>
+         <lastmod>2023-08-03</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://docs.docarray.org/API_reference/array/da/</loc>
-         <lastmod>2023-07-18</lastmod>
+         <lastmod>2023-08-03</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://docs.docarray.org/API_reference/array/da_stack/</loc>
-         <lastmod>2023-07-18</lastmod>
+         <lastmod>2023-08-03</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://docs.docarray.org/API_reference/base_doc/base_doc/</loc>
-         <lastmod>2023-07-18</lastmod>
+         <lastmod>2023-08-03</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://docs.docarray.org/API_reference/data/data/</loc>
-         <lastmod>2023-07-18</lastmod>
+         <lastmod>2023-08-03</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://docs.docarray.org/API_reference/doc_index/doc_index/</loc>
-         <lastmod>2023-07-18</lastmod>
+         <lastmod>2023-08-03</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://docs.docarray.org/API_reference/doc_index/backends/elastic/</loc>
-         <lastmod>2023-07-18</lastmod>
+         <lastmod>2023-08-03</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://docs.docarray.org/API_reference/doc_index/backends/elastic7/</loc>
-         <lastmod>2023-07-18</lastmod>
+         <lastmod>2023-08-03</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://docs.docarray.org/API_reference/doc_index/backends/hnswlib/</loc>
-         <lastmod>2023-07-18</lastmod>
+         <lastmod>2023-08-03</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://docs.docarray.org/API_reference/doc_index/backends/in_memory/</loc>
-         <lastmod>2023-07-18</lastmod>
+         <lastmod>2023-08-03</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://docs.docarray.org/API_reference/doc_index/backends/milvus/</loc>
+         <lastmod>2023-08-03</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://docs.docarray.org/API_reference/doc_index/backends/qdrant/</loc>
-         <lastmod>2023-07-18</lastmod>
+         <lastmod>2023-08-03</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://docs.docarray.org/API_reference/doc_index/backends/redis/</loc>
+         <lastmod>2023-08-03</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://docs.docarray.org/API_reference/doc_index/backends/weaviate/</loc>
-         <lastmod>2023-07-18</lastmod>
+         <lastmod>2023-08-03</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://docs.docarray.org/API_reference/doc_store/doc_store/</loc>
-         <lastmod>2023-07-18</lastmod>
+         <lastmod>2023-08-03</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://docs.docarray.org/API_reference/doc_store/file_doc_store/</loc>
-         <lastmod>2023-07-18</lastmod>
+         <lastmod>2023-08-03</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://docs.docarray.org/API_reference/doc_store/jac_doc_store/</loc>
-         <lastmod>2023-07-18</lastmod>
+         <lastmod>2023-08-03</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://docs.docarray.org/API_reference/doc_store/s3_doc_store/</loc>
-         <lastmod>2023-07-18</lastmod>
+         <lastmod>2023-08-03</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://docs.docarray.org/API_reference/documents/documents/</loc>
-         <lastmod>2023-07-18</lastmod>
+         <lastmod>2023-08-03</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://docs.docarray.org/API_reference/typing/bytes/</loc>
-         <lastmod>2023-07-18</lastmod>
+         <lastmod>2023-08-03</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://docs.docarray.org/API_reference/typing/id/</loc>
-         <lastmod>2023-07-18</lastmod>
+         <lastmod>2023-08-03</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://docs.docarray.org/API_reference/typing/url/</loc>
-         <lastmod>2023-07-18</lastmod>
+         <lastmod>2023-08-03</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://docs.docarray.org/API_reference/typing/tensor/audio/</loc>
-         <lastmod>2023-07-18</lastmod>
+         <lastmod>2023-08-03</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://docs.docarray.org/API_reference/typing/tensor/embedding/</loc>
-         <lastmod>2023-07-18</lastmod>
+         <lastmod>2023-08-03</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://docs.docarray.org/API_reference/typing/tensor/image/</loc>
-         <lastmod>2023-07-18</lastmod>
+         <lastmod>2023-08-03</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://docs.docarray.org/API_reference/typing/tensor/tensor/</loc>
-         <lastmod>2023-07-18</lastmod>
+         <lastmod>2023-08-03</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://docs.docarray.org/API_reference/typing/tensor/video/</loc>
-         <lastmod>2023-07-18</lastmod>
+         <lastmod>2023-08-03</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://docs.docarray.org/API_reference/utils/filter/</loc>
-         <lastmod>2023-07-18</lastmod>
+         <lastmod>2023-08-03</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://docs.docarray.org/API_reference/utils/find/</loc>
-         <lastmod>2023-07-18</lastmod>
+         <lastmod>2023-08-03</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://docs.docarray.org/API_reference/utils/maps_docs/</loc>
-         <lastmod>2023-07-18</lastmod>
+         <lastmod>2023-08-03</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://docs.docarray.org/API_reference/utils/reduce/</loc>
-         <lastmod>2023-07-18</lastmod>
+         <lastmod>2023-08-03</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://docs.docarray.org/data_types/first_steps/</loc>
-         <lastmod>2023-07-18</lastmod>
+         <lastmod>2023-08-03</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://docs.docarray.org/data_types/3d_mesh/3d_mesh/</loc>
-         <lastmod>2023-07-18</lastmod>
+         <lastmod>2023-08-03</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://docs.docarray.org/data_types/audio/audio/</loc>
-         <lastmod>2023-07-18</lastmod>
+         <lastmod>2023-08-03</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://docs.docarray.org/data_types/image/image/</loc>
-         <lastmod>2023-07-18</lastmod>
+         <lastmod>2023-08-03</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://docs.docarray.org/data_types/multimodal/multimodal/</loc>
-         <lastmod>2023-07-18</lastmod>
+         <lastmod>2023-08-03</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://docs.docarray.org/data_types/table/table/</loc>
-         <lastmod>2023-07-18</lastmod>
+         <lastmod>2023-08-03</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://docs.docarray.org/data_types/tensor/tensor/</loc>
-         <lastmod>2023-07-18</lastmod>
+         <lastmod>2023-08-03</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://docs.docarray.org/data_types/text/text/</loc>
-         <lastmod>2023-07-18</lastmod>
+         <lastmod>2023-08-03</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://docs.docarray.org/data_types/video/video/</loc>
-         <lastmod>2023-07-18</lastmod>
+         <lastmod>2023-08-03</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://docs.docarray.org/how_to/add_doc_index/</loc>
-         <lastmod>2023-07-18</lastmod>
+         <lastmod>2023-08-03</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://docs.docarray.org/how_to/multimodal_training_and_serving/</loc>
-         <lastmod>2023-07-18</lastmod>
+         <lastmod>2023-08-03</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://docs.docarray.org/how_to/optimize_performance_with_id_generation/</loc>
-         <lastmod>2023-07-18</lastmod>
+         <lastmod>2023-08-03</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://docs.docarray.org/user_guide/intro/</loc>
-         <lastmod>2023-07-18</lastmod>
+         <lastmod>2023-08-03</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://docs.docarray.org/user_guide/representing/array/</loc>
-         <lastmod>2023-07-18</lastmod>
+         <lastmod>2023-08-03</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://docs.docarray.org/user_guide/representing/first_step/</loc>
-         <lastmod>2023-07-18</lastmod>
+         <lastmod>2023-08-03</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://docs.docarray.org/user_guide/sending/first_step/</loc>
-         <lastmod>2023-07-18</lastmod>
+         <lastmod>2023-08-03</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://docs.docarray.org/user_guide/sending/serialization/</loc>
-         <lastmod>2023-07-18</lastmod>
+         <lastmod>2023-08-03</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://docs.docarray.org/user_guide/sending/api/fastAPI/</loc>
-         <lastmod>2023-07-18</lastmod>
+         <lastmod>2023-08-03</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://docs.docarray.org/user_guide/sending/api/jina/</loc>
-         <lastmod>2023-07-18</lastmod>
+         <lastmod>2023-08-03</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://docs.docarray.org/user_guide/storing/docindex/</loc>
-         <lastmod>2023-07-18</lastmod>
+         <lastmod>2023-08-03</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://docs.docarray.org/user_guide/storing/first_step/</loc>
-         <lastmod>2023-07-18</lastmod>
+         <lastmod>2023-08-03</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://docs.docarray.org/user_guide/storing/index_elastic/</loc>
-         <lastmod>2023-07-18</lastmod>
+         <lastmod>2023-08-03</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://docs.docarray.org/user_guide/storing/index_hnswlib/</loc>
-         <lastmod>2023-07-18</lastmod>
+         <lastmod>2023-08-03</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://docs.docarray.org/user_guide/storing/index_in_memory/</loc>
-         <lastmod>2023-07-18</lastmod>
+         <lastmod>2023-08-03</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://docs.docarray.org/user_guide/storing/index_milvus/</loc>
+         <lastmod>2023-08-03</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://docs.docarray.org/user_guide/storing/index_qdrant/</loc>
-         <lastmod>2023-07-18</lastmod>
+         <lastmod>2023-08-03</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://docs.docarray.org/user_guide/storing/index_redis/</loc>
+         <lastmod>2023-08-03</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://docs.docarray.org/user_guide/storing/index_weaviate/</loc>
-         <lastmod>2023-07-18</lastmod>
+         <lastmod>2023-08-03</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://docs.docarray.org/user_guide/storing/nested_data/</loc>
+         <lastmod>2023-08-03</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://docs.docarray.org/user_guide/storing/doc_store/store_file/</loc>
-         <lastmod>2023-07-18</lastmod>
+         <lastmod>2023-08-03</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://docs.docarray.org/user_guide/storing/doc_store/store_jac/</loc>
-         <lastmod>2023-07-18</lastmod>
+         <lastmod>2023-08-03</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://docs.docarray.org/user_guide/storing/doc_store/store_s3/</loc>
-         <lastmod>2023-07-18</lastmod>
+         <lastmod>2023-08-03</lastmod>
          <changefreq>daily</changefreq>
     </url>
 </urlset>

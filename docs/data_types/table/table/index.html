@@ -558,6 +558,12 @@
         
           
         
+          
+        
+          
+        
+          
+        
       
       
         <label class="md-nav__link" for="__nav_2_4_2" id="__nav_2_4_2_label" tabindex="0">
@@ -650,6 +656,48 @@
     <li class="md-nav__item">
       <a href="../../../user_guide/storing/index_qdrant/" class="md-nav__link">
         Qdrant Document Index
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../user_guide/storing/index_redis/" class="md-nav__link">
+        Redis Document Index
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../user_guide/storing/index_milvus/" class="md-nav__link">
+        Milvus Document Index
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../user_guide/storing/nested_data/" class="md-nav__link">
+        Nested Data
       </a>
     </li>
   
@@ -1414,6 +1462,10 @@
         
           
         
+          
+        
+          
+        
       
       
         <label class="md-nav__link" for="__nav_6_4_2" id="__nav_6_4_2_label" tabindex="0">
@@ -1490,8 +1542,36 @@
   
   
     <li class="md-nav__item">
+      <a href="../../../API_reference/doc_index/backends/milvus/" class="md-nav__link">
+        MilvusDocumentIndex
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../../API_reference/doc_index/backends/qdrant/" class="md-nav__link">
         QdrantDocumentIndex
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../API_reference/doc_index/backends/redis/" class="md-nav__link">
+        RedisDocumentIndex
       </a>
     </li>
   
@@ -2106,7 +2186,7 @@ You can load such data from a given <code>CSV</code> file into a <a class="autor
 </span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>    <span class="n">author</span><span class="p">:</span> <span class="nb">str</span>
 </span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a>    <span class="n">year</span><span class="p">:</span> <span class="nb">int</span>
 </span></code></pre></div>
-Next, load the content of the CSV file to a <a class="autorefs autorefs-internal" href="../../../API_reference/array/da/#docarray.array.doc_list.doc_list.DocList"><code>DocList</code></a> instance of <code>Book</code>s via <a class="autorefs autorefs-internal" href="../../../API_reference/array/da/#docarray.array.doc_list.io.IOMixinArray.from_csv"><code>.from_csv()</code></a>:
+Next, load the content of the CSV file to a <a class="autorefs autorefs-internal" href="../../../API_reference/array/da/#docarray.array.doc_list.doc_list.DocList"><code>DocList</code></a> instance of <code>Book</code>s via <a class="autorefs autorefs-internal" href="../../../API_reference/array/da/#docarray.array.doc_list.io.IOMixinDocList.from_csv"><code>.from_csv()</code></a>:
 <div class="language-python highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">DocList</span>
 </span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>
 </span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>
@@ -2136,7 +2216,7 @@ Next, load the content of the CSV file to a <a class="autorefs autorefs-internal
 
 <p>The resulting <a class="autorefs autorefs-internal" href="../../../API_reference/array/da/#docarray.array.doc_list.doc_list.DocList"><code>DocList</code></a> object contains three <code>Book</code>s, since each row of the CSV file corresponds to one book and is assigned to one <code>Book</code> instance.</p>
 <h2 id="save-to-csv-file">Save to CSV file</h2>
-<p>Vice versa, you can also store your <a class="autorefs autorefs-internal" href="../../../API_reference/array/da/#docarray.array.doc_list.doc_list.DocList"><code>DocList</code></a> data in a <code>.csv</code> file using <a class="autorefs autorefs-internal" href="../../../API_reference/array/da/#docarray.array.doc_list.io.IOMixinArray.to_csv"><code>.to_csv()</code></a>:</p>
+<p>Vice versa, you can also store your <a class="autorefs autorefs-internal" href="../../../API_reference/array/da/#docarray.array.doc_list.doc_list.DocList"><code>DocList</code></a> data in a <code>.csv</code> file using <a class="autorefs autorefs-internal" href="../../../API_reference/array/da/#docarray.array.doc_list.io.IOMixinDocList.to_csv"><code>.to_csv()</code></a>:</p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="n">docs</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">file_path</span><span class="o">=</span><span class="s1">'/path/to/my_file.csv'</span><span class="p">)</span>
 </span></code></pre></div>
 <p>Tabular data is often not the best choice to represent nested Documents. Hence, nested Documents will be stored flattened and can be accessed by their <code>'__'</code>-separated access paths.</p>
@@ -2184,8 +2264,8 @@ Next, load the content of the CSV file to a <a class="autorefs autorefs-internal
 </span></code></pre></div>
 <h2 id="handle-tsv-tables">Handle TSV tables</h2>
 <p>Not only can you load and save comma-separated values (<code>CSV</code>) data, but also tab-separated values (<code>TSV</code>), 
-by adjusting the <code>dialect</code> parameter in <a class="autorefs autorefs-internal" href="../../../API_reference/array/da/#docarray.array.doc_list.io.IOMixinArray.from_csv"><code>.from_csv()</code></a> 
-and <a class="autorefs autorefs-internal" href="../../../API_reference/array/da/#docarray.array.doc_list.io.IOMixinArray.to_csv"><code>.to_csv()</code></a>.</p>
+by adjusting the <code>dialect</code> parameter in <a class="autorefs autorefs-internal" href="../../../API_reference/array/da/#docarray.array.doc_list.io.IOMixinDocList.from_csv"><code>.from_csv()</code></a> 
+and <a class="autorefs autorefs-internal" href="../../../API_reference/array/da/#docarray.array.doc_list.io.IOMixinDocList.to_csv"><code>.to_csv()</code></a>.</p>
 <p>The dialect defaults to <code>'excel'</code>, which refers to comma-separated values. For tab-separated values, you can use 
 <code>'excel-tab'</code>.</p>
 <p>Let's take a look at what this would look like with a tab-separated file:</p>
@@ -2241,7 +2321,7 @@ Within this class, you can define your dialect's behavior by setting the provide
 </span><span id="__span-13-8"><a id="__codelineno-13-8" name="__codelineno-13-8" href="#__codelineno-13-8"></a>    <span class="n">quotechar</span> <span class="o">=</span> <span class="s1">'"'</span>
 </span><span id="__span-13-9"><a id="__codelineno-13-9" name="__codelineno-13-9" href="#__codelineno-13-9"></a>    <span class="n">quoting</span> <span class="o">=</span> <span class="n">csv</span><span class="o">.</span><span class="n">QUOTE_MINIMAL</span>
 </span></code></pre></div>
-<p>Finally, you can load your data by setting the <code>dialect</code> parameter in <a class="autorefs autorefs-internal" href="../../../API_reference/array/da/#docarray.array.doc_list.io.IOMixinArray.from_csv"><code>.from_csv()</code></a> to an instance of your <code>SemicolonSeparator</code>.</p>
+<p>Finally, you can load your data by setting the <code>dialect</code> parameter in <a class="autorefs autorefs-internal" href="../../../API_reference/array/da/#docarray.array.doc_list.io.IOMixinDocList.from_csv"><code>.from_csv()</code></a> to an instance of your <code>SemicolonSeparator</code>.</p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="n">docs</span> <span class="o">=</span> <span class="n">DocList</span><span class="p">[</span><span class="n">Book</span><span class="p">]</span><span class="o">.</span><span class="n">from_csv</span><span class="p">(</span>
 </span><span id="__span-14-2"><a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a>    <span class="n">file_path</span><span class="o">=</span><span class="s1">'https://github.com/docarray/docarray/blob/main/tests/toydata/books_semicolon_sep.csv?raw=true'</span><span class="p">,</span>
 </span><span id="__span-14-3"><a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a>    <span class="n">dialect</span><span class="o">=</span><span class="n">SemicolonSeparator</span><span class="p">(),</span>

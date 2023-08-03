@@ -747,6 +747,12 @@
         
           
         
+          
+        
+          
+        
+          
+        
       
       
         <label class="md-nav__link" for="__nav_2_4_2" id="__nav_2_4_2_label" tabindex="0">
@@ -839,6 +845,48 @@
     <li class="md-nav__item">
       <a href="../../storing/index_qdrant/" class="md-nav__link">
         Qdrant Document Index
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../storing/index_redis/" class="md-nav__link">
+        Redis Document Index
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../storing/index_milvus/" class="md-nav__link">
+        Milvus Document Index
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../storing/nested_data/" class="md-nav__link">
+        Nested Data
       </a>
     </li>
   
@@ -1539,6 +1587,10 @@
         
           
         
+          
+        
+          
+        
       
       
         <label class="md-nav__link" for="__nav_6_4_2" id="__nav_6_4_2_label" tabindex="0">
@@ -1615,8 +1667,36 @@
   
   
     <li class="md-nav__item">
+      <a href="../../../API_reference/doc_index/backends/milvus/" class="md-nav__link">
+        MilvusDocumentIndex
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../../API_reference/doc_index/backends/qdrant/" class="md-nav__link">
         QdrantDocumentIndex
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../API_reference/doc_index/backends/redis/" class="md-nav__link">
+        RedisDocumentIndex
       </a>
     </li>
   
@@ -2385,8 +2465,8 @@
 <a class="autorefs autorefs-internal" href="../../../API_reference/array/da/#docarray.array.doc_list.doc_list.DocList"><code>DocList</code></a> supports multiple ways to serialize the data.</p>
 <h3 id="json_1">JSON</h3>
 <ul>
-<li><a class="autorefs autorefs-internal" href="../../../API_reference/array/da/#docarray.array.doc_list.io.IOMixinArray.to_json"><code>to_json()</code></a> serializes a <a class="autorefs autorefs-internal" href="../../../API_reference/array/da/#docarray.array.doc_list.doc_list.DocList"><code>DocList</code></a> to JSON. It returns the binary representation of the JSON object. </li>
-<li><a class="autorefs autorefs-internal" href="../../../API_reference/array/da/#docarray.array.doc_list.io.IOMixinArray.from_json"><code>from_json()</code></a> deserializes a <a class="autorefs autorefs-internal" href="../../../API_reference/array/da/#docarray.array.doc_list.doc_list.DocList"><code>DocList</code></a> from JSON. It can load from either a <code>str</code> or <code>binary</code> representation of the JSON object.</li>
+<li><a class="autorefs autorefs-internal" href="../../../API_reference/array/da/#docarray.array.doc_list.io.IOMixinDocList.to_json"><code>to_json()</code></a> serializes a <a class="autorefs autorefs-internal" href="../../../API_reference/array/da/#docarray.array.doc_list.doc_list.DocList"><code>DocList</code></a> to JSON. It returns the binary representation of the JSON object. </li>
+<li><a class="autorefs autorefs-internal" href="../../../API_reference/array/da/#docarray.array.doc_list.io.IOMixinDocList.from_json"><code>from_json()</code></a> deserializes a <a class="autorefs autorefs-internal" href="../../../API_reference/array/da/#docarray.array.doc_list.doc_list.DocList"><code>DocList</code></a> from JSON. It can load from either a <code>str</code> or <code>binary</code> representation of the JSON object.</li>
 </ul>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">BaseDoc</span><span class="p">,</span> <span class="n">DocList</span>
 </span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>
@@ -2410,8 +2490,8 @@
 </span></code></pre></div>
 <h3 id="protobuf_1">Protobuf</h3>
 <ul>
-<li><a class="autorefs autorefs-internal" href="../../../API_reference/array/da/#docarray.array.doc_list.io.IOMixinArray.to_protobuf"><code>to_protobuf()</code></a> serializes a <a class="autorefs autorefs-internal" href="../../../API_reference/array/da/#docarray.array.doc_list.doc_list.DocList"><code>DocList</code></a> to <code>protobuf</code>. It returns a <code>protobuf</code> object of <code>docarray_pb2.DocListProto</code> class.</li>
-<li><a class="autorefs autorefs-internal" href="../../../API_reference/array/da/#docarray.array.doc_list.io.IOMixinArray.from_protobuf"><code>from_protobuf()</code></a> deserializes a <a class="autorefs autorefs-internal" href="../../../API_reference/array/da/#docarray.array.doc_list.doc_list.DocList"><code>DocList</code></a> from <code>protobuf</code>. It accepts a <code>protobuf</code> message object to construct a <a class="autorefs autorefs-internal" href="../../../API_reference/array/da/#docarray.array.doc_list.doc_list.DocList"><code>DocList</code></a>.</li>
+<li><a class="autorefs autorefs-internal" href="../../../API_reference/array/da/#docarray.array.doc_list.io.IOMixinDocList.to_protobuf"><code>to_protobuf()</code></a> serializes a <a class="autorefs autorefs-internal" href="../../../API_reference/array/da/#docarray.array.doc_list.doc_list.DocList"><code>DocList</code></a> to <code>protobuf</code>. It returns a <code>protobuf</code> object of <code>docarray_pb2.DocListProto</code> class.</li>
+<li><a class="autorefs autorefs-internal" href="../../../API_reference/array/da/#docarray.array.doc_list.io.IOMixinDocList.from_protobuf"><code>from_protobuf()</code></a> deserializes a <a class="autorefs autorefs-internal" href="../../../API_reference/array/da/#docarray.array.doc_list.doc_list.DocList"><code>DocList</code></a> from <code>protobuf</code>. It accepts a <code>protobuf</code> message object to construct a <a class="autorefs autorefs-internal" href="../../../API_reference/array/da/#docarray.array.doc_list.doc_list.DocList"><code>DocList</code></a>.</li>
 </ul>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">BaseDoc</span><span class="p">,</span> <span class="n">DocList</span>
 </span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>
@@ -2431,8 +2511,8 @@
 <p>When transferring data over the network, use <code>Base64</code> format to serialize the <a class="autorefs autorefs-internal" href="../../../API_reference/array/da/#docarray.array.doc_list.doc_list.DocList"><code>DocList</code></a>.
 Serializing a <a class="autorefs autorefs-internal" href="../../../API_reference/array/da/#docarray.array.doc_list.doc_list.DocList"><code>DocList</code></a> in Base64 supports both the <code>pickle</code> and <code>protobuf</code> protocols. You can also choose different compression methods.</p>
 <ul>
-<li><a class="autorefs autorefs-internal" href="../../../API_reference/array/da/#docarray.array.doc_list.io.IOMixinArray.to_base64"><code>to_base64()</code></a> serializes a <a class="autorefs autorefs-internal" href="../../../API_reference/array/da/#docarray.array.doc_list.doc_list.DocList"><code>DocList</code></a> to Base64</li>
-<li><a class="autorefs autorefs-internal" href="../../../API_reference/array/da/#docarray.array.doc_list.io.IOMixinArray.from_base64"><code>from_base64()</code></a> deserializes a <a class="autorefs autorefs-internal" href="../../../API_reference/array/da/#docarray.array.doc_list.doc_list.DocList"><code>DocList</code></a> from Base64:</li>
+<li><a class="autorefs autorefs-internal" href="../../../API_reference/array/da/#docarray.array.doc_list.io.IOMixinDocList.to_base64"><code>to_base64()</code></a> serializes a <a class="autorefs autorefs-internal" href="../../../API_reference/array/da/#docarray.array.doc_list.doc_list.DocList"><code>DocList</code></a> to Base64</li>
+<li><a class="autorefs autorefs-internal" href="../../../API_reference/array/da/#docarray.array.doc_list.io.IOMixinDocList.from_base64"><code>from_base64()</code></a> deserializes a <a class="autorefs autorefs-internal" href="../../../API_reference/array/da/#docarray.array.doc_list.doc_list.DocList"><code>DocList</code></a> from Base64:</li>
 </ul>
 <p>You can multiple compression methods: <code>lz4</code>, <code>bz2</code>, <code>lzma</code>, <code>zlib</code>, and <code>gzip</code>.</p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">BaseDoc</span><span class="p">,</span> <span class="n">DocList</span>
@@ -2453,8 +2533,8 @@ Serializing a <a class="autorefs autorefs-internal" href="../../../API_reference
 <h3 id="save-binary">Save binary</h3>
 <p>These methods <strong>serialize and save</strong> your data:</p>
 <ul>
-<li><a class="autorefs autorefs-internal" href="../../../API_reference/array/da/#docarray.array.doc_list.io.IOMixinArray.save_binary"><code>save_binary()</code></a> saves a <a class="autorefs autorefs-internal" href="../../../API_reference/array/da/#docarray.array.doc_list.doc_list.DocList"><code>DocList</code></a> to a binary file.</li>
-<li><a class="autorefs autorefs-internal" href="../../../API_reference/array/da/#docarray.array.doc_list.io.IOMixinArray.load_binary"><code>load_binary()</code></a> loads a <a class="autorefs autorefs-internal" href="../../../API_reference/array/da/#docarray.array.doc_list.doc_list.DocList"><code>DocList</code></a> from a binary file.</li>
+<li><a class="autorefs autorefs-internal" href="../../../API_reference/array/da/#docarray.array.doc_list.io.IOMixinDocList.save_binary"><code>save_binary()</code></a> saves a <a class="autorefs autorefs-internal" href="../../../API_reference/array/da/#docarray.array.doc_list.doc_list.DocList"><code>DocList</code></a> to a binary file.</li>
+<li><a class="autorefs autorefs-internal" href="../../../API_reference/array/da/#docarray.array.doc_list.io.IOMixinDocList.load_binary"><code>load_binary()</code></a> loads a <a class="autorefs autorefs-internal" href="../../../API_reference/array/da/#docarray.array.doc_list.doc_list.DocList"><code>DocList</code></a> from a binary file.</li>
 </ul>
 <p>You can choose between multiple compression methods: <code>lz4</code>, <code>bz2</code>, <code>lzma</code>, <code>zlib</code>, and <code>gzip</code>.</p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">BaseDoc</span><span class="p">,</span> <span class="n">DocList</span>
@@ -2476,12 +2556,12 @@ Serializing a <a class="autorefs autorefs-internal" href="../../../API_reference
 <h3 id="bytes">Bytes</h3>
 <p>These methods just serialize your data, without saving it to a file:</p>
 <ul>
-<li><a class="autorefs autorefs-internal" href="../../../API_reference/array/da/#docarray.array.doc_list.io.IOMixinArray.to_bytes">to_bytes()</a> saves a <a class="autorefs autorefs-internal" href="../../../API_reference/array/da/#docarray.array.doc_list.doc_list.DocList"><code>DocList</code></a> to a byte object.</li>
-<li><a class="autorefs autorefs-internal" href="../../../API_reference/array/da/#docarray.array.doc_list.io.IOMixinArray.from_bytes">from_bytes()</a> loads a <a class="autorefs autorefs-internal" href="../../../API_reference/array/da/#docarray.array.doc_list.doc_list.DocList"><code>DocList</code></a> from a byte object.  </li>
+<li><a class="autorefs autorefs-internal" href="../../../API_reference/array/da/#docarray.array.doc_list.io.IOMixinDocList.to_bytes">to_bytes()</a> saves a <a class="autorefs autorefs-internal" href="../../../API_reference/array/da/#docarray.array.doc_list.doc_list.DocList"><code>DocList</code></a> to a byte object.</li>
+<li><a class="autorefs autorefs-internal" href="../../../API_reference/array/da/#docarray.array.doc_list.io.IOMixinDocList.from_bytes">from_bytes()</a> loads a <a class="autorefs autorefs-internal" href="../../../API_reference/array/da/#docarray.array.doc_list.doc_list.DocList"><code>DocList</code></a> from a byte object.  </li>
 </ul>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>These methods are used under the hood by <a class="autorefs autorefs-internal" href="../../../API_reference/array/da/#docarray.array.doc_list.io.IOMixinArray.to_base64">save_binary()</a> and <a class="autorefs autorefs-internal" href="../../../API_reference/array/da/#docarray.array.doc_list.io.IOMixinArray.load_binary"><code>load_binary()</code></a> to prepare/load/save to a binary file. You can also use them directly to work with byte files.</p>
+<p>These methods are used under the hood by <a class="autorefs autorefs-internal" href="../../../API_reference/array/da/#docarray.array.doc_list.io.IOMixinDocList.to_base64">save_binary()</a> and <a class="autorefs autorefs-internal" href="../../../API_reference/array/da/#docarray.array.doc_list.io.IOMixinDocList.load_binary"><code>load_binary()</code></a> to prepare/load/save to a binary file. You can also use them directly to work with byte files.</p>
 </div>
 <p>Like working with binary files:</p>
 <ul>
@@ -2505,8 +2585,8 @@ Serializing a <a class="autorefs autorefs-internal" href="../../../API_reference
 </span></code></pre></div>
 <h3 id="csv">CSV</h3>
 <ul>
-<li><a class="autorefs autorefs-internal" href="../../../API_reference/array/da/#docarray.array.doc_list.io.IOMixinArray.to_csv"><code>to_csv()</code></a> serializes a <a class="autorefs autorefs-internal" href="../../../API_reference/array/da/#docarray.array.doc_list.doc_list.DocList"><code>DocList</code></a> to a CSV file.</li>
-<li><a class="autorefs autorefs-internal" href="../../../API_reference/array/da/#docarray.array.doc_list.io.IOMixinArray.from_csv"><code>from_csv()</code></a> deserializes a <a class="autorefs autorefs-internal" href="../../../API_reference/array/da/#docarray.array.doc_list.doc_list.DocList"><code>DocList</code></a> from a CSV file.</li>
+<li><a class="autorefs autorefs-internal" href="../../../API_reference/array/da/#docarray.array.doc_list.io.IOMixinDocList.to_csv"><code>to_csv()</code></a> serializes a <a class="autorefs autorefs-internal" href="../../../API_reference/array/da/#docarray.array.doc_list.doc_list.DocList"><code>DocList</code></a> to a CSV file.</li>
+<li><a class="autorefs autorefs-internal" href="../../../API_reference/array/da/#docarray.array.doc_list.io.IOMixinDocList.from_csv"><code>from_csv()</code></a> deserializes a <a class="autorefs autorefs-internal" href="../../../API_reference/array/da/#docarray.array.doc_list.doc_list.DocList"><code>DocList</code></a> from a CSV file.</li>
 </ul>
 <p>Use the <code>dialect</code> parameter to choose the <a href="https://docs.python.org/3/library/csv.html#dialects-and-formatting-parameters">dialect of the CSV format</a>:</p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">BaseDoc</span><span class="p">,</span> <span class="n">DocList</span>
@@ -2524,8 +2604,8 @@ Serializing a <a class="autorefs autorefs-internal" href="../../../API_reference
 </span></code></pre></div>
 <h3 id="pandasdataframe">Pandas.Dataframe</h3>
 <ul>
-<li><a class="autorefs autorefs-internal" href="../../../API_reference/array/da/#docarray.array.doc_list.io.IOMixinArray.from_dataframe"><code>from_dataframe()</code></a> loads a <a class="autorefs autorefs-internal" href="../../../API_reference/array/da/#docarray.array.doc_list.doc_list.DocList"><code>DocList</code></a> from a <a href="https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.html">Pandas Dataframe</a>.</li>
-<li><a class="autorefs autorefs-internal" href="../../../API_reference/array/da/#docarray.array.doc_list.io.IOMixinArray.to_dataframe"><code>to_dataframe()</code></a> saves a <a class="autorefs autorefs-internal" href="../../../API_reference/array/da/#docarray.array.doc_list.doc_list.DocList"><code>DocList</code></a> to a <a href="https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.html">Pandas Dataframe</a>.</li>
+<li><a class="autorefs autorefs-internal" href="../../../API_reference/array/da/#docarray.array.doc_list.io.IOMixinDocList.from_dataframe"><code>from_dataframe()</code></a> loads a <a class="autorefs autorefs-internal" href="../../../API_reference/array/da/#docarray.array.doc_list.doc_list.DocList"><code>DocList</code></a> from a <a href="https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.html">Pandas Dataframe</a>.</li>
+<li><a class="autorefs autorefs-internal" href="../../../API_reference/array/da/#docarray.array.doc_list.io.IOMixinDocList.to_dataframe"><code>to_dataframe()</code></a> saves a <a class="autorefs autorefs-internal" href="../../../API_reference/array/da/#docarray.array.doc_list.doc_list.DocList"><code>DocList</code></a> to a <a href="https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.html">Pandas Dataframe</a>.</li>
 </ul>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">BaseDoc</span><span class="p">,</span> <span class="n">DocList</span>
 </span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>
@@ -2543,37 +2623,50 @@ Serializing a <a class="autorefs autorefs-internal" href="../../../API_reference
 <h2 id="docvec">DocVec</h2>
 <p>For sending or storing <a class="autorefs autorefs-internal" href="../../../API_reference/array/da_stack/#docarray.array.doc_vec.doc_vec.DocVec"><code>DocVec</code></a> it offers a very similar interface to that of
 <a class="autorefs autorefs-internal" href="../../../API_reference/array/da/#docarray.array.doc_list.doc_list.DocList"><code>DocList</code></a>.</p>
+<div class="admonition note">
+<p class="admonition-title">Tensor type and (de)serialization</p>
+<p>You can deserialize any serialized <a class="autorefs autorefs-internal" href="../../../API_reference/array/da_stack/#docarray.array.doc_vec.doc_vec.DocVec">DocVec</a> to any tensor type (<a class="autorefs autorefs-internal" href="../../../API_reference/typing/tensor/tensor/#docarray.typing.tensor.ndarray.NdArray"><code>NdArray</code></a>, <a class="autorefs autorefs-internal" href="../../../API_reference/typing/tensor/tensor/#docarray.typing.tensor.torch_tensor.TorchTensor"><code>TorchTensor</code></a>, or <a class="autorefs autorefs-internal" href="../../../API_reference/typing/tensor/tensor/#docarray.typing.tensor.tensorflow_tensor.TensorFlowTensor"><code>TensorFlowTensor</code></a>),
+by passing the <code>tensor_type=...</code> parameter to the appropriate deserialization method.
+This is analogous to the <code>tensor_type=...</code> parameter in the [DocVec][docarray.array.doc_list.doc_list.DocVec.__init__] constructor.</p>
+<p>This means that you can choose at deserialization time if you are working with numpy, PyTorch, or TensorFlow tensors.</p>
+<p>If no <code>tensor_type</code> is passed, the default is <code>NdArray</code>.</p>
+</div>
 <h3 id="json_2">JSON</h3>
 <ul>
-<li><a class="autorefs autorefs-internal" href="../../../API_reference/array/da/#docarray.array.doc_list.io.IOMixinArray.to_json"><code>to_json()</code></a> serializes a <a class="autorefs autorefs-internal" href="../../../API_reference/array/da_stack/#docarray.array.doc_vec.doc_vec.DocVec"><code>DocVec</code></a> to JSON. It returns the binary representation of the JSON object. </li>
-<li><a class="autorefs autorefs-internal" href="../../../API_reference/array/da/#docarray.array.doc_list.io.IOMixinArray.from_json"><code>from_json()</code></a> deserializes a <a class="autorefs autorefs-internal" href="../../../API_reference/array/da_stack/#docarray.array.doc_vec.doc_vec.DocVec"><code>DocList</code></a> from JSON. It can load from either a <code>str</code> or <code>binary</code> representation of the JSON object.</li>
+<li>[<code>to_json()</code>][docarray.array.doc_vec.io.IOMixinDocVec.to_json] serializes a <a class="autorefs autorefs-internal" href="../../../API_reference/array/da_stack/#docarray.array.doc_vec.doc_vec.DocVec"><code>DocVec</code></a> to JSON. It returns the binary representation of the JSON object. </li>
+<li><a class="autorefs autorefs-internal" href="../../../API_reference/array/da_stack/#docarray.array.doc_vec.io.IOMixinDocVec.from_json"><code>from_json()</code></a> deserializes a <a class="autorefs autorefs-internal" href="../../../API_reference/array/da_stack/#docarray.array.doc_vec.doc_vec.DocVec"><code>DocList</code></a> from JSON. It can load from either a <code>str</code> or <code>binary</code> representation of the JSON object.</li>
 </ul>
 <p>In contrast to <a href="#json-1">DocList's JSON format</a>, <code>DocVec.to_json()</code> outputs a column oriented JSON file:</p>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">BaseDoc</span><span class="p">,</span> <span class="n">DocVec</span>
-</span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>
-</span><span id="__span-10-3"><a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a>
-</span><span id="__span-10-4"><a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a><span class="k">class</span> <span class="nc">SimpleDoc</span><span class="p">(</span><span class="n">BaseDoc</span><span class="p">):</span>
-</span><span id="__span-10-5"><a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a>    <span class="n">text</span><span class="p">:</span> <span class="nb">str</span>
-</span><span id="__span-10-6"><a id="__codelineno-10-6" name="__codelineno-10-6" href="#__codelineno-10-6"></a>
-</span><span id="__span-10-7"><a id="__codelineno-10-7" name="__codelineno-10-7" href="#__codelineno-10-7"></a>
-</span><span id="__span-10-8"><a id="__codelineno-10-8" name="__codelineno-10-8" href="#__codelineno-10-8"></a><span class="n">dv</span> <span class="o">=</span> <span class="n">DocVec</span><span class="p">[</span><span class="n">SimpleDoc</span><span class="p">]([</span><span class="n">SimpleDoc</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="sa">f</span><span class="s1">'doc </span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s1">'</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">)])</span>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="kn">import</span> <span class="nn">torch</span>
+</span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">BaseDoc</span><span class="p">,</span> <span class="n">DocVec</span>
+</span><span id="__span-10-3"><a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a><span class="kn">from</span> <span class="nn">docarray.typing</span> <span class="kn">import</span> <span class="n">TorchTensor</span>
+</span><span id="__span-10-4"><a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a>
+</span><span id="__span-10-5"><a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a>
+</span><span id="__span-10-6"><a id="__codelineno-10-6" name="__codelineno-10-6" href="#__codelineno-10-6"></a><span class="k">class</span> <span class="nc">SimpleDoc</span><span class="p">(</span><span class="n">BaseDoc</span><span class="p">):</span>
+</span><span id="__span-10-7"><a id="__codelineno-10-7" name="__codelineno-10-7" href="#__codelineno-10-7"></a>    <span class="n">text</span><span class="p">:</span> <span class="nb">str</span>
+</span><span id="__span-10-8"><a id="__codelineno-10-8" name="__codelineno-10-8" href="#__codelineno-10-8"></a>    <span class="n">tensor</span><span class="p">:</span> <span class="n">TorchTensor</span>
 </span><span id="__span-10-9"><a id="__codelineno-10-9" name="__codelineno-10-9" href="#__codelineno-10-9"></a>
-</span><span id="__span-10-10"><a id="__codelineno-10-10" name="__codelineno-10-10" href="#__codelineno-10-10"></a><span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">'simple-dv.json'</span><span class="p">,</span> <span class="s1">'wb'</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
-</span><span id="__span-10-11"><a id="__codelineno-10-11" name="__codelineno-10-11" href="#__codelineno-10-11"></a>    <span class="n">json_dv</span> <span class="o">=</span> <span class="n">dv</span><span class="o">.</span><span class="n">to_json</span><span class="p">()</span>
-</span><span id="__span-10-12"><a id="__codelineno-10-12" name="__codelineno-10-12" href="#__codelineno-10-12"></a>    <span class="nb">print</span><span class="p">(</span><span class="n">json_dv</span><span class="p">)</span>
-</span><span id="__span-10-13"><a id="__codelineno-10-13" name="__codelineno-10-13" href="#__codelineno-10-13"></a>    <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">json_dv</span><span class="p">)</span>
+</span><span id="__span-10-10"><a id="__codelineno-10-10" name="__codelineno-10-10" href="#__codelineno-10-10"></a>
+</span><span id="__span-10-11"><a id="__codelineno-10-11" name="__codelineno-10-11" href="#__codelineno-10-11"></a><span class="n">dv</span> <span class="o">=</span> <span class="n">DocVec</span><span class="p">[</span><span class="n">SimpleDoc</span><span class="p">](</span>
+</span><span id="__span-10-12"><a id="__codelineno-10-12" name="__codelineno-10-12" href="#__codelineno-10-12"></a>    <span class="p">[</span><span class="n">SimpleDoc</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="sa">f</span><span class="s1">'doc </span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s1">'</span><span class="p">,</span> <span class="n">tensor</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">64</span><span class="p">))</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">)]</span>
+</span><span id="__span-10-13"><a id="__codelineno-10-13" name="__codelineno-10-13" href="#__codelineno-10-13"></a><span class="p">)</span>
 </span><span id="__span-10-14"><a id="__codelineno-10-14" name="__codelineno-10-14" href="#__codelineno-10-14"></a>
-</span><span id="__span-10-15"><a id="__codelineno-10-15" name="__codelineno-10-15" href="#__codelineno-10-15"></a><span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">'simple-dv.json'</span><span class="p">,</span> <span class="s1">'r'</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
-</span><span id="__span-10-16"><a id="__codelineno-10-16" name="__codelineno-10-16" href="#__codelineno-10-16"></a>    <span class="n">dv_load_from_json</span> <span class="o">=</span> <span class="n">DocVec</span><span class="p">[</span><span class="n">SimpleDoc</span><span class="p">]</span><span class="o">.</span><span class="n">from_json</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>
-</span><span id="__span-10-17"><a id="__codelineno-10-17" name="__codelineno-10-17" href="#__codelineno-10-17"></a>    <span class="nb">print</span><span class="p">(</span><span class="n">dv_load_from_json</span><span class="p">)</span>
+</span><span id="__span-10-15"><a id="__codelineno-10-15" name="__codelineno-10-15" href="#__codelineno-10-15"></a><span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">'simple-dv.json'</span><span class="p">,</span> <span class="s1">'wb'</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+</span><span id="__span-10-16"><a id="__codelineno-10-16" name="__codelineno-10-16" href="#__codelineno-10-16"></a>    <span class="n">json_dv</span> <span class="o">=</span> <span class="n">dv</span><span class="o">.</span><span class="n">to_json</span><span class="p">()</span>
+</span><span id="__span-10-17"><a id="__codelineno-10-17" name="__codelineno-10-17" href="#__codelineno-10-17"></a>    <span class="nb">print</span><span class="p">(</span><span class="n">json_dv</span><span class="p">)</span>
+</span><span id="__span-10-18"><a id="__codelineno-10-18" name="__codelineno-10-18" href="#__codelineno-10-18"></a>    <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">json_dv</span><span class="p">)</span>
+</span><span id="__span-10-19"><a id="__codelineno-10-19" name="__codelineno-10-19" href="#__codelineno-10-19"></a>
+</span><span id="__span-10-20"><a id="__codelineno-10-20" name="__codelineno-10-20" href="#__codelineno-10-20"></a><span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">'simple-dv.json'</span><span class="p">,</span> <span class="s1">'r'</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+</span><span id="__span-10-21"><a id="__codelineno-10-21" name="__codelineno-10-21" href="#__codelineno-10-21"></a>    <span class="n">dv_load_from_json</span> <span class="o">=</span> <span class="n">DocVec</span><span class="p">[</span><span class="n">SimpleDoc</span><span class="p">]</span><span class="o">.</span><span class="n">from_json</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">(),</span> <span class="n">tensor_type</span><span class="o">=</span><span class="n">TorchTensor</span><span class="p">)</span>
+</span><span id="__span-10-22"><a id="__codelineno-10-22" name="__codelineno-10-22" href="#__codelineno-10-22"></a>    <span class="nb">print</span><span class="p">(</span><span class="n">dv_load_from_json</span><span class="p">)</span>
 </span></code></pre></div>
 <div class="language-output highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="go">b'{"tensor_columns":{},"doc_columns":{},"docs_vec_columns":{},"any_columns":{"id":["005a208a0a9a368c16bf77913b710433","31d65f02cb94fc9756c57b0dbaac3a2c"],"text":["doc 0","doc 1"]}}'</span>
 </span><span id="__span-11-2"><a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a><span class="go">&lt;DocVec[SimpleDoc] (length=2)&gt;</span>
 </span></code></pre></div>
 <h3 id="protobuf_2">Protobuf</h3>
 <ul>
-<li><a class="autorefs autorefs-internal" href="../../../API_reference/array/da_stack/#docarray.array.doc_vec.doc_vec.DocVec.to_protobuf"><code>to_protobuf</code></a> serializes a <a class="autorefs autorefs-internal" href="../../../API_reference/array/da_stack/#docarray.array.doc_vec.doc_vec.DocVec">DocVec</a> to <code>protobuf</code>. It returns a <code>protobuf</code> object of <code>docarray_pb2.DocVecProto</code> class. </li>
-<li><a class="autorefs autorefs-internal" href="../../../API_reference/array/da_stack/#docarray.array.doc_vec.doc_vec.DocVec.from_protobuf"><code>from_protobuf</code></a> deserializes a <a class="autorefs autorefs-internal" href="../../../API_reference/array/da_stack/#docarray.array.doc_vec.doc_vec.DocVec">DocVec</a> from <code>protobuf</code>. It accepts a protobuf message object to construct a <a class="autorefs autorefs-internal" href="../../../API_reference/array/da_stack/#docarray.array.doc_vec.doc_vec.DocVec">DocVec</a>.</li>
+<li><a class="autorefs autorefs-internal" href="../../../API_reference/array/da_stack/#docarray.array.doc_vec.io.IOMixinDocVec.to_protobuf"><code>to_protobuf</code></a> serializes a <a class="autorefs autorefs-internal" href="../../../API_reference/array/da_stack/#docarray.array.doc_vec.doc_vec.DocVec">DocVec</a> to <code>protobuf</code>. It returns a <code>protobuf</code> object of <code>docarray_pb2.DocVecProto</code> class. </li>
+<li><a class="autorefs autorefs-internal" href="../../../API_reference/array/da_stack/#docarray.array.doc_vec.io.IOMixinDocVec.from_protobuf"><code>from_protobuf</code></a> deserializes a <a class="autorefs autorefs-internal" href="../../../API_reference/array/da_stack/#docarray.array.doc_vec.doc_vec.DocVec">DocVec</a> from <code>protobuf</code>. It accepts a protobuf message object to construct a <a class="autorefs autorefs-internal" href="../../../API_reference/array/da_stack/#docarray.array.doc_vec.doc_vec.DocVec">DocVec</a>.</li>
 </ul>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 </span><span id="__span-12-2"><a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a>
@@ -2592,7 +2685,7 @@ Serializing a <a class="autorefs autorefs-internal" href="../../../API_reference
 </span><span id="__span-12-15"><a id="__codelineno-12-15" name="__codelineno-12-15" href="#__codelineno-12-15"></a><span class="n">dv_from_proto</span> <span class="o">=</span> <span class="n">DocVec</span><span class="p">[</span><span class="n">SimpleVecDoc</span><span class="p">]</span><span class="o">.</span><span class="n">from_protobuf</span><span class="p">(</span><span class="n">proto_message_dv</span><span class="p">)</span>
 </span></code></pre></div>
 <p>You can deserialize any <a class="autorefs autorefs-internal" href="../../../API_reference/array/da_stack/#docarray.array.doc_vec.doc_vec.DocVec">DocVec</a> protobuf message to any tensor type,
-by passing the <code>tensor_type=...</code> parameter to <a class="autorefs autorefs-internal" href="../../../API_reference/array/da_stack/#docarray.array.doc_vec.doc_vec.DocVec.from_protobuf"><code>from_protobuf</code></a></p>
+by passing the <code>tensor_type=...</code> parameter to <a class="autorefs autorefs-internal" href="../../../API_reference/array/da_stack/#docarray.array.doc_vec.io.IOMixinDocVec.from_protobuf"><code>from_protobuf</code></a></p>
 <p>This means that you can choose at deserialization time if you are working with numpy, PyTorch, or TensorFlow tensors.</p>
 <p>If no <code>tensor_type</code> is passed, the default is <code>NdArray</code>.</p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="kn">import</span> <span class="nn">torch</span>
@@ -2632,57 +2725,67 @@ by passing the <code>tensor_type=...</code> parameter to <a class="autorefs auto
 Serializing a <a class="autorefs autorefs-internal" href="../../../API_reference/array/da_stack/#docarray.array.doc_vec.doc_vec.DocVec">DocVec</a> in Base64 supports both the <code>pickle</code> and <code>protobuf</code> protocols.
 You can also choose different compression methods.</p>
 <ul>
-<li><a class="autorefs autorefs-internal" href="../../../API_reference/array/da/#docarray.array.doc_list.io.IOMixinArray.to_base64"><code>to_base64()</code></a> serializes a <a class="autorefs autorefs-internal" href="../../../API_reference/array/da_stack/#docarray.array.doc_vec.doc_vec.DocVec">DocVec</a> to Base64</li>
-<li><a class="autorefs autorefs-internal" href="../../../API_reference/array/da/#docarray.array.doc_list.io.IOMixinArray.from_base64"><code>from_base64()</code></a> deserializes a <a class="autorefs autorefs-internal" href="../../../API_reference/array/da_stack/#docarray.array.doc_vec.doc_vec.DocVec">DocVec</a> from Base64:</li>
+<li>[<code>to_base64()</code>][docarray.array.doc_vec.io.IOMixinDocVec.to_base64] serializes a <a class="autorefs autorefs-internal" href="../../../API_reference/array/da_stack/#docarray.array.doc_vec.doc_vec.DocVec">DocVec</a> to Base64</li>
+<li><a class="autorefs autorefs-internal" href="../../../API_reference/array/da_stack/#docarray.array.doc_vec.io.IOMixinDocVec.from_base64"><code>from_base64()</code></a> deserializes a <a class="autorefs autorefs-internal" href="../../../API_reference/array/da_stack/#docarray.array.doc_vec.doc_vec.DocVec">DocVec</a> from Base64:</li>
 </ul>
 <p>You can multiple compression methods: <code>lz4</code>, <code>bz2</code>, <code>lzma</code>, <code>zlib</code>, and <code>gzip</code>.</p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">BaseDoc</span><span class="p">,</span> <span class="n">DocVec</span>
-</span><span id="__span-14-2"><a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a>
-</span><span id="__span-14-3"><a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a>
-</span><span id="__span-14-4"><a id="__codelineno-14-4" name="__codelineno-14-4" href="#__codelineno-14-4"></a><span class="k">class</span> <span class="nc">SimpleDoc</span><span class="p">(</span><span class="n">BaseDoc</span><span class="p">):</span>
-</span><span id="__span-14-5"><a id="__codelineno-14-5" name="__codelineno-14-5" href="#__codelineno-14-5"></a>    <span class="n">text</span><span class="p">:</span> <span class="nb">str</span>
-</span><span id="__span-14-6"><a id="__codelineno-14-6" name="__codelineno-14-6" href="#__codelineno-14-6"></a>
-</span><span id="__span-14-7"><a id="__codelineno-14-7" name="__codelineno-14-7" href="#__codelineno-14-7"></a>
-</span><span id="__span-14-8"><a id="__codelineno-14-8" name="__codelineno-14-8" href="#__codelineno-14-8"></a><span class="n">dv</span> <span class="o">=</span> <span class="n">DocVec</span><span class="p">[</span><span class="n">SimpleDoc</span><span class="p">]([</span><span class="n">SimpleDoc</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="sa">f</span><span class="s1">'doc </span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s1">'</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">)])</span>
+</span><span id="__span-14-2"><a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a><span class="kn">from</span> <span class="nn">docarray.typing</span> <span class="kn">import</span> <span class="n">TorchTensor</span>
+</span><span id="__span-14-3"><a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a><span class="kn">import</span> <span class="nn">torch</span>
+</span><span id="__span-14-4"><a id="__codelineno-14-4" name="__codelineno-14-4" href="#__codelineno-14-4"></a>
+</span><span id="__span-14-5"><a id="__codelineno-14-5" name="__codelineno-14-5" href="#__codelineno-14-5"></a>
+</span><span id="__span-14-6"><a id="__codelineno-14-6" name="__codelineno-14-6" href="#__codelineno-14-6"></a><span class="k">class</span> <span class="nc">SimpleDoc</span><span class="p">(</span><span class="n">BaseDoc</span><span class="p">):</span>
+</span><span id="__span-14-7"><a id="__codelineno-14-7" name="__codelineno-14-7" href="#__codelineno-14-7"></a>    <span class="n">text</span><span class="p">:</span> <span class="nb">str</span>
+</span><span id="__span-14-8"><a id="__codelineno-14-8" name="__codelineno-14-8" href="#__codelineno-14-8"></a>    <span class="n">tensor</span><span class="p">:</span> <span class="n">TorchTensor</span>
 </span><span id="__span-14-9"><a id="__codelineno-14-9" name="__codelineno-14-9" href="#__codelineno-14-9"></a>
-</span><span id="__span-14-10"><a id="__codelineno-14-10" name="__codelineno-14-10" href="#__codelineno-14-10"></a><span class="n">base64_repr_dv</span> <span class="o">=</span> <span class="n">dv</span><span class="o">.</span><span class="n">to_base64</span><span class="p">(</span><span class="n">compress</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">protocol</span><span class="o">=</span><span class="s1">'pickle'</span><span class="p">)</span>
-</span><span id="__span-14-11"><a id="__codelineno-14-11" name="__codelineno-14-11" href="#__codelineno-14-11"></a>
-</span><span id="__span-14-12"><a id="__codelineno-14-12" name="__codelineno-14-12" href="#__codelineno-14-12"></a><span class="n">dl_from_base64</span> <span class="o">=</span> <span class="n">DocVec</span><span class="p">[</span><span class="n">SimpleDoc</span><span class="p">]</span><span class="o">.</span><span class="n">from_base64</span><span class="p">(</span>
-</span><span id="__span-14-13"><a id="__codelineno-14-13" name="__codelineno-14-13" href="#__codelineno-14-13"></a>    <span class="n">base64_repr_dv</span><span class="p">,</span> <span class="n">compress</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">protocol</span><span class="o">=</span><span class="s1">'pickle'</span>
-</span><span id="__span-14-14"><a id="__codelineno-14-14" name="__codelineno-14-14" href="#__codelineno-14-14"></a><span class="p">)</span>
+</span><span id="__span-14-10"><a id="__codelineno-14-10" name="__codelineno-14-10" href="#__codelineno-14-10"></a>
+</span><span id="__span-14-11"><a id="__codelineno-14-11" name="__codelineno-14-11" href="#__codelineno-14-11"></a><span class="n">dv</span> <span class="o">=</span> <span class="n">DocVec</span><span class="p">[</span><span class="n">SimpleDoc</span><span class="p">](</span>
+</span><span id="__span-14-12"><a id="__codelineno-14-12" name="__codelineno-14-12" href="#__codelineno-14-12"></a>    <span class="p">[</span><span class="n">SimpleDoc</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="sa">f</span><span class="s1">'doc </span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s1">'</span><span class="p">,</span> <span class="n">tensor</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">64</span><span class="p">))</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">)]</span>
+</span><span id="__span-14-13"><a id="__codelineno-14-13" name="__codelineno-14-13" href="#__codelineno-14-13"></a><span class="p">)</span>
+</span><span id="__span-14-14"><a id="__codelineno-14-14" name="__codelineno-14-14" href="#__codelineno-14-14"></a>
+</span><span id="__span-14-15"><a id="__codelineno-14-15" name="__codelineno-14-15" href="#__codelineno-14-15"></a><span class="n">base64_repr_dv</span> <span class="o">=</span> <span class="n">dv</span><span class="o">.</span><span class="n">to_base64</span><span class="p">(</span><span class="n">compress</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">protocol</span><span class="o">=</span><span class="s1">'pickle'</span><span class="p">)</span>
+</span><span id="__span-14-16"><a id="__codelineno-14-16" name="__codelineno-14-16" href="#__codelineno-14-16"></a>
+</span><span id="__span-14-17"><a id="__codelineno-14-17" name="__codelineno-14-17" href="#__codelineno-14-17"></a><span class="n">dl_from_base64</span> <span class="o">=</span> <span class="n">DocVec</span><span class="p">[</span><span class="n">SimpleDoc</span><span class="p">]</span><span class="o">.</span><span class="n">from_base64</span><span class="p">(</span>
+</span><span id="__span-14-18"><a id="__codelineno-14-18" name="__codelineno-14-18" href="#__codelineno-14-18"></a>    <span class="n">base64_repr_dv</span><span class="p">,</span> <span class="n">compress</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">protocol</span><span class="o">=</span><span class="s1">'pickle'</span><span class="p">,</span> <span class="n">tensor_type</span><span class="o">=</span><span class="n">TorchTensor</span>
+</span><span id="__span-14-19"><a id="__codelineno-14-19" name="__codelineno-14-19" href="#__codelineno-14-19"></a><span class="p">)</span>
 </span></code></pre></div>
 <h3 id="save-binary_1">Save binary</h3>
 <p>These methods <strong>serialize and save</strong> your data:</p>
 <ul>
-<li><a class="autorefs autorefs-internal" href="../../../API_reference/array/da/#docarray.array.doc_list.io.IOMixinArray.save_binary"><code>save_binary()</code></a> saves a <a class="autorefs autorefs-internal" href="../../../API_reference/array/da_stack/#docarray.array.doc_vec.doc_vec.DocVec">DocVec</a> to a binary file.</li>
-<li><a class="autorefs autorefs-internal" href="../../../API_reference/array/da/#docarray.array.doc_list.io.IOMixinArray.load_binary"><code>load_binary()</code></a> loads a <a class="autorefs autorefs-internal" href="../../../API_reference/array/da_stack/#docarray.array.doc_vec.doc_vec.DocVec">DocVec</a> from a binary file.</li>
+<li>[<code>save_binary()</code>][docarray.array.doc_vec.io.IOMixinDocVec.save_binary] saves a <a class="autorefs autorefs-internal" href="../../../API_reference/array/da_stack/#docarray.array.doc_vec.doc_vec.DocVec">DocVec</a> to a binary file.</li>
+<li><a class="autorefs autorefs-internal" href="../../../API_reference/array/da_stack/#docarray.array.doc_vec.io.IOMixinDocVec.load_binary"><code>load_binary()</code></a> loads a <a class="autorefs autorefs-internal" href="../../../API_reference/array/da_stack/#docarray.array.doc_vec.doc_vec.DocVec">DocVec</a> from a binary file.</li>
 </ul>
 <p>You can choose between multiple compression methods: <code>lz4</code>, <code>bz2</code>, <code>lzma</code>, <code>zlib</code>, and <code>gzip</code>.</p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-15-1"><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">BaseDoc</span><span class="p">,</span> <span class="n">DocVec</span>
-</span><span id="__span-15-2"><a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a>
-</span><span id="__span-15-3"><a id="__codelineno-15-3" name="__codelineno-15-3" href="#__codelineno-15-3"></a>
-</span><span id="__span-15-4"><a id="__codelineno-15-4" name="__codelineno-15-4" href="#__codelineno-15-4"></a><span class="k">class</span> <span class="nc">SimpleDoc</span><span class="p">(</span><span class="n">BaseDoc</span><span class="p">):</span>
-</span><span id="__span-15-5"><a id="__codelineno-15-5" name="__codelineno-15-5" href="#__codelineno-15-5"></a>    <span class="n">text</span><span class="p">:</span> <span class="nb">str</span>
-</span><span id="__span-15-6"><a id="__codelineno-15-6" name="__codelineno-15-6" href="#__codelineno-15-6"></a>
-</span><span id="__span-15-7"><a id="__codelineno-15-7" name="__codelineno-15-7" href="#__codelineno-15-7"></a>
-</span><span id="__span-15-8"><a id="__codelineno-15-8" name="__codelineno-15-8" href="#__codelineno-15-8"></a><span class="n">dv</span> <span class="o">=</span> <span class="n">DocVec</span><span class="p">[</span><span class="n">SimpleDoc</span><span class="p">]([</span><span class="n">SimpleDoc</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="sa">f</span><span class="s1">'doc </span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s1">'</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">)])</span>
+</span><span id="__span-15-2"><a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a><span class="kn">from</span> <span class="nn">docarray.typing</span> <span class="kn">import</span> <span class="n">TorchTensor</span>
+</span><span id="__span-15-3"><a id="__codelineno-15-3" name="__codelineno-15-3" href="#__codelineno-15-3"></a><span class="kn">import</span> <span class="nn">torch</span>
+</span><span id="__span-15-4"><a id="__codelineno-15-4" name="__codelineno-15-4" href="#__codelineno-15-4"></a>
+</span><span id="__span-15-5"><a id="__codelineno-15-5" name="__codelineno-15-5" href="#__codelineno-15-5"></a>
+</span><span id="__span-15-6"><a id="__codelineno-15-6" name="__codelineno-15-6" href="#__codelineno-15-6"></a><span class="k">class</span> <span class="nc">SimpleDoc</span><span class="p">(</span><span class="n">BaseDoc</span><span class="p">):</span>
+</span><span id="__span-15-7"><a id="__codelineno-15-7" name="__codelineno-15-7" href="#__codelineno-15-7"></a>    <span class="n">text</span><span class="p">:</span> <span class="nb">str</span>
+</span><span id="__span-15-8"><a id="__codelineno-15-8" name="__codelineno-15-8" href="#__codelineno-15-8"></a>    <span class="n">tensor</span><span class="p">:</span> <span class="n">TorchTensor</span>
 </span><span id="__span-15-9"><a id="__codelineno-15-9" name="__codelineno-15-9" href="#__codelineno-15-9"></a>
-</span><span id="__span-15-10"><a id="__codelineno-15-10" name="__codelineno-15-10" href="#__codelineno-15-10"></a><span class="n">dv</span><span class="o">.</span><span class="n">save_binary</span><span class="p">(</span><span class="s1">'simple-dl.pickle'</span><span class="p">,</span> <span class="n">compress</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">protocol</span><span class="o">=</span><span class="s1">'pickle'</span><span class="p">)</span>
-</span><span id="__span-15-11"><a id="__codelineno-15-11" name="__codelineno-15-11" href="#__codelineno-15-11"></a>
-</span><span id="__span-15-12"><a id="__codelineno-15-12" name="__codelineno-15-12" href="#__codelineno-15-12"></a><span class="n">dv_from_binary</span> <span class="o">=</span> <span class="n">DocVec</span><span class="p">[</span><span class="n">SimpleDoc</span><span class="p">]</span><span class="o">.</span><span class="n">load_binary</span><span class="p">(</span>
-</span><span id="__span-15-13"><a id="__codelineno-15-13" name="__codelineno-15-13" href="#__codelineno-15-13"></a>    <span class="s1">'simple-dv.pickle'</span><span class="p">,</span> <span class="n">compress</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">protocol</span><span class="o">=</span><span class="s1">'pickle'</span>
-</span><span id="__span-15-14"><a id="__codelineno-15-14" name="__codelineno-15-14" href="#__codelineno-15-14"></a><span class="p">)</span>
+</span><span id="__span-15-10"><a id="__codelineno-15-10" name="__codelineno-15-10" href="#__codelineno-15-10"></a>
+</span><span id="__span-15-11"><a id="__codelineno-15-11" name="__codelineno-15-11" href="#__codelineno-15-11"></a><span class="n">dv</span> <span class="o">=</span> <span class="n">DocVec</span><span class="p">[</span><span class="n">SimpleDoc</span><span class="p">](</span>
+</span><span id="__span-15-12"><a id="__codelineno-15-12" name="__codelineno-15-12" href="#__codelineno-15-12"></a>    <span class="p">[</span><span class="n">SimpleDoc</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="sa">f</span><span class="s1">'doc </span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s1">'</span><span class="p">,</span> <span class="n">tensor</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">64</span><span class="p">))</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">)]</span>
+</span><span id="__span-15-13"><a id="__codelineno-15-13" name="__codelineno-15-13" href="#__codelineno-15-13"></a><span class="p">)</span>
+</span><span id="__span-15-14"><a id="__codelineno-15-14" name="__codelineno-15-14" href="#__codelineno-15-14"></a>
+</span><span id="__span-15-15"><a id="__codelineno-15-15" name="__codelineno-15-15" href="#__codelineno-15-15"></a><span class="n">dv</span><span class="o">.</span><span class="n">save_binary</span><span class="p">(</span><span class="s1">'simple-dl.pickle'</span><span class="p">,</span> <span class="n">compress</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">protocol</span><span class="o">=</span><span class="s1">'pickle'</span><span class="p">)</span>
+</span><span id="__span-15-16"><a id="__codelineno-15-16" name="__codelineno-15-16" href="#__codelineno-15-16"></a>
+</span><span id="__span-15-17"><a id="__codelineno-15-17" name="__codelineno-15-17" href="#__codelineno-15-17"></a><span class="n">dv_from_binary</span> <span class="o">=</span> <span class="n">DocVec</span><span class="p">[</span><span class="n">SimpleDoc</span><span class="p">]</span><span class="o">.</span><span class="n">load_binary</span><span class="p">(</span>
+</span><span id="__span-15-18"><a id="__codelineno-15-18" name="__codelineno-15-18" href="#__codelineno-15-18"></a>    <span class="s1">'simple-dv.pickle'</span><span class="p">,</span> <span class="n">compress</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">protocol</span><span class="o">=</span><span class="s1">'pickle'</span><span class="p">,</span> <span class="n">tensor_type</span><span class="o">=</span><span class="n">TorchTensor</span>
+</span><span id="__span-15-19"><a id="__codelineno-15-19" name="__codelineno-15-19" href="#__codelineno-15-19"></a><span class="p">)</span>
 </span></code></pre></div>
 <p>In the above snippet, the <a class="autorefs autorefs-internal" href="../../../API_reference/array/da_stack/#docarray.array.doc_vec.doc_vec.DocVec">DocVec</a> is stored as the file <code>simple-dv.pickle</code>.</p>
 <h3 id="bytes_1">Bytes</h3>
 <p>These methods just serialize your data, without saving it to a file:</p>
 <ul>
-<li><a class="autorefs autorefs-internal" href="../../../API_reference/array/da/#docarray.array.doc_list.io.IOMixinArray.to_bytes">to_bytes()</a> saves a <a class="autorefs autorefs-internal" href="../../../API_reference/array/da_stack/#docarray.array.doc_vec.doc_vec.DocVec">DocVec</a> to a byte object.</li>
-<li><a class="autorefs autorefs-internal" href="../../../API_reference/array/da/#docarray.array.doc_list.io.IOMixinArray.from_bytes">from_bytes()</a> loads a <a class="autorefs autorefs-internal" href="../../../API_reference/array/da_stack/#docarray.array.doc_vec.doc_vec.DocVec">DocVec</a> from a byte object.  </li>
+<li>[to_bytes()][docarray.array.doc_vec.io.IOMixinDocVec.to_bytes] saves a <a class="autorefs autorefs-internal" href="../../../API_reference/array/da_stack/#docarray.array.doc_vec.doc_vec.DocVec">DocVec</a> to a byte object.</li>
+<li><a class="autorefs autorefs-internal" href="../../../API_reference/array/da_stack/#docarray.array.doc_vec.io.IOMixinDocVec.from_bytes">from_bytes()</a> loads a <a class="autorefs autorefs-internal" href="../../../API_reference/array/da_stack/#docarray.array.doc_vec.doc_vec.DocVec">DocVec</a> from a byte object.  </li>
 </ul>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>These methods are used under the hood by <a class="autorefs autorefs-internal" href="../../../API_reference/array/da/#docarray.array.doc_list.io.IOMixinArray.to_base64">save_binary()</a> and <a class="autorefs autorefs-internal" href="../../../API_reference/array/da/#docarray.array.doc_list.io.IOMixinArray.load_binary"><code>load_binary()</code></a> to prepare/load/save to a binary file. You can also use them directly to work with byte files.</p>
+<p>These methods are used under the hood by [save_binary()][docarray.array.doc_vec.io.IOMixinDocVec.to_base64] and <a class="autorefs autorefs-internal" href="../../../API_reference/array/da_stack/#docarray.array.doc_vec.io.IOMixinDocVec.load_binary"><code>load_binary()</code></a> to prepare/load/save to a binary file. You can also use them directly to work with byte files.</p>
 </div>
 <p>Like working with binary files:</p>
 <ul>
@@ -2690,17 +2793,24 @@ You can also choose different compression methods.</p>
 <li>You can use multiple compression methods: <code>lz4</code>, <code>bz2</code>, <code>lzma</code>, <code>zlib</code>, and <code>gzip</code>.</li>
 </ul>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-16-1"><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">BaseDoc</span><span class="p">,</span> <span class="n">DocVec</span>
-</span><span id="__span-16-2"><a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a>
-</span><span id="__span-16-3"><a id="__codelineno-16-3" name="__codelineno-16-3" href="#__codelineno-16-3"></a>
-</span><span id="__span-16-4"><a id="__codelineno-16-4" name="__codelineno-16-4" href="#__codelineno-16-4"></a><span class="k">class</span> <span class="nc">SimpleDoc</span><span class="p">(</span><span class="n">BaseDoc</span><span class="p">):</span>
-</span><span id="__span-16-5"><a id="__codelineno-16-5" name="__codelineno-16-5" href="#__codelineno-16-5"></a>    <span class="n">text</span><span class="p">:</span> <span class="nb">str</span>
-</span><span id="__span-16-6"><a id="__codelineno-16-6" name="__codelineno-16-6" href="#__codelineno-16-6"></a>
-</span><span id="__span-16-7"><a id="__codelineno-16-7" name="__codelineno-16-7" href="#__codelineno-16-7"></a>
-</span><span id="__span-16-8"><a id="__codelineno-16-8" name="__codelineno-16-8" href="#__codelineno-16-8"></a><span class="n">dv</span> <span class="o">=</span> <span class="n">DocVec</span><span class="p">[</span><span class="n">SimpleDoc</span><span class="p">]([</span><span class="n">SimpleDoc</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="sa">f</span><span class="s1">'doc </span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s1">'</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">)])</span>
+</span><span id="__span-16-2"><a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a><span class="kn">from</span> <span class="nn">docarray.typing</span> <span class="kn">import</span> <span class="n">TorchTensor</span>
+</span><span id="__span-16-3"><a id="__codelineno-16-3" name="__codelineno-16-3" href="#__codelineno-16-3"></a><span class="kn">import</span> <span class="nn">torch</span>
+</span><span id="__span-16-4"><a id="__codelineno-16-4" name="__codelineno-16-4" href="#__codelineno-16-4"></a>
+</span><span id="__span-16-5"><a id="__codelineno-16-5" name="__codelineno-16-5" href="#__codelineno-16-5"></a>
+</span><span id="__span-16-6"><a id="__codelineno-16-6" name="__codelineno-16-6" href="#__codelineno-16-6"></a><span class="k">class</span> <span class="nc">SimpleDoc</span><span class="p">(</span><span class="n">BaseDoc</span><span class="p">):</span>
+</span><span id="__span-16-7"><a id="__codelineno-16-7" name="__codelineno-16-7" href="#__codelineno-16-7"></a>    <span class="n">text</span><span class="p">:</span> <span class="nb">str</span>
+</span><span id="__span-16-8"><a id="__codelineno-16-8" name="__codelineno-16-8" href="#__codelineno-16-8"></a>    <span class="n">tensor</span><span class="p">:</span> <span class="n">TorchTensor</span>
 </span><span id="__span-16-9"><a id="__codelineno-16-9" name="__codelineno-16-9" href="#__codelineno-16-9"></a>
-</span><span id="__span-16-10"><a id="__codelineno-16-10" name="__codelineno-16-10" href="#__codelineno-16-10"></a><span class="n">bytes_dv</span> <span class="o">=</span> <span class="n">dv</span><span class="o">.</span><span class="n">to_bytes</span><span class="p">(</span><span class="n">protocol</span><span class="o">=</span><span class="s1">'pickle'</span><span class="p">,</span> <span class="n">compress</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
-</span><span id="__span-16-11"><a id="__codelineno-16-11" name="__codelineno-16-11" href="#__codelineno-16-11"></a>
-</span><span id="__span-16-12"><a id="__codelineno-16-12" name="__codelineno-16-12" href="#__codelineno-16-12"></a><span class="n">dv_from_bytes</span> <span class="o">=</span> <span class="n">DocVec</span><span class="p">[</span><span class="n">SimpleDoc</span><span class="p">]</span><span class="o">.</span><span class="n">from_bytes</span><span class="p">(</span><span class="n">bytes_dv</span><span class="p">,</span> <span class="n">compress</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">protocol</span><span class="o">=</span><span class="s1">'pickle'</span><span class="p">)</span>
+</span><span id="__span-16-10"><a id="__codelineno-16-10" name="__codelineno-16-10" href="#__codelineno-16-10"></a>
+</span><span id="__span-16-11"><a id="__codelineno-16-11" name="__codelineno-16-11" href="#__codelineno-16-11"></a><span class="n">dv</span> <span class="o">=</span> <span class="n">DocVec</span><span class="p">[</span><span class="n">SimpleDoc</span><span class="p">](</span>
+</span><span id="__span-16-12"><a id="__codelineno-16-12" name="__codelineno-16-12" href="#__codelineno-16-12"></a>    <span class="p">[</span><span class="n">SimpleDoc</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="sa">f</span><span class="s1">'doc </span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s1">'</span><span class="p">,</span> <span class="n">tensor</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">64</span><span class="p">))</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">)]</span>
+</span><span id="__span-16-13"><a id="__codelineno-16-13" name="__codelineno-16-13" href="#__codelineno-16-13"></a><span class="p">)</span>
+</span><span id="__span-16-14"><a id="__codelineno-16-14" name="__codelineno-16-14" href="#__codelineno-16-14"></a>
+</span><span id="__span-16-15"><a id="__codelineno-16-15" name="__codelineno-16-15" href="#__codelineno-16-15"></a><span class="n">bytes_dv</span> <span class="o">=</span> <span class="n">dv</span><span class="o">.</span><span class="n">to_bytes</span><span class="p">(</span><span class="n">protocol</span><span class="o">=</span><span class="s1">'pickle'</span><span class="p">,</span> <span class="n">compress</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+</span><span id="__span-16-16"><a id="__codelineno-16-16" name="__codelineno-16-16" href="#__codelineno-16-16"></a>
+</span><span id="__span-16-17"><a id="__codelineno-16-17" name="__codelineno-16-17" href="#__codelineno-16-17"></a><span class="n">dv_from_bytes</span> <span class="o">=</span> <span class="n">DocVec</span><span class="p">[</span><span class="n">SimpleDoc</span><span class="p">]</span><span class="o">.</span><span class="n">from_bytes</span><span class="p">(</span>
+</span><span id="__span-16-18"><a id="__codelineno-16-18" name="__codelineno-16-18" href="#__codelineno-16-18"></a>    <span class="n">bytes_dv</span><span class="p">,</span> <span class="n">compress</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">protocol</span><span class="o">=</span><span class="s1">'pickle'</span><span class="p">,</span> <span class="n">tensor_type</span><span class="o">=</span><span class="n">TorchTensor</span>
+</span><span id="__span-16-19"><a id="__codelineno-16-19" name="__codelineno-16-19" href="#__codelineno-16-19"></a><span class="p">)</span>
 </span></code></pre></div>
 <h3 id="csv_1">CSV</h3>
 <div class="admonition warning">
@@ -2725,21 +2835,26 @@ to a <a class="autorefs autorefs-internal" href="../../../API_reference/array/da
 </div>
 <h3 id="pandasdataframe_1">Pandas.Dataframe</h3>
 <ul>
-<li><a class="autorefs autorefs-internal" href="../../../API_reference/array/da/#docarray.array.doc_list.io.IOMixinArray.from_dataframe"><code>from_dataframe()</code></a> loads a <a class="autorefs autorefs-internal" href="../../../API_reference/array/da_stack/#docarray.array.doc_vec.doc_vec.DocVec">DocVec</a> from a <a href="https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.html">Pandas Dataframe</a>.</li>
-<li><a class="autorefs autorefs-internal" href="../../../API_reference/array/da/#docarray.array.doc_list.io.IOMixinArray.to_dataframe"><code>to_dataframe()</code></a> saves a <a class="autorefs autorefs-internal" href="../../../API_reference/array/da_stack/#docarray.array.doc_vec.doc_vec.DocVec">DocVec</a> to a <a href="https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.html">Pandas Dataframe</a>.</li>
+<li><a class="autorefs autorefs-internal" href="../../../API_reference/array/da_stack/#docarray.array.doc_vec.io.IOMixinDocVec.from_dataframe"><code>from_dataframe()</code></a> loads a <a class="autorefs autorefs-internal" href="../../../API_reference/array/da_stack/#docarray.array.doc_vec.doc_vec.DocVec">DocVec</a> from a <a href="https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.html">Pandas Dataframe</a>.</li>
+<li>[<code>to_dataframe()</code>][docarray.array.doc_vec.io.IOMixinDocVec.to_dataframe] saves a <a class="autorefs autorefs-internal" href="../../../API_reference/array/da_stack/#docarray.array.doc_vec.doc_vec.DocVec">DocVec</a> to a <a href="https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.html">Pandas Dataframe</a>.</li>
 </ul>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-18-1"><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">BaseDoc</span><span class="p">,</span> <span class="n">DocVec</span>
-</span><span id="__span-18-2"><a id="__codelineno-18-2" name="__codelineno-18-2" href="#__codelineno-18-2"></a>
-</span><span id="__span-18-3"><a id="__codelineno-18-3" name="__codelineno-18-3" href="#__codelineno-18-3"></a>
-</span><span id="__span-18-4"><a id="__codelineno-18-4" name="__codelineno-18-4" href="#__codelineno-18-4"></a><span class="k">class</span> <span class="nc">SimpleDoc</span><span class="p">(</span><span class="n">BaseDoc</span><span class="p">):</span>
-</span><span id="__span-18-5"><a id="__codelineno-18-5" name="__codelineno-18-5" href="#__codelineno-18-5"></a>    <span class="n">text</span><span class="p">:</span> <span class="nb">str</span>
-</span><span id="__span-18-6"><a id="__codelineno-18-6" name="__codelineno-18-6" href="#__codelineno-18-6"></a>
-</span><span id="__span-18-7"><a id="__codelineno-18-7" name="__codelineno-18-7" href="#__codelineno-18-7"></a>
-</span><span id="__span-18-8"><a id="__codelineno-18-8" name="__codelineno-18-8" href="#__codelineno-18-8"></a><span class="n">dv</span> <span class="o">=</span> <span class="n">DocVec</span><span class="p">[</span><span class="n">SimpleDoc</span><span class="p">]([</span><span class="n">SimpleDoc</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="sa">f</span><span class="s1">'doc </span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s1">'</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">)])</span>
+</span><span id="__span-18-2"><a id="__codelineno-18-2" name="__codelineno-18-2" href="#__codelineno-18-2"></a><span class="kn">from</span> <span class="nn">docarray.typing</span> <span class="kn">import</span> <span class="n">TorchTensor</span>
+</span><span id="__span-18-3"><a id="__codelineno-18-3" name="__codelineno-18-3" href="#__codelineno-18-3"></a><span class="kn">import</span> <span class="nn">torch</span>
+</span><span id="__span-18-4"><a id="__codelineno-18-4" name="__codelineno-18-4" href="#__codelineno-18-4"></a>
+</span><span id="__span-18-5"><a id="__codelineno-18-5" name="__codelineno-18-5" href="#__codelineno-18-5"></a>
+</span><span id="__span-18-6"><a id="__codelineno-18-6" name="__codelineno-18-6" href="#__codelineno-18-6"></a><span class="k">class</span> <span class="nc">SimpleDoc</span><span class="p">(</span><span class="n">BaseDoc</span><span class="p">):</span>
+</span><span id="__span-18-7"><a id="__codelineno-18-7" name="__codelineno-18-7" href="#__codelineno-18-7"></a>    <span class="n">text</span><span class="p">:</span> <span class="nb">str</span>
+</span><span id="__span-18-8"><a id="__codelineno-18-8" name="__codelineno-18-8" href="#__codelineno-18-8"></a>    <span class="n">tensor</span><span class="p">:</span> <span class="n">TorchTensor</span>
 </span><span id="__span-18-9"><a id="__codelineno-18-9" name="__codelineno-18-9" href="#__codelineno-18-9"></a>
-</span><span id="__span-18-10"><a id="__codelineno-18-10" name="__codelineno-18-10" href="#__codelineno-18-10"></a><span class="n">df</span> <span class="o">=</span> <span class="n">dv</span><span class="o">.</span><span class="n">to_dataframe</span><span class="p">()</span>
-</span><span id="__span-18-11"><a id="__codelineno-18-11" name="__codelineno-18-11" href="#__codelineno-18-11"></a><span class="n">dv_from_dataframe</span> <span class="o">=</span> <span class="n">DocVec</span><span class="p">[</span><span class="n">SimpleDoc</span><span class="p">]</span><span class="o">.</span><span class="n">from_dataframe</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
-</span><span id="__span-18-12"><a id="__codelineno-18-12" name="__codelineno-18-12" href="#__codelineno-18-12"></a><span class="nb">print</span><span class="p">(</span><span class="n">dv_from_dataframe</span><span class="p">)</span>
+</span><span id="__span-18-10"><a id="__codelineno-18-10" name="__codelineno-18-10" href="#__codelineno-18-10"></a>
+</span><span id="__span-18-11"><a id="__codelineno-18-11" name="__codelineno-18-11" href="#__codelineno-18-11"></a><span class="n">dv</span> <span class="o">=</span> <span class="n">DocVec</span><span class="p">[</span><span class="n">SimpleDoc</span><span class="p">](</span>
+</span><span id="__span-18-12"><a id="__codelineno-18-12" name="__codelineno-18-12" href="#__codelineno-18-12"></a>    <span class="p">[</span><span class="n">SimpleDoc</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="sa">f</span><span class="s1">'doc </span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s1">'</span><span class="p">,</span> <span class="n">tensor</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">64</span><span class="p">))</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">)]</span>
+</span><span id="__span-18-13"><a id="__codelineno-18-13" name="__codelineno-18-13" href="#__codelineno-18-13"></a><span class="p">)</span>
+</span><span id="__span-18-14"><a id="__codelineno-18-14" name="__codelineno-18-14" href="#__codelineno-18-14"></a>
+</span><span id="__span-18-15"><a id="__codelineno-18-15" name="__codelineno-18-15" href="#__codelineno-18-15"></a><span class="n">df</span> <span class="o">=</span> <span class="n">dv</span><span class="o">.</span><span class="n">to_dataframe</span><span class="p">()</span>
+</span><span id="__span-18-16"><a id="__codelineno-18-16" name="__codelineno-18-16" href="#__codelineno-18-16"></a><span class="n">dv_from_dataframe</span> <span class="o">=</span> <span class="n">DocVec</span><span class="p">[</span><span class="n">SimpleDoc</span><span class="p">]</span><span class="o">.</span><span class="n">from_dataframe</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">tensor_type</span><span class="o">=</span><span class="n">TorchTensor</span><span class="p">)</span>
+</span><span id="__span-18-17"><a id="__codelineno-18-17" name="__codelineno-18-17" href="#__codelineno-18-17"></a><span class="nb">print</span><span class="p">(</span><span class="n">dv_from_dataframe</span><span class="p">)</span>
 </span></code></pre></div></div>
 
 

@@ -558,6 +558,12 @@
         
           
         
+          
+        
+          
+        
+          
+        
       
       
         <label class="md-nav__link" for="__nav_2_4_2" id="__nav_2_4_2_label" tabindex="0">
@@ -650,6 +656,48 @@
     <li class="md-nav__item">
       <a href="../../../user_guide/storing/index_qdrant/" class="md-nav__link">
         Qdrant Document Index
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../user_guide/storing/index_redis/" class="md-nav__link">
+        Redis Document Index
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../user_guide/storing/index_milvus/" class="md-nav__link">
+        Milvus Document Index
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../user_guide/storing/nested_data/" class="md-nav__link">
+        Nested Data
       </a>
     </li>
   
@@ -1467,6 +1515,10 @@
         
           
         
+          
+        
+          
+        
       
       
         <label class="md-nav__link" for="__nav_6_4_2" id="__nav_6_4_2_label" tabindex="0">
@@ -1543,8 +1595,36 @@
   
   
     <li class="md-nav__item">
+      <a href="../../../API_reference/doc_index/backends/milvus/" class="md-nav__link">
+        MilvusDocumentIndex
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../../API_reference/doc_index/backends/qdrant/" class="md-nav__link">
         QdrantDocumentIndex
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../API_reference/doc_index/backends/redis/" class="md-nav__link">
+        RedisDocumentIndex
       </a>
     </li>
   
@@ -4810,7 +4890,7 @@ init();&lt;/script&gt;&lt;/body&gt;
 <h2 id="getting-started-predefined-documents">Getting started - Predefined documents</h2>
 <p>To get started and play around with the 3D modalities, DocArray provides the predefined documents <a class="autorefs autorefs-internal" href="../../../API_reference/documents/documents/#docarray.documents.mesh.Mesh3D"><code>Mesh3D</code></a> and <a class="autorefs autorefs-internal" href="../../../API_reference/documents/documents/#docarray.documents.point_cloud.PointCloud3D"><code>PointCloud3D</code></a>, which includes all of the previously mentioned functionalities.</p>
 <h3 id="mesh3d"><code>Mesh3D</code></h3>
-<p>The <a class="autorefs autorefs-internal" href="../../../API_reference/documents/documents/#docarray.documents.mesh.Mesh3D"><code>Mesh3D</code></a> class provides a <a class="autorefs autorefs-internal" href="../../../API_reference/typing/url/#docarray.typing.url.Mesh3DUrl"><code>Mesh3DUrl</code></a> field and <a class="autorefs autorefs-internal" href="../../../API_reference/documents/documents/#docarray.documents.mesh.vertices_and_faces.VerticesAndFaces"><code>VerticesAndFaces</code></a> field.</p>
+<p>The <a class="autorefs autorefs-internal" href="../../../API_reference/documents/documents/#docarray.documents.mesh.Mesh3D"><code>Mesh3D</code></a> class provides a <a class="autorefs autorefs-internal" href="../../../API_reference/typing/url/#docarray.typing.url.url_3d.mesh_url.Mesh3DUrl"><code>Mesh3DUrl</code></a> field and <a class="autorefs autorefs-internal" href="../../../API_reference/documents/documents/#docarray.documents.mesh.vertices_and_faces.VerticesAndFaces"><code>VerticesAndFaces</code></a> field.</p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="k">class</span> <span class="nc">Mesh3D</span><span class="p">(</span><span class="n">BaseDoc</span><span class="p">):</span>
 </span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>    <span class="n">url</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Mesh3DUrl</span><span class="p">]</span>
 </span><span id="__span-9-3"><a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a>    <span class="n">tensors</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">VerticesAndFaces</span><span class="p">]</span>

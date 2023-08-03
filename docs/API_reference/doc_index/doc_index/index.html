@@ -558,6 +558,12 @@
         
           
         
+          
+        
+          
+        
+          
+        
       
       
         <label class="md-nav__link" for="__nav_2_4_2" id="__nav_2_4_2_label" tabindex="0">
@@ -650,6 +656,48 @@
     <li class="md-nav__item">
       <a href="../../../user_guide/storing/index_qdrant/" class="md-nav__link">
         Qdrant Document Index
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../user_guide/storing/index_redis/" class="md-nav__link">
+        Redis Document Index
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../user_guide/storing/index_milvus/" class="md-nav__link">
+        Milvus Document Index
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../user_guide/storing/nested_data/" class="md-nav__link">
+        Nested Data
       </a>
     </li>
   
@@ -1554,6 +1602,10 @@
         
           
         
+          
+        
+          
+        
       
       
         <label class="md-nav__link" for="__nav_6_4_2" id="__nav_6_4_2_label" tabindex="0">
@@ -1630,8 +1682,36 @@
   
   
     <li class="md-nav__item">
+      <a href="../backends/milvus/" class="md-nav__link">
+        MilvusDocumentIndex
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../backends/qdrant/" class="md-nav__link">
         QdrantDocumentIndex
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../backends/redis/" class="md-nav__link">
+        RedisDocumentIndex
       </a>
     </li>
   
@@ -4432,7 +4512,7 @@
 </span><span id="__span-0-994"><a id="__codelineno-0-994" name="__codelineno-0-994"></a>                <span class="c1"># see schema translation ideas in the design doc</span>
 </span><span id="__span-0-995"><a id="__codelineno-0-995" name="__codelineno-0-995"></a>                <span class="n">names_compatible</span> <span class="o">=</span> <span class="n">reference_names</span> <span class="o">==</span> <span class="n">input_names</span>
 </span><span id="__span-0-996"><a id="__codelineno-0-996" name="__codelineno-0-996"></a>                <span class="n">types_compatible</span> <span class="o">=</span> <span class="nb">all</span><span class="p">(</span>
-</span><span id="__span-0-997"><a id="__codelineno-0-997" name="__codelineno-0-997"></a>                    <span class="p">(</span><span class="nb">issubclass</span><span class="p">(</span><span class="n">t2</span><span class="p">,</span> <span class="n">t1</span><span class="p">))</span>
+</span><span id="__span-0-997"><a id="__codelineno-0-997" name="__codelineno-0-997"></a>                    <span class="p">(</span><span class="n">safe_issubclass</span><span class="p">(</span><span class="n">t2</span><span class="p">,</span> <span class="n">t1</span><span class="p">))</span>
 </span><span id="__span-0-998"><a id="__codelineno-0-998" name="__codelineno-0-998"></a>                    <span class="k">for</span> <span class="p">(</span><span class="n">t1</span><span class="p">,</span> <span class="n">t2</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">reference_types</span><span class="p">,</span> <span class="n">input_types</span><span class="p">)</span>
 </span><span id="__span-0-999"><a id="__codelineno-0-999" name="__codelineno-0-999"></a>                <span class="p">)</span>
 </span><span id="__span-0-1000"><a id="__codelineno-0-1000" name="__codelineno-0-1000"></a>                <span class="k">if</span> <span class="n">names_compatible</span> <span class="ow">and</span> <span class="n">types_compatible</span><span class="p">:</span>
