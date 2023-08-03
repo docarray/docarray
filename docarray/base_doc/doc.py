@@ -7,6 +7,7 @@ from typing import (
     Callable,
     Dict,
     List,
+    Literal,
     Mapping,
     Optional,
     Tuple,
@@ -18,6 +19,7 @@ from typing import (
 )
 
 import orjson
+import typing_extensions
 from pydantic import BaseModel, Field
 from pydantic.fields import FieldInfo
 from typing_inspect import is_optional_type
@@ -41,6 +43,12 @@ if TYPE_CHECKING:
     from pydantic.typing import AbstractSetIntStr, DictStrAny, MappingIntStrAny
 
     from docarray.array.doc_vec.column_storage import ColumnStorageView
+
+if is_pydantic_v2:
+    IncEx: typing_extensions.TypeAlias = (
+        'set[int] | set[str] | dict[int, Any] | dict[str, Any] | None'
+    )
+
 
 _console: Console = Console()
 
@@ -442,6 +450,51 @@ class BaseDoc(BaseModel, IOMixin, UpdateMixin, BaseNode):
                 original_exclude,
                 doclist_exclude_fields,
             )
+
+    else:
+
+        def model_dump(  # type: ignore
+            self,
+            *,
+            mode: Union[Literal['json', 'python'], str] = 'python',
+            include: IncEx = None,
+            exclude: IncEx = None,
+            by_alias: bool = False,
+            exclude_unset: bool = False,
+            exclude_defaults: bool = False,
+            exclude_none: bool = False,
+            round_trip: bool = False,
+            warnings: bool = True,
+        ) -> Dict[str, Any]:
+
+            if self.is_view():
+                ## for some reason use ColumnViewStorage to dump the data is not working with
+                ## pydantic v2, so we need to create a new doc and dump it
+
+                new_doc = self.__class__.model_construct(**self.__dict__.to_dict())
+                return new_doc.model_dump(
+                    mode=mode,
+                    include=include,
+                    exclude=exclude,
+                    by_alias=by_alias,
+                    exclude_unset=exclude_unset,
+                    exclude_defaults=exclude_defaults,
+                    exclude_none=exclude_none,
+                    round_trip=round_trip,
+                    warnings=warnings,
+                )
+            else:
+                return super().model_dump(
+                    mode=mode,
+                    include=include,
+                    exclude=exclude,
+                    by_alias=by_alias,
+                    exclude_unset=exclude_unset,
+                    exclude_defaults=exclude_defaults,
+                    exclude_none=exclude_none,
+                    round_trip=round_trip,
+                    warnings=warnings,
+                )
 
     @no_type_check
     @classmethod

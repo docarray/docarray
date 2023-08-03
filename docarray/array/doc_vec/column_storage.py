@@ -160,3 +160,11 @@ class ColumnStorageView(dict, MutableMapping[str, Any]):
     # context: https://github.com/python/typing/discussions/1033
     def items(self) -> ItemsView:  # type: ignore
         return ItemsView(self._local_dict())
+
+    def to_dict(self) -> Dict[str, Any]:
+        """
+        Return a dictionary with the same keys as the storage.columns
+        and the values at position self.index.
+        Warning: modification on the dict will not be reflected on the storage.
+        """
+        return {key: self[key] for key in self.storage.columns.keys()}

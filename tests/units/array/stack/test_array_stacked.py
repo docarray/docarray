@@ -572,7 +572,7 @@ def test_type_error_no_doc_type():
         DocVec([BaseDoc() for _ in range(10)])
 
 
-def test_doc_view_dict(batch):
+def test_doc_view_dict(batch: DocVec[ImageDoc]):
     doc_view = batch[0]
     assert doc_view.is_view()
     d = doc_view.dict()
