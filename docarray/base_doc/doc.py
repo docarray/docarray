@@ -313,11 +313,6 @@ class BaseDoc(BaseModel, IOMixin, UpdateMixin, BaseNode):
         """
         return self.dict()
 
-    ########################################################################################################################################################
-    ### this section is just for documentation purposes will be removed later once
-    # https://github.com/mkdocstrings/griffe/issues/138 is fixed ##############
-    ########################################################################################################################################################
-
     if not is_pydantic_v2:
 
         def json(

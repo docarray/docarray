@@ -69,6 +69,8 @@ def nested_docs():
 def test_nested_to_dict(nested_docs):
     d = nested_docs.dict()
     assert (d['docs'][0]['simple_tens'] == np.ones(10)).all()
+    assert isinstance(d['docs'], list)
+    assert not isinstance(d['docs'], DocList)
 
 
 def test_nested_to_dict_exclude(nested_docs):
