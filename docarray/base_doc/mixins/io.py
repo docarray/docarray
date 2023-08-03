@@ -16,7 +16,7 @@ from typing import (
 from typing import _GenericAlias as GenericAlias
 
 import numpy as np
-from typing_inspect import is_union_type
+from typing_inspect import get_args, is_union_type
 
 from docarray.base_doc.base_node import BaseNode
 from docarray.typing import NdArray
@@ -264,7 +264,6 @@ class IOMixin(Iterable[Tuple[str, Any]]):
         :param field_name: the name of the field
         :return: the loaded field
         """
-
         if field_name is not None and field_type is not None:
             raise ValueError("field_type and field_name cannot be both passed")
 
@@ -333,11 +332,12 @@ class IOMixin(Iterable[Tuple[str, Any]]):
 
                 if field_name and field_name in cls._docarray_fields:
 
-                    field_type = (
-                        cls._docarray_fields[field_name].annotation
-                        if is_pydantic_v2
-                        else cls._docarray_fields[field_name].type_
-                    )
+                    if is_pydantic_v2:
+                        dict_annotation = cls._docarray_fields[field_name].annotation
+                        field_type = get_args(dict_annotation)[1]
+                    else:
+                        field_type = cls._docarray_fields[field_name].type_
+
                 else:
                     field_type = None
 
