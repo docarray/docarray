@@ -326,6 +326,9 @@ class HnswDocumentIndex(BaseDocIndex, Generic[TSchema]):
     def _find(
         self, query: np.ndarray, limit: int, search_field: str = ''
     ) -> _FindResult:
+        if limit < 0:
+            index = self._hnsw_indices[search_field]
+            limit = index.get_current_count()
         query_batched = np.expand_dims(query, axis=0)
         docs, scores = self._find_batched(
             queries=query_batched, limit=limit, search_field=search_field
