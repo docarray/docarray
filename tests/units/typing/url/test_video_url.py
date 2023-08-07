@@ -79,7 +79,7 @@ def test_load_one_of_named_tuple_results(file_url, field, attr_cls):
 def test_load_video_url_to_video_torch_tensor_field(file_url):
     class MyVideoDoc(BaseDoc):
         video_url: VideoUrl
-        tensor: Optional[VideoTorchTensor]
+        tensor: Optional[VideoTorchTensor] = None
 
     doc = MyVideoDoc(video_url=file_url)
     doc.tensor = doc.video_url.load().video
@@ -98,7 +98,7 @@ def test_load_video_url_to_video_torch_tensor_field(file_url):
 def test_load_video_url_to_video_tensorflow_tensor_field(file_url):
     class MyVideoDoc(BaseDoc):
         video_url: VideoUrl
-        tensor: Optional[VideoTensorFlowTensor]
+        tensor: Optional[VideoTensorFlowTensor] = None
 
     doc = MyVideoDoc(video_url=file_url)
     doc.tensor = doc.video_url.load().video
