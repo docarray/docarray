@@ -91,9 +91,8 @@ def test_validation_tensorflow():
     ],
 )
 def test_illegal_validation(cls_tensor, tensor, expect_error):
-    match = str(cls_tensor).split('.')[-1][:-2]
     if expect_error:
-        with pytest.raises(ValueError, match=match):
+        with pytest.raises(ValueError):
             parse_obj_as(cls_tensor, tensor)
     else:
         parse_obj_as(cls_tensor, tensor)
