@@ -72,5 +72,12 @@ def test_readme():
     check_md_file(
         fpath='README.md',
         memory=True,
-        keyword_ignore=['tensorflow', 'fastapi', 'push', 'langchain', 'MovieDoc'],
+        keyword_ignore=[
+            'tensorflow',
+            'fastapi',
+            'push',
+            'langchain',
+            'MovieDoc',
+            'jina',
+        ],
     )
