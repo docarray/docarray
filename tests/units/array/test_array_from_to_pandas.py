@@ -5,6 +5,7 @@ import pytest
 
 from docarray import BaseDoc, DocList
 from docarray.documents import ImageDoc
+from docarray.utils._internal.pydantic import is_pydantic_v2
 
 
 @pytest.fixture()
@@ -20,6 +21,7 @@ def nested_doc_cls():
     return MyDocNested
 
 
+@pytest.mark.skipif(is_pydantic_v2, reason="Not working with pydantic v2")
 def test_to_from_pandas_df(nested_doc_cls):
     da = DocList[nested_doc_cls](
         [

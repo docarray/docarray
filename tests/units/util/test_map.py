@@ -66,7 +66,7 @@ def load_from_da(da: DocList) -> DocList:
 
 
 class MyImage(BaseDoc):
-    tensor: Optional[NdArray]
+    tensor: Optional[NdArray] = None
     url: ImageUrl
 
 
