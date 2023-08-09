@@ -29,5 +29,5 @@ def orjson_dumps(v, *, default=None) -> bytes:
 
 
 def orjson_dumps_and_decode(v, *, default=None) -> str:
-    # dumps to bytes using orjson
+    # dumps to str using orjson
     return orjson_dumps(v, default=default).decode()

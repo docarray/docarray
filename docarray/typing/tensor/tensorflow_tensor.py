@@ -1,6 +1,7 @@
 from typing import TYPE_CHECKING, Any, Generic, Type, TypeVar, Union, cast
 
 import numpy as np
+import orjson
 
 from docarray.base_doc.base_node import BaseNode
 from docarray.typing.proto_register import _register_proto
@@ -188,7 +189,7 @@ class TensorFlowTensor(AbstractTensor, Generic[ShapeT], metaclass=metaTensorFlow
     @classmethod
     def _docarray_validate(
         cls: Type[T],
-        value: Union[T, np.ndarray, Any],
+        value: Union[T, np.ndarray, str, Any],
     ) -> T:
         if isinstance(value, TensorFlowTensor):
             return cast(T, value)
@@ -200,12 +201,14 @@ class TensorFlowTensor(AbstractTensor, Generic[ShapeT], metaclass=metaTensorFlow
             return cls._docarray_from_ndarray(value._docarray_to_ndarray())
         elif torch_available and isinstance(value, torch.Tensor):
             return cls._docarray_from_native(value.detach().cpu().numpy())
-        else:
-            try:
-                arr: tf.Tensor = tf.constant(value)
-                return cls(tensor=arr)
-            except Exception:
-                pass  # handled below
+        elif isinstance(value, str):
+            value = orjson.loads(value)
+
+        try:
+            arr: tf.Tensor = tf.constant(value)
+            return cls(tensor=arr)
+        except Exception:
+            pass  # handled below
         raise ValueError(
             f'Expected a tensorflow.Tensor compatible type, got {type(value)}'
         )

@@ -2,6 +2,7 @@ from copy import copy
 from typing import TYPE_CHECKING, Any, Generic, Type, TypeVar, Union, cast
 
 import numpy as np
+import orjson
 
 from docarray.base_doc.base_node import BaseNode
 from docarray.typing.proto_register import _register_proto
@@ -109,7 +110,7 @@ class TorchTensor(
     @classmethod
     def _docarray_validate(
         cls: Type[T],
-        value: Union[T, np.ndarray, Any],
+        value: Union[T, np.ndarray, str, Any],
     ) -> T:
         if isinstance(value, TorchTensor):
             return cast(T, value)
@@ -121,12 +122,14 @@ class TorchTensor(
             return cls._docarray_from_ndarray(value.numpy())
         elif isinstance(value, np.ndarray):
             return cls._docarray_from_ndarray(value)
-        else:
-            try:
-                arr: torch.Tensor = torch.tensor(value)
-                return cls._docarray_from_native(arr)
-            except Exception:
-                pass  # handled below
+        elif isinstance(value, str):
+            value = orjson.loads(value)
+
+        try:
+            arr: torch.Tensor = torch.tensor(value)
+            return cls._docarray_from_native(arr)
+        except Exception:
+            pass  # handled below
         raise ValueError(f'Expected a torch.Tensor compatible type, got {type(value)}')
 
     def _docarray_to_json_compatible(self) -> np.ndarray:

@@ -185,7 +185,6 @@ def test_deepcopy():
     assert not (doc.embedding == doc_copy.embedding).all()
 
 
-# @pytest.mark.skipif(is_pydantic_v2, reason="Not working with pydantic v2")
 @pytest.mark.parametrize('requires_grad', [True, False])
 def test_json_serialization(requires_grad: bool):
     orig_doc = MyDoc(tens=torch.rand(10, requires_grad=requires_grad))

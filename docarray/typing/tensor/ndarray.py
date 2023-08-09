@@ -1,6 +1,7 @@
 from typing import TYPE_CHECKING, Any, Generic, List, Tuple, Type, TypeVar, Union, cast
 
 import numpy as np
+import orjson
 
 from docarray.base_doc.base_node import BaseNode
 from docarray.typing.proto_register import _register_proto
@@ -101,7 +102,7 @@ class NdArray(np.ndarray, AbstractTensor, Generic[ShapeT]):
     @classmethod
     def _docarray_validate(
         cls: Type[T],
-        value: Union[T, np.ndarray, List[Any], Tuple[Any], Any],
+        value: Union[T, np.ndarray, str, List[Any], Tuple[Any], Any],
     ) -> T:
         if isinstance(value, np.ndarray):
             return cls._docarray_from_native(value)
@@ -113,18 +114,19 @@ class NdArray(np.ndarray, AbstractTensor, Generic[ShapeT]):
             return cls._docarray_from_native(value.detach().cpu().numpy())
         elif tf_available and isinstance(value, tf.Tensor):
             return cls._docarray_from_native(value.numpy())
+        elif isinstance(value, str):
+            value = orjson.loads(value)
         elif isinstance(value, list) or isinstance(value, tuple):
             try:
                 arr_from_list: np.ndarray = np.asarray(value)
                 return cls._docarray_from_native(arr_from_list)
             except Exception:
                 pass  # handled below
-        else:
-            try:
-                arr: np.ndarray = np.ndarray(value)
-                return cls._docarray_from_native(arr)
-            except Exception:
-                pass  # handled below
+        try:
+            arr: np.ndarray = np.ndarray(value)
+            return cls._docarray_from_native(arr)
+        except Exception:
+            pass  # handled below
         raise ValueError(f'Expected a numpy.ndarray compatible type, got {type(value)}')
 
     @classmethod
