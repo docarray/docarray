@@ -28,7 +28,6 @@ from docarray.utils._internal.pydantic import is_pydantic_v2
 
 if not is_pydantic_v2:
     from pydantic.main import ROOT_KEY
-
 from rich.console import Console
 
 from docarray.base_doc.base_node import BaseNode
@@ -45,6 +44,7 @@ if TYPE_CHECKING:
     from docarray.array.doc_vec.column_storage import ColumnStorageView
 
 if is_pydantic_v2:
+
     IncEx: typing_extensions.TypeAlias = (
         'set[int] | set[str] | dict[int, Any] | dict[str, Any] | None'
     )
@@ -88,16 +88,25 @@ class BaseDoc(BaseModel, IOMixin, UpdateMixin, BaseNode):
 
     id: Optional[ID] = Field(default_factory=lambda: ID(os.urandom(16).hex()))
 
-    class Config:
-        json_loads = orjson.loads
-        json_dumps = orjson_dumps_and_decode
-        # `DocArrayResponse` is able to handle tensors by itself.
-        # Therefore, we stop FastAPI from doing any transformations
-        # on tensors by setting an identity function as a custom encoder.
-        json_encoders = {AbstractTensor: lambda x: x}
+    if is_pydantic_v2:
 
-        validate_assignment = True
-        _load_extra_fields_from_protobuf = False
+        class Config:
+            validate_assignment = True
+            _load_extra_fields_from_protobuf = False
+            json_encoders = {AbstractTensor: lambda x: x}
+
+    else:
+
+        class Config:
+            json_loads = orjson.loads
+            json_dumps = orjson_dumps_and_decode
+            # `DocArrayResponse` is able to handle tensors by itself.
+            # Therefore, we stop FastAPI from doing any transformations
+            # on tensors by setting an identity function as a custom encoder.
+            json_encoders = {AbstractTensor: lambda x: x}
+
+            validate_assignment = True
+            _load_extra_fields_from_protobuf = False
 
     if is_pydantic_v2:
 

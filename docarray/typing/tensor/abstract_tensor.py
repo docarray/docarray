@@ -30,7 +30,6 @@ if is_pydantic_v2:
     from pydantic_core import CoreSchema, core_schema
 
 if TYPE_CHECKING:
-
     from docarray.proto import NdArrayProto, NodeProto
 
 T = TypeVar('T', bound='AbstractTensor')
@@ -393,8 +392,13 @@ class AbstractTensor(Generic[TTensor, T], AbstractType, ABC, Sized):
 
         @classmethod
         def __get_pydantic_core_schema__(
-            cls, _source_type: Any, _handler: GetCoreSchemaHandler
+            cls, _source_type: Any, handler: GetCoreSchemaHandler
         ) -> core_schema.CoreSchema:
             return core_schema.general_plain_validator_function(
                 cls.validate,
+                serialization=core_schema.plain_serializer_function_ser_schema(
+                    function=orjson_dumps,
+                    return_schema=handler.generate_schema(bytes),
+                    when_used="json-unless-none",
+                ),
             )

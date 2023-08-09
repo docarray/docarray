@@ -392,14 +392,14 @@ class IOMixin(Iterable[Tuple[str, Any]]):
         return DocProto(data=data)
 
     def _to_node_protobuf(self) -> 'NodeProto':
-        from docarray.proto import NodeProto
-
         """Convert Document into a NodeProto protobuf message. This function should be
         called when the Document is nest into another Document that need to be
         converted into a protobuf
 
         :return: the nested item protobuf message
         """
+        from docarray.proto import NodeProto
+
         return NodeProto(doc=self.to_protobuf())
 
     @classmethod
@@ -421,3 +421,18 @@ class IOMixin(Iterable[Tuple[str, Any]]):
             else:
                 paths.append(field)
         return paths
+
+    @classmethod
+    def from_json(
+        cls: Type[T],
+        data: str,
+    ) -> T:
+        """Build Document object from json data
+        :return: a Document object
+        """
+        # TODO: add tests
+
+        if is_pydantic_v2:
+            return cls.model_validate_json(data)
+        else:
+            return cls.parse_raw(data)
