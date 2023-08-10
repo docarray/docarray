@@ -1,15 +1,16 @@
+from typing import Any, Dict, List, Optional, Union
+
+import numpy as np
 import pytest
-from typing import List, Dict, Union, Any
+from pydantic import Field
+
+from docarray import BaseDoc, DocList
+from docarray.documents import TextDoc
+from docarray.typing import AnyTensor, ImageUrl
 from docarray.utils.create_dynamic_doc_class import (
     create_base_doc_from_schema,
     create_pure_python_type_model,
 )
-import numpy as np
-from typing import Optional
-from docarray import BaseDoc, DocList
-from docarray.typing import AnyTensor, ImageUrl
-from docarray.documents import TextDoc
-from pydantic import Field
 
 
 @pytest.mark.parametrize('transformation', ['proto', 'json'])

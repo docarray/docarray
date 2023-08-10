@@ -1,10 +1,11 @@
-from docarray import DocList, BaseDoc
-from docarray.typing import AnyTensor
+from typing import Any, Dict, List, Optional, Type, Union
+
 from pydantic import create_model
 from pydantic.fields import FieldInfo
-from typing import Dict, List, Any, Union, Optional, Type
-from docarray.utils._internal._typing import safe_issubclass
 
+from docarray import BaseDoc, DocList
+from docarray.typing import AnyTensor
+from docarray.utils._internal._typing import safe_issubclass
 
 RESERVED_KEYS = [
     'type',
@@ -190,7 +191,7 @@ def _get_field_type_from_schema(
             cached_models=cached_models,
             is_tensor=tensor_shape is not None,
             num_recursions=num_recursions + 1,
-            definitions=definitions
+            definitions=definitions,
         )
     else:
         if num_recursions > 0:
@@ -205,7 +206,10 @@ def _get_field_type_from_schema(
 
 
 def create_base_doc_from_schema(
-    schema: Dict[str, Any], base_doc_name: str, cached_models: Optional[Dict] = None, definitions: Optional[Dict] = None,
+    schema: Dict[str, Any],
+    base_doc_name: str,
+    cached_models: Optional[Dict] = None,
+    definitions: Optional[Dict] = None,
 ) -> Type:
     """
     Dynamically create a `BaseDoc` subclass from a `schema` of another `BaseDoc`.
