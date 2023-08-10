@@ -14,6 +14,12 @@ from pydantic import Field
 
 @pytest.mark.parametrize('transformation', ['proto', 'json'])
 def test_create_pydantic_model_from_schema(transformation):
+    class Nested2Doc(BaseDoc):
+        value: str
+
+    class Nested1Doc(BaseDoc):
+        nested: Nested2Doc
+
     class CustomDoc(BaseDoc):
         tensor: Optional[AnyTensor]
         url: ImageUrl
@@ -26,6 +32,7 @@ def test_create_pydantic_model_from_schema(transformation):
         u: Union[str, int]
         lu: List[Union[str, int]] = [0, 1, 2]
         tags: Optional[Dict[str, Any]] = None
+        nested: Nested1Doc
 
     CustomDocCopy = create_pure_python_type_model(CustomDoc)
     new_custom_doc_model = create_base_doc_from_schema(
@@ -43,6 +50,7 @@ def test_create_pydantic_model_from_schema(transformation):
                 single_text=TextDoc(text='single hey ha', embedding=np.zeros(2)),
                 u='a',
                 lu=[3, 4],
+                nested=Nested1Doc(nested=Nested2Doc(value='hello world')),
             )
         ]
     )
@@ -77,6 +85,7 @@ def test_create_pydantic_model_from_schema(transformation):
     assert custom_partial_da[0].u == 'a'
     assert custom_partial_da[0].single_text.text == 'single hey ha'
     assert custom_partial_da[0].single_text.embedding.shape == (2,)
+    assert original_back[0].nested.nested.value == 'hello world'
 
     assert len(original_back) == 1
     assert original_back[0].url == 'photo.jpg'
