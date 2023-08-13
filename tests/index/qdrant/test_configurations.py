@@ -1,3 +1,5 @@
+from typing import List
+
 import numpy as np
 import pytest
 from pydantic import Field
@@ -6,7 +8,6 @@ from docarray import BaseDoc
 from docarray.index import QdrantDocumentIndex
 from docarray.typing import NdArray
 from tests.index.qdrant.fixtures import start_storage, tmp_collection_name  # noqa: F401
-
 
 pytestmark = [pytest.mark.slow, pytest.mark.index]
 
@@ -44,3 +45,12 @@ def test_index_name():
 
     index3 = QdrantDocumentIndex[Schema](collection_name='my_index')
     assert index3.index_name == 'my_index'
+
+
+def test_index_with_non_class_type():
+    class Schema(BaseDoc):
+        tens: NdArray = Field(dim=10)
+        list_field: List
+
+    index = QdrantDocumentIndex[Schema](host='localhost')
+    assert index.num_docs() == 0
