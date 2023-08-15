@@ -228,4 +228,4 @@ PyTorch 2 [introduced compilation support](https://pytorch.org/blog/pytorch-2.0-
 Currently, **`torch.compile()` does not properly support subclasses of `torch.Tensor` such as [`TorchTensor`][docarray.typing.tensor.TorchTensor]**.
 The PyTorch team is currently working on a [fix for this issue](https://github.com/pytorch/pytorch/pull/105167#issuecomment-1678050808).
 
-For a workaround to this issue, see [`TorchTensor`][docarray.typing.tensor.TorchTensor#Compatibility-with-torch-compile]
+For a workaround to this issue, see the [`TorchTensor` API reference][docarray.typing.tensor.TorchTensor].

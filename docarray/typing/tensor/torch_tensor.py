@@ -113,7 +113,9 @@ class TorchTensor(
 
     ---
 
+
     ## Compatibility with `torch.compile()`
+
 
     PyTorch 2 [introduced compilation support](https://pytorch.org/blog/pytorch-2.0-release/) in the form of `torch.compile()`.
 
