@@ -8,6 +8,7 @@ from pydantic import parse_obj_as
 from docarray import BaseDoc, DocList
 from docarray.array import DocVec
 from docarray.documents import ImageDoc
+from docarray.exceptions.exceptions import UnusableObjectError
 from docarray.typing import AnyEmbedding, AnyTensor, NdArray, TorchTensor
 
 
@@ -584,3 +585,90 @@ def test_doc_view_dict(batch: DocVec[ImageDoc]):
     d = doc_view_two.dict()
     assert d['tensor'].shape == (3, 224, 224)
     assert d['id'] == doc_view_two.id
+
+
+def test_doc_vec_equality():
+    class Text(BaseDoc):
+        text: str
+
+    da = DocVec[Text]([Text(text='hello') for _ in range(10)])
+    da2 = DocList[Text]([Text(text='hello') for _ in range(10)])
+
+    assert da != da2
+    assert da == da2.to_doc_vec()
+
+
+@pytest.mark.parametrize('tensor_type', [TorchTensor, NdArray])
+def test_doc_vec_equality_tensor(tensor_type):
+    class Text(BaseDoc):
+        tens: tensor_type
+
+    da = DocVec[Text](
+        [Text(tens=[1, 2, 3, 4]) for _ in range(10)], tensor_type=tensor_type
+    )
+    da2 = DocVec[Text](
+        [Text(tens=[1, 2, 3, 4]) for _ in range(10)], tensor_type=tensor_type
+    )
+    assert da == da2
+
+    da2 = DocVec[Text](
+        [Text(tens=[1, 2, 3, 4, 5]) for _ in range(10)], tensor_type=tensor_type
+    )
+    assert da != da2
+
+
+@pytest.mark.tensorflow
+def test_doc_vec_equality_tf():
+    from docarray.typing import TensorFlowTensor
+
+    class Text(BaseDoc):
+        tens: TensorFlowTensor
+
+    da = DocVec[Text](
+        [Text(tens=[1, 2, 3, 4]) for _ in range(10)], tensor_type=TensorFlowTensor
+    )
+    da2 = DocVec[Text](
+        [Text(tens=[1, 2, 3, 4]) for _ in range(10)], tensor_type=TensorFlowTensor
+    )
+    assert da == da2
+
+    da2 = DocVec[Text](
+        [Text(tens=[1, 2, 3, 4, 5]) for _ in range(10)], tensor_type=TensorFlowTensor
+    )
+    assert da != da2
+
+
+def test_doc_vec_nested(batch_nested_doc):
+    batch, Doc, Inner = batch_nested_doc
+    batch2 = DocVec[Doc]([Doc(inner=Inner(hello='hello')) for _ in range(10)])
+
+    assert batch == batch2
+
+
+def test_doc_vec_tensor_type():
+    class ImageDoc(BaseDoc):
+        tensor: AnyTensor
+
+    da = DocVec[ImageDoc]([ImageDoc(tensor=np.zeros((3, 224, 224))) for _ in range(10)])
+
+    da2 = DocVec[ImageDoc](
+        [ImageDoc(tensor=torch.zeros(3, 224, 224)) for _ in range(10)],
+        tensor_type=TorchTensor,
+    )
+
+    assert da != da2
+
+
+def teste_unusable_state_raises_exception():
+    from docarray import DocVec
+    from docarray.documents import ImageDoc
+
+    docs = DocVec[ImageDoc]([ImageDoc(url='http://url.com/foo.png') for _ in range(10)])
+
+    docs.to_doc_list()
+
+    with pytest.raises(UnusableObjectError):
+        docs.url
+
+    with pytest.raises(UnusableObjectError):
+        docs.url = 'hi'

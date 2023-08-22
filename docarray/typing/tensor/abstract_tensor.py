@@ -23,6 +23,7 @@ import numpy as np
 from docarray.base_doc.io.json import orjson_dumps
 from docarray.computation import AbstractComputationalBackend
 from docarray.typing.abstract_type import AbstractType
+from docarray.utils._internal._typing import safe_issubclass
 from docarray.utils._internal.pydantic import is_pydantic_v2
 
 if is_pydantic_v2:
@@ -46,7 +47,7 @@ class _ParametrizedMeta(type):
     This metaclass ensures that instance, subclass and equality checks on parametrized Tensors
     are handled as expected:
 
-    assert issubclass(TorchTensor[128], TorchTensor[128])
+    assert safe_issubclass(TorchTensor[128], TorchTensor[128])
     t = parse_obj_as(TorchTensor[128], torch.zeros(128))
     assert isinstance(t, TorchTensor[128])
     TorchTensor[128] == TorchTensor[128]
@@ -59,11 +60,9 @@ class _ParametrizedMeta(type):
     """
 
     def _equals_special_case(cls, other):
-        is_type = (
-            isinstance(other, type) and other is not type
-        )  # type does not have .mro()
-        is_tensor = is_type and AbstractTensor in other.mro()
-        same_parents = is_tensor and cls.mro()[1:] == other.mro()[1:]
+        is_type = isinstance(other, type)
+        is_tensor = is_type and AbstractTensor in other.__mro__
+        same_parents = is_tensor and cls.__mro__[1:] == other.__mro__[1:]
 
         subclass_target_shape = getattr(other, '__docarray_target_shape__', False)
         self_target_shape = getattr(cls, '__docarray_target_shape__', False)
@@ -94,10 +93,12 @@ class _ParametrizedMeta(type):
                 ):
                     return False
                 return any(
-                    issubclass(candidate, _cls.__unparametrizedcls__)
-                    for candidate in type(instance).mro()
+                    safe_issubclass(candidate, _cls.__unparametrizedcls__)
+                    for candidate in type(instance).__mro__
                 )
-            return any(issubclass(candidate, cls) for candidate in type(instance).mro())
+            return any(
+                issubclass(candidate, cls) for candidate in type(instance).__mro__
+            )
         return super().__instancecheck__(instance)
 
     def __eq__(cls, other):

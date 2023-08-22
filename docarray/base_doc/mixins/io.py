@@ -8,12 +8,15 @@ from typing import (
     Dict,
     Iterable,
     List,
+    Literal,
     Optional,
     Tuple,
     Type,
     TypeVar,
+    Union,
 )
 from typing import _GenericAlias as GenericAlias
+from typing import get_origin
 
 import numpy as np
 from typing_inspect import get_args, is_union_type
@@ -214,7 +217,7 @@ class IOMixin(Iterable[Tuple[str, Any]]):
     def from_base64(
         cls: Type[T],
         data: str,
-        protocol: str = 'pickle',
+        protocol: Literal['pickle', 'protobuf'] = 'pickle',
         compress: Optional[str] = None,
     ) -> T:
         """Build Document object from binary bytes
@@ -289,9 +292,18 @@ class IOMixin(Iterable[Tuple[str, Any]]):
                 raise ValueError(
                     'field_type cannot be None when trying to deserialize a BaseDoc'
                 )
-            return_field = field_type.from_protobuf(
-                getattr(value, content_key)
-            )  # we get to the parent class
+            try:
+                return_field = field_type.from_protobuf(
+                    getattr(value, content_key)
+                )  # we get to the parent class
+            except Exception:
+                if get_origin(field_type) is Union:
+                    raise ValueError(
+                        'Union type is not supported for proto deserialization. Please use JSON serialization instead'
+                    )
+                raise ValueError(
+                    f'{field_type} is not supported for proto deserialization'
+                )
         elif content_key == 'doc_array':
             if field_name is None:
                 raise ValueError(

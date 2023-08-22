@@ -35,6 +35,7 @@ from docarray.base_doc.io.json import orjson_dumps_and_decode
 from docarray.base_doc.mixins import IOMixin, UpdateMixin
 from docarray.typing import ID
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
+from docarray.utils._internal._typing import safe_issubclass
 
 if TYPE_CHECKING:
     from pydantic import Protocol
@@ -86,7 +87,11 @@ class BaseDoc(BaseModel, IOMixin, UpdateMixin, BaseNode):
     https://docs.pydantic.dev/usage/models/) and can be used in a similar way.
     """
 
-    id: Optional[ID] = Field(default_factory=lambda: ID(os.urandom(16).hex()))
+    id: Optional[ID] = Field(
+        description='The ID of the BaseDoc. This is useful for indexing in vector stores. If not set by user, it will automatically be assigned a random value',
+        default_factory=lambda: ID(os.urandom(16).hex()),
+        example=os.urandom(16).hex(),
+    )
 
     if is_pydantic_v2:
 
@@ -345,32 +350,8 @@ class BaseDoc(BaseModel, IOMixin, UpdateMixin, BaseNode):
             `encoder` is an optional function to supply as `default` to json.dumps(),
             other arguments as per `json.dumps()`.
             """
-            exclude, original_exclude, doclist_exclude_fields = self._exclude_doclist(
+            exclude, original_exclude, doclist_exclude_fields = self._exclude_docarray(
                 exclude=exclude
-            )
-
-            # this is copy from pydantic code
-            if skip_defaults is not None:
-                warnings.warn(
-                    f'{self.__class__.__name__}.json(): "skip_defaults" is deprecated and replaced by "exclude_unset"',
-                    DeprecationWarning,
-                )
-                exclude_unset = skip_defaults
-            encoder = cast(Callable[[Any], Any], encoder or self.__json_encoder__)
-
-            # We don't directly call `self.dict()`, which does exactly this with `to_dict=True`
-            # because we want to be able to keep raw `BaseModel` instances and not as `dict`.
-            # This allows users to write custom JSON encoders for given `BaseModel` classes.
-            data = dict(
-                self._iter(
-                    to_dict=models_as_dict,
-                    by_alias=by_alias,
-                    include=include,
-                    exclude=exclude,
-                    exclude_unset=exclude_unset,
-                    exclude_defaults=exclude_defaults,
-                    exclude_none=exclude_none,
-                )
             )
 
             # this is the custom part to deal with DocList
@@ -385,6 +366,12 @@ class BaseDoc(BaseModel, IOMixin, UpdateMixin, BaseNode):
             # this is copy from pydantic code
             if self.__custom_root_type__:
                 data = data[ROOT_KEY]
+
+                # this is copy from pydantic code
+
+            if self.__custom_root_type__:
+                data = data[ROOT_KEY]
+
             return self.__config__.json_dumps(data, default=encoder, **dumps_kwargs)
 
         def dict(

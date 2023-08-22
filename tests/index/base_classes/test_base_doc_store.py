@@ -97,6 +97,9 @@ class DummyDocIndex(BaseDocIndex):
     def num_docs(self):
         return 3
 
+    def _doc_exists(self, doc_id: str) -> bool:
+        return False
+
     _index = _identity
     _del_items = _identity
     _get_items = _identity
@@ -154,7 +157,7 @@ def test_create_columns():
     assert index._column_infos['id'].docarray_type == ID
     assert index._column_infos['id'].db_type == str
     assert index._column_infos['id'].n_dim is None
-    assert index._column_infos['id'].config == {'hi': 'there'}
+    assert index._column_infos['id'].config['hi'] == 'there'
 
     assert issubclass(index._column_infos['tens'].docarray_type, AbstractTensor)
     assert index._column_infos['tens'].db_type == str
@@ -168,7 +171,7 @@ def test_create_columns():
     assert index._column_infos['id'].docarray_type == ID
     assert index._column_infos['id'].db_type == str
     assert index._column_infos['id'].n_dim is None
-    assert index._column_infos['id'].config == {'hi': 'there'}
+    assert index._column_infos['id'].config['hi'] == 'there'
 
     assert issubclass(index._column_infos['tens_one'].docarray_type, AbstractTensor)
     assert index._column_infos['tens_one'].db_type == str
@@ -187,7 +190,7 @@ def test_create_columns():
     assert index._column_infos['id'].docarray_type == ID
     assert index._column_infos['id'].db_type == str
     assert index._column_infos['id'].n_dim is None
-    assert index._column_infos['id'].config == {'hi': 'there'}
+    assert index._column_infos['id'].config['hi'] == 'there'
 
     assert issubclass(index._column_infos['d__tens'].docarray_type, AbstractTensor)
     assert index._column_infos['d__tens'].db_type == str
@@ -211,7 +214,7 @@ def test_create_columns():
     assert index._subindices['d']._column_infos['id'].docarray_type == ID
     assert index._subindices['d']._column_infos['id'].db_type == str
     assert index._subindices['d']._column_infos['id'].n_dim is None
-    assert index._subindices['d']._column_infos['id'].config == {'hi': 'there'}
+    assert index._subindices['d']._column_infos['id'].config['hi'] == 'there'
 
     assert issubclass(
         index._subindices['d']._column_infos['tens'].docarray_type, AbstractTensor
@@ -259,10 +262,10 @@ def test_create_columns():
     assert (
         index._subindices['d_root']._subindices['d']._column_infos['id'].n_dim is None
     )
-    assert index._subindices['d_root']._subindices['d']._column_infos['id'].config == {
-        'hi': 'there'
-    }
-
+    assert (
+        index._subindices['d_root']._subindices['d']._column_infos['id'].config['hi']
+        == 'there'
+    )
     assert issubclass(
         index._subindices['d_root']
         ._subindices['d']

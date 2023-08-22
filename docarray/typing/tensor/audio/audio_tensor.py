@@ -5,7 +5,11 @@ import numpy as np
 from docarray.typing.tensor.audio.abstract_audio_tensor import AbstractAudioTensor
 from docarray.typing.tensor.audio.audio_ndarray import AudioNdArray
 from docarray.typing.tensor.tensor import AnyTensor
-from docarray.utils._internal.misc import is_tf_available, is_torch_available
+from docarray.utils._internal.misc import (
+    is_jax_available,
+    is_tf_available,
+    is_torch_available,
+)
 
 torch_available = is_torch_available()
 if torch_available:
@@ -23,6 +27,12 @@ if tf_available:
     )
     from docarray.typing.tensor.tensorflow_tensor import TensorFlowTensor
 
+jax_available = is_jax_available()
+if jax_available:
+    import jax.numpy as jnp  # type: ignore
+
+    from docarray.typing.tensor.audio.audio_jax_array import AudioJaxArray
+    from docarray.typing.tensor.jaxarray import JaxArray
 
 T = TypeVar("T", bound="AudioTensor")
 
@@ -81,6 +91,11 @@ class AudioTensor(AnyTensor, AbstractAudioTensor):
                 return cast(AudioTensorFlowTensor, value)
             elif isinstance(value, tf.Tensor):
                 return AudioTensorFlowTensor._docarray_from_native(value)  # noqa
+        if jax_available:
+            if isinstance(value, JaxArray):
+                return cast(AudioJaxArray, value)
+            elif isinstance(value, jnp.ndarray):
+                return AudioJaxArray._docarray_from_native(value)  # noqa
         try:
             return AudioNdArray._docarray_validate(value)
         except Exception:  # noqa

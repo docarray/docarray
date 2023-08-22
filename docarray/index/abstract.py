@@ -231,6 +231,16 @@ class BaseDocIndex(ABC, Generic[TSchema]):
         ...
 
     @abstractmethod
+    def _doc_exists(self, doc_id: str) -> bool:
+        """
+        Checks if a given document exists in the index.
+
+        :param doc_id: The id of a document to check.
+        :return: True if the document exists in the index, False otherwise.
+        """
+        ...
+
+    @abstractmethod
     def _find(
         self,
         query: np.ndarray,
@@ -362,7 +372,9 @@ class BaseDocIndex(ABC, Generic[TSchema]):
         for field_name, type_, _ in self._flatten_schema(
             cast(Type[BaseDoc], self._schema)
         ):
-            if issubclass(type_, AnyDocArray) and isinstance(doc_sequence[0], Dict):
+            if safe_issubclass(type_, AnyDocArray) and isinstance(
+                doc_sequence[0], Dict
+            ):
                 for doc in doc_sequence:
                     self._get_subindex_doclist(doc, field_name)  # type: ignore
 
@@ -400,6 +412,21 @@ class BaseDocIndex(ABC, Generic[TSchema]):
                         del self._subindices[field_name][nested_docs_id]
         # delete data
         self._del_items(key)
+
+    def __contains__(self, item: BaseDoc) -> bool:
+        """
+        Checks if a given document exists in the index.
+
+        :param item: The document to check.
+            It must be an instance of BaseDoc or its subclass.
+        :return: True if the document exists in the index, False otherwise.
+        """
+        if safe_issubclass(type(item), BaseDoc):
+            return self._doc_exists(str(item.id))
+        else:
+            raise TypeError(
+                f"item must be an instance of BaseDoc or its subclass, not '{type(item).__name__}'"
+            )
 
     def configure(self, runtime_config=None, **kwargs):
         """
@@ -534,7 +561,7 @@ class BaseDocIndex(ABC, Generic[TSchema]):
         if search_field:
             if '__' in search_field:
                 fields = search_field.split('__')
-                if issubclass(self._schema._get_field_annotation(fields[0]), AnyDocArray):  # type: ignore
+                if safe_issubclass(self._schema._get_field_annotation(fields[0]), AnyDocArray):  # type: ignore
                     return self._subindices[fields[0]].find_batched(
                         queries,
                         search_field='__'.join(fields[1:]),
@@ -578,7 +605,7 @@ class BaseDocIndex(ABC, Generic[TSchema]):
         self._logger.debug(f'Executing `filter` for the query {filter_query}')
         docs = self._filter(filter_query, limit=limit, **kwargs)
 
-        if isinstance(docs, List):
+        if isinstance(docs, List) and not isinstance(docs, DocList):
             docs = self._dict_list_to_docarray(docs)
 
         return docs
@@ -656,7 +683,7 @@ class BaseDocIndex(ABC, Generic[TSchema]):
             query_text, search_field=search_field, limit=limit, **kwargs
         )
 
-        if isinstance(docs, List):
+        if isinstance(docs, List) and not isinstance(docs, DocList):
             docs = self._dict_list_to_docarray(docs)
 
         return FindResult(documents=docs, scores=scores)
@@ -799,7 +826,7 @@ class BaseDocIndex(ABC, Generic[TSchema]):
             # do nothing
             # enables use in static contexts with type vars, e.g. as type annotation
             return Generic.__class_getitem__.__func__(cls, item)
-        if not issubclass(item, BaseDoc):
+        if not safe_issubclass(item, BaseDoc):
             raise ValueError(
                 f'{cls.__name__}[item] `item` should be a Document not a {item} '
             )
@@ -849,7 +876,7 @@ class BaseDocIndex(ABC, Generic[TSchema]):
                     # treat as if it was a single non-optional type
                     for t_arg in union_args:
                         if t_arg is not type(None):
-                            if issubclass(t_arg, BaseDoc):
+                            if safe_issubclass(t_arg, BaseDoc):
                                 names_types_fields.extend(
                                     cls._flatten_schema(t_arg, name_prefix=inner_prefix)
                                 )
@@ -967,7 +994,7 @@ class BaseDocIndex(ABC, Generic[TSchema]):
                 # see schema translation ideas in the design doc
                 names_compatible = reference_names == input_names
                 types_compatible = all(
-                    (issubclass(t2, t1))
+                    (safe_issubclass(t2, t1))
                     for (t1, t2) in zip(reference_types, input_types)
                 )
                 if names_compatible and types_compatible:
@@ -1044,7 +1071,7 @@ class BaseDocIndex(ABC, Generic[TSchema]):
         for field_name, _ in schema._docarray_fields.items():
             t_ = schema._get_field_annotation(field_name)
 
-            if not is_union_type(t_) and issubclass(t_, AnyDocArray):
+            if not is_union_type(t_) and safe_issubclass(t_, AnyDocArray):
                 self._get_subindex_doclist(doc_dict, field_name)
 
             if is_optional_type(t_):
@@ -1052,7 +1079,7 @@ class BaseDocIndex(ABC, Generic[TSchema]):
                     if t_arg is not type(None):
                         t_ = t_arg
 
-            if not is_union_type(t_) and issubclass(t_, BaseDoc):
+            if not is_union_type(t_) and safe_issubclass(t_, BaseDoc):
                 inner_dict = {}
 
                 fields = [
@@ -1125,7 +1152,7 @@ class BaseDocIndex(ABC, Generic[TSchema]):
     ) -> FindResult:
         """Find documents in the subindex and return subindex docs and scores."""
         fields = subindex.split('__')
-        if not subindex or not issubclass(
+        if not subindex or not safe_issubclass(
             self._schema._get_field_annotation(fields[0]), AnyDocArray  # type: ignore
         ):
             raise ValueError(f'subindex {subindex} is not valid')
@@ -1167,14 +1194,6 @@ class BaseDocIndex(ABC, Generic[TSchema]):
                 id, fields[0], '__'.join(fields[1:])
             )
             return self._get_root_doc_id(cur_root_id, root, '')
-
-    def __contains__(self, item: BaseDoc) -> bool:
-        """Checks if a given BaseDoc item is contained in the index.
-
-        :param item: the given BaseDoc
-        :return: if the given BaseDoc item is contained in the index
-        """
-        return False  # Will be overridden by backends
 
     def subindex_contains(self, item: BaseDoc) -> bool:
         """Checks if a given BaseDoc item is contained in the index or any of its subindices.

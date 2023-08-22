@@ -19,7 +19,7 @@ from typing_extensions import SupportsIndex
 from typing_inspect import is_union_type
 
 from docarray.array.any_array import AnyDocArray
-from docarray.array.doc_list.io import IOMixinArray
+from docarray.array.doc_list.io import IOMixinDocList
 from docarray.array.doc_list.pushpull import PushPullMixin
 from docarray.array.list_advance_indexing import IndexIterType, ListAdvancedIndexing
 from docarray.base_doc import AnyDoc, BaseDoc
@@ -29,6 +29,8 @@ from docarray.utils._internal.pydantic import is_pydantic_v2
 if is_pydantic_v2:
     from pydantic import GetCoreSchemaHandler
     from pydantic_core import core_schema
+
+from docarray.utils._internal._typing import safe_issubclass
 
 if TYPE_CHECKING:
 
@@ -44,7 +46,7 @@ T_doc = TypeVar('T_doc', bound=BaseDoc)
 class DocList(
     ListAdvancedIndexing[T_doc],
     PushPullMixin,
-    IOMixinArray,
+    IOMixinDocList,
     AnyDocArray[T_doc],
 ):
     """
@@ -161,7 +163,9 @@ class DocList(
 
     def _validate_one_doc(self, doc: T_doc) -> T_doc:
         """Validate if a Document is compatible with this `DocList`"""
-        if not issubclass(self.doc_type, AnyDoc) and not isinstance(doc, self.doc_type):
+        if not safe_issubclass(self.doc_type, AnyDoc) and not isinstance(
+            doc, self.doc_type
+        ):
             raise ValueError(f'{doc} is not a {self.doc_type}')
         return doc
 
@@ -225,7 +229,7 @@ class DocList(
             not is_union_type(field_type)
             and is_field_required
             and isinstance(field_type, type)
-            and issubclass(field_type, BaseDoc)
+            and safe_issubclass(field_type, BaseDoc)
         ):
             # calling __class_getitem__ ourselves is a hack otherwise mypy complain
             # most likely a bug in mypy though
@@ -277,7 +281,7 @@ class DocList(
             return value
         elif isinstance(value, DocVec):
             if (
-                issubclass(value.doc_type, cls.doc_type)
+                safe_issubclass(value.doc_type, cls.doc_type)
                 or value.doc_type == cls.doc_type
             ):
                 return cast(T, value.to_doc_list())
@@ -311,6 +315,12 @@ class DocList(
         """
         return super().from_protobuf(pb_msg)
 
+    @classmethod
+    def _get_proto_class(cls: Type[T]):
+        from docarray.proto import DocListProto
+
+        return DocListProto
+
     @overload
     def __getitem__(self, item: SupportsIndex) -> T_doc:
         ...
@@ -325,7 +335,7 @@ class DocList(
     @classmethod
     def __class_getitem__(cls, item: Union[Type[BaseDoc], TypeVar, str]):
 
-        if isinstance(item, type) and issubclass(item, BaseDoc):
+        if isinstance(item, type) and safe_issubclass(item, BaseDoc):
             return AnyDocArray.__class_getitem__.__func__(cls, item)  # type: ignore
         else:
             return super().__class_getitem__(item)

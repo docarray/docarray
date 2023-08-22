@@ -67,6 +67,9 @@ if tf is not None:
 
 
 class ElasticDocIndex(BaseDocIndex, Generic[TSchema]):
+    _index_vector_params: Optional[Tuple[str]] = ('dims', 'similarity', 'index')
+    _index_vector_options: Optional[Tuple[str]] = ('m', 'ef_construction')
+
     def __init__(self, db_config=None, **kwargs):
         """Initialize ElasticDocIndex"""
         super().__init__(db_config=db_config, **kwargs)
@@ -82,9 +85,6 @@ class ElasticDocIndex(BaseDocIndex, Generic[TSchema]):
         self._logger.debug('ElasticSearch client has been created')
 
         # ElasticSearh index setup
-        self._index_vector_params = ('dims', 'similarity', 'index')
-        self._index_vector_options = ('m', 'ef_construction')
-
         mappings: Dict[str, Any] = {
             'dynamic': True,
             '_source': {'enabled': 'true'},
@@ -95,7 +95,7 @@ class ElasticDocIndex(BaseDocIndex, Generic[TSchema]):
         self._logger.debug('Mappings have been updated with db_config.index_mappings')
 
         for col_name, col in self._column_infos.items():
-            if issubclass(col.docarray_type, AnyDocArray):
+            if safe_issubclass(col.docarray_type, AnyDocArray):
                 continue
             if col.db_type == 'dense_vector' and (
                 not col.n_dim and col.config['dims'] < 0
@@ -136,7 +136,6 @@ class ElasticDocIndex(BaseDocIndex, Generic[TSchema]):
             self._logger.error(err_msg)
             raise ValueError(err_msg)
         index_name = self._db_config.index_name or default_index_name
-        self._logger.debug(f'Retrieved index name: {index_name}')
         return index_name
 
     ###############################################
@@ -336,7 +335,7 @@ class ElasticDocIndex(BaseDocIndex, Generic[TSchema]):
         self._logger.debug(f'Mapping Python type {python_type} to database type')
 
         for allowed_type in ELASTIC_PY_VEC_TYPES:
-            if issubclass(python_type, allowed_type):
+            if safe_issubclass(python_type, allowed_type):
                 self._logger.info(
                     f'Mapped Python type {python_type} to database type "dense_vector"'
                 )
@@ -354,7 +353,7 @@ class ElasticDocIndex(BaseDocIndex, Generic[TSchema]):
         }
 
         for type in elastic_py_types.keys():
-            if issubclass(python_type, type):
+            if safe_issubclass(python_type, type):
                 self._logger.info(
                     f'Mapped Python type {python_type} to database type "{elastic_py_types[type]}"'
                 )
@@ -381,7 +380,7 @@ class ElasticDocIndex(BaseDocIndex, Generic[TSchema]):
                 '_id': row['id'],
             }
             for col_name, col in self._column_infos.items():
-                if issubclass(col.docarray_type, AnyDocArray):
+                if safe_issubclass(col.docarray_type, AnyDocArray):
                     continue
                 if col.db_type == 'dense_vector' and np.all(row[col_name] == 0):
                     row[col_name] = row[col_name] + 1.0e-9
@@ -573,20 +572,23 @@ class ElasticDocIndex(BaseDocIndex, Generic[TSchema]):
     # Helpers                                     #
     ###############################################
 
-    def _create_index_mapping(self, col: '_ColumnInfo') -> Dict[str, Any]:
+    @classmethod
+    def _create_index_mapping(cls, col: '_ColumnInfo') -> Dict[str, Any]:
         """Create a new HNSW index for a column, and initialize it."""
 
         index = {'type': col.config['type'] if 'type' in col.config else col.db_type}
 
         if col.db_type == 'dense_vector':
-            for k in self._index_vector_params:
-                index[k] = col.config[k]
+            if cls._index_vector_params is not None:
+                for k in cls._index_vector_params:
+                    index[k] = col.config[k]
             if col.n_dim:
                 index['dims'] = col.n_dim
-            index['index_options'] = dict(
-                (k, col.config[k]) for k in self._index_vector_options
-            )
-            index['index_options']['type'] = 'hnsw'
+            if cls._index_vector_options is not None:
+                index['index_options'] = dict(
+                    (k, col.config[k]) for k in cls._index_vector_options
+                )
+                index['index_options']['type'] = 'hnsw'
         return index
 
     def _send_requests(
@@ -669,16 +671,11 @@ class ElasticDocIndex(BaseDocIndex, Generic[TSchema]):
     def _refresh(self, index_name: str):
         self._client.indices.refresh(index=index_name)
 
-    def __contains__(self, item: BaseDoc) -> bool:
-        if safe_issubclass(type(item), BaseDoc):
-            if len(item.id) == 0:
-                return False
-            ret = self._client_mget([item.id])
-            return ret["docs"][0]["found"]
-        else:
-            raise TypeError(
-                f"item must be an instance of BaseDoc or its subclass, not '{type(item).__name__}'"
-            )
+    def _doc_exists(self, doc_id: str) -> bool:
+        if len(doc_id) == 0:
+            return False
+        ret = self._client_mget([doc_id])
+        return ret["docs"][0]["found"]
 
     ###############################################
     # API Wrappers                                #

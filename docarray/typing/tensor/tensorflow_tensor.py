@@ -6,7 +6,11 @@ import orjson
 from docarray.base_doc.base_node import BaseNode
 from docarray.typing.proto_register import _register_proto
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
-from docarray.utils._internal.misc import import_library, is_torch_available
+from docarray.utils._internal.misc import (
+    import_library,
+    is_jax_available,
+    is_torch_available,
+)
 
 if TYPE_CHECKING:
     import tensorflow as tf  # type: ignore
@@ -19,6 +23,10 @@ else:
 torch_available = is_torch_available()
 if torch_available:
     import torch
+
+jax_available = is_jax_available()
+if jax_available:
+    import jax.numpy as jnp
 
 T = TypeVar('T', bound='TensorFlowTensor')
 ShapeT = TypeVar('ShapeT')
@@ -201,6 +209,8 @@ class TensorFlowTensor(AbstractTensor, Generic[ShapeT], metaclass=metaTensorFlow
             return cls._docarray_from_ndarray(value._docarray_to_ndarray())
         elif torch_available and isinstance(value, torch.Tensor):
             return cls._docarray_from_native(value.detach().cpu().numpy())
+        elif jax_available and isinstance(value, jnp.ndarray):
+            return cls._docarray_from_native(value.__array__())
         elif isinstance(value, str):
             value = orjson.loads(value)
 
@@ -209,6 +219,7 @@ class TensorFlowTensor(AbstractTensor, Generic[ShapeT], metaclass=metaTensorFlow
             return cls(tensor=arr)
         except Exception:
             pass  # handled below
+
         raise ValueError(
             f'Expected a tensorflow.Tensor compatible type, got {type(value)}'
         )
@@ -333,3 +344,7 @@ class TensorFlowTensor(AbstractTensor, Generic[ShapeT], metaclass=metaTensorFlow
     def _docarray_to_ndarray(self) -> np.ndarray:
         """cast itself to a numpy array"""
         return self.tensor.numpy()
+
+    @property
+    def shape(self):
+        return tf.shape(self.tensor)

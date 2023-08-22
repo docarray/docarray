@@ -8,10 +8,10 @@ from docarray.typing import AnyEmbedding, AnyTensor
 
 class LegacyDocument(BaseDoc):
     """
-    This Document is the LegacyDocument. It follows the same schema as in DocArray v1.
+    This Document is the LegacyDocument. It follows the same schema as in DocArray <=0.21.
     It can be useful to start migrating a codebase from v1 to v2.
 
-    Nevertheless, the API is not totally compatible with DocArray v1 `Document`.
+    Nevertheless, the API is not totally compatible with DocArray <=0.21 `Document`.
     Indeed, none of the method associated with `Document` are present. Only the schema
     of the data is similar.
 

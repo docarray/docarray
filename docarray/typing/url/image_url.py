@@ -1,10 +1,11 @@
 import warnings
-from typing import TYPE_CHECKING, Optional, Tuple, TypeVar
+from typing import TYPE_CHECKING, List, Optional, Tuple, TypeVar
 
 from docarray.typing import ImageBytes
 from docarray.typing.proto_register import _register_proto
 from docarray.typing.tensor.image import ImageNdArray
 from docarray.typing.url.any_url import AnyUrl
+from docarray.typing.url.mimetypes import IMAGE_MIMETYPE
 from docarray.utils._internal.misc import is_notebook
 
 if TYPE_CHECKING:
@@ -19,6 +20,18 @@ class ImageUrl(AnyUrl):
     URL to an image file.
     Can be remote (web) URL, or a local file path.
     """
+
+    @classmethod
+    def mime_type(cls) -> str:
+        return IMAGE_MIMETYPE
+
+    @classmethod
+    def extra_extensions(cls) -> List[str]:
+        """
+        Returns a list of additional file extensions that are valid for this class
+        but cannot be identified by the mimetypes library.
+        """
+        return []
 
     def load_pil(self, timeout: Optional[float] = None) -> 'PILImage.Image':
         """

@@ -6,54 +6,63 @@
 
 <p align=center>
 <a href="https://pypi.org/project/docarray/"><img src="https://img.shields.io/pypi/v/docarray?style=flat-square&amp;label=Release" alt="PyPI"></a>
-<a href="https://codecov.io/gh/docarray/docarray"><img alt="Codecov branch" src="https://img.shields.io/codecov/c/github/docarray/docarray/main?logo=Codecov&logoColor=white&style=flat-square"></a>
 <a href="https://bestpractices.coreinfrastructure.org/projects/6554"><img src="https://bestpractices.coreinfrastructure.org/projects/6554/badge"></a>
+<a href="https://codecov.io/gh/docarray/docarray"><img alt="Codecov branch" src="https://img.shields.io/codecov/c/github/docarray/docarray/main?&logo=Codecov&logoColor=white&style=flat-square"></a>
 <a href="https://pypistats.org/packages/docarray"><img alt="PyPI - Downloads from official pypistats" src="https://img.shields.io/pypi/dm/docarray?style=flat-square"></a>
 <a href="https://discord.gg/WaMp6PVPgR"><img src="https://dcbadge.vercel.app/api/server/WaMp6PVPgR?theme=default-inverted&style=flat-square"></a>
 </p>
 
-> ⬆️ **DocArray v2**: This readme is for the second version of DocArray (starting at 0.30). If you want to use the older
-> version (prior to 0.30) check out the [docarray-v1-fixes](https://github.com/docarray/docarray/tree/docarray-v1-fixes) branch
+> **Note**
+> The README you're currently viewing is for DocArray>0.30, which introduces some significant changes from DocArray 0.21. If you wish to continue using the older DocArray <=0.21, ensure you install it via `pip install docarray==0.21`. Refer to its [codebase](https://github.com/docarray/docarray/tree/v0.21.0), [documentation](https://docarray.jina.ai), and [its hot-fixes branch](https://github.com/docarray/docarray/tree/docarray-v1-fixes) for more information.
 
-DocArray is a library for **representing, sending and storing multi-modal data**, perfect for **Machine Learning applications**.
 
-With DocArray you can:
+DocArray is a Python library expertly crafted for the [representation](#represent), [transmission](#send), [storage](#store), and [retrieval](#retrieve) of multimodal data. Tailored for the development of multimodal AI applications, its design guarantees seamless integration with the extensive Python and machine learning ecosystems. As of January 2022, DocArray is openly distributed under the [Apache License 2.0](https://github.com/docarray/docarray/blob/main/LICENSE) and currently enjoys the status of a sandbox project within the [LF AI & Data Foundation](https://lfaidata.foundation/).
 
-1. [**Represent data**](#represent)
-2. [**Send data**](#send)
-3. [**Store data**](#store)
 
-DocArray handles your data while integrating seamlessly with the rest of your **Python and ML ecosystem**:
 
-- :fire: Native compatibility for **[NumPy](https://github.com/numpy/numpy)**, **[PyTorch](https://github.com/pytorch/pytorch)** and **[TensorFlow](https://github.com/tensorflow/tensorflow)**, including for **model training use cases**
-- :zap: Built on **[Pydantic](https://github.com/pydantic/pydantic)** and out-of-the-box compatible with **[FastAPI](https://github.com/tiangolo/fastapi/)** and **[Jina](https://github.com/jina-ai/jina/)**
-- :package: Support for vector databases like **[Weaviate](https://weaviate.io/), [Qdrant](https://qdrant.tech/), [ElasticSearch](https://www.elastic.co/de/elasticsearch/)** and **[HNSWLib](https://github.com/nmslib/hnswlib)**
-- :chains: Send data as JSON over **HTTP** or as **[Protobuf](https://protobuf.dev/)** over **[gRPC](https://grpc.io/)**
+- :fire: Offers native support for **[NumPy](https://github.com/numpy/numpy)**, **[PyTorch](https://github.com/pytorch/pytorch)**, **[TensorFlow](https://github.com/tensorflow/tensorflow)**, and **[JAX](https://github.com/google/jax)**, catering specifically to **model training scenarios**.
+- :zap: Based on **[Pydantic](https://github.com/pydantic/pydantic)**, and instantly compatible with web and microservice frameworks like **[FastAPI](https://github.com/tiangolo/fastapi/)** and **[Jina](https://github.com/jina-ai/jina/)**.
+- :package: Provides support for vector databases such as **[Weaviate](https://weaviate.io/), [Qdrant](https://qdrant.tech/), [ElasticSearch](https://www.elastic.co/de/elasticsearch/), [Redis](https://redis.io/)**, and **[HNSWLib](https://github.com/nmslib/hnswlib)**.
+- :chains: Allows data transmission as JSON over **HTTP** or as **[Protobuf](https://protobuf.dev/)** over **[gRPC](https://grpc.io/)**.
 
-> :bulb: **Where are you coming from?** Based on your use case and background, there are different ways to understand DocArray:
-> 
-> - [Coming from pure PyTorch or TensorFlow](#coming-from-pytorch)
-> - [Coming from Pydantic](#coming-from-pydantic)
-> - [Coming from FastAPI](#coming-from-fastapi)
-> - [Coming from a vector database](#coming-from-vector-database)
+## Installation
 
-DocArray was released under the open-source [Apache License 2.0](https://github.com/docarray/docarray/blob/main/LICENSE) in January 2022. It is currently a sandbox project under [LF AI & Data Foundation](https://lfaidata.foundation/).
+To install DocArray from the CLI, run the following command:
+
+```shell
+pip install -U docarray
+```
+
+> **Note**
+> To use DocArray <=0.21, make sure you install via `pip install docarray==0.21` and check out its [codebase](https://github.com/docarray/docarray/tree/v0.21.0) and [docs](https://docarray.jina.ai) and [its hot-fixes branch](https://github.com/docarray/docarray/tree/docarray-v1-fixes).
+
+## Get Started
+New to DocArray? Depending on your use case and background, there are multiple ways to learn about DocArray:
+ 
+- [Coming from pure PyTorch or TensorFlow](#coming-from-pytorch)
+- [Coming from Pydantic](#coming-from-pydantic)
+- [Coming from FastAPI](#coming-from-fastapi)
+- [Coming from Jina](#coming-from-jina)
+- [Coming from a vector database](#coming-from-a-vector-database)
+- [Coming from Langchain](#coming-from-langchain)
+
 
 ## Represent
 
-DocArray allows you to **represent your data**, in an ML-native way.
+DocArray empowers you to **represent your data** in a manner that is inherently attuned to machine learning.
 
-This is useful for different use cases:
+This is particularly beneficial for various scenarios:
 
-- :running: You are **training a model**: There are tensors of different shapes and sizes flying around, representing different _things_, and you want to keep a straight head about them.
-- :cloud: You are **serving a model**: For example through FastAPI, and you want to specify your API endpoints.
-- :card_index_dividers: You are **parsing data**: For later use in your ML or data science applications.
+- :running: You are **training a model**: You're dealing with tensors of varying shapes and sizes, each signifying different elements. You desire a method to logically organize them.
+- :cloud: You are **serving a model**: Let's say through FastAPI, and you wish to define your API endpoints precisely.
+- :card_index_dividers: You are **parsing data**: Perhaps for future deployment in your machine learning or data science projects.
 
-> :bulb: **Coming from Pydantic?** You should be happy to hear
-> that DocArray is built on top of, and is fully compatible with, Pydantic!
-> Also, we have a [dedicated section](#coming-from-pydantic) just for you!
+> :bulb: **Familiar with Pydantic?** You'll be pleased to learn
+> that DocArray is not only constructed atop Pydantic but also maintains complete compatibility with it!
+> Furthermore, we have a [specific section](#coming-from-pydantic) dedicated to your needs!
 
-Put simply, DocArray lets you represent your data in a dataclass-like way, with ML as a first class citizen:
+In essence, DocArray facilitates data representation in a way that mirrors Python dataclasses, with machine learning being an integral component:
+
 
 ```python
 from docarray import BaseDoc
@@ -255,21 +264,22 @@ assert isinstance(dl_2, DocList)
 
 ## Send
 
-DocArray allows you to **send your data** in an ML-native way.
+DocArray facilitates the **transmission of your data** in a manner inherently compatible with machine learning.
 
-This means there is native support for **Protobuf and gRPC**, on top of **HTTP** and serialization to JSON, JSONSchema, Base64, and Bytes.
+This includes native support for **Protobuf and gRPC**, along with **HTTP** and serialization to JSON, JSONSchema, Base64, and Bytes.
 
-This is useful for different use cases:
+This feature proves beneficial for several scenarios:
 
-- :cloud: You are **serving a model**, for example through **[Jina](https://github.com/jina-ai/jina/)** or **[FastAPI](https://github.com/tiangolo/fastapi/)**
-- :spider_web: You are **distributing your model** across machines and need to send your data between nodes
-- :gear: You are building a **microservice** architecture and need to send your data between microservices
+- :cloud: You are **serving a model**, perhaps through frameworks like **[Jina](https://github.com/jina-ai/jina/)** or **[FastAPI](https://github.com/tiangolo/fastapi/)**
+- :spider_web: You are **distributing your model** across multiple machines and need an efficient means of transmitting your data between nodes
+- :gear: You are architecting a **microservice** environment and require a method for data transmission between microservices
 
-> :bulb: **Coming from FastAPI?** You should be happy to hear
-> that DocArray is fully compatible with FastAPI!
-> Also, we have a [dedicated section](#coming-from-fastapi) just for you!
+> :bulb: **Are you familiar with FastAPI?** You'll be delighted to learn
+> that DocArray maintains full compatibility with FastAPI!
+> Plus, we have a [dedicated section](#coming-from-fastapi) specifically for you!
 
-Whenever you want to send your data, you need to serialize it, so let's take a look at how that works with DocArray:
+When it comes to data transmission, serialization is a crucial step. Let's delve into how DocArray streamlines this process:
+
 
 ```python
 from docarray import BaseDoc
@@ -300,21 +310,17 @@ doc_4 = MyDocument.from_bytes(bytes_)
 doc_5 = MyDocument.parse_raw(json)
 ```
 
-Of course, serialization is not all you need. So check out how DocArray integrates with FastAPI and Jina.
+Of course, serialization is not all you need. So check out how DocArray integrates with **[Jina](https://github.com/jina-ai/jina/)** and **[FastAPI](https://github.com/tiangolo/fastapi/)**.
 
 ## Store
 
-Once you've modelled your data, and maybe sent it around, usually you want to **store it** somewhere.
-DocArray has you covered!
+After modeling and possibly distributing your data, you'll typically want to **store it** somewhere. That's where DocArray steps in!
 
-**Document Stores** let you, well, store your Documents, locally or remotely, all with the same user interface:
+**Document Stores** provide a seamless way to, as the name suggests, store your Documents. Be it locally or remotely, you can do it all through the same user interface:
 
-- :cd: **On disk** as a file in your local file system
+- :cd: **On disk**, as a file in your local filesystem
 - :bucket: On **[AWS S3](https://aws.amazon.com/de/s3/)**
 - :cloud: On **[Jina AI Cloud](https://cloud.jina.ai/)**
-
-<details markdown="1">
-  <summary>See Document Store usage</summary>
 
 The Document Store interface lets you push and pull Documents to and from multiple data sources, all with the same user interface.
 
@@ -333,7 +339,8 @@ docs.push('file://simple_docs')
 
 docs_pull = DocList[SimpleDoc].pull('file://simple_docs')
 ```
-</details>
+
+## Retrieve
 
 **Document Indexes** let you index your Documents in a **vector database** for efficient similarity-based retrieval.
 
@@ -343,10 +350,7 @@ This is useful for:
 - :mag: **Neural search** applications
 - :bulb: **Recommender systems**
 
-Currently, Document Indexes support **[Weaviate](https://weaviate.io/)**, **[Qdrant](https://qdrant.tech/)**, **[ElasticSearch](https://www.elastic.co/)**, and **[HNSWLib](https://github.com/nmslib/hnswlib)**, with more to come!
-
-<details markdown="1">
-  <summary>See Document Index usage</summary>
+Currently, Document Indexes support **[Weaviate](https://weaviate.io/)**, **[Qdrant](https://qdrant.tech/)**, **[ElasticSearch](https://www.elastic.co/)**,  **[Redis](https://redis.io/)**, and **[HNSWLib](https://github.com/nmslib/hnswlib)**, with more to come!
 
 The Document Index interface lets you index and retrieve Documents from multiple vector databases, all with the same user interface.
 
@@ -390,18 +394,20 @@ query = dl[0]
 results, scores = index.find(query, limit=10, search_field='embedding')
 ```
 
-</details>
+---
+
+## Learn DocArray
 
 Depending on your background and use case, there are different ways for you to understand DocArray.
 
-## Coming from old DocArray
+### Coming from DocArray <=0.21
 
 <details markdown="1">
   <summary>Click to expand</summary>
 
 If you are using DocArray version 0.30.0 or lower, you will be familiar with its [dataclass API](https://docarray.jina.ai/fundamentals/dataclass/).
 
-_DocArray v2 is that idea, taken seriously._ Every document is created through a dataclass-like interface,
+_DocArray >=0.30 is that idea, taken seriously._ Every document is created through a dataclass-like interface,
 courtesy of [Pydantic](https://pydantic-docs.helpmanual.io/usage/models/).
 
 This gives the following advantages:
@@ -415,11 +421,11 @@ They are now called **Document Indexes** and offer the following improvements (s
 - **Production-ready:** The new Document Indexes are a much thinner wrapper around the various vector DB libraries, making them more robust and easier to maintain
 - **Increased flexibility:** We strive to support any configuration or setting that you could perform through the DB's first-party client
 
-For now, Document Indexes support **[Weaviate](https://weaviate.io/)**, **[Qdrant](https://qdrant.tech/)**, **[ElasticSearch](https://www.elastic.co/)**, and **[HNSWLib](https://github.com/nmslib/hnswlib)**, with more to come.
+For now, Document Indexes support **[Weaviate](https://weaviate.io/)**, **[Qdrant](https://qdrant.tech/)**, **[ElasticSearch](https://www.elastic.co/)**, **[Redis](https://redis.io/)**,  Exact Nearest Neighbour search and **[HNSWLib](https://github.com/nmslib/hnswlib)**, with more to come.
 
 </details>
 
-## Coming from Pydantic
+### Coming from Pydantic
 
 <details markdown="1">
   <summary>Click to expand</summary>
@@ -496,7 +502,7 @@ except Exception as e:
 
 </details>
 
-## Coming from PyTorch
+### Coming from PyTorch
 
 <details markdown="1">
   <summary>Click to expand</summary>
@@ -510,7 +516,7 @@ It offers you several advantages:
 - **Go directly to deployment**, by re-using your data model as a [FastAPI](https://fastapi.tiangolo.com/) or [Jina](https://github.com/jina-ai/jina) API schema
 - Connect model components between **microservices**, using Protobuf and gRPC
 
-DocArray can be used directly inside ML models to handle and represent multi-modal data.
+DocArray can be used directly inside ML models to handle and represent multimodaldata.
 This allows you to reason about your data using DocArray's abstractions deep inside of `nn.Module`,
 and provides a FastAPI-compatible schema that eases the transition between model training and model serving.
 
@@ -519,7 +525,6 @@ To see the effect of this, let's first observe a vanilla PyTorch implementation 
 ```python
 import torch
 from torch import nn
-import torch
 
 
 def encoder(x):
@@ -608,7 +613,7 @@ schema definition (see [below](#coming-from-fastapi)). Everything is handled in 
 </details>
 
 
-## Coming from TensorFlow
+### Coming from TensorFlow
 
 <details markdown="1">
   <summary>Click to expand</summary>
@@ -618,7 +623,7 @@ Like the [PyTorch approach](#coming-from-pytorch), you can also use DocArray wit
 First off, to use DocArray with TensorFlow we first need to install it as follows:
 
 ```
-pip install tensorflow==2.11.0
+pip install tensorflow==2.12.0
 pip install protobuf==3.19.0
 ```
 
@@ -656,7 +661,7 @@ class MyPodcastModel(tf.keras.Model):
 
 </details>
 
-## Coming from FastAPI
+### Coming from FastAPI
 
 <details markdown="1">
   <summary>Click to expand</summary>
@@ -674,16 +679,15 @@ And to seal the deal, let us show you how easily documents slot into your FastAP
 ```python
 import numpy as np
 from fastapi import FastAPI
-from httpx import AsyncClient
-
+from docarray.base_doc import DocArrayResponse
 from docarray import BaseDoc
 from docarray.documents import ImageDoc
-from docarray.typing import NdArray
-from docarray.base_doc import DocArrayResponse
+from docarray.typing import NdArray, ImageTensor
 
 
 class InputDoc(BaseDoc):
     img: ImageDoc
+    text: str
 
 
 class OutputDoc(BaseDoc):
@@ -691,31 +695,99 @@ class OutputDoc(BaseDoc):
     embedding_bert: NdArray
 
 
-input_doc = InputDoc(img=ImageDoc(tensor=np.zeros((3, 224, 224))))
-
 app = FastAPI()
 
 
-@app.post("/doc/", response_model=OutputDoc, response_class=DocArrayResponse)
+def model_img(img: ImageTensor) -> NdArray:
+    return np.zeros((100, 1))
+
+
+def model_text(text: str) -> NdArray:
+    return np.zeros((100, 1))
+
+
+@app.post("/embed/", response_model=OutputDoc, response_class=DocArrayResponse)
 async def create_item(doc: InputDoc) -> OutputDoc:
-    ## call my fancy model to generate the embeddings
     doc = OutputDoc(
-        embedding_clip=np.zeros((100, 1)), embedding_bert=np.zeros((100, 1))
+        embedding_clip=model_img(doc.img.tensor), embedding_bert=model_text(doc.text)
     )
     return doc
 
+input_doc = InputDoc(text='', img=ImageDoc(tensor=np.random.random((3, 224, 224))))
 
 async with AsyncClient(app=app, base_url="http://test") as ac:
-    response = await ac.post("/doc/", data=input_doc.json())
-    resp_doc = await ac.get("/docs")
-    resp_redoc = await ac.get("/redoc")
+    response = await ac.post("/embed/", data=input_doc.json())
 ```
 
 Just like a vanilla Pydantic model!
 
 </details>
 
-## Coming from a vector database
+### Coming from Jina
+
+<details markdown="1">
+  <summary>Click to expand</summary>
+
+Jina has adopted docarray as their library for representing and serializing Documents.
+
+Jina allows to serve models and services that are built with DocArray allowing you to serve and scale these applications
+making full use of DocArray's serialization capabilites. 
+
+```python
+import numpy as np
+from jina import Deployment, Executor, requests
+from docarray import BaseDoc, DocList
+from docarray.documents import ImageDoc
+from docarray.typing import NdArray, ImageTensor
+
+
+class InputDoc(BaseDoc):
+    img: ImageDoc
+    text: str
+
+
+class OutputDoc(BaseDoc):
+    embedding_clip: NdArray
+    embedding_bert: NdArray
+
+
+def model_img(img: ImageTensor) -> NdArray:
+    return np.zeros((100, 1))
+
+
+def model_text(text: str) -> NdArray:
+    return np.zeros((100, 1))
+
+
+class MyEmbeddingExecutor(Executor):
+    @requests(on='/embed')
+    def encode(self, docs: DocList[InputDoc], **kwargs) -> DocList[OutputDoc]:
+        ret = DocList[OutputDoc]()
+        for doc in docs:
+            output = OutputDoc(
+                embedding_clip=model_img(doc.img.tensor),
+                embedding_bert=model_text(doc.text),
+            )
+            ret.append(output)
+        return ret
+
+
+with Deployment(
+    protocols=['grpc', 'http'], ports=[12345, 12346], uses=MyEmbeddingExecutor
+) as dep:
+    resp = dep.post(
+        on='/embed',
+        inputs=DocList[InputDoc](
+            [InputDoc(text='', img=ImageDoc(tensor=np.random.random((3, 224, 224))))]
+        ),
+        return_type=DocList[OutputDoc],
+    )
+    print(resp)
+```
+
+</details>
+
+### Coming from a vector database
 
 <details markdown="1">
   <summary>Click to expand</summary>
@@ -767,31 +839,108 @@ Currently, DocArray supports the following vector databases:
 - [Weaviate](https://www.weaviate.io/)
 - [Qdrant](https://qdrant.tech/)
 - [Elasticsearch](https://www.elastic.co/elasticsearch/) v8 and v7
-- [HNSWlib](https://github.com/nmslib/hnswlib) as a local-first alternative
+- [Redis](https://redis.io/)
+- [Milvus](https://milvus.io)
+- ExactNNMemorySearch as a local alternative with exact kNN search.
+- [HNSWlib](https://github.com/nmslib/hnswlib) as a local-first ANN alternative
 
 An integration of [OpenSearch](https://opensearch.org/) is currently in progress.
-
-Legacy versions of DocArray also support [Redis](https://redis.io/) and [Milvus](https://milvus.io/), but these are not yet supported in the current version.
 
 Of course this is only one of the things that DocArray can do, so we encourage you to check out the rest of this readme!
 
 </details>
 
 
-## Installation
+### Coming from Langchain
 
-To install DocArray from the CLI, run the following command:
+<details markdown="1">
+  <summary>Click to expand</summary>
 
+With DocArray, you can connect external data to LLMs through Langchain. DocArray gives you the freedom to establish 
+flexible document schemas and choose from different backends for document storage.
+After creating your document index, you can connect it to your Langchain app using [DocArrayRetriever](https://python.langchain.com/docs/modules/data_connection/retrievers/integrations/docarray_retriever).
+
+Install Langchain via:
 ```shell
-pip install -U docarray
+pip install langchain
 ```
+
+1. Define a schema and create documents:
+```python
+from docarray import BaseDoc, DocList
+from docarray.typing import NdArray
+from langchain.embeddings.openai import OpenAIEmbeddings
+
+embeddings = OpenAIEmbeddings()
+
+# Define a document schema
+class MovieDoc(BaseDoc):
+    title: str
+    description: str
+    year: int
+    embedding: NdArray[1536]
+
+
+movies = [
+    {"title": "#1 title", "description": "#1 description", "year": 1999},
+    {"title": "#2 title", "description": "#2 description", "year": 2001},
+]
+
+# Embed `description` and create documents
+docs = DocList[MovieDoc](
+    MovieDoc(embedding=embeddings.embed_query(movie["description"]), **movie)
+    for movie in movies
+)
+```
+
+2. Initialize a document index using any supported backend:
+```python
+from docarray.index import (
+    InMemoryExactNNIndex,
+    HnswDocumentIndex,
+    WeaviateDocumentIndex,
+    QdrantDocumentIndex,
+    ElasticDocIndex,
+    RedisDocumentIndex,
+)
+
+# Select a suitable backend and initialize it with data
+db = InMemoryExactNNIndex[MovieDoc](docs)
+```
+
+3. Finally, initialize a retriever and integrate it into your chain!
+```python
+from langchain.chat_models import ChatOpenAI
+from langchain.chains import ConversationalRetrievalChain
+from langchain.retrievers import DocArrayRetriever
+
+
+# Create a retriever
+retriever = DocArrayRetriever(
+    index=db,
+    embeddings=embeddings,
+    search_field="embedding",
+    content_field="description",
+)
+
+# Use the retriever in your chain
+model = ChatOpenAI()
+qa = ConversationalRetrievalChain.from_llm(model, retriever=retriever)
+```
+
+Alternatively, you can use built-in vector stores. Langchain supports two vector stores: [DocArrayInMemorySearch](https://python.langchain.com/docs/modules/data_connection/vectorstores/integrations/docarray_in_memory) and [DocArrayHnswSearch](https://python.langchain.com/docs/modules/data_connection/vectorstores/integrations/docarray_hnsw). 
+Both are user-friendly and are best suited to small to medium-sized datasets.
+
+</details>
+
 
 ## See also
 
 - [Documentation](https://docs.docarray.org)
+- [DocArray<=0.21 documentation](https://docarray.jina.ai/)
 - [Join our Discord server](https://discord.gg/WaMp6PVPgR)
 - [Donation to Linux Foundation AI&Data blog post](https://jina.ai/news/donate-docarray-lf-for-inclusive-standard-multimodal-data-model/)
-- ["Legacy" DocArray github page](https://github.com/docarray/docarray/tree/docarray-v1-fixes)
-- ["Legacy" DocArray documentation](https://docarray.jina.ai/)
+- [Roadmap](https://github.com/docarray/docarray/issues/1714)
 
 > DocArray is a trademark of LF AI Projects, LLC
+> 

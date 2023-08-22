@@ -4,7 +4,17 @@ import numpy as np
 
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
 from docarray.typing.tensor.ndarray import NdArray
-from docarray.utils._internal.misc import is_tf_available, is_torch_available  # noqa
+from docarray.utils._internal.misc import (  # noqa
+    is_jax_available,
+    is_tf_available,
+    is_torch_available,
+)
+
+jax_available = is_jax_available()
+if jax_available:
+    import jax.numpy as jnp
+
+    from docarray.typing.tensor.jaxarray import JaxArray  # noqa: F401
 
 torch_available = is_torch_available()
 if torch_available:
@@ -25,12 +35,20 @@ if TYPE_CHECKING:
     # behavior as `Union[TorchTensor, TensorFlowTensor, NdArray]` so it should be fine to use `AnyTensor` as
     # the type for `tensor` field in `BaseDoc` class.
     AnyTensor = Union[NdArray]
-    if torch_available and tf_available:
+    if torch_available and tf_available and jax_available:
+        AnyTensor = Union[NdArray, TorchTensor, TensorFlowTensor, JaxArray]  # type: ignore
+    elif torch_available and tf_available:
         AnyTensor = Union[NdArray, TorchTensor, TensorFlowTensor]  # type: ignore
-    elif torch_available:
-        AnyTensor = Union[NdArray, TorchTensor]  # type: ignore
+    elif tf_available and jax_available:
+        AnyTensor = Union[NdArray, TensorFlowTensor, JaxArray]  # type: ignore
+    elif torch_available and jax_available:
+        AnyTensor = Union[NdArray, TorchTensor, JaxArray]  # type: ignore
     elif tf_available:
         AnyTensor = Union[NdArray, TensorFlowTensor]  # type: ignore
+    elif torch_available:
+        AnyTensor = Union[NdArray, TorchTensor]  # type: ignore
+    elif jax_available:
+        AnyTensor = Union[NdArray, JaxArray]  # type: ignore
 
 else:
 
@@ -116,6 +134,11 @@ else:
                     return value
                 elif isinstance(value, tf.Tensor):
                     return TensorFlowTensor._docarray_from_native(value)  # noqa
+            if jax_available:
+                if isinstance(value, JaxArray):
+                    return value
+                elif isinstance(value, jnp.ndarray):
+                    return JaxArray._docarray_from_native(value)  # noqa
             try:
                 return NdArray._docarray_validate(value)
             except Exception as e:  # noqa

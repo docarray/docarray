@@ -3,6 +3,8 @@ from typing import TYPE_CHECKING, Dict, List, Type, TypeVar
 
 from typing_inspect import get_origin
 
+from docarray.utils._internal._typing import safe_issubclass
+
 T = TypeVar('T', bound='UpdateMixin')
 
 if TYPE_CHECKING:
@@ -108,7 +110,9 @@ class UpdateMixin:
                 if field_name not in FORBIDDEN_FIELDS_TO_UPDATE:
                     field_type = doc._get_field_annotation(field_name)
 
-                    if isinstance(field_type, type) and issubclass(field_type, DocList):
+                    if isinstance(field_type, type) and safe_issubclass(
+                        field_type, DocList
+                    ):
                         nested_docarray_fields.append(field_name)
                     else:
                         origin = get_origin(field_type)

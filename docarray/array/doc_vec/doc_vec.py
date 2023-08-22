@@ -18,15 +18,15 @@ from typing import (
 )
 
 import numpy as np
-from pydantic import parse_obj_as
+from pydantic import BaseConfig, parse_obj_as
 from typing_inspect import typingGenericAlias
 
 from docarray.array.any_array import AnyDocArray
 from docarray.array.doc_list.doc_list import DocList
 from docarray.array.doc_vec.column_storage import ColumnStorage, ColumnStorageView
+from docarray.array.doc_vec.io import IOMixinDocVec
 from docarray.array.list_advance_indexing import ListAdvancedIndexing
 from docarray.base_doc import AnyDoc, BaseDoc
-from docarray.base_doc.mixins.io import _type_to_protobuf
 from docarray.typing import NdArray
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
 from docarray.utils._internal._typing import is_tensor_union
@@ -37,14 +37,12 @@ if is_pydantic_v2:
     from pydantic import GetCoreSchemaHandler
     from pydantic_core import core_schema
 
-if TYPE_CHECKING:
-
-    from docarray.proto import (
-        DocVecProto,
-        ListOfDocArrayProto,
-        ListOfDocVecProto,
-        NdArrayProto,
-    )
+from docarray.utils._internal._typing import is_tensor_union, safe_issubclass
+from docarray.utils._internal.misc import (
+    is_jax_available,
+    is_tf_available,
+    is_torch_available,
+)
 
 torch_available = is_torch_available()
 if torch_available:
@@ -60,62 +58,23 @@ if tf_available:
 else:
     TensorFlowTensor = None  # type: ignore
 
+jnp_available = is_jax_available()
+if jnp_available:
+    import jax.numpy as jnp  # type: ignore
+
+    from docarray.typing import JaxArray  # noqa: F401
+else:
+    JaxArray = None  # type: ignore
+
 T_doc = TypeVar('T_doc', bound=BaseDoc)
 T = TypeVar('T', bound='DocVec')
+T_io_mixin = TypeVar('T_io_mixin', bound='IOMixinDocVec')
+
 IndexIterType = Union[slice, Iterable[int], Iterable[bool], None]
 
-NONE_NDARRAY_PROTO_SHAPE = (0,)
-NONE_NDARRAY_PROTO_DTYPE = 'None'
 
-
-def _none_ndarray_proto() -> 'NdArrayProto':
-    from docarray.proto import NdArrayProto
-
-    zeros_arr = parse_obj_as(NdArray, np.zeros(NONE_NDARRAY_PROTO_SHAPE))
-    nd_proto = NdArrayProto()
-    nd_proto.dense.buffer = zeros_arr.tobytes()
-    nd_proto.dense.ClearField('shape')
-    nd_proto.dense.shape.extend(list(zeros_arr.shape))
-    nd_proto.dense.dtype = NONE_NDARRAY_PROTO_DTYPE
-
-    return nd_proto
-
-
-def _none_docvec_proto() -> 'DocVecProto':
-    from docarray.proto import DocVecProto
-
-    return DocVecProto()
-
-
-def _none_list_of_docvec_proto() -> 'ListOfDocArrayProto':
-    from docarray.proto import ListOfDocVecProto
-
-    return ListOfDocVecProto()
-
-
-def _is_none_ndarray_proto(proto: 'NdArrayProto') -> bool:
-    return (
-        proto.dense.shape == list(NONE_NDARRAY_PROTO_SHAPE)
-        and proto.dense.dtype == NONE_NDARRAY_PROTO_DTYPE
-    )
-
-
-def _is_none_docvec_proto(proto: 'DocVecProto') -> bool:
-    return (
-        proto.tensor_columns == {}
-        and proto.doc_columns == {}
-        and proto.docs_vec_columns == {}
-        and proto.any_columns == {}
-    )
-
-
-def _is_none_list_of_docvec_proto(proto: 'ListOfDocVecProto') -> bool:
-    from docarray.proto import ListOfDocVecProto
-
-    return isinstance(proto, ListOfDocVecProto) and len(proto.data) == 0
-
-
-class DocVec(AnyDocArray[T_doc]):
+# type ignore because from_protobuf has a different signature
+class DocVec(IOMixinDocVec, AnyDocArray[T_doc]):  # type: ignore
     """
     DocVec is a container of Documents appropriates to perform
     computation that require batches of data (ex: matrix multiplication, distance
@@ -160,7 +119,7 @@ class DocVec(AnyDocArray[T_doc]):
         AnyTensor or Union of NdArray and TorchTensor
     """
 
-    doc_type: Type[T_doc]
+    doc_type: Type[T_doc] = BaseDoc  # type: ignore
 
     def __init__(
         self: T,
@@ -168,12 +127,17 @@ class DocVec(AnyDocArray[T_doc]):
         tensor_type: Type['AbstractTensor'] = NdArray,
     ):
 
-        if not hasattr(self, 'doc_type') or self.doc_type == AnyDoc:
+        if (
+            not hasattr(self, 'doc_type')
+            or self.doc_type == AnyDoc
+            or self.doc_type == BaseDoc
+        ):
             raise TypeError(
                 f'{self.__class__.__name__} does not precise a doc_type. You probably should do'
                 f'docs = DocVec[MyDoc](docs) instead of DocVec(docs)'
             )
         self.tensor_type = tensor_type
+        self._is_unusable = False
 
         tensor_columns: Dict[str, Optional[AbstractTensor]] = dict()
         doc_columns: Dict[str, Optional['DocVec']] = dict()
@@ -191,7 +155,7 @@ class DocVec(AnyDocArray[T_doc]):
         for field_name, field in self.doc_type._docarray_fields.items():
             # here we iterate over the field of the docs schema, and we collect the data
             # from each document and put them in the corresponding column
-            field_type = self.doc_type._get_field_annotation(field_name)
+            field_type: Type = self.doc_type._get_field_annotation(field_name)
 
             field_info = self.doc_type._docarray_fields[field_name]
             is_field_required = (
@@ -227,7 +191,7 @@ class DocVec(AnyDocArray[T_doc]):
                 field_type = tensor_type
             # all generic tensor types such as AnyTensor, ImageTensor, etc. are subclasses of AbstractTensor.
             # Perform check only if the field_type is not an alias and is a subclass of AbstractTensor
-            elif not isinstance(field_type, typingGenericAlias) and issubclass(
+            elif not isinstance(field_type, typingGenericAlias) and safe_issubclass(
                 field_type, AbstractTensor
             ):
                 # check if the tensor associated with the field_name in the document is a subclass of the tensor_type
@@ -235,11 +199,11 @@ class DocVec(AnyDocArray[T_doc]):
                 # then we change the field_type to ImageTensor, since AnyTensor is a union of all the tensor types
                 # and does not override any methods of specific tensor types
                 tensor = getattr(docs[0], field_name)
-                if issubclass(tensor.__class__, tensor_type):
+                if safe_issubclass(tensor.__class__, tensor_type):
                     field_type = tensor_type
 
             if isinstance(field_type, type):
-                if tf_available and issubclass(field_type, TensorFlowTensor):
+                if tf_available and safe_issubclass(field_type, TensorFlowTensor):
                     # tf.Tensor does not allow item assignment, therefore the
                     # optimized way
                     # of initializing an empty array and assigning values to it
@@ -258,8 +222,21 @@ class DocVec(AnyDocArray[T_doc]):
 
                         stacked: tf.Tensor = tf.stack(tf_stack)
                         tensor_columns[field_name] = TensorFlowTensor(stacked)
+                elif jnp_available and issubclass(field_type, JaxArray):
+                    if first_doc_is_none:
+                        _verify_optional_field_of_docs(docs)
+                        tensor_columns[field_name] = None
+                    else:
+                        tf_stack = []
+                        for i, doc in enumerate(docs):
+                            val = getattr(doc, field_name)
+                            _check_doc_field_not_none(field_name, doc)
+                            tf_stack.append(val.tensor)
 
-                elif issubclass(field_type, AbstractTensor):
+                        jax_stacked: jnp.ndarray = jnp.stack(tf_stack)
+                        tensor_columns[field_name] = JaxArray(jax_stacked)
+
+                elif safe_issubclass(field_type, AbstractTensor):
                     if first_doc_is_none:
                         _verify_optional_field_of_docs(docs)
                         tensor_columns[field_name] = None
@@ -287,7 +264,7 @@ class DocVec(AnyDocArray[T_doc]):
                             val = getattr(doc, field_name)
                             cast(AbstractTensor, tensor_columns[field_name])[i] = val
 
-                elif issubclass(field_type, BaseDoc):
+                elif safe_issubclass(field_type, BaseDoc):
                     if first_doc_is_none:
                         _verify_optional_field_of_docs(docs)
                         doc_columns[field_name] = None
@@ -303,7 +280,7 @@ class DocVec(AnyDocArray[T_doc]):
                                 tensor_type=self.tensor_type
                             )
 
-                elif issubclass(field_type, AnyDocArray):
+                elif safe_issubclass(field_type, AnyDocArray):
                     if first_doc_is_none:
                         _verify_optional_field_of_docs(docs)
                         docs_vec_columns[field_name] = None
@@ -356,7 +333,7 @@ class DocVec(AnyDocArray[T_doc]):
             return value
         elif isinstance(value, DocList):
             if (
-                issubclass(value.doc_type, cls.doc_type)
+                safe_issubclass(value.doc_type, cls.doc_type)
                 or value.doc_type == cls.doc_type
             ):
                 return cast(T, value.to_doc_vec())
@@ -475,7 +452,7 @@ class DocVec(AnyDocArray[T_doc]):
         # set data and prepare columns
         processed_value: T
         if isinstance(value, DocList):
-            if not issubclass(value.doc_type, self.doc_type):
+            if not safe_issubclass(value.doc_type, self.doc_type):
                 raise TypeError(
                     f'{value} schema : {value.doc_type} is not compatible with '
                     f'this DocVec schema : {self.doc_type}'
@@ -485,7 +462,7 @@ class DocVec(AnyDocArray[T_doc]):
             )  # we need to copy data here
 
         elif isinstance(value, DocVec):
-            if not issubclass(value.doc_type, self.doc_type):
+            if not safe_issubclass(value.doc_type, self.doc_type):
                 raise TypeError(
                     f'{value} schema : {value.doc_type} is not compatible with '
                     f'this DocVec schema : {self.doc_type}'
@@ -591,133 +568,30 @@ class DocVec(AnyDocArray[T_doc]):
     def __len__(self):
         return len(self._storage)
 
+    def __eq__(self, other: Any) -> bool:
+        if not isinstance(other, DocVec):
+            return False
+        if self.doc_type != other.doc_type:
+            return False
+        if self.tensor_type != other.tensor_type:
+            return False
+        if self._storage != other._storage:
+            return False
+        return True
+
     ####################
     # IO related       #
     ####################
 
     @classmethod
-    def from_protobuf(
-        cls: Type[T], pb_msg: 'DocVecProto', tensor_type: Type[AbstractTensor] = NdArray
-    ) -> T:
-        """create a DocVec from a protobuf message
-        :param pb_msg: the protobuf message to deserialize
-        :param tensor_type: the tensor type to use for the tensor columns.
-            Could be NdArray, TorchTensor, or TensorFlowTensor. Defaults to NdArray.
-            All tensors of the output DocVec will be of this type.
-        :return: The deserialized DocVec
-        """
+    def _get_proto_class(cls: Type[T]):
+        from docarray.proto import DocVecProto
 
-        tensor_columns: Dict[str, Optional[AbstractTensor]] = {}
-        doc_columns: Dict[str, Optional['DocVec']] = {}
-        docs_vec_columns: Dict[str, Optional[ListAdvancedIndexing['DocVec']]] = {}
-        any_columns: Dict[str, ListAdvancedIndexing] = {}
+        return DocVecProto
 
-        for tens_col_name, tens_col_proto in pb_msg.tensor_columns.items():
-            if _is_none_ndarray_proto(tens_col_proto):
-                # handle values that were None before serialization
-                tensor_columns[tens_col_name] = None
-            else:
-                tensor_columns[tens_col_name] = tensor_type.from_protobuf(
-                    tens_col_proto
-                )
-
-        for doc_col_name, doc_col_proto in pb_msg.doc_columns.items():
-            if _is_none_docvec_proto(doc_col_proto):
-                # handle values that were None before serialization
-                doc_columns[doc_col_name] = None
-            else:
-                col_doc_type: Type = cls.doc_type._get_field_annotation(doc_col_name)
-                doc_columns[doc_col_name] = DocVec.__class_getitem__(
-                    col_doc_type
-                ).from_protobuf(doc_col_proto, tensor_type=tensor_type)
-
-        for docs_vec_col_name, docs_vec_col_proto in pb_msg.docs_vec_columns.items():
-            vec_list: Optional[ListAdvancedIndexing]
-            if _is_none_list_of_docvec_proto(docs_vec_col_proto):
-                # handle values that were None before serialization
-                vec_list = None
-            else:
-                vec_list = ListAdvancedIndexing()
-                for doc_list_proto in docs_vec_col_proto.data:
-                    col_doc_type = cls.doc_type._get_field_annotation(
-                        docs_vec_col_name
-                    ).doc_type
-                    vec_list.append(
-                        DocVec.__class_getitem__(col_doc_type).from_protobuf(
-                            doc_list_proto, tensor_type=tensor_type
-                        )
-                    )
-            docs_vec_columns[docs_vec_col_name] = vec_list
-
-        for any_col_name, any_col_proto in pb_msg.any_columns.items():
-            any_column: ListAdvancedIndexing = ListAdvancedIndexing()
-            for node_proto in any_col_proto.data:
-                content = cls.doc_type._get_content_from_node_proto(
-                    node_proto, any_col_name
-                )
-                any_column.append(content)
-            any_columns[any_col_name] = any_column
-
-        storage = ColumnStorage(
-            tensor_columns=tensor_columns,
-            doc_columns=doc_columns,
-            docs_vec_columns=docs_vec_columns,
-            any_columns=any_columns,
-            tensor_type=tensor_type,
-        )
-
-        return cls.from_columns_storage(storage)
-
-    def to_protobuf(self) -> 'DocVecProto':
-        """Convert DocVec into a Protobuf message"""
-        from docarray.proto import (
-            DocVecProto,
-            ListOfAnyProto,
-            ListOfDocArrayProto,
-            ListOfDocVecProto,
-            NdArrayProto,
-        )
-
-        doc_columns_proto: Dict[str, DocVecProto] = dict()
-        tensor_columns_proto: Dict[str, NdArrayProto] = dict()
-        da_columns_proto: Dict[str, ListOfDocArrayProto] = dict()
-        any_columns_proto: Dict[str, ListOfAnyProto] = dict()
-
-        for field, col_doc in self._storage.doc_columns.items():
-            if col_doc is None:
-                # put dummy empty DocVecProto for serialization
-                doc_columns_proto[field] = _none_docvec_proto()
-            else:
-                doc_columns_proto[field] = col_doc.to_protobuf()
-        for field, col_tens in self._storage.tensor_columns.items():
-            if col_tens is None:
-                # put dummy empty NdArrayProto for serialization
-                tensor_columns_proto[field] = _none_ndarray_proto()
-            else:
-                tensor_columns_proto[field] = (
-                    col_tens.to_protobuf() if col_tens is not None else None
-                )
-        for field, col_da in self._storage.docs_vec_columns.items():
-            list_proto = ListOfDocVecProto()
-            if col_da:
-                for docs in col_da:
-                    list_proto.data.append(docs.to_protobuf())
-            else:
-                # put dummy empty ListOfDocVecProto for serialization
-                list_proto = _none_list_of_docvec_proto()
-            da_columns_proto[field] = list_proto
-        for field, col_any in self._storage.any_columns.items():
-            list_proto = ListOfAnyProto()
-            for data in col_any:
-                list_proto.data.append(_type_to_protobuf(data))
-            any_columns_proto[field] = list_proto
-
-        return DocVecProto(
-            doc_columns=doc_columns_proto,
-            tensor_columns=tensor_columns_proto,
-            docs_vec_columns=da_columns_proto,
-            any_columns=any_columns_proto,
-        )
+    def _docarray_to_json_compatible(self) -> Dict[str, Dict[str, Any]]:
+        tup = self._storage.columns_json_compatible()
+        return tup._asdict()
 
     def to_doc_list(self: T) -> DocList[T_doc]:
         """Convert DocVec into a DocList.
@@ -734,7 +608,6 @@ class DocVec(AnyDocArray[T_doc]):
             unstacked_doc_column[field] = doc_col.to_doc_list() if doc_col else None
 
         for field, da_col in self._storage.docs_vec_columns.items():
-
             unstacked_da_column[field] = (
                 [docs.to_doc_list() for docs in da_col] if da_col else None
             )
@@ -765,7 +638,14 @@ class DocVec(AnyDocArray[T_doc]):
 
         del self._storage
 
-        return DocList.__class_getitem__(self.doc_type).construct(docs)
+        doc_type = self.doc_type
+
+        # Setting _is_unusable will raise an Exception if someone interacts with this instance from hereon out.
+        # I don't like relying on this state, but we can't override the getattr/setattr directly:
+        # https://stackoverflow.com/questions/10376604/overriding-special-methods-on-an-instance
+        self._is_unusable = True
+
+        return DocList.__class_getitem__(doc_type).construct(docs)
 
     def traverse_flat(
         self,
@@ -780,6 +660,11 @@ class DocVec(AnyDocArray[T_doc]):
             return flattened[0]
         else:
             return flattened
+
+    @classmethod
+    def __class_getitem__(cls, item: Union[Type[BaseDoc], TypeVar, str]):
+        # call implementation in AnyDocArray
+        return super(IOMixinDocVec, cls).__class_getitem__(item)
 
     if is_pydantic_v2:
 

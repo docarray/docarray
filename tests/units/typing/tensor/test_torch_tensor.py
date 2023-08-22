@@ -185,6 +185,22 @@ def test_deepcopy():
     assert not (doc.embedding == doc_copy.embedding).all()
 
 
+def test_deepcopy_tensor():
+    from docarray import BaseDoc
+
+    class MMdoc(BaseDoc):
+        embedding: TorchTensor
+
+    doc = MMdoc(embedding=torch.randn(32))
+    doc_copy = doc.copy(deep=True)
+
+    assert doc.embedding.data_ptr() != doc_copy.embedding.data_ptr()
+    assert (doc.embedding == doc_copy.embedding).all()
+
+    doc_copy.embedding = torch.randn(32)
+    assert not (doc.embedding == doc_copy.embedding).all()
+
+
 @pytest.mark.parametrize('requires_grad', [True, False])
 def test_json_serialization(requires_grad: bool):
     orig_doc = MyDoc(tens=torch.rand(10, requires_grad=requires_grad))

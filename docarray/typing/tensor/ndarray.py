@@ -6,7 +6,17 @@ import orjson
 from docarray.base_doc.base_node import BaseNode
 from docarray.typing.proto_register import _register_proto
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
-from docarray.utils._internal.misc import is_tf_available, is_torch_available  # noqa
+from docarray.utils._internal.misc import (  # noqa
+    is_jax_available,
+    is_tf_available,
+    is_torch_available,
+)
+
+jax_available = is_jax_available()
+if jax_available:
+    import jax.numpy as jnp
+
+    from docarray.typing.tensor.jaxarray import JaxArray  # noqa: F401
 
 torch_available = is_torch_available()
 if torch_available:
@@ -116,6 +126,8 @@ class NdArray(np.ndarray, AbstractTensor, Generic[ShapeT]):
             return cls._docarray_from_native(value.numpy())
         elif isinstance(value, str):
             value = orjson.loads(value)
+        elif jax_available and isinstance(value, jnp.ndarray):
+            return cls._docarray_from_native(value.__array__())
         elif isinstance(value, list) or isinstance(value, tuple):
             try:
                 arr_from_list: np.ndarray = np.asarray(value)
