@@ -2,6 +2,7 @@ from abc import abstractmethod
 from typing import TYPE_CHECKING, Dict, List, Type, TypeVar
 
 from typing_inspect import get_origin
+
 from docarray.utils._internal._typing import safe_issubclass
 
 T = TypeVar('T', bound='UpdateMixin')
@@ -69,10 +70,10 @@ class UpdateMixin:
         ---
         :param other: The Document with which to update the contents of this
         """
-        if type(self) != type(other):
+        if not _similar_schemas(self, other):
             raise Exception(
                 f'Update operation can only be applied to '
-                f'Documents of the same type. '
+                f'Documents of the same schema. '
                 f'Trying to update Document of type '
                 f'{type(self)} with Document of type '
                 f'{type(other)}'
@@ -188,3 +189,7 @@ class UpdateMixin:
             elif dict1 is not None and dict2 is not None:
                 dict1.update(dict2)
                 setattr(self, field, dict1)
+
+
+def _similar_schemas(model1, model2):
+    return model1.__annotations__ == model2.__annotations__
