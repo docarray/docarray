@@ -1,7 +1,5 @@
 import warnings
-from typing import List, Optional, Tuple, Type, TypeVar
-
-from pydantic import parse_obj_as
+from typing import List, Optional, Tuple, TypeVar
 
 from docarray.typing import AudioNdArray
 from docarray.typing.bytes.audio_bytes import AudioBytes
@@ -91,12 +89,3 @@ class AudioUrl(AnyUrl):
                 display(Audio(filename=self))
         else:
             warnings.warn('Display of audio is only possible in a notebook.')
-
-    @classmethod
-    def from_protobuf(cls: Type[T], pb_msg: 'str') -> T:
-        """
-        Read url from a proto msg.
-        :param pb_msg:
-        :return: url
-        """
-        return parse_obj_as(cls, pb_msg)
