@@ -10,6 +10,7 @@
 
 
 
+
 <a name=release-note-0-30-0></a>
 ## Release Note (`0.30.0`)
 
@@ -568,4 +569,31 @@
  - [[```410665ad```](https://github.com/jina-ai/docarray/commit/410665ad9ae59c0687c780bdfb2a65d8e8097f8a)] __-__ add JAX to README (#1722) (*Joan Fontanals*)
  - [[```2a866aea```](https://github.com/jina-ai/docarray/commit/2a866aea9f2779ea59b6ed26177c65bbaee33d3a)] __-__ add link to roadmap in readme (#1715) (*Joan Fontanals*)
  - [[```68b0c5b8```](https://github.com/jina-ai/docarray/commit/68b0c5b86c572f7f7f2fc3a4b838d7bd484ba77e)] __-__ __version__: the next version will be 0.36.1 (*Jina Dev Bot*)
+
+<a name=release-note-0-37-1></a>
+## Release Note (`0.37.1`)
+
+> Release time: 2023-08-22 14:09:53
+
+
+
+🙇 We'd like to thank all contributors for this new release! In particular,
+ samsja,  AlaeddineAbdessalem,  TERBOUCHE Hacene,  Joan Fontanals,  Jina Dev Bot,  🙇
+
+
+### 🐞 Bug fixes
+
+ - [[```0ad18a63```](https://github.com/jina-ai/docarray/commit/0ad18a63e6bb1073c080eb3ac304bd90439e878b)] __-__ bump version (#1757) (*samsja*)
+ - [[```46c5dfd0```](https://github.com/jina-ai/docarray/commit/46c5dfd0aa1f10723c99a3e9a39c099dc08710e8)] __-__ relax the schema check in update mixin (#1755) (*AlaeddineAbdessalem*)
+ - [[```6c771125```](https://github.com/jina-ai/docarray/commit/6c771125e5e278c5c176a35ccc619e90098c7339)] __-__ __qdrant__: fix non-class type fields #1748 (#1752) (*TERBOUCHE Hacene*)
+ - [[```adb0d014```](https://github.com/jina-ai/docarray/commit/adb0d0141032c72cf2412a8b998c78cd9a920a9e)] __-__ fix dynamic class creation with doubly nested schemas  (#1747) (*AlaeddineAbdessalem*)
+ - [[```691d939e```](https://github.com/jina-ai/docarray/commit/691d939e8021a2589c5d5106ec1270179618599d)] __-__ fix readme test (#1746) (*samsja*)
+
+### 📗 Documentation
+
+ - [[```a39c4f98```](https://github.com/jina-ai/docarray/commit/a39c4f982331d6ef3145127797b1bcedc8e05248)] __-__ update readme (#1744) (*Joan Fontanals*)
+
+### 🍹 Other Improvements
+
+ - [[```bd3d8f03```](https://github.com/jina-ai/docarray/commit/bd3d8f0354c56559c3ae8a30f06b566ed7945f6e)] __-__ __version__: the next version will be 0.37.1 (*Jina Dev Bot*)
 
