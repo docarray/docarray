@@ -31,6 +31,9 @@ T = TypeVar('T', bound='AnyUrl')
 
 mimetypes.init([])
 
+# TODO need refactoring here
+# - code is duplicate in both version
+# - validation is very dummy for pydantic v2
 
 if is_pydantic_v2:
 
@@ -42,10 +45,13 @@ if is_pydantic_v2:
             value: Any,
             _: Any,
         ):
-            if isinstance(value, str):
-                return cls(value)
-            else:
-                raise ValueError(f'Invalid value for AnyUrl: {value}. ')
+
+            if not cls.is_extension_allowed(value):
+                raise ValueError(
+                    f"The file '{value}' is not in a valid format for class '{cls.__name__}'."
+                )
+
+            return cls(str(value))
 
         def __get_pydantic_core_schema__(
             cls, source: type[Any], handler: Optional['GetCoreSchemaHandler'] = None
@@ -93,6 +99,48 @@ if is_pydantic_v2:
             :return: url
             """
             return parse_obj_as(cls, pb_msg)
+
+        @classmethod
+        def is_extension_allowed(cls, value: Any) -> bool:
+            """
+            Check if the file extension of the URL is allowed for this class.
+            First, it guesses the mime type of the file. If it fails to detect the
+            mime type, it then checks the extra file extensions.
+            Note: This method assumes that any URL without an extension is valid.
+
+            :param value: The URL or file path.
+            :return: True if the extension is allowed, False otherwise
+            """
+            if cls is AnyUrl:
+                return True
+
+            url_parts = value.split('?')
+            extension = cls._get_url_extension(value)
+            if not extension:
+                return True
+
+            mimetype, _ = mimetypes.guess_type(url_parts[0])
+            if mimetype and mimetype.startswith(cls.mime_type()):
+                return True
+
+            return extension in cls.extra_extensions()
+
+        @staticmethod
+        def _get_url_extension(url: str) -> str:
+            """
+            Extracts and returns the file extension from a given URL.
+            If no file extension is present, the function returns an empty string.
+
+
+            :param url: The URL to extract the file extension from.
+            :return: The file extension without the period, if one exists,
+                otherwise an empty string.
+            """
+
+            parsed_url = urllib.parse.urlparse(url)
+            ext = os.path.splitext(parsed_url.path)[1]
+            ext = ext[1:] if ext.startswith('.') else ext
+            return ext
 
 else:
 
