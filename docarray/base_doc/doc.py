@@ -33,6 +33,7 @@ from docarray.base_doc.io.json import orjson_dumps_and_decode
 from docarray.base_doc.mixins import IOMixin, UpdateMixin
 from docarray.typing import ID
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
+from docarray.utils._internal._typing import safe_issubclass
 
 if TYPE_CHECKING:
     from pydantic import Protocol
@@ -347,6 +348,9 @@ class BaseDoc(BaseModel, IOMixin, UpdateMixin, BaseNode):
             `encoder` is an optional function to supply as `default` to json.dumps(),
             other arguments as per `json.dumps()`.
             """
+
+            data = {}
+
             exclude, original_exclude, doclist_exclude_fields = self._exclude_docarray(
                 exclude=exclude
             )
@@ -510,6 +514,34 @@ class BaseDoc(BaseModel, IOMixin, UpdateMixin, BaseNode):
             encoding=encoding,
             proto=proto,
             allow_pickle=allow_pickle,
+        )
+
+    def _exclude_docarray(
+        self, exclude: ExcludeType
+    ) -> Tuple[ExcludeType, ExcludeType, List[str]]:
+        docarray_exclude_fields = []
+        for field in self.__fields__.keys():
+            from docarray import DocList, DocVec
+
+            type_ = self._get_field_annotation(field)
+            if isinstance(type_, type) and (
+                safe_issubclass(type_, DocList) or safe_issubclass(type_, DocVec)
+            ):
+                docarray_exclude_fields.append(field)
+
+        original_exclude = exclude
+        if exclude is None:
+            exclude = set(docarray_exclude_fields)
+        elif isinstance(exclude, AbstractSet):
+            exclude = set([*exclude, *docarray_exclude_fields])
+        elif isinstance(exclude, Mapping):
+            exclude = dict(**exclude)
+            exclude.update({field: ... for field in docarray_exclude_fields})
+
+        return (
+            exclude,
+            original_exclude,
+            docarray_exclude_fields,
         )
 
     to_json = BaseModel.model_dump_json if is_pydantic_v2 else json
