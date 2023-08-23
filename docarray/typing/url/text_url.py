@@ -1,4 +1,6 @@
-from typing import List, Optional, TypeVar
+from typing import List, Optional, Type, TypeVar
+
+from pydantic import parse_obj_as
 
 from docarray.typing.proto_register import _register_proto
 from docarray.typing.url.any_url import AnyUrl
@@ -59,3 +61,12 @@ class TextUrl(AnyUrl):
         """
         _bytes = self.load_bytes(timeout=timeout)
         return _bytes.decode(charset)
+
+    @classmethod
+    def from_protobuf(cls: Type[T], pb_msg: 'str') -> T:
+        """
+        Read url from a proto msg.
+        :param pb_msg:
+        :return: url
+        """
+        return parse_obj_as(cls, pb_msg)

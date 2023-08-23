@@ -1,5 +1,7 @@
 import warnings
-from typing import TYPE_CHECKING, List, Optional, Tuple, TypeVar
+from typing import TYPE_CHECKING, List, Optional, Tuple, Type, TypeVar
+
+from pydantic import parse_obj_as
 
 from docarray.typing import ImageBytes
 from docarray.typing.proto_register import _register_proto
@@ -139,3 +141,12 @@ class ImageUrl(AnyUrl):
                 display(Image(filename=self))
         else:
             warnings.warn('Display of image is only possible in a notebook.')
+
+    @classmethod
+    def from_protobuf(cls: Type[T], pb_msg: 'str') -> T:
+        """
+        Read url from a proto msg.
+        :param pb_msg:
+        :return: url
+        """
+        return parse_obj_as(cls, pb_msg)

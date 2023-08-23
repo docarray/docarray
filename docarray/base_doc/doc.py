@@ -1,5 +1,4 @@
 import os
-import warnings
 from typing import (
     TYPE_CHECKING,
     AbstractSet,
@@ -14,7 +13,6 @@ from typing import (
     Type,
     TypeVar,
     Union,
-    cast,
     no_type_check,
 )
 
@@ -35,7 +33,6 @@ from docarray.base_doc.io.json import orjson_dumps_and_decode
 from docarray.base_doc.mixins import IOMixin, UpdateMixin
 from docarray.typing import ID
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
-from docarray.utils._internal._typing import safe_issubclass
 
 if TYPE_CHECKING:
     from pydantic import Protocol

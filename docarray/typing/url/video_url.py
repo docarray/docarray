@@ -1,5 +1,7 @@
 import warnings
-from typing import List, Optional, TypeVar
+from typing import List, Optional, Type, TypeVar
+
+from pydantic import parse_obj_as
 
 from docarray.typing.bytes.video_bytes import VideoBytes, VideoLoadResult
 from docarray.typing.proto_register import _register_proto
@@ -138,3 +140,12 @@ class VideoUrl(AnyUrl):
 
         else:
             warnings.warn('Display of video is only possible in a notebook.')
+
+    @classmethod
+    def from_protobuf(cls: Type[T], pb_msg: 'str') -> T:
+        """
+        Read url from a proto msg.
+        :param pb_msg:
+        :return: url
+        """
+        return parse_obj_as(cls, pb_msg)

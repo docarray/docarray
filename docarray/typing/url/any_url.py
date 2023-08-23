@@ -244,7 +244,7 @@ else:
 
             # allow missing scheme, unlike pydantic
             scheme_ = scheme if scheme is not None else ''
-            url = super().build(
+            super().build(
                 scheme=scheme_,
                 user=user,
                 password=password,

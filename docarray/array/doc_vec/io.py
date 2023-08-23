@@ -3,17 +3,7 @@ import io
 import pathlib
 from abc import abstractmethod
 from contextlib import nullcontext
-from typing import (
-    TYPE_CHECKING,
-    Any,
-    Dict,
-    Generator,
-    Optional,
-    Type,
-    TypeVar,
-    Union,
-    cast,
-)
+from typing import TYPE_CHECKING, Any, Dict, Generator, Optional, Type, TypeVar, Union
 
 import numpy as np
 import orjson

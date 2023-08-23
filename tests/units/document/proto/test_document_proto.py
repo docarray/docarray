@@ -6,6 +6,7 @@ import torch
 
 from docarray import DocList
 from docarray.base_doc import AnyDoc, BaseDoc
+from docarray.documents.image import ImageDoc
 from docarray.typing import NdArray, TorchTensor
 from docarray.utils._internal.misc import is_tf_available
 
@@ -359,3 +360,13 @@ def test_nested_dict_typed():
     )
 
     DocList[ResultTestDoc].from_protobuf(da.to_protobuf())
+
+
+def test_image_doc_proto():
+
+    doc = ImageDoc(url="aux.png")
+    pt = doc.to_protobuf()
+    assert "aux.png" in str(pt)
+    d2 = ImageDoc.from_protobuf(pt)
+
+    assert doc.url == d2.url

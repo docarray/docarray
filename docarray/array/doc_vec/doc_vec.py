@@ -1,6 +1,5 @@
 from collections import ChainMap
 from typing import (
-    TYPE_CHECKING,
     Any,
     Dict,
     Iterable,
@@ -17,8 +16,7 @@ from typing import (
     overload,
 )
 
-import numpy as np
-from pydantic import BaseConfig, parse_obj_as
+from pydantic import parse_obj_as
 from typing_inspect import typingGenericAlias
 
 from docarray.array.any_array import AnyDocArray

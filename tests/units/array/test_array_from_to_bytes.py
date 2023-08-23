@@ -74,7 +74,7 @@ def test_from_to_base64(protocol, compress, show_progress, array_cls):
     assert da2[1].image.url is None
 
 
-test_from_to_base64('protobuf', 'lz4', False, DocVec)
+# test_from_to_base64('protobuf', 'lz4', False, DocVec)
 
 
 @pytest.mark.parametrize('tensor_type', [NdArray, TorchTensor])
