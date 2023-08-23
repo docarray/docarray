@@ -137,7 +137,7 @@ class IOMixinDocVec(IOMixinDocList):
 
         for key, col in doc_cols.items():
             if col is not None:
-                col_doc_type = cls.doc_type._get_field_type(key)
+                col_doc_type = cls.doc_type._get_field_annotation(key)
                 doc_cols[key] = cls.__class_getitem__(col_doc_type)._from_json_col_dict(
                     col, tensor_type=tensor_type
                 )
@@ -146,7 +146,7 @@ class IOMixinDocVec(IOMixinDocList):
 
         for key, col in docs_vec_cols.items():
             if col is not None:
-                col_doc_type = cls.doc_type._get_field_type(key).doc_type
+                col_doc_type = cls.doc_type._get_field_annotation(key).doc_type
                 col_ = ListAdvancedIndexing(
                     cls.__class_getitem__(col_doc_type)._from_json_col_dict(
                         vec, tensor_type=tensor_type
@@ -159,7 +159,7 @@ class IOMixinDocVec(IOMixinDocList):
 
         for key, col in any_cols.items():
             if col is not None:
-                col_type = cls.doc_type._get_field_type(key)
+                col_type = cls.doc_type._get_field_annotation(key)
                 col_type = (
                     col_type
                     if cls.doc_type.__fields__[key].required
@@ -207,7 +207,7 @@ class IOMixinDocVec(IOMixinDocList):
                 doc_columns[doc_col_name] = None
             else:
                 col_doc_type: Type = cls.doc_type._get_field_annotation(doc_col_name)
-                doc_columns[doc_col_name] = DocVec.__class_getitem__(
+                doc_columns[doc_col_name] = cls.__class_getitem__(
                     col_doc_type
                 ).from_protobuf(doc_col_proto, tensor_type=tensor_type)
 
@@ -223,7 +223,7 @@ class IOMixinDocVec(IOMixinDocList):
                         docs_vec_col_name
                     ).doc_type
                     vec_list.append(
-                        DocVec.__class_getitem__(col_doc_type).from_protobuf(
+                        cls.__class_getitem__(col_doc_type).from_protobuf(
                             doc_list_proto, tensor_type=tensor_type
                         )
                     )

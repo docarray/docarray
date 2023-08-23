@@ -26,7 +26,7 @@ def _is_access_path_valid(doc_type: Type['BaseDoc'], access_path: str) -> bool:
     Check if a given access path ("__"-separated) is a valid path for a given Document class.
     """
 
-    field_type = _get_field_type_by_access_path(doc_type, access_path)
+    field_type = _get_field_annotation_by_access_path(doc_type, access_path)
     return field_type is not None
 
 
@@ -129,7 +129,7 @@ def _update_nested_dicts(
             _update_nested_dicts(to_update[k], update_with[k])
 
 
-def _get_field_type_by_access_path(
+def _get_field_annotation_by_access_path(
     doc_type: Type['BaseDoc'], access_path: str
 ) -> Optional[Type]:
     """
@@ -150,9 +150,9 @@ def _get_field_type_by_access_path(
         else:
             d = doc_type._get_field_annotation(field)
             if safe_issubclass(d, DocList):
-                return _get_field_type_by_access_path(d.doc_type, remaining)
+                return _get_field_annotation_by_access_path(d.doc_type, remaining)
             elif safe_issubclass(d, BaseDoc):
-                return _get_field_type_by_access_path(d, remaining)
+                return _get_field_annotation_by_access_path(d, remaining)
             else:
                 return None
     else:

@@ -65,7 +65,7 @@ def create_pure_python_type_model(model: Any) -> BaseDoc:
     )
 
 
-def _get_field_type_from_schema(
+def _get_field_annotation_from_schema(
     field_schema: Dict[str, Any],
     field_name: str,
     root_schema: Dict[str, Any],
@@ -106,7 +106,7 @@ def _get_field_type_from_schema(
                 )
             else:
                 any_of_types.append(
-                    _get_field_type_from_schema(
+                    _get_field_annotation_from_schema(
                         any_of_schema,
                         field_name,
                         root_schema=root_schema,
@@ -184,7 +184,7 @@ def _get_field_type_from_schema(
                     )
                     ret = DocList[doc_type]
     elif field_type == 'array':
-        ret = _get_field_type_from_schema(
+        ret = _get_field_annotation_from_schema(
             field_schema=field_schema.get('items', {}),
             field_name=field_name,
             root_schema=root_schema,
@@ -255,7 +255,7 @@ def create_base_doc_from_schema(
         return cached_models[base_doc_name]
     for field_name, field_schema in schema.get('properties', {}).items():
 
-        field_type = _get_field_type_from_schema(
+        field_type = _get_field_annotation_from_schema(
             field_schema=field_schema,
             field_name=field_name,
             root_schema=schema,

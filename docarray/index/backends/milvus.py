@@ -9,20 +9,21 @@ from typing import (
     List,
     Optional,
     Sequence,
+    Tuple,
     Type,
     TypeVar,
     Union,
     cast,
-    Tuple,
 )
 
 import numpy as np
 
 from docarray import BaseDoc, DocList
+from docarray.array.any_array import AnyDocArray
 from docarray.index.abstract import (
     BaseDocIndex,
-    _raise_not_supported,
     _raise_not_composable,
+    _raise_not_supported,
 )
 from docarray.index.backends.helper import _collect_query_args
 from docarray.typing import AnyTensor, NdArray
@@ -30,12 +31,11 @@ from docarray.typing.id import ID
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
 from docarray.utils._internal._typing import safe_issubclass
 from docarray.utils.find import (
-    _FindResult,
-    _FindResultBatched,
     FindResult,
     FindResultBatched,
+    _FindResult,
+    _FindResultBatched,
 )
-from docarray.array.any_array import AnyDocArray
 
 if TYPE_CHECKING:
     from pymilvus import (  # type: ignore[import]
@@ -43,9 +43,9 @@ if TYPE_CHECKING:
         CollectionSchema,
         DataType,
         FieldSchema,
+        Hits,
         connections,
         utility,
-        Hits,
     )
 else:
     from pymilvus import (
@@ -53,9 +53,9 @@ else:
         CollectionSchema,
         DataType,
         FieldSchema,
+        Hits,
         connections,
         utility,
-        Hits,
     )
 
 MAX_LEN = 65_535  # Maximum length that Milvus allows for a VARCHAR field
@@ -664,7 +664,7 @@ class MilvusDocumentIndex(BaseDocIndex, Generic[TSchema]):
         if search_field:
             if '__' in search_field:
                 fields = search_field.split('__')
-                if issubclass(self._schema._get_field_type(fields[0]), AnyDocArray):  # type: ignore
+                if issubclass(self._schema._get_field_annotation(fields[0]), AnyDocArray):  # type: ignore
                     return self._subindices[fields[0]].find_batched(
                         queries,
                         search_field='__'.join(fields[1:]),

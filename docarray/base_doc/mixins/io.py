@@ -143,7 +143,7 @@ class IOMixin(Iterable[Tuple[str, Any]]):
         ...
 
     @classmethod
-    def _get_field_type_array(cls, field: str) -> Type:
+    def _get_field_annotation_array(cls, field: str) -> Type:
         return cls._get_field_annotation(field)
 
     def __bytes__(self) -> bytes:
@@ -309,7 +309,7 @@ class IOMixin(Iterable[Tuple[str, Any]]):
                 raise ValueError(
                     'field_name cannot be None when trying to deserialize a BaseDoc'
                 )
-            return_field = cls._get_field_type_array(field_name).from_protobuf(
+            return_field = cls._get_field_annotation_array(field_name).from_protobuf(
                 getattr(value, content_key)
             )  # we get to the parent class
         elif content_key is None:
