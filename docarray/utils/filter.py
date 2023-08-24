@@ -13,7 +13,7 @@ def filter_docs(
 ) -> AnyDocArray:
     """
     Filter the Documents in the index according to the given filter query.
-    The query follows the syntax of MongoDB query language (https://www.mongodb.com/docs/manual/tutorial/query-documents/#specify-conditions-using-query-operators).
+   Filter queries use the same syntax as the MongoDB query language (https://www.mongodb.com/docs/manual/tutorial/query-documents/#specify-conditions-using-query-operators).
     You can see a list of the supported operators here (https://www.mongodb.com/docs/manual/reference/operator/query/#std-label-query-selectors)
 
 
