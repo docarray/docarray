@@ -269,7 +269,7 @@ class QdrantDocumentIndex(BaseDocIndex, Generic[TSchema]):
         :param python_type: a python type.
         :return: the corresponding database column type.
         """
-        if any(issubclass(python_type, vt) for vt in QDRANT_PY_VECTOR_TYPES):
+        if any(safe_issubclass(python_type, vt) for vt in QDRANT_PY_VECTOR_TYPES):
             return 'vector'
 
         if safe_issubclass(python_type, docarray.typing.id.ID):

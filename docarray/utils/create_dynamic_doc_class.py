@@ -1,10 +1,11 @@
-from docarray import DocList, BaseDoc
-from docarray.typing import AnyTensor
+from typing import Any, Dict, List, Optional, Type, Union
+
 from pydantic import create_model
 from pydantic.fields import FieldInfo
-from typing import Dict, List, Any, Union, Optional, Type
-from docarray.utils._internal._typing import safe_issubclass
 
+from docarray import BaseDoc, DocList
+from docarray.typing import AnyTensor
+from docarray.utils._internal._typing import safe_issubclass
 
 RESERVED_KEYS = [
     'type',
@@ -71,6 +72,7 @@ def _get_field_type_from_schema(
     cached_models: Dict[str, Any],
     is_tensor: bool = False,
     num_recursions: int = 0,
+    definitions: Optional[Dict] = None,
 ) -> type:
     """
     Private method used to extract the corresponding field type from the schema.
@@ -80,8 +82,11 @@ def _get_field_type_from_schema(
     :param cached_models: Parameter used when this method is called recursively to reuse partial nested classes.
     :param is_tensor: Boolean used to tell between tensor and list
     :param num_recursions: Number of recursions to properly handle nested types (Dict, List, etc ..)
+    :param definitions: Parameter used when this method is called recursively to reuse root definitions of other schemas.
     :return: A type created from the schema
     """
+    if not definitions:
+        definitions = {}
     field_type = field_schema.get('type', None)
     tensor_shape = field_schema.get('tensor/array shape', None)
     ret: Any
@@ -96,6 +101,7 @@ def _get_field_type_from_schema(
                         root_schema['definitions'][ref_name],
                         ref_name,
                         cached_models=cached_models,
+                        definitions=definitions,
                     )
                 )
             else:
@@ -107,6 +113,7 @@ def _get_field_type_from_schema(
                         cached_models=cached_models,
                         is_tensor=tensor_shape is not None,
                         num_recursions=0,
+                        definitions=definitions,
                     )
                 )  # No Union of Lists
         ret = Union[tuple(any_of_types)]
@@ -154,9 +161,10 @@ def _get_field_type_from_schema(
                 if obj_ref:
                     ref_name = obj_ref.split('/')[-1]
                     ret = create_base_doc_from_schema(
-                        root_schema['definitions'][ref_name],
+                        definitions[ref_name],
                         ref_name,
                         cached_models=cached_models,
+                        definitions=definitions,
                     )
                 else:
                     ret = Any
@@ -164,9 +172,10 @@ def _get_field_type_from_schema(
                 if obj_ref:
                     ref_name = obj_ref.split('/')[-1]
                     doc_type = create_base_doc_from_schema(
-                        root_schema['definitions'][ref_name],
+                        definitions[ref_name],
                         ref_name,
                         cached_models=cached_models,
+                        definitions=definitions,
                     )
                     ret = DocList[doc_type]
                 else:
@@ -182,6 +191,7 @@ def _get_field_type_from_schema(
             cached_models=cached_models,
             is_tensor=tensor_shape is not None,
             num_recursions=num_recursions + 1,
+            definitions=definitions,
         )
     else:
         if num_recursions > 0:
@@ -196,7 +206,10 @@ def _get_field_type_from_schema(
 
 
 def create_base_doc_from_schema(
-    schema: Dict[str, Any], base_doc_name: str, cached_models: Optional[Dict] = None
+    schema: Dict[str, Any],
+    base_doc_name: str,
+    cached_models: Optional[Dict] = None,
+    definitions: Optional[Dict] = None,
 ) -> Type:
     """
     Dynamically create a `BaseDoc` subclass from a `schema` of another `BaseDoc`.
@@ -230,8 +243,12 @@ def create_base_doc_from_schema(
     :param schema: The schema of the original `BaseDoc` where DocLists are passed as regular Lists of Documents.
     :param base_doc_name: The name of the new pydantic model created.
     :param cached_models: Parameter used when this method is called recursively to reuse partial nested classes.
+    :param definitions: Parameter used when this method is called recursively to reuse root definitions of other schemas.
     :return: A BaseDoc class dynamically created following the `schema`.
     """
+    if not definitions:
+        definitions = schema.get('definitions', {})
+
     cached_models = cached_models if cached_models is not None else {}
     fields: Dict[str, Any] = {}
     if base_doc_name in cached_models:
@@ -245,6 +262,7 @@ def create_base_doc_from_schema(
             cached_models=cached_models,
             is_tensor=False,
             num_recursions=0,
+            definitions=definitions,
         )
         fields[field_name] = (
             field_type,
