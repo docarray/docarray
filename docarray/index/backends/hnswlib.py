@@ -430,7 +430,13 @@ class HnswDocumentIndex(BaseDocIndex, Generic[TSchema]):
         if self._num_docs == 0:
             self._num_docs = self._get_num_docs_hnsw()
         return self._num_docs
-
+    def _get_num_docs_hnsw(self) -> int:
+        """
+        Get the number of documents using the HNSW method.
+        """
+        # Access your HNSW index here and retrieve the count of documents
+        hnsw_num_docs = self.hnsw_index.get_document_count()
+        return hnsw_num_docs
     ###############################################
     # Helpers                                     #
     ###############################################
