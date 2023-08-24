@@ -67,8 +67,9 @@ class EmbeddedOptions:
     additional_env_vars: Optional[Dict[str, str]] = None
 
 
-# TODO: add more types and figure out how to handle text vs string type
+# TODO: add more types and figure out how to handle text type tokenization
 # see https://weaviate.io/developers/weaviate/configuration/datatypes
+# and https://weaviate.io/developers/weaviate/config-refs/schema#property-tokenization
 WEAVIATE_PY_VEC_TYPES = [list, np.ndarray, AbstractTensor]
 WEAVIATE_PY_TYPES = [bool, int, float, str, docarray.typing.ID]
 
@@ -210,12 +211,17 @@ class WeaviateDocumentIndex(BaseDocIndex, Generic[TSchema]):
                 self.bytes_columns.append(column_name)
             if column_info.db_type == 'number[]':
                 self.nonembedding_array_columns.append(column_name)
-            prop = {
-                "name": column_name
-                if column_name != 'id'
-                else DOCUMENTID,  # in weaviate, id and _id is a reserved keyword
-                "dataType": [column_info.db_type],
-            }
+
+            if column_name == 'id':
+                # treat id differently because in weaviate, id and _id is a reserved keyword
+                prop = {
+                    "name": DOCUMENTID,
+                    "dataType": [column_info.db_type],
+                    "tokenization": "field",
+                }
+            else:
+                prop = {"name": column_name, "dataType": [column_info.db_type]}
+
             properties.append(prop)
 
         # TODO: What is the best way to specify other config that is part of schema?
@@ -708,7 +714,7 @@ class WeaviateDocumentIndex(BaseDocIndex, Generic[TSchema]):
                 return 'number[]'
 
         py_weaviate_type_map = {
-            docarray.typing.ID: 'string',
+            docarray.typing.ID: 'text',
             str: 'text',
             int: 'int',
             float: 'number',
@@ -825,9 +831,14 @@ class WeaviateDocumentIndex(BaseDocIndex, Generic[TSchema]):
             """
 
             text_query = query._bm25.query
+            search_field = query._bm25.properties
             vector_query = query._near_ask._content["vector"]
             hybrid_query = weaviate.gql.get.Hybrid(
-                query=text_query, vector=vector_query, alpha=0.5
+                query=text_query,
+                vector=vector_query,
+                alpha=0.5,
+                properties=search_field,
+                fusion_type=weaviate.gql.get.HybridFusion.RANKED.value,
             )
 
             query._bm25 = None
