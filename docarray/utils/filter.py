@@ -12,64 +12,64 @@ def filter_docs(
     query: Union[str, Dict, List[Dict]],
 ) -> AnyDocArray:
     """
-    Filter the Documents in the index according to the given filter query.
-   Filter queries use the same syntax as the MongoDB query language (https://www.mongodb.com/docs/manual/tutorial/query-documents/#specify-conditions-using-query-operators).
-    You can see a list of the supported operators here (https://www.mongodb.com/docs/manual/reference/operator/query/#std-label-query-selectors)
+     Filter the Documents in the index according to the given filter query.
+    Filter queries use the same syntax as the MongoDB query language (https://www.mongodb.com/docs/manual/tutorial/query-documents/#specify-conditions-using-query-operators).
+     You can see a list of the supported operators here (https://www.mongodb.com/docs/manual/reference/operator/query/#std-label-query-selectors)
 
 
-    ---
+     ---
 
-    ```python
-    from docarray import DocList, BaseDoc
-    from docarray.documents import TextDoc, ImageDoc
-    from docarray.utils.filter import filter_docs
-
-
-    class MyDocument(BaseDoc):
-        caption: TextDoc
-        ImageDoc: ImageDoc
-        price: int
+     ```python
+     from docarray import DocList, BaseDoc
+     from docarray.documents import TextDoc, ImageDoc
+     from docarray.utils.filter import filter_docs
 
 
-    docs = DocList[MyDocument](
-        [
-            MyDocument(
-                caption='A tiger in the jungle',
-                ImageDoc=ImageDoc(url='tigerphoto.png'),
-                price=100,
-            ),
-            MyDocument(
-                caption='A swimming turtle',
-                ImageDoc=ImageDoc(url='turtlepic.png'),
-                price=50,
-            ),
-            MyDocument(
-                caption='A couple birdwatching with binoculars',
-                ImageDoc=ImageDoc(url='binocularsphoto.png'),
-                price=30,
-            ),
-        ]
-    )
-    query = {
-        '$and': {
-            'ImageDoc__url': {'$regex': 'photo'},
-            'price': {'$lte': 50},
-        }
-    }
+     class MyDocument(BaseDoc):
+         caption: TextDoc
+         ImageDoc: ImageDoc
+         price: int
 
-    results = filter_docs(docs, query)
-    assert len(results) == 1
-    assert results[0].price == 30
-    assert results[0].caption == 'A couple birdwatching with binoculars'
-    assert results[0].ImageDoc.url == 'binocularsphoto.png'
-    ```
 
-    ---
+     docs = DocList[MyDocument](
+         [
+             MyDocument(
+                 caption='A tiger in the jungle',
+                 ImageDoc=ImageDoc(url='tigerphoto.png'),
+                 price=100,
+             ),
+             MyDocument(
+                 caption='A swimming turtle',
+                 ImageDoc=ImageDoc(url='turtlepic.png'),
+                 price=50,
+             ),
+             MyDocument(
+                 caption='A couple birdwatching with binoculars',
+                 ImageDoc=ImageDoc(url='binocularsphoto.png'),
+                 price=30,
+             ),
+         ]
+     )
+     query = {
+         '$and': {
+             'ImageDoc__url': {'$regex': 'photo'},
+             'price': {'$lte': 50},
+         }
+     }
 
-    :param docs: the DocList where to apply the filter
-    :param query: the query to filter by
-    :return: A DocList containing the Documents
-    in `docs` that fulfill the filter conditions in the `query`
+     results = filter_docs(docs, query)
+     assert len(results) == 1
+     assert results[0].price == 30
+     assert results[0].caption == 'A couple birdwatching with binoculars'
+     assert results[0].ImageDoc.url == 'binocularsphoto.png'
+     ```
+
+     ---
+
+     :param docs: the DocList where to apply the filter
+     :param query: the query to filter by
+     :return: A DocList containing the Documents
+     in `docs` that fulfill the filter conditions in the `query`
     """
     from docarray.utils._internal.query_language.query_parser import QueryParser
 
