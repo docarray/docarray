@@ -27,6 +27,12 @@ def create_doc(
     """
     Dynamically create a subclass of BaseDoc. This is a wrapper around pydantic's create_model.
 
+    !!! note
+        To pickle a dynamically created BaseDoc subclass:
+
+        - the class must be defined globally
+        - it must provide `__module__`
+
     ```python
     from docarray.documents import Audio
     from docarray.documents.helper import create_doc
