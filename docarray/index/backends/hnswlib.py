@@ -433,8 +433,8 @@ class HnswDocumentIndex(BaseDocIndex, Generic[TSchema]):
         """
         Get the number of documents using the HNSW method.
         """
-        # Access the first HNSW index from self._hnsw_indices
-        first_hnsw_index = self._hnsw_indices[0]
+        first_index_key = next(iter(self._hnsw_indices))  # Get the first key
+        first_hnsw_index = self._hnsw_indices[first_index_key]
         hnsw_num_docs = (
             first_hnsw_index.get_document_count()
         )  # Replace with actual method
