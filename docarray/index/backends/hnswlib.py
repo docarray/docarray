@@ -32,9 +32,7 @@ from docarray.index.abstract import (
     _raise_not_composable,
     _raise_not_supported,
 )
-from docarray.index.backends.helper import (
-    _collect_query_args,
-)
+from docarray.index.backends.helper import _collect_query_args
 from docarray.proto import DocProto
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
 from docarray.typing.tensor.ndarray import NdArray
@@ -430,13 +428,18 @@ class HnswDocumentIndex(BaseDocIndex, Generic[TSchema]):
         if self._num_docs == 0:
             self._num_docs = self._get_num_docs_hnsw()
         return self._num_docs
+
     def _get_num_docs_hnsw(self) -> int:
         """
         Get the number of documents using the HNSW method.
         """
-        # Access your HNSW index here and retrieve the count of documents
-        hnsw_num_docs = self.hnsw_index.get_document_count()
+        # Access the first HNSW index from self._hnsw_indices
+        first_hnsw_index = self._hnsw_indices[0]
+        hnsw_num_docs = (
+            first_hnsw_index.get_document_count()
+        )  # Replace with actual method
         return hnsw_num_docs
+
     ###############################################
     # Helpers                                     #
     ###############################################
