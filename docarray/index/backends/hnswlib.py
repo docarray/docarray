@@ -435,7 +435,7 @@ class HnswDocumentIndex(BaseDocIndex, Generic[TSchema]):
         """
         first_index_key = next(iter(self._hnsw_indices))  # Get the first key
         first_hnsw_index = self._hnsw_indices[first_index_key]
-        hnsw_num_docs = first_hnsw_index.element_count()
+        hnsw_num_docs = first_hnsw_index.element_count
         return hnsw_num_docs
 
     ###############################################
