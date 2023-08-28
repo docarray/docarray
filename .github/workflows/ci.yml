@@ -347,6 +347,7 @@ jobs:
           poetry run pip install protobuf==3.20.0
           poetry run pip install tensorflow==2.12.0
           poetry run pip uninstall -y torch
+          poetry run pip install torch
           sudo apt-get update
           sudo apt-get install --no-install-recommends ffmpeg
 
@@ -390,6 +391,7 @@ jobs:
           python -m pip install poetry
           poetry install --all-extras
           poetry run pip uninstall -y torch
+          poetry run pip install torch
           poetry run pip install jaxlib
           poetry run pip install jax
 
