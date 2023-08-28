@@ -328,6 +328,32 @@ class BaseDoc(BaseModel, IOMixin, UpdateMixin, BaseNode):
         """
         return self.dict()
 
+    def _exclude_doclist(
+        self, exclude: ExcludeType
+    ) -> Tuple[ExcludeType, ExcludeType, List[str]]:
+        doclist_exclude_fields = []
+        for field in self._docarray_fields.keys():
+            from docarray.array.any_array import AnyDocArray
+
+            type_ = self._get_field_annotation(field)
+            if isinstance(type_, type) and issubclass(type_, AnyDocArray):
+                doclist_exclude_fields.append(field)
+
+        original_exclude = exclude
+        if exclude is None:
+            exclude = set(doclist_exclude_fields)
+        elif isinstance(exclude, AbstractSet):
+            exclude = set([*exclude, *doclist_exclude_fields])
+        elif isinstance(exclude, Mapping):
+            exclude = dict(**exclude)
+            exclude.update({field: ... for field in doclist_exclude_fields})
+
+        return (
+            exclude,
+            original_exclude,
+            doclist_exclude_fields,
+        )
+
     if not is_pydantic_v2:
 
         def json(
@@ -435,32 +461,6 @@ class BaseDoc(BaseModel, IOMixin, UpdateMixin, BaseNode):
 
             return data
 
-        def _exclude_doclist(
-            self, exclude: ExcludeType
-        ) -> Tuple[ExcludeType, ExcludeType, List[str]]:
-            doclist_exclude_fields = []
-            for field in self._docarray_fields.keys():
-                from docarray.array.any_array import AnyDocArray
-
-                type_ = self._get_field_annotation(field)
-                if isinstance(type_, type) and issubclass(type_, AnyDocArray):
-                    doclist_exclude_fields.append(field)
-
-            original_exclude = exclude
-            if exclude is None:
-                exclude = set(doclist_exclude_fields)
-            elif isinstance(exclude, AbstractSet):
-                exclude = set([*exclude, *doclist_exclude_fields])
-            elif isinstance(exclude, Mapping):
-                exclude = dict(**exclude)
-                exclude.update({field: ... for field in doclist_exclude_fields})
-
-            return (
-                exclude,
-                original_exclude,
-                doclist_exclude_fields,
-            )
-
     else:
 
         def model_dump(  # type: ignore
@@ -476,35 +476,45 @@ class BaseDoc(BaseModel, IOMixin, UpdateMixin, BaseNode):
             round_trip: bool = False,
             warnings: bool = True,
         ) -> Dict[str, Any]:
+            def _model_dump(cls):
+
+                (
+                    exclude_,
+                    original_exclude,
+                    doclist_exclude_fields,
+                ) = self._exclude_doclist(exclude=exclude)
+
+                data = cls.model_dump(
+                    mode=mode,
+                    include=include,
+                    exclude=exclude_,
+                    by_alias=by_alias,
+                    exclude_unset=exclude_unset,
+                    exclude_defaults=exclude_defaults,
+                    exclude_none=exclude_none,
+                    round_trip=round_trip,
+                    warnings=warnings,
+                )
+
+                for field in doclist_exclude_fields:
+                    # we need to do this because pydantic will not recognize DocList correctly
+                    original_exclude = original_exclude or {}
+                    if field not in original_exclude:
+                        val = getattr(self, field)
+                        data[field] = (
+                            [doc.dict() for doc in val] if val is not None else None
+                        )
+
+                return data
 
             if self.is_view():
                 ## for some reason use ColumnViewStorage to dump the data is not working with
                 ## pydantic v2, so we need to create a new doc and dump it
 
                 new_doc = self.__class__.model_construct(**self.__dict__.to_dict())
-                return new_doc.model_dump(
-                    mode=mode,
-                    include=include,
-                    exclude=exclude,
-                    by_alias=by_alias,
-                    exclude_unset=exclude_unset,
-                    exclude_defaults=exclude_defaults,
-                    exclude_none=exclude_none,
-                    round_trip=round_trip,
-                    warnings=warnings,
-                )
+                return _model_dump(new_doc)
             else:
-                return super().model_dump(
-                    mode=mode,
-                    include=include,
-                    exclude=exclude,
-                    by_alias=by_alias,
-                    exclude_unset=exclude_unset,
-                    exclude_defaults=exclude_defaults,
-                    exclude_none=exclude_none,
-                    round_trip=round_trip,
-                    warnings=warnings,
-                )
+                return _model_dump(super())
 
     @no_type_check
     @classmethod
