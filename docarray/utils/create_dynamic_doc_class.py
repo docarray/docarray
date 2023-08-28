@@ -1,11 +1,12 @@
 from typing import Any, Dict, List, Optional, Type, Union
 
-from pydantic import create_model
+from pydantic import BaseModel, create_model
 from pydantic.fields import FieldInfo
 
 from docarray import BaseDoc, DocList
 from docarray.typing import AnyTensor
 from docarray.utils._internal._typing import safe_issubclass
+from docarray.utils._internal.pydantic import is_pydantic_v2
 
 RESERVED_KEYS = [
     'type',
@@ -20,7 +21,7 @@ RESERVED_KEYS = [
 ]
 
 
-def create_pure_python_type_model(model: Any) -> BaseDoc:
+def create_pure_python_type_model(model: BaseModel) -> BaseDoc:
     """
     Take a Pydantic model and cast DocList fields into List fields.
 
@@ -49,6 +50,11 @@ def create_pure_python_type_model(model: Any) -> BaseDoc:
     :param model: The input model
     :return: A new subclass of BaseDoc, where every DocList type in the schema is replaced by List.
     """
+    if is_pydantic_v2:
+        raise NotImplementedError(
+            'This method is not supported in Pydantic 2.0. Please use Pydantic 1.8.2 or lower.'
+        )
+
     fields: Dict[str, Any] = {}
     for field_name, field in model.__annotations__.items():
         field_info = model.__fields__[field_name].field_info

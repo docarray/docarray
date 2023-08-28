@@ -7,12 +7,14 @@ from pydantic import Field
 from docarray import BaseDoc, DocList
 from docarray.documents import TextDoc
 from docarray.typing import AnyTensor, ImageUrl
+from docarray.utils._internal.pydantic import is_pydantic_v2
 from docarray.utils.create_dynamic_doc_class import (
     create_base_doc_from_schema,
     create_pure_python_type_model,
 )
 
 
+@pytest.mark.skipif(is_pydantic_v2, reason="Not working with pydantic v2 for now")
 @pytest.mark.parametrize('transformation', ['proto', 'json'])
 def test_create_pydantic_model_from_schema(transformation):
     class Nested2Doc(BaseDoc):
@@ -166,6 +168,7 @@ def test_create_pydantic_model_from_schema(transformation):
         assert doc.ia == f'ID {i}'
 
 
+@pytest.mark.skipif(is_pydantic_v2, reason="Not working with pydantic v2 for now")
 @pytest.mark.parametrize('transformation', ['proto', 'json'])
 def test_create_empty_doc_list_from_schema(transformation):
     class CustomDoc(BaseDoc):
@@ -251,6 +254,7 @@ def test_create_empty_doc_list_from_schema(transformation):
     assert len(custom_da) == 0
 
 
+@pytest.mark.skipif(is_pydantic_v2, reason="Not working with pydantic v2 for now")
 def test_create_with_field_info():
     class CustomDoc(BaseDoc):
         """Here I have the description of the class"""
