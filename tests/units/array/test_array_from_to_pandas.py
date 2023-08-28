@@ -12,7 +12,7 @@ from docarray.utils._internal.pydantic import is_pydantic_v2
 @pytest.fixture()
 def nested_doc_cls():
     class MyDoc(BaseDoc):
-        count: Optional[int]
+        count: Optional[int] = None
         text: str
 
     class MyDocNested(MyDoc):
@@ -71,15 +71,15 @@ def test_to_from_pandas_df(nested_doc_cls, doc_vec):
 @pytest.fixture()
 def nested_doc():
     class Inner(BaseDoc):
-        img: Optional[ImageDoc]
+        img: Optional[ImageDoc] = None
 
     class Middle(BaseDoc):
-        img: Optional[ImageDoc]
-        inner: Optional[Inner]
+        img: Optional[ImageDoc] = None
+        inner: Optional[Inner] = None
 
     class Outer(BaseDoc):
-        img: Optional[ImageDoc]
-        middle: Optional[Middle]
+        img: Optional[ImageDoc] = None
+        middle: Optional[Middle] = None
 
     doc = Outer(
         img=ImageDoc(), middle=Middle(img=ImageDoc(), inner=Inner(img=ImageDoc()))
