@@ -20,6 +20,7 @@ from docarray.base_doc import BaseDoc
 from docarray.base_doc.mixins.io import _type_to_protobuf
 from docarray.typing import NdArray
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
+from docarray.utils._internal.pydantic import is_pydantic_v2
 
 if TYPE_CHECKING:
     import csv
@@ -160,11 +161,14 @@ class IOMixinDocVec(IOMixinDocList):
         for key, col in any_cols.items():
             if col is not None:
                 col_type = cls.doc_type._get_field_annotation(key)
-                col_type = (
-                    col_type
-                    if cls.doc_type.__fields__[key].required
-                    else Optional[col_type]
+
+                field_required = (
+                    cls.doc_type._docarray_fields[key].is_required()
+                    if is_pydantic_v2
+                    else cls.doc_type._docarray_fields[key].required
                 )
+
+                col_type = col_type if field_required else Optional[col_type]
                 col_ = ListAdvancedIndexing(parse_obj_as(col_type, val) for val in col)
                 any_cols[key] = col_
             else:
