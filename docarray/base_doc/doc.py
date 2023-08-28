@@ -440,10 +440,10 @@ class BaseDoc(BaseModel, IOMixin, UpdateMixin, BaseNode):
         ) -> Tuple[ExcludeType, ExcludeType, List[str]]:
             doclist_exclude_fields = []
             for field in self._docarray_fields.keys():
-                from docarray import DocList
+                from docarray.array.any_array import AnyDocArray
 
                 type_ = self._get_field_annotation(field)
-                if isinstance(type_, type) and issubclass(type_, DocList):
+                if isinstance(type_, type) and issubclass(type_, AnyDocArray):
                     doclist_exclude_fields.append(field)
 
             original_exclude = exclude
