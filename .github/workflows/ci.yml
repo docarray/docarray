@@ -66,6 +66,8 @@ jobs:
           poetry install --without dev
           poetry run pip install tensorflow==2.12.0
           poetry run pip install jax
+          poetry run pip uninstall -y torch
+          poetry run pip install torch
       - name: Test basic import
         run: poetry run python -c 'from docarray import DocList, BaseDoc'
 
