@@ -44,13 +44,13 @@ def test_from_to_json_docvec(tensor_type):
 
         class MyDoc(BaseDoc):
             text: str
-            num: Optional[int]
+            num: Optional[int] = None
             tens: tensor_type
-            tens_none: Optional[tensor_type]
+            tens_none: Optional[tensor_type] = None
             inner: InnerDoc
-            inner_none: Optional[InnerDoc]
+            inner_none: Optional[InnerDoc] = None
             inner_vec: DocVec[InnerDoc]
-            inner_vec_none: Optional[DocVec[InnerDoc]]
+            inner_vec_none: Optional[DocVec[InnerDoc]] = None
 
         def _rand_vec_gen(tensor_type):
             arr = np.random.rand(5)
