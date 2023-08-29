@@ -66,6 +66,8 @@ jobs:
           poetry install --without dev
           poetry run pip install tensorflow==2.12.0
           poetry run pip install jax
+          poetry run pip uninstall -y torch
+          poetry run pip install torch
       - name: Test basic import
         run: poetry run python -c 'from docarray import DocList, BaseDoc'
 
@@ -106,6 +108,8 @@ jobs:
           python -m pip install poetry
           poetry install --all-extras
           poetry run pip install elasticsearch==8.6.2
+          poetry run pip uninstall -y torch
+          poetry run pip install torch
           sudo apt-get update
           sudo apt-get install --no-install-recommends ffmpeg
 
@@ -153,6 +157,8 @@ jobs:
           python -m pip install poetry
           poetry install --all-extras
           poetry run pip install elasticsearch==8.6.2
+          poetry run pip uninstall -y torch
+          poetry run pip install torch
           sudo apt-get update
           sudo apt-get install --no-install-recommends ffmpeg
 
@@ -199,6 +205,8 @@ jobs:
           python -m pip install poetry
           poetry install --all-extras
           poetry run pip install protobuf==3.20.0 # we check that we support 3.19
+          poetry run pip uninstall -y torch
+          poetry run pip install torch
           sudo apt-get update
           sudo apt-get install --no-install-recommends ffmpeg
       - name: Test
@@ -244,6 +252,8 @@ jobs:
           poetry install --all-extras
           poetry run pip install protobuf==3.20.0
           poetry run pip install tensorflow==2.12.0
+          poetry run pip uninstall -y torch
+          poetry run pip install torch
           sudo apt-get update
           sudo apt-get install --no-install-recommends ffmpeg
 
@@ -290,6 +300,8 @@ jobs:
           poetry run pip install protobuf==3.20.0
           poetry run pip install tensorflow==2.12.0
           poetry run pip install elasticsearch==8.6.2
+          poetry run pip uninstall -y torch
+          poetry run pip install torch
           sudo apt-get update
           sudo apt-get install --no-install-recommends ffmpeg
 
@@ -334,6 +346,8 @@ jobs:
           poetry install --all-extras
           poetry run pip install protobuf==3.20.0
           poetry run pip install tensorflow==2.12.0
+          poetry run pip uninstall -y torch
+          poetry run pip install torch
           sudo apt-get update
           sudo apt-get install --no-install-recommends ffmpeg
 
@@ -376,6 +390,8 @@ jobs:
           python -m pip install --upgrade pip
           python -m pip install poetry
           poetry install --all-extras
+          poetry run pip uninstall -y torch
+          poetry run pip install torch
           poetry run pip install jaxlib
           poetry run pip install jax
 
@@ -420,6 +436,8 @@ jobs:
           python -m pip install --upgrade pip
           python -m pip install poetry
           poetry install --all-extras
+          poetry run pip uninstall -y torch
+          poetry run pip install torch
 
       - name: Test
         id: test
