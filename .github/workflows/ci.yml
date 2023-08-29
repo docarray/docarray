@@ -93,7 +93,7 @@ jobs:
       fail-fast: false
       matrix:
         python-version: [3.8]
-        pydantic: ["v1", "v2"]
+        pydantic-v2: ["true", "false"]
         test-path: [tests/integrations, tests/units, tests/documentation]
     steps:
       - uses: actions/checkout@v2.5.0
@@ -107,14 +107,10 @@ jobs:
           python -m pip install poetry
           poetry install --all-extras
           poetry run pip install elasticsearch==8.6.2
+          ./scripts/install_pydantic_v2.sh ${{ matrix.pydantic-v2 }}
           sudo apt-get update
           sudo apt-get install --no-install-recommends ffmpeg
-      
-      - name: Pydantic version check
-        if: ${{ matrix.python-version }} == 'v2'
-        run: 
-          poetry run pip install -U pydantic
-
+          
       - name: Test
         id: test
         run: |
