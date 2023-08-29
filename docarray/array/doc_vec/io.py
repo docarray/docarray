@@ -163,9 +163,9 @@ class IOMixinDocVec(IOMixinDocList):
                 col_type = cls.doc_type._get_field_annotation(key)
 
                 field_required = (
-                    cls.doc_type._docarray_fields[key].is_required()
+                    cls.doc_type._docarray_fields()[key].is_required()
                     if is_pydantic_v2
-                    else cls.doc_type._docarray_fields[key].required
+                    else cls.doc_type._docarray_fields()[key].required
                 )
 
                 col_type = col_type if field_required else Optional[col_type]

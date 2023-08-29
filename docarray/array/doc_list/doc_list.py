@@ -220,7 +220,7 @@ class DocList(
               in the doc_list like container
         """
         field_type = self.__class__.doc_type._get_field_annotation(field)
-        field_info = self.__class__.doc_type._docarray_fields[field]
+        field_info = self.__class__.doc_type._docarray_fields()[field]
         is_field_required = (
             field_info.is_required() if is_pydantic_v2 else field_info.required
         )

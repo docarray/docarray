@@ -242,7 +242,7 @@ class IOMixin(Iterable[Tuple[str, Any]]):
         for field_name in pb_msg.data:
             if (
                 not (cls.Config._load_extra_fields_from_protobuf)
-                and field_name not in cls._docarray_fields.keys()
+                and field_name not in cls._docarray_fields().keys()
             ):
                 continue  # optimization we don't even load the data if the key does not
                 # match any field in the cls or in the mapping
@@ -326,7 +326,7 @@ class IOMixin(Iterable[Tuple[str, Any]]):
 
             elif content_key in arg_to_container.keys():
 
-                if field_name and field_name in cls._docarray_fields:
+                if field_name and field_name in cls._docarray_fields():
                     field_type = cls._get_field_inner_type(field_name)
                 else:
                     field_type = None
@@ -342,18 +342,18 @@ class IOMixin(Iterable[Tuple[str, Any]]):
             elif content_key == 'dict':
                 deser_dict: Dict[str, Any] = dict()
 
-                if field_name and field_name in cls._docarray_fields:
+                if field_name and field_name in cls._docarray_fields():
 
                     if is_pydantic_v2:
                         dict_args = get_args(
-                            cls._docarray_fields[field_name].annotation
+                            cls._docarray_fields()[field_name].annotation
                         )
                         if len(dict_args) < 2:
                             field_type = Any
                         else:
                             field_type = dict_args[1]
                     else:
-                        field_type = cls._docarray_fields[field_name].type_
+                        field_type = cls._docarray_fields()[field_name].type_
 
                 else:
                     field_type = None
@@ -424,7 +424,7 @@ class IOMixin(Iterable[Tuple[str, Any]]):
         from docarray import BaseDoc
 
         paths = []
-        for field in cls._docarray_fields.keys():
+        for field in cls._docarray_fields().keys():
             field_type = cls._get_field_annotation(field)
             if not is_union_type(field_type) and safe_issubclass(field_type, BaseDoc):
                 sub_paths = field_type._get_access_paths()

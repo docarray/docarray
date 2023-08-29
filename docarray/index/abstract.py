@@ -859,7 +859,7 @@ class BaseDocIndex(ABC, Generic[TSchema]):
         :return: A list of column names, types, and fields
         """
         names_types_fields: List[Tuple[str, Type, 'ModelField']] = []
-        for field_name, field_ in schema._docarray_fields.items():
+        for field_name, field_ in schema._docarray_fields().items():
             t_ = schema._get_field_annotation(field_name)
             inner_prefix = name_prefix + field_name + '__'
 
@@ -1068,7 +1068,7 @@ class BaseDocIndex(ABC, Generic[TSchema]):
         :param schema: The schema of the Document object
         :return: A Document object
         """
-        for field_name, _ in schema._docarray_fields.items():
+        for field_name, _ in schema._docarray_fields().items():
             t_ = schema._get_field_annotation(field_name)
 
             if not is_union_type(t_) and safe_issubclass(t_, AnyDocArray):

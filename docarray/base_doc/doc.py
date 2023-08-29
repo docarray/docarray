@@ -179,7 +179,6 @@ class BaseDoc(BaseModel, IOMixin, UpdateMixin, BaseNode):
             return doc
 
     @classmethod
-    @property
     def _docarray_fields(cls) -> Dict[str, FieldInfo]:
         """
         Returns a dictionary of all fields of this document.
@@ -198,7 +197,7 @@ class BaseDoc(BaseModel, IOMixin, UpdateMixin, BaseNode):
         """
 
         if is_pydantic_v2:
-            annotation = cls._docarray_fields[field].annotation
+            annotation = cls._docarray_fields()[field].annotation
 
             if is_optional_type(
                 annotation
@@ -207,7 +206,7 @@ class BaseDoc(BaseModel, IOMixin, UpdateMixin, BaseNode):
             else:
                 return annotation
         else:
-            return cls._docarray_fields[field].outer_type_
+            return cls._docarray_fields()[field].outer_type_
 
     @classmethod
     def _get_field_inner_type(cls, field: str) -> Type:
@@ -218,7 +217,7 @@ class BaseDoc(BaseModel, IOMixin, UpdateMixin, BaseNode):
         """
 
         if is_pydantic_v2:
-            annotation = cls._docarray_fields[field].annotation
+            annotation = cls._docarray_fields()[field].annotation
 
             if is_optional_type(
                 annotation
@@ -227,7 +226,7 @@ class BaseDoc(BaseModel, IOMixin, UpdateMixin, BaseNode):
             else:
                 return annotation
         else:
-            return cls._docarray_fields[field].type_
+            return cls._docarray_fields()[field].type_
 
     def __str__(self) -> str:
         content: Any = None
@@ -267,7 +266,7 @@ class BaseDoc(BaseModel, IOMixin, UpdateMixin, BaseNode):
         return isinstance(self.__dict__, ColumnStorageView)
 
     def __getattr__(self, item) -> Any:
-        if item in self._docarray_fields.keys():
+        if item in self._docarray_fields().keys():
             return self.__dict__[item]
         else:
             return super().__getattribute__(item)
@@ -289,10 +288,10 @@ class BaseDoc(BaseModel, IOMixin, UpdateMixin, BaseNode):
         if not isinstance(other, BaseDoc):
             return False
 
-        if self._docarray_fields.keys() != other._docarray_fields.keys():
+        if self._docarray_fields().keys() != other._docarray_fields().keys():
             return False
 
-        for field_name in self._docarray_fields:
+        for field_name in self._docarray_fields():
             value1 = getattr(self, field_name)
             value2 = getattr(other, field_name)
 
@@ -332,7 +331,7 @@ class BaseDoc(BaseModel, IOMixin, UpdateMixin, BaseNode):
         self, exclude: ExcludeType
     ) -> Tuple[ExcludeType, ExcludeType, List[str]]:
         doclist_exclude_fields = []
-        for field in self._docarray_fields.keys():
+        for field in self._docarray_fields().keys():
             from docarray.array.any_array import AnyDocArray
 
             type_ = self._get_field_annotation(field)

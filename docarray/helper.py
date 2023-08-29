@@ -142,7 +142,7 @@ def _get_field_annotation_by_access_path(
     from docarray import BaseDoc, DocList
 
     field, _, remaining = access_path.partition('__')
-    field_valid = field in doc_type._docarray_fields.keys()
+    field_valid = field in doc_type._docarray_fields().keys()
 
     if field_valid:
         if len(remaining) == 0:

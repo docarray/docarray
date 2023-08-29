@@ -148,12 +148,12 @@ class DocVec(IOMixinDocVec, AnyDocArray[T_doc]):  # type: ignore
             else DocList.__class_getitem__(self.doc_type)(docs)
         )
 
-        for field_name, field in self.doc_type._docarray_fields.items():
+        for field_name, field in self.doc_type._docarray_fields().items():
             # here we iterate over the field of the docs schema, and we collect the data
             # from each document and put them in the corresponding column
             field_type: Type = self.doc_type._get_field_annotation(field_name)
 
-            field_info = self.doc_type._docarray_fields[field_name]
+            field_info = self.doc_type._docarray_fields()[field_name]
             is_field_required = (
                 field_info.is_required() if is_pydantic_v2 else field_info.required
             )

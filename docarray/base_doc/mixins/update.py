@@ -106,7 +106,7 @@ class UpdateMixin:
             nested_docs_fields: List[str] = []
             nested_docarray_fields: List[str] = []
 
-            for field_name, field in doc._docarray_fields.items():
+            for field_name, field in doc._docarray_fields().items():
                 if field_name not in FORBIDDEN_FIELDS_TO_UPDATE:
                     field_type = doc._get_field_annotation(field_name)
 

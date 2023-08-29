@@ -73,7 +73,7 @@ class DocumentSummary:
         root = cls.__name__ if doc_name is None else f'{doc_name}: {cls.__name__}'
         tree = Tree(root, highlight=True)
 
-        for field_name, value in cls._docarray_fields.items():
+        for field_name, value in cls._docarray_fields().items():
             if field_name != 'id':
                 field_type = value.annotation
                 field_cls = str(field_type).replace('[', '\[')

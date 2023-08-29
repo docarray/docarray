@@ -121,7 +121,7 @@ def test_parametrization():
 
     index = DummyDocIndex[SubindexDoc]()
     assert index._schema is SubindexDoc
-    assert list(index._subindices['d']._schema._docarray_fields.keys()) == [
+    assert list(index._subindices['d']._schema._docarray_fields().keys()) == [
         'id',
         'tens',
         'parent_id',
@@ -129,13 +129,13 @@ def test_parametrization():
 
     index = DummyDocIndex[SubSubindexDoc]()
     assert index._schema is SubSubindexDoc
-    assert list(index._subindices['d_root']._schema._docarray_fields.keys()) == [
+    assert list(index._subindices['d_root']._schema._docarray_fields().keys()) == [
         'id',
         'd',
         'parent_id',
     ]
     assert list(
-        index._subindices['d_root']._subindices['d']._schema._docarray_fields.keys()
+        index._subindices['d_root']._subindices['d']._schema._docarray_fields().keys()
     ) == [
         'id',
         'tens',
@@ -309,14 +309,14 @@ def test_create_columns():
 
 def test_flatten_schema():
     index = DummyDocIndex[SimpleDoc]()
-    fields = SimpleDoc._docarray_fields
+    fields = SimpleDoc._docarray_fields()
     assert set(index._flatten_schema(SimpleDoc)) == {
         ('id', ID, fields['id']),
         ('tens', AbstractTensor, fields['tens']),
     }
 
     index = DummyDocIndex[FlatDoc]()
-    fields = FlatDoc._docarray_fields
+    fields = FlatDoc._docarray_fields()
     assert set(index._flatten_schema(FlatDoc)) == {
         ('id', ID, fields['id']),
         ('tens_one', AbstractTensor, fields['tens_one']),
@@ -324,8 +324,8 @@ def test_flatten_schema():
     }
 
     index = DummyDocIndex[NestedDoc]()
-    fields = NestedDoc._docarray_fields
-    fields_nested = SimpleDoc._docarray_fields
+    fields = NestedDoc._docarray_fields()
+    fields_nested = SimpleDoc._docarray_fields()
     assert set(index._flatten_schema(NestedDoc)) == {
         ('id', ID, fields['id']),
         ('d__id', ID, fields_nested['id']),
@@ -333,9 +333,9 @@ def test_flatten_schema():
     }
 
     index = DummyDocIndex[DeepNestedDoc]()
-    fields = DeepNestedDoc._docarray_fields
-    fields_nested = NestedDoc._docarray_fields
-    fields_nested_nested = SimpleDoc._docarray_fields
+    fields = DeepNestedDoc._docarray_fields()
+    fields_nested = NestedDoc._docarray_fields()
+    fields_nested_nested = SimpleDoc._docarray_fields()
     assert set(index._flatten_schema(DeepNestedDoc)) == {
         ('id', ID, fields['id']),
         ('d__id', ID, fields_nested['id']),
@@ -344,7 +344,7 @@ def test_flatten_schema():
     }
 
     index = DummyDocIndex[SubindexDoc]()
-    fields = SubindexDoc._docarray_fields
+    fields = SubindexDoc._docarray_fields()
     assert set(index._flatten_schema(SubindexDoc)) == {
         ('id', ID, fields['id']),
         ('d', DocList[SimpleDoc], fields['d']),
@@ -363,7 +363,7 @@ def test_flatten_schema():
     ] == [ID, AbstractTensor, ID]
 
     index = DummyDocIndex[SubSubindexDoc]()
-    fields = SubSubindexDoc._docarray_fields
+    fields = SubSubindexDoc._docarray_fields()
     assert set(index._flatten_schema(SubSubindexDoc)) == {
         ('id', ID, fields['id']),
         ('d_root', DocList[SubindexDoc], fields['d_root']),
@@ -387,8 +387,8 @@ def test_flatten_schema_union():
         image: ImageDoc
 
     index = DummyDocIndex[MyDoc]()
-    fields = MyDoc._docarray_fields
-    fields_image = ImageDoc._docarray_fields
+    fields = MyDoc._docarray_fields()
+    fields_image = ImageDoc._docarray_fields()
 
     if torch_imported:
         from docarray.typing.tensor.image.image_torch_tensor import ImageTorchTensor
@@ -412,7 +412,7 @@ def test_flatten_schema_union():
         tensor: Union[NdArray, ImageTorchTensor]
 
     index = DummyDocIndex[MyDoc3]()
-    fields = MyDoc3._docarray_fields
+    fields = MyDoc3._docarray_fields()
     assert set(index._flatten_schema(MyDoc3)) == {
         ('id', ID, fields['id']),
         ('tensor', AbstractTensor, fields['tensor']),
