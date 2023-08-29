@@ -58,7 +58,7 @@ class TorchTensor(
     """
     Subclass of `torch.Tensor`, intended for use in a Document.
     This enables (de)serialization from/to protobuf and json, data validation,
-    and coersion from compatible types like numpy.ndarray.
+    and coercion from compatible types like numpy.ndarray.
 
     This type can also be used in a parametrized way,
     specifying the shape of the tensor.
@@ -111,6 +111,45 @@ class TorchTensor(
     ```
 
     ---
+
+
+    ## Compatibility with `torch.compile()`
+
+
+    PyTorch 2 [introduced compilation support](https://pytorch.org/blog/pytorch-2.0-release/) in the form of `torch.compile()`.
+
+    Currently, **`torch.compile()` does not properly support subclasses of `torch.Tensor` such as `TorchTensor`**.
+    The PyTorch team is currently working on a [fix for this issue](https://github.com/pytorch/pytorch/pull/105167#issuecomment-1678050808).
+
+    In the meantime, you can use the following workaround:
+
+    ### Workaround: Convert `TorchTensor` to `torch.Tensor` before calling `torch.compile()`
+
+    Converting any `TorchTensor`s tor `torch.Tensor` before calling `torch.compile()` side-steps the issue:
+
+    ```python
+    from docarray import BaseDoc
+    from docarray.typing import TorchTensor
+    import torch
+
+
+    class MyDoc(BaseDoc):
+        tensor: TorchTensor
+
+
+    doc = MyDoc(tensor=torch.zeros(128))
+
+
+    def foo(tensor: torch.Tensor):
+        return tensor @ tensor.t()
+
+
+    foo_compiled = torch.compile(foo)
+
+    # unwrap the tensor before passing it to torch.compile()
+    foo_compiled(doc.tensor.unwrap())
+    ```
+
     """
 
     __parametrized_meta__ = metaTorchAndNode
