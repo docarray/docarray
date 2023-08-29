@@ -6,7 +6,7 @@
 input_variable=$1
 
 # Check if the input variable is "true"
-if [ "$input_variable" == "true" ]; then
+if [ "$input_variable" == "pydantic-v2" ]; then
   echo "Installing or updating pydantic..."
   poetry run pip install -U pydantic
 else
