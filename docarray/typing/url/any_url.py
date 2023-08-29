@@ -54,7 +54,7 @@ if is_pydantic_v2:
             return cls(str(value))
 
         def __get_pydantic_core_schema__(
-            cls, source: type[Any], handler: Optional['GetCoreSchemaHandler'] = None
+            cls, source: Type[Any], handler: Optional['GetCoreSchemaHandler'] = None
         ) -> core_schema.CoreSchema:
             return core_schema.general_after_validator_function(
                 cls._docarray_validate,
