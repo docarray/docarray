@@ -51,9 +51,9 @@ body:
   - type: textarea
     id: version
     attributes:
-      label: Python, Pydantic & OS Version
+      label: Python, DocArray & OS Version
       description: |
-        Which version of Python & Pydantic are you using, and which Operating System?
+        Which version of Python & DocArray are you using, and which Operating System?
 
         Please run the following command and copy the output below:
 
