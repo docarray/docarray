@@ -1,4 +1,4 @@
-from typing import List, Optional
+from typing import Any, List, Optional, Tuple
 
 import numpy as np
 import pytest
@@ -139,3 +139,12 @@ def test_nested_none_to_json(nested_none_docs):
     d = nested_none_docs.json()
     d = nested_none_docs.__class__.parse_raw(d)
     assert d.dict() == {'docs': None, 'hello': 'world', 'id': nested_none_docs.id}
+
+
+def test_get_get_field_inner_type():
+    class MyDoc(BaseDoc):
+        tuple_: Tuple
+
+    field_type = MyDoc._get_field_inner_type("tuple_")
+
+    assert field_type == Any

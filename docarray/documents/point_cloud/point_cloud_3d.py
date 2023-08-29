@@ -107,10 +107,10 @@ class PointCloud3D(BaseDoc):
     ```
     """
 
-    url: Optional[PointCloud3DUrl]
-    tensors: Optional[PointsAndColors]
-    embedding: Optional[AnyEmbedding]
-    bytes_: Optional[bytes]
+    url: Optional[PointCloud3DUrl] = None
+    tensors: Optional[PointsAndColors] = None
+    embedding: Optional[AnyEmbedding] = None
+    bytes_: Optional[bytes] = None
 
     @classmethod
     def _docarray_validate(

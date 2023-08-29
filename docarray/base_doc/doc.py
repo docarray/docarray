@@ -223,6 +223,11 @@ class BaseDoc(BaseModel, IOMixin, UpdateMixin, BaseNode):
                 annotation
             ):  # this is equivalent to `outer_type_` in pydantic v1
                 return annotation.__args__[0]
+            elif annotation == Tuple:
+                if len(annotation.__args__) == 0:
+                    return Any
+                else:
+                    annotation.__args__[0]
             else:
                 return annotation
         else:
