@@ -109,7 +109,7 @@ jobs:
           python -m pip install poetry
           poetry install --all-extras
           poetry run pip install elasticsearch==8.6.2
-          ./scripts/install_pydantic_v2.sh ${{ matrix.pydantic-v2 }}
+          ./scripts/install_pydantic_v2.sh ${{ matrix.pydantic-version }}
           poetry run pip uninstall -y torch
           poetry run pip install torch
           sudo apt-get update
