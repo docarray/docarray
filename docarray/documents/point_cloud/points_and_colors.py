@@ -34,7 +34,7 @@ class PointsAndColors(BaseDoc):
     colors: Optional[AnyTensor] = None
 
     @classmethod
-    def _docarray_validate(
+    def validate(
         cls: Type[T],
         value: Union[str, AbstractTensor, Any],
     ) -> T:
