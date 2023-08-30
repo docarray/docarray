@@ -109,7 +109,7 @@ class Mesh3D(BaseDoc):
     bytes_: Optional[bytes]
 
     @classmethod
-    def _docarray_validate(
+    def validate(
         cls: Type[T],
         value: Union[str, Any],
     ) -> T:
