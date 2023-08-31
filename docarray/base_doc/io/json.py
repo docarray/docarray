@@ -1,9 +1,17 @@
+from typing import Any, Callable, Dict, Type
+
 import orjson
 
 from docarray.utils._internal.pydantic import is_pydantic_v2
 
 if not is_pydantic_v2:
     from pydantic.json import ENCODERS_BY_TYPE
+else:
+    ENCODERS_BY_TYPE: Dict[Type[Any], Callable[[Any], Any]] = {
+        bytes: lambda o: o.decode(),
+        frozenset: list,
+        set: list,
+    }
 
 
 def _default_orjson(obj):

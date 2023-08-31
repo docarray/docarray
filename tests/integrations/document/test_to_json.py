@@ -6,6 +6,8 @@ from docarray.base_doc import BaseDoc
 from docarray.base_doc.io.json import orjson_dumps
 from docarray.typing import AnyUrl, NdArray, TorchTensor
 
+pytestmark = [pytest.mark.json]
+
 
 @pytest.fixture()
 def doc_and_class():
