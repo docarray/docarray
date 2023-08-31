@@ -17,8 +17,6 @@ if tf_available:
 LOCAL_OBJ_FILE = str(TOYDATA_DIR / 'tetrahedron.obj')
 REMOTE_OBJ_FILE = 'https://people.sc.fsu.edu/~jburkardt/data/obj/al.obj'
 
-pytestmark = [pytest.mark.point_cloud]
-
 
 @pytest.mark.slow
 @pytest.mark.internet
