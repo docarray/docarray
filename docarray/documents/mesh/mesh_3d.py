@@ -103,10 +103,10 @@ class Mesh3D(BaseDoc):
 
     """
 
-    url: Optional[Mesh3DUrl]
-    tensors: Optional[VerticesAndFaces]
-    embedding: Optional[AnyEmbedding]
-    bytes_: Optional[bytes]
+    url: Optional[Mesh3DUrl] = None
+    tensors: Optional[VerticesAndFaces] = None
+    embedding: Optional[AnyEmbedding] = None
+    bytes_: Optional[bytes] = None
 
     @classmethod
     def validate(
