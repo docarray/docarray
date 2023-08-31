@@ -1,11 +1,24 @@
 from typing import TYPE_CHECKING, Any, Dict, Optional, Tuple, Type, TypeVar
 
-from pydantic import create_model, create_model_from_typeddict
+from pydantic import create_model
+
+from docarray.utils._internal.pydantic import is_pydantic_v2
+
+if not is_pydantic_v2:
+    from pydantic import create_model_from_typeddict
+else:
+
+    def create_model_from_typeddict(*args, **kwargs):
+        raise NotImplementedError(
+            "This function is not compatible with pydantic v2 anymore"
+        )
+
+
 from pydantic.config import BaseConfig
 from typing_extensions import TypedDict
-from docarray.utils._internal._typing import safe_issubclass
 
 from docarray import BaseDoc
+from docarray.utils._internal._typing import safe_issubclass
 
 if TYPE_CHECKING:
     from pydantic.typing import AnyClassMethod
