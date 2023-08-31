@@ -114,6 +114,10 @@ class NdArray(np.ndarray, AbstractTensor, Generic[ShapeT]):
         cls: Type[T],
         value: Union[T, np.ndarray, str, List[Any], Tuple[Any], Any],
     ) -> T:
+
+        if isinstance(value, str):
+            value = orjson.loads(value)
+
         if isinstance(value, np.ndarray):
             return cls._docarray_from_native(value)
         elif isinstance(value, NdArray):
@@ -124,8 +128,7 @@ class NdArray(np.ndarray, AbstractTensor, Generic[ShapeT]):
             return cls._docarray_from_native(value.detach().cpu().numpy())
         elif tf_available and isinstance(value, tf.Tensor):
             return cls._docarray_from_native(value.numpy())
-        elif isinstance(value, str):
-            value = orjson.loads(value)
+
         elif jax_available and isinstance(value, jnp.ndarray):
             return cls._docarray_from_native(value.__array__())
         elif isinstance(value, list) or isinstance(value, tuple):
@@ -139,6 +142,7 @@ class NdArray(np.ndarray, AbstractTensor, Generic[ShapeT]):
             return cls._docarray_from_native(arr)
         except Exception:
             pass  # handled below
+        breakpoint()
         raise ValueError(f'Expected a numpy.ndarray compatible type, got {type(value)}')
 
     @classmethod
