@@ -183,7 +183,7 @@ class IOMixinDocList(Iterable[T_doc]):
             elif protocol == 'pickle-array':
                 f.write(pickle.dumps(self))
             elif protocol == 'json-array':
-                f.write(self.to_json())
+                f.write(self.to_json().encode())
             elif protocol in SINGLE_PROTOCOLS:
                 f.write(
                     b''.join(
