@@ -78,9 +78,9 @@ def test_from_to_json_docvec(tensor_type):
         return vec
 
     v = generate_docs(tensor_type)
-    bytes_ = v.to_json()
+    json_str = v.to_json()
 
-    v_after = DocVec[v.doc_type].from_json(bytes_, tensor_type=tensor_type)
+    v_after = DocVec[v.doc_type].from_json(json_str, tensor_type=tensor_type)
 
     assert v_after.tensor_type == v.tensor_type
     assert set(v_after._storage.columns.keys()) == set(v._storage.columns.keys())
@@ -125,9 +125,9 @@ def test_from_to_json_docvec_tf():
         return vec
 
     v = generate_docs()
-    bytes_ = v.to_json()
+    json_str = v.to_json()
 
-    v_after = DocVec[v.doc_type].from_json(bytes_, tensor_type=TensorFlowTensor)
+    v_after = DocVec[v.doc_type].from_json(json_str, tensor_type=TensorFlowTensor)
 
     assert v_after.tensor_type == v.tensor_type
     assert set(v_after._storage.columns.keys()) == set(v._storage.columns.keys())
