@@ -327,11 +327,11 @@ class IOMixinDocList(Iterable[T_doc]):
         json_docs = orjson.loads(file)
         return cls([cls.doc_type(**v) for v in json_docs])
 
-    def to_json(self) -> bytes:
+    def to_json(self) -> str:
         """Convert the object into JSON bytes. Can be loaded via `.from_json`.
         :return: JSON serialization of `DocList`
         """
-        return orjson_dumps(self)
+        return orjson_dumps(self).decode('UTF-8')
 
     @classmethod
     def from_csv(
