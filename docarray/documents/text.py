@@ -1,5 +1,7 @@
 from typing import Any, Optional, Type, TypeVar, Union
 
+from pydantic import Field
+
 from docarray.base_doc import BaseDoc
 from docarray.typing import TextUrl
 from docarray.typing.tensor.embedding import AnyEmbedding
@@ -102,10 +104,26 @@ class TextDoc(BaseDoc):
 
     """
 
-    text: Optional[str] = None
-    url: Optional[TextUrl] = None
-    embedding: Optional[AnyEmbedding] = None
-    bytes_: Optional[bytes] = None
+    text: Optional[str] = Field(
+        description='The text content stored in the document',
+        example='This is an example text content of the document',
+    )
+    url: Optional[TextUrl] = Field(
+        description='''The url of the text content. When text content is too long
+    to be stored inline or in a file, the remote url can be used to load the
+        text content''',
+        example='https://www.w3.org/History/19921103-hypertext/hypertext/README.html',
+    )
+    embedding: Optional[AnyEmbedding] = Field(
+        description='''Embedding field is used to store tensor objects of type
+        Tensorflow, PyTorch, and NumPy''',
+        example='''np.zeros((3, 64, 64))''',
+    )
+    bytes_: Optional[bytes] = Field(
+        description='''The bytes of image or video content that can be loaded
+        into an image or video tensor object''',
+        example='',
+    )
 
     def __init__(self, text: Optional[str] = None, **kwargs):
         if 'text' not in kwargs:
