@@ -3,18 +3,18 @@ from uuid import UUID
 
 from pydantic import parse_obj_as
 
-from docarray.utils._internal.pydantic import is_pydantic_v2
-
-if is_pydantic_v2:
-    from pydantic import GetCoreSchemaHandler
-    from pydantic_core import core_schema
-
 from docarray.typing.proto_register import _register_proto
+from docarray.utils._internal.pydantic import is_pydantic_v2
 
 if TYPE_CHECKING:
     from docarray.proto import NodeProto
 
 from docarray.typing.abstract_type import AbstractType
+
+if is_pydantic_v2:
+    from pydantic import GetCoreSchemaHandler, GetJsonSchemaHandler
+    from pydantic.json_schema import JsonSchemaValue
+    from pydantic_core import core_schema
 
 T = TypeVar('T', bound='ID')
 
@@ -65,3 +65,11 @@ class ID(str, AbstractType):
             return core_schema.general_plain_validator_function(
                 cls.validate,
             )
+
+        @classmethod
+        def __get_pydantic_json_schema__(
+            cls, core_schema: core_schema.CoreSchema, handler: GetJsonSchemaHandler
+        ) -> JsonSchemaValue:
+            field_schema: dict[str, Any] = {}
+            field_schema.update(type='string')
+            return field_schema
