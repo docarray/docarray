@@ -117,7 +117,7 @@ class TextDoc(BaseDoc):
     embedding: Optional[AnyEmbedding] = Field(
         description='''Embedding field is used to store tensor objects of type
         Tensorflow, PyTorch, and NumPy''',
-        example='''np.zeros((3, 64, 64))''',
+        example='''np.zeros((3, 32, 32))''',
     )
     bytes_: Optional[bytes] = Field(
         description='''The bytes of image or video content that can be loaded
