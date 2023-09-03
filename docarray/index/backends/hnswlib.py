@@ -438,6 +438,14 @@ class HnswDocumentIndex(BaseDocIndex, Generic[TSchema]):
         hnsw_num_docs = first_hnsw_index.element_count
         return hnsw_num_docs
 
+    def _count_docs_in_hnswlib(self) -> int:
+        # Use HNSWlib's method to count documents
+        return self._hnsw_indices.element_count
+
+    def is_index_empty(self) -> bool:
+        # Check if the index is empty by counting documents in HNSWlib
+        return self._count_docs_in_hnswlib() == 0
+
     ###############################################
     # Helpers                                     #
     ###############################################
