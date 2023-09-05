@@ -107,22 +107,21 @@ class TextDoc(BaseDoc):
     text: Optional[str] = Field(
         description='The text content stored in the document',
         example='This is an example text content of the document',
+        default=None,
     )
     url: Optional[TextUrl] = Field(
-        description='''The url of the text content. When text content is too long
-    to be stored inline or in a file, the remote url can be used to load the
-        text content''',
+        description='URL to a (potentially remote) text file that can be loaded',
         example='https://www.w3.org/History/19921103-hypertext/hypertext/README.html',
+        default=None,
     )
     embedding: Optional[AnyEmbedding] = Field(
-        description='''Embedding field is used to store tensor objects of type
-        Tensorflow, PyTorch, and NumPy''',
-        example='''np.zeros((3, 32, 32))''',
+        description='Store an embedding: a vector representation of the text',
+        example=[1, 0, 1],
+        default=None,
     )
     bytes_: Optional[bytes] = Field(
-        description='''The bytes of image or video content that can be loaded
-        into an image or video tensor object''',
-        example='',
+        description='Bytes representation of the text',
+        default=None,
     )
 
     def __init__(self, text: Optional[str] = None, **kwargs):
