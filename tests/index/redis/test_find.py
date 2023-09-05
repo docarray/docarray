@@ -27,7 +27,7 @@ class TorchDoc(BaseDoc):
 
 
 @pytest.mark.parametrize('space', ['cosine', 'l2', 'ip'])
-def test_find_simple_schema(space, tmp_index_name):
+def test_find_simple_schema(space, tmp_index_name):  # noqa: F811
     schema = get_simple_schema(space=space)
     db = RedisDocumentIndex[schema](host='localhost', index_name=tmp_index_name)
 
@@ -68,7 +68,7 @@ def test_find_limit_larger_than_index():
 
 
 @pytest.mark.parametrize('space', ['cosine', 'l2', 'ip'])
-def test_find_torch(space, tmp_index_name):
+def test_find_torch(space, tmp_index_name):  # noqa: F811
     db = RedisDocumentIndex[TorchDoc](host='localhost', index_name=tmp_index_name)
     index_docs = [TorchDoc(tens=np.random.rand(N_DIM)) for _ in range(10)]
     index_docs.append(TorchDoc(tens=np.ones(N_DIM, dtype=np.float32)))
@@ -91,7 +91,7 @@ def test_find_torch(space, tmp_index_name):
 
 @pytest.mark.tensorflow
 @pytest.mark.parametrize('space', ['cosine', 'l2', 'ip'])
-def test_find_tensorflow(space, tmp_index_name):
+def test_find_tensorflow(space, tmp_index_name):  # noqa: F811
     from docarray.typing import TensorFlowTensor
 
     class TfDoc(BaseDoc):
@@ -121,7 +121,7 @@ def test_find_tensorflow(space, tmp_index_name):
 
 
 @pytest.mark.parametrize('space', ['cosine', 'l2', 'ip'])
-def test_find_flat_schema(space, tmp_index_name):
+def test_find_flat_schema(space, tmp_index_name):  # noqa: F811
     class FlatSchema(BaseDoc):
         tens_one: NdArray = Field(dim=N_DIM, space=space)
         tens_two: NdArray = Field(dim=50, space=space)
@@ -156,7 +156,7 @@ def test_find_flat_schema(space, tmp_index_name):
 
 
 @pytest.mark.parametrize('space', ['cosine', 'l2', 'ip'])
-def test_find_nested_schema(space, tmp_index_name):
+def test_find_nested_schema(space, tmp_index_name):  # noqa: F811
     class SimpleDoc(BaseDoc):
         tens: NdArray[N_DIM] = Field(space=space)
 
@@ -245,7 +245,7 @@ def test_simple_usage():
         assert q.id == matches[0].id
 
 
-def test_query_builder(tmp_index_name):
+def test_query_builder(tmp_index_name):  # noqa: F811
     class SimpleSchema(BaseDoc):
         tensor: NdArray[N_DIM] = Field(space='cosine')
         price: int
@@ -271,10 +271,10 @@ def test_query_builder(tmp_index_name):
         assert doc.price <= 3
 
 
-def test_text_search(tmp_index_name):
+def test_text_search(tmp_index_name):  # noqa: F811
     class SimpleSchema(BaseDoc):
         description: str
-        some_field: Optional[int]
+        some_field: Optional[int] = None
 
     texts_to_index = [
         "Text processing with Python is a valuable skill for data analysis.",
@@ -296,7 +296,7 @@ def test_text_search(tmp_index_name):
     assert docs[0].description == texts_to_index[0]
 
 
-def test_filter(tmp_index_name):
+def test_filter(tmp_index_name):  # noqa: F811
     class SimpleSchema(BaseDoc):
         description: str
         price: int
