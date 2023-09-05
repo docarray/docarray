@@ -924,6 +924,9 @@ class BaseDocIndex(ABC, Generic[TSchema]):
         custom_config = (
             field.json_schema_extra if is_pydantic_v2 else field.field_info.extra
         )
+        if custom_config is None:
+            custom_config = dict()
+
         if 'col_type' in custom_config.keys():
             db_type = custom_config['col_type']
             custom_config.pop('col_type')
