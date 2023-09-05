@@ -96,26 +96,21 @@ class ImageDoc(BaseDoc):
     """
 
     url: Optional[ImageUrl] = Field(
-        description='URL of the remote image',
+        description='URL to a (potentially remote) image file that needs to be loaded',
         example='https://github.com/docarray/docarray/blob/main/tests/toydata/image-data/apple.png?raw=true',
         default=None,
     )
     tensor: Optional[ImageTensor] = Field(
-        description='''Tensor object of the image which can be specifed to one of
-    `ImageNdArray`, `ImageTorchTensor`, `ImageTensorflowTensor`.''',
-        example='img.url.load()',
+        description='Tensor object of the image which can be specifed to one of `ImageNdArray`, `ImageTorchTensor`, `ImageTensorflowTensor`.',
         default=None,
     )
     embedding: Optional[AnyEmbedding] = Field(
-        description='''Embedding field is used to store tensor objects of type
-        Tensorflow, PyTorch, NumPy and Jax''',
-        example='[1, 0, 1]',
+        description='Store an embedding: a vector representation of the image.',
+        example=[1, 0, 1],
         default=None,
     )
     bytes_: Optional[ImageBytes] = Field(
-        description='''Bytes object of the image which is an instance of
-        `ImageBytes.''',
-        example='img.url.load_bytes()',
+        description='Bytes object of the image which is an instance of `ImageBytes`.',
         default=None,
     )
 
