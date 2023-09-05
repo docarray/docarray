@@ -429,30 +429,13 @@ class HnswDocumentIndex(BaseDocIndex, Generic[TSchema]):
             self._num_docs = self._get_num_docs_hnsw()
         return self._num_docs
 
-    # def _get_num_docs_hnsw(self) -> int:
-    #     """
-    #     Get the number of documents using the HNSW method.
-    #     """
-    #     first_index_key = next(iter(self._hnsw_indices))  # Get the first key
-    #     first_hnsw_index = self._hnsw_indices[first_index_key]
-    #     hnsw_num_docs = first_hnsw_index.element_count
-    #     return hnsw_num_docs
-
-    def _count_docs_in_hnswlib(self) -> int:
-        """
-        Get the number of documents using the HNSW method from the first index in the dictionary.
-        """
-        # Get the first index from the dictionary
-        first_index_key = next(iter(self._hnsw_indices))
-        first_hnsw_index = self._hnsw_indices[first_index_key]
-
-        # Use HNSWlib's method to count documents
-        hnsw_num_docs = first_hnsw_index.element_count
-        return hnsw_num_docs
-
     def is_index_empty(self) -> bool:
-        # Check if the index is empty by counting documents in HNSWlib
-        return self._count_docs_in_hnswlib() == 0
+        """
+        Check if the index is empty by comparing the number of documents to zero.
+
+        :return: True if the index is empty, False otherwise.
+        """
+        return self.num_docs() == 0
 
     ###############################################
     # Helpers                                     #
