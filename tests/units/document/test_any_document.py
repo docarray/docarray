@@ -9,6 +9,7 @@ from docarray.base_doc import AnyDoc, BaseDoc
 from docarray.base_doc.io.json import orjson_dumps_and_decode
 from docarray.typing import NdArray
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
+from docarray.utils._internal.pydantic import is_pydantic_v2
 
 
 def test_any_doc():
@@ -95,6 +96,7 @@ def test_any_document_from_to(protocol):
             assert d.ld[0]['t'] == {'a': 'b'}
 
 
+@pytest.mark.skipif(is_pydantic_v2, reason="Not working with pydantic v2 for now")
 def test_subclass_config():
     class MyDoc(BaseDoc):
         x: str
