@@ -75,7 +75,7 @@ dl = DocList[SimpleDoc]([SimpleDoc(text=f'doc {i}') for i in range(2)])
 with open('simple-dl.json', 'wb') as f:
     json_dl = dl.to_json()
     print(json_dl)
-    f.write(json_dl)
+    f.write(json_dl.encode())
 
 with open('simple-dl.json', 'r') as f:
     dl_load_from_json = DocList[SimpleDoc].from_json(f.read())
@@ -83,7 +83,7 @@ with open('simple-dl.json', 'r') as f:
 ```
 
 ```output
-b'[{"id":"5540e72d407ae81abb2390e9249ed066","text":"doc 0"},{"id":"fbe9f80d2fa03571e899a2887af1ac1b","text":"doc 1"}]'
+'[{"id":"5540e72d407ae81abb2390e9249ed066","text":"doc 0"},{"id":"fbe9f80d2fa03571e899a2887af1ac1b","text":"doc 1"}]'
 ```
 
 ### Protobuf
@@ -277,7 +277,7 @@ dv = DocVec[SimpleDoc](
 with open('simple-dv.json', 'wb') as f:
     json_dv = dv.to_json()
     print(json_dv)
-    f.write(json_dv)
+    f.write(json_dv.encode())
 
 with open('simple-dv.json', 'r') as f:
     dv_load_from_json = DocVec[SimpleDoc].from_json(f.read(), tensor_type=TorchTensor)
@@ -285,7 +285,7 @@ with open('simple-dv.json', 'r') as f:
 ```
 
 ```output
-b'{"tensor_columns":{},"doc_columns":{},"docs_vec_columns":{},"any_columns":{"id":["005a208a0a9a368c16bf77913b710433","31d65f02cb94fc9756c57b0dbaac3a2c"],"text":["doc 0","doc 1"]}}'
+'{"tensor_columns":{},"doc_columns":{},"docs_vec_columns":{},"any_columns":{"id":["005a208a0a9a368c16bf77913b710433","31d65f02cb94fc9756c57b0dbaac3a2c"],"text":["doc 0","doc 1"]}}'
 <DocVec[SimpleDoc] (length=2)>
 ```
 

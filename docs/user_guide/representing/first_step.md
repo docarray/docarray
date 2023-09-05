@@ -117,6 +117,21 @@ This representation can be used to [send](../sending/first_step.md) or [store](.
 
     [BaseDoc][docarray.base_doc.doc.BaseDoc] can be nested to represent any kind of data hierarchy.
 
+## Setting a Pydantic `Config` class
+
+Documents support setting a `Config` [like any other Pydantic `BaseModel`](https://docs.pydantic.dev/latest/usage/model_config/).
+
+However, if you set a config, you should inherit from the `BaseDoc` config class:
+
+```python
+from docarray import BaseDoc
+
+
+class MyDoc(BaseDoc):
+    class Config(BaseDoc.Config):
+        arbitrary_types_allowed = True  # just an example setting
+```
+
 See also:
 
 * The [next part](./array.md) of the representing section

@@ -51,9 +51,9 @@ body:
   - type: textarea
     id: version
     attributes:
-      label: Python, Pydantic & OS Version
+      label: Python, DocArray & OS Version
       description: |
-        Which version of Python & Pydantic are you using, and which Operating System?
+        Which version of Python & DocArray are you using, and which Operating System?
 
         Please run the following command and copy the output below:
 
@@ -69,7 +69,7 @@ body:
     id: affected-components
     attributes:
       label: Affected Components
-      description: Which of the following parts of pydantic does this feature affect?
+      description: Which of the following parts of docarray does this feature affect?
       # keep this lis in sync with bug.yml
       options:
         - label: '[Vector Database / Index](https://docs.docarray.org/user_guide/storing/docindex/)'
