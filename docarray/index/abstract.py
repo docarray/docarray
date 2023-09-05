@@ -30,6 +30,7 @@ from docarray.typing import ID, AnyTensor
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
 from docarray.utils._internal._typing import is_tensor_union, safe_issubclass
 from docarray.utils._internal.misc import import_library
+from docarray.utils._internal.pydantic import is_pydantic_v2
 from docarray.utils.find import (
     FindResult,
     FindResultBatched,
@@ -920,7 +921,9 @@ class BaseDocIndex(ABC, Generic[TSchema]):
         return column_infos
 
     def _create_single_column(self, field: 'ModelField', type_: Type) -> _ColumnInfo:
-        custom_config = field.field_info.extra
+        custom_config = (
+            field.json_schema_extra if is_pydantic_v2 else field.field_info.extra
+        )
         if 'col_type' in custom_config.keys():
             db_type = custom_config['col_type']
             custom_config.pop('col_type')
@@ -934,14 +937,16 @@ class BaseDocIndex(ABC, Generic[TSchema]):
         config = self._db_config.default_column_config[db_type].copy()
         config.update(custom_config)
         # parse n_dim from parametrized tensor type
+
+        field_type = field.annotation if is_pydantic_v2 else field.type_
         if (
-            hasattr(field.type_, '__docarray_target_shape__')
-            and field.type_.__docarray_target_shape__
+            hasattr(field_type, '__docarray_target_shape__')
+            and field_type.__docarray_target_shape__
         ):
-            if len(field.type_.__docarray_target_shape__) == 1:
-                n_dim = field.type_.__docarray_target_shape__[0]
+            if len(field_type.__docarray_target_shape__) == 1:
+                n_dim = field_type.__docarray_target_shape__[0]
             else:
-                n_dim = field.type_.__docarray_target_shape__
+                n_dim = field_type.__docarray_target_shape__
         else:
             n_dim = None
         return _ColumnInfo(
@@ -1004,12 +1009,15 @@ class BaseDocIndex(ABC, Generic[TSchema]):
         for i in range(len(docs)):
             # validate the data
             try:
-                out_docs.append(cast(Type[BaseDoc], self._schema).parse_obj(docs[i]))
-            except (ValueError, ValidationError):
+                out_docs.append(
+                    cast(Type[BaseDoc], self._schema).parse_obj(dict(docs[i]))
+                )
+            except (ValueError, ValidationError) as e:
                 raise ValueError(
                     'The schema of the input Documents is not compatible with the schema of the Document Index.'
                     ' Ensure that the field names of your data match the field names of the Document Index schema,'
                     ' and that the types of your data match the types of the Document Index schema.'
+                    f'original error {e}'
                 )
 
         return DocList[BaseDoc].construct(out_docs)
