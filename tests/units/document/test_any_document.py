@@ -1,10 +1,14 @@
+from typing import Dict, List
+
 import numpy as np
 import pytest
-from typing import Dict, List
+from orjson import orjson
 
 from docarray import DocList
 from docarray.base_doc import AnyDoc, BaseDoc
+from docarray.base_doc.io.json import orjson_dumps_and_decode
 from docarray.typing import NdArray
+from docarray.typing.tensor.abstract_tensor import AbstractTensor
 
 
 def test_any_doc():
@@ -36,7 +40,7 @@ def test_any_document_from_to(protocol):
     class DocTest(BaseDoc):
         text: str
         tags: Dict[str, int]
-        l: List[int]
+        l_: List[int]
         d: InnerDoc
         ld: DocList[InnerDoc]
 
@@ -46,14 +50,14 @@ def test_any_document_from_to(protocol):
             DocTest(
                 text='type1',
                 tags={'type': 1},
-                l=[1, 2],
+                l_=[1, 2],
                 d=inner_doc,
                 ld=DocList[InnerDoc]([inner_doc]),
             ),
             DocTest(
                 text='type2',
                 tags={'type': 2},
-                l=[1, 2],
+                l_=[1, 2],
                 d=inner_doc,
                 ld=DocList[InnerDoc]([inner_doc]),
             ),
@@ -71,7 +75,7 @@ def test_any_document_from_to(protocol):
     for i, d in enumerate(aux):
         assert d.tags['type'] == i + 1
         assert d.text == f'type{i + 1}'
-        assert d.l == [1, 2]
+        assert d.l_ == [1, 2]
         if protocol == 'proto':
             assert isinstance(d.d, AnyDoc)
             assert d.d.text == 'I am inner'  # inner Document is a Dict
@@ -89,3 +93,20 @@ def test_any_document_from_to(protocol):
             assert isinstance(d.ld[0], dict)
             assert d.ld[0]['text'] == 'I am inner'
             assert d.ld[0]['t'] == {'a': 'b'}
+
+
+def test_subclass_config():
+    class MyDoc(BaseDoc):
+        x: str
+
+        class Config(BaseDoc.Config):
+            arbitrary_types_allowed = True  # just an example setting
+
+    assert MyDoc.Config.json_loads == orjson.loads
+    assert MyDoc.Config.json_dumps == orjson_dumps_and_decode
+    assert (
+        MyDoc.Config.json_encoders[AbstractTensor](3) == 3
+    )  # dirty check that it is identity
+    assert MyDoc.Config.validate_assignment
+    assert not MyDoc.Config._load_extra_fields_from_protobuf
+    assert MyDoc.Config.arbitrary_types_allowed
