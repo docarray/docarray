@@ -51,6 +51,8 @@ def create_pure_python_type_model(model: Any) -> BaseDoc:
     """
     fields: Dict[str, Any] = {}
     for field_name, field in model.__annotations__.items():
+        if field_name not in model.__fields__:
+            continue
         field_info = model.__fields__[field_name].field_info
         try:
             if safe_issubclass(field, DocList):
