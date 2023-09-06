@@ -687,7 +687,7 @@ class HnswDocumentIndex(BaseDocIndex, Generic[TSchema]):
         try:
             labels, distances = index.knn_query(queries, k=k, **extra_kwargs)
         except RuntimeError:
-            k = min(k, self.num_docs())
+            k = min(k, self.is_index_empty())
             labels, distances = index.knn_query(queries, k=k, **extra_kwargs)
 
         result_das = [
@@ -779,8 +779,8 @@ class HnswDocumentIndex(BaseDocIndex, Generic[TSchema]):
         post_filters: Dict[str, Dict] = {}
 
         # Define filter limits
-        pre_filter_limit = self.num_docs()
-        post_filter_limit = self.num_docs()
+        pre_filter_limit = self.is_index_empty()
+        post_filter_limit = self.is_index_empty()
 
         find_executed: bool = False
 
@@ -799,7 +799,7 @@ class HnswDocumentIndex(BaseDocIndex, Generic[TSchema]):
                     # Returns batched output, so we need to get the first lists
                     out_docs, scores = self._search_and_filter(  # type: ignore[assignment]
                         queries=query_vector,
-                        limit=op_kwargs.get('limit', self.num_docs()),
+                        limit=op_kwargs.get('limit', self.is_index_empty()),
                         search_field=op_kwargs['search_field'],
                         hashed_ids=hashed_ids,
                     )
@@ -895,7 +895,7 @@ class HnswDocumentIndex(BaseDocIndex, Generic[TSchema]):
         :return: Filtered documents as per the post-filter conditions.
         """
         if not find_executed:
-            out_docs = self.filter(post_filters, limit=self.num_docs())
+            out_docs = self.filter(post_filters, limit=self.is_index_empty())
         else:
             docs_cls = DocList.__class_getitem__(cast(Type[BaseDoc], self.out_schema))
             out_docs = docs_cls(filter_docs(out_docs, post_filters))
