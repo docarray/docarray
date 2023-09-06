@@ -242,7 +242,7 @@ def test_generic_tensors_with_optional(cls_tensor):
     tensor = jnp.zeros((3, 224, 224))
 
     class Image(BaseDoc):
-        tensor: Optional[cls_tensor]
+        tensor: Optional[cls_tensor] = None
 
     class TopDoc(BaseDoc):
         img: Image
@@ -280,7 +280,7 @@ def test_get_from_slice_stacked():
 @pytest.mark.jax
 def test_stack_none():
     class MyDoc(BaseDoc):
-        tensor: Optional[AnyTensor]
+        tensor: Optional[AnyTensor] = None
 
     da = DocVec[MyDoc]([MyDoc(tensor=None) for _ in range(10)], tensor_type=JaxArray)
     assert 'tensor' in da._storage.tensor_columns.keys()

@@ -1,6 +1,7 @@
-from typing import TYPE_CHECKING, Any, Generic, List, Tuple, Type, TypeVar, Union, cast
+from typing import TYPE_CHECKING, Any, Generic, Type, TypeVar, Union, cast
 
 import numpy as np
+import orjson
 
 from docarray.typing.proto_register import _register_proto
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
@@ -9,8 +10,6 @@ from docarray.utils._internal.misc import import_library
 if TYPE_CHECKING:
     import jax
     import jax.numpy as jnp
-    from pydantic import BaseConfig
-    from pydantic.fields import ModelField
 
     from docarray.computation.jax_backend import JaxCompBackend
     from docarray.proto import NdArrayProto
@@ -127,11 +126,9 @@ class JaxArray(AbstractTensor, Generic[ShapeT], metaclass=metaJax):
         yield cls.validate
 
     @classmethod
-    def validate(
+    def _docarray_validate(
         cls: Type[T],
-        value: Union[T, jnp.ndarray, List[Any], Tuple[Any], Any],
-        field: 'ModelField',
-        config: 'BaseConfig',
+        value: Union[T, np.ndarray, str, Any],
     ) -> T:
         if isinstance(value, jax.Array):
             return cls._docarray_from_native(value)
@@ -143,12 +140,15 @@ class JaxArray(AbstractTensor, Generic[ShapeT], metaclass=metaJax):
                 return cls._docarray_from_native(arr_from_list)
             except Exception:
                 pass  # handled below
-        else:
-            try:
-                arr: jnp.ndarray = jnp.ndarray(value)
-                return cls._docarray_from_native(arr)
-            except Exception:
-                pass  # handled below
+        elif isinstance(value, str):
+            value = orjson.loads(value)
+
+        try:
+            arr: jnp.ndarray = jnp.ndarray(value)
+            return cls._docarray_from_native(arr)
+        except Exception:
+            pass  # handled below
+
         raise ValueError(f'Expected a numpy.ndarray compatible type, got {type(value)}')
 
     @classmethod
