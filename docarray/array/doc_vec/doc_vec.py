@@ -214,7 +214,7 @@ class DocVec(IOMixinDocVec, AnyDocArray[T_doc]):  # type: ignore
 
                         stacked: tf.Tensor = tf.stack(tf_stack)
                         tensor_columns[field_name] = TensorFlowTensor(stacked)
-                elif jnp_available and issubclass(field_type, JaxArray):
+                elif jnp_available and safe_issubclass(field_type, JaxArray):
                     if first_doc_is_none:
                         _verify_optional_field_of_docs(docs)
                         tensor_columns[field_name] = None

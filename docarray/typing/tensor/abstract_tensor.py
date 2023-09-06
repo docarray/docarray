@@ -95,7 +95,7 @@ class _ParametrizedMeta(type):
                     for candidate in type(instance).__mro__
                 )
             return any(
-                issubclass(candidate, cls) for candidate in type(instance).__mro__
+                safe_issubclass(candidate, cls) for candidate in type(instance).__mro__
             )
         return super().__instancecheck__(instance)
 
