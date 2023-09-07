@@ -11,6 +11,7 @@
 
 
 
+
 <a name=release-note-0-30-0></a>
 ## Release Note (`0.30.0`)
 
@@ -596,4 +597,38 @@
 ### 🍹 Other Improvements
 
  - [[```bd3d8f03```](https://github.com/jina-ai/docarray/commit/bd3d8f0354c56559c3ae8a30f06b566ed7945f6e)] __-__ __version__: the next version will be 0.37.1 (*Jina Dev Bot*)
+
+<a name=release-note-0-38-0></a>
+## Release Note (`0.38.0`)
+
+> Release time: 2023-09-07 13:40:16
+
+
+
+🙇 We'd like to thank all contributors for this new release! In particular,
+ Joan Fontanals,  Johannes Messner,  samsja,  AlaeddineAbdessalem,  Jina Dev Bot,  🙇
+
+
+### 🐞 Bug fixes
+
+ - [[```fb174560```](https://github.com/jina-ai/docarray/commit/fb174560aad3b2d554c14cefeef940f8030dfdd2)] __-__ skip doc attributes in __annotations__ but not in __fields__ (#1777) (*Joan Fontanals*)
+ - [[```3dc525f4```](https://github.com/jina-ai/docarray/commit/3dc525f46d8a8771b7f18070beae0c0758371dd6)] __-__ make DocList.to_json() return str instead of bytes (#1769) (*Johannes Messner*)
+ - [[```2af8a0c6```](https://github.com/jina-ai/docarray/commit/2af8a0c60213a46f2b86e4c418bb5d3ef732051c)] __-__ casting in reduce before appending (#1758) (*AlaeddineAbdessalem*)
+
+### 🧼 Code Refactoring
+
+ - [[```08ca686d```](https://github.com/jina-ai/docarray/commit/08ca686dd397b103e6330cd479ad4519126f90b6)] __-__ use safe_issubclass (#1778) (*Joan Fontanals*)
+
+### 📗 Documentation
+
+ - [[```189ff637```](https://github.com/jina-ai/docarray/commit/189ff637e790c59dfea1af3447666b34c9fb9fdf)] __-__ explain how to set document config (#1773) (*Johannes Messner*)
+ - [[```cd4854c9```](https://github.com/jina-ai/docarray/commit/cd4854c9b9e89abc5537be70a5a79d9a8ea47782)] __-__ add workaround for torch compile (#1754) (*Johannes Messner*)
+ - [[```587ab5b3```](https://github.com/jina-ai/docarray/commit/587ab5b39160bdeda1b86d3c09d2296c443cd42e)] __-__ add note about pickling dynamically created doc class (#1763) (*Joan Fontanals*)
+ - [[```61bf9c7a```](https://github.com/jina-ai/docarray/commit/61bf9c7a88a033e0551287fac5f1260fa4d355bf)] __-__ improve filtering docstrings (#1762) (*Joan Fontanals*)
+
+### 🍹 Other Improvements
+
+ - [[```7ec88b46```](https://github.com/jina-ai/docarray/commit/7ec88b46e44b52d0400d1495e56387f367aabd2f)] __-__ update minor (#1781) (*Joan Fontanals*)
+ - [[```cc2339db```](https://github.com/jina-ai/docarray/commit/cc2339db44626e622f3b2f354d0c5f8d8a0b20ea)] __-__ remove pydantic ref from issue template (#1767) (*samsja*)
+ - [[```d5cb02fb```](https://github.com/jina-ai/docarray/commit/d5cb02fbd5cc7392fb92f30c1e7ea436507eb892)] __-__ __version__: the next version will be 0.37.2 (*Jina Dev Bot*)
 
