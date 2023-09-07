@@ -116,6 +116,8 @@ class BaseDoc(BaseModel, IOMixin, UpdateMixin, BaseNode):
 
     if is_pydantic_v2:
 
+        ## pydantic v2 handle view and shallow copy a bit differently. We need to update different fields
+
         @classmethod
         def from_view(cls: Type[T], storage_view: 'ColumnStorageView') -> T:
             doc = cls.__new__(cls)
