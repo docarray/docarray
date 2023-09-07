@@ -1150,6 +1150,13 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#compatibility-of-torchtensor-and-torchcompile" class="md-nav__link">
+    Compatibility of TorchTensor and torch.compile()
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -2204,6 +2211,13 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#compatibility-of-torchtensor-and-torchcompile" class="md-nav__link">
+    Compatibility of TorchTensor and torch.compile()
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -2385,7 +2399,12 @@ Here you see that the <code>doc.tensor</code> is an <code>NdArray</code>:
 <li>you don't specify the <code>tensor_type</code> parameter</li>
 <li>your tensor field is a Union of tensor or <a class="autorefs autorefs-internal" href="../../../API_reference/typing/tensor/tensor/#docarray.typing.tensor.AnyTensor"><code>AnyTensor</code></a></li>
 </ul>
-</div></div>
+</div>
+<h2 id="compatibility-of-torchtensor-and-torchcompile">Compatibility of <code>TorchTensor</code> and <code>torch.compile()</code></h2>
+<p>PyTorch 2 <a href="https://pytorch.org/blog/pytorch-2.0-release/">introduced compilation support</a> in the form of <code>torch.compile()</code>.</p>
+<p>Currently, <strong><code>torch.compile()</code> does not properly support subclasses of <code>torch.Tensor</code> such as <a class="autorefs autorefs-internal" href="../../../API_reference/typing/tensor/tensor/#docarray.typing.tensor.torch_tensor.TorchTensor"><code>TorchTensor</code></a></strong>.
+The PyTorch team is currently working on a <a href="https://github.com/pytorch/pytorch/pull/105167#issuecomment-1678050808">fix for this issue</a>.</p>
+<p>For a workaround to this issue, see the <a class="autorefs autorefs-internal" href="../../../API_reference/typing/tensor/tensor/#docarray.typing.tensor.torch_tensor.TorchTensor"><code>TorchTensor</code> API reference</a>.</p></div>
 
 
   

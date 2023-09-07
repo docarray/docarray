@@ -411,6 +411,13 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#setting-a-pydantic-config-class" class="md-nav__link">
+    Setting a Pydantic Config class
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -2138,6 +2145,13 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#setting-a-pydantic-config-class" class="md-nav__link">
+    Setting a Pydantic Config class
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -2243,6 +2257,16 @@ A YouTube video is not only composed of a video, but also has a title, descripti
 This is what we call nested data representation. </p>
 <p><a class="autorefs autorefs-internal" href="../../../API_reference/base_doc/base_doc/#docarray.base_doc.doc.BaseDoc">BaseDoc</a> can be nested to represent any kind of data hierarchy.</p>
 </div>
+<h2 id="setting-a-pydantic-config-class">Setting a Pydantic <code>Config</code> class</h2>
+<p>Documents support setting a <code>Config</code> <a href="https://docs.pydantic.dev/latest/usage/model_config/">like any other Pydantic <code>BaseModel</code></a>.</p>
+<p>However, if you set a config, you should inherit from the <code>BaseDoc</code> config class:</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">BaseDoc</span>
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>
+</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>
+</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="k">class</span> <span class="nc">MyDoc</span><span class="p">(</span><span class="n">BaseDoc</span><span class="p">):</span>
+</span><span id="__span-5-5"><a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a>    <span class="k">class</span> <span class="nc">Config</span><span class="p">(</span><span class="n">BaseDoc</span><span class="o">.</span><span class="n">Config</span><span class="p">):</span>
+</span><span id="__span-5-6"><a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a>        <span class="n">arbitrary_types_allowed</span> <span class="o">=</span> <span class="kc">True</span>  <span class="c1"># just an example setting</span>
+</span></code></pre></div>
 <p>See also:</p>
 <ul>
 <li>The <a href="../array/">next part</a> of the representing section</li>
