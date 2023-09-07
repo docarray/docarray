@@ -201,8 +201,10 @@ class TorchTensor(
         ```python
         from docarray.typing import TorchTensor
         import torch
+        from pydantic import parse_obj_as
 
-        t = TorchTensor.validate(torch.zeros(3, 224, 224), None, None)
+
+        t = parse_obj_as(TorchTensor, torch.zeros(3, 224, 224))
         # here t is a docarray TorchTensor
         t2 = t.unwrap()
         # here t2 is a pure torch.Tensor but t1 is still a Docarray TorchTensor
