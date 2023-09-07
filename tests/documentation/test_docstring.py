@@ -52,7 +52,7 @@ members = []
 for obj in obj_to_check:
     members.extend(get_codeblock_members(obj))
 
-
+# members = [d for d in members if 'NdArray' in d.__qualname__]
 @pytest.mark.parametrize("obj", members, ids=lambda d: d.__qualname__)
 def test_member(obj):
     check_docstring(obj)

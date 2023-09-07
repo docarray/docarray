@@ -186,7 +186,7 @@ class JaxArray(AbstractTensor, Generic[ShapeT], metaclass=metaJax):
 
     def unwrap(self) -> jnp.ndarray:
         """
-        Return the original ndarray without making a copy in memory.
+        Return the original jax ndarray without making a copy in memory.
 
         The original view remains intact and is still a Document `JaxArray`
         but the return object is a pure `np.ndarray` and both objects share
@@ -196,12 +196,13 @@ class JaxArray(AbstractTensor, Generic[ShapeT], metaclass=metaJax):
 
         ```python
         from docarray.typing import JaxArray
-        import numpy as np
+        import jax.numpy as jnp
+        from pydantic import parse_obj_as
 
-        t1 = JaxArray.validate(np.zeros((3, 224, 224)), None, None)
-        # here t1 is a docarray NdArray
+        t1 = parse_obj_as(JaxArray, jnp.zeros((3, 224, 224)))
+        # here t1 is a docarray JaxArray
         t2 = t1.unwrap()
-        # here t2 is a pure np.ndarray but t1 is still a Docarray JaxArray
+        # here t2 is a pure jnp.ndarray but t1 is still a Docarray JaxArray
         # But both share the same underlying memory
         ```
 
