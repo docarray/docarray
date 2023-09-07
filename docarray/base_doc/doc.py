@@ -337,6 +337,9 @@ class BaseDoc(BaseModel, IOMixin, UpdateMixin, BaseNode):
     def _exclude_doclist(
         self, exclude: ExcludeType
     ) -> Tuple[ExcludeType, ExcludeType, List[str]]:
+        """
+        This function exclude the doclist field from the list. It is used in the model dump function because we give a special treatment to DocList during seriliaztion and therefore we want pydantic to ignore this field and let us handle it.
+        """
         doclist_exclude_fields = []
         for field in self._docarray_fields().keys():
             from docarray.array.any_array import AnyDocArray
