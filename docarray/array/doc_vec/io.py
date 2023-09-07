@@ -3,7 +3,17 @@ import io
 import pathlib
 from abc import abstractmethod
 from contextlib import nullcontext
-from typing import TYPE_CHECKING, Any, Dict, Generator, Optional, Type, TypeVar, Union
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    Dict,
+    Generator,
+    Optional,
+    Type,
+    TypeVar,
+    Union,
+    cast,
+)
 
 import numpy as np
 import orjson
@@ -262,18 +272,20 @@ class IOMixinDocVec(IOMixinDocList):
             NdArrayProto,
         )
 
+        self_ = cast('DocVec', self)
+
         doc_columns_proto: Dict[str, DocVecProto] = dict()
         tensor_columns_proto: Dict[str, NdArrayProto] = dict()
         da_columns_proto: Dict[str, ListOfDocArrayProto] = dict()
         any_columns_proto: Dict[str, ListOfAnyProto] = dict()
 
-        for field, col_doc in self._storage.doc_columns.items():
+        for field, col_doc in self_._storage.doc_columns.items():
             if col_doc is None:
                 # put dummy empty DocVecProto for serialization
                 doc_columns_proto[field] = _none_docvec_proto()
             else:
                 doc_columns_proto[field] = col_doc.to_protobuf()
-        for field, col_tens in self._storage.tensor_columns.items():
+        for field, col_tens in self_._storage.tensor_columns.items():
             if col_tens is None:
                 # put dummy empty NdArrayProto for serialization
                 tensor_columns_proto[field] = _none_ndarray_proto()
@@ -281,7 +293,7 @@ class IOMixinDocVec(IOMixinDocList):
                 tensor_columns_proto[field] = (
                     col_tens.to_protobuf() if col_tens is not None else None
                 )
-        for field, col_da in self._storage.docs_vec_columns.items():
+        for field, col_da in self_._storage.docs_vec_columns.items():
             list_proto = ListOfDocVecProto()
             if col_da:
                 for docs in col_da:
@@ -290,7 +302,7 @@ class IOMixinDocVec(IOMixinDocList):
                 # put dummy empty ListOfDocVecProto for serialization
                 list_proto = _none_list_of_docvec_proto()
             da_columns_proto[field] = list_proto
-        for field, col_any in self._storage.any_columns.items():
+        for field, col_any in self_._storage.any_columns.items():
             list_proto = ListOfAnyProto()
             for data in col_any:
                 list_proto.data.append(_type_to_protobuf(data))
