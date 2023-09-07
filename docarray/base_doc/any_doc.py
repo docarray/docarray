@@ -39,5 +39,5 @@ class AnyDoc(BaseDoc):
 
         def dict(self, *args, **kwargs):
             raise NotImplementedError(
-                "dict() method is not implemented for pydantic v2. Now pydantic require the schema to dump the dict but AnyDoc is schemaless"
+                "dict() method is not implemented for pydantic v2. Now pydantic requires a schema to dump the dict, but AnyDoc is schemaless"
             )
