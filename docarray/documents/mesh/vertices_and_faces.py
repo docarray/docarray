@@ -23,7 +23,7 @@ class VerticesAndFaces(BaseDoc):
     faces: AnyTensor
 
     @classmethod
-    def validate(
+    def _docarray_validate(
         cls: Type[T],
         value: Union[str, Any],
     ) -> T:

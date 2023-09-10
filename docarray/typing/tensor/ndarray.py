@@ -1,6 +1,7 @@
 from typing import TYPE_CHECKING, Any, Generic, List, Tuple, Type, TypeVar, Union, cast
 
 import numpy as np
+import orjson
 
 from docarray.base_doc.base_node import BaseNode
 from docarray.typing.proto_register import _register_proto
@@ -30,8 +31,6 @@ if tf_available:
     from docarray.typing.tensor.tensorflow_tensor import TensorFlowTensor  # noqa: F401
 
 if TYPE_CHECKING:
-    from pydantic import BaseConfig
-    from pydantic.fields import ModelField
 
     from docarray.computation.numpy_backend import NumpyCompBackend
     from docarray.proto import NdArrayProto
@@ -111,19 +110,14 @@ class NdArray(np.ndarray, AbstractTensor, Generic[ShapeT]):
     __parametrized_meta__ = metaNumpy
 
     @classmethod
-    def __get_validators__(cls):
-        # one or more validators may be yielded which will be called in the
-        # order to validate the input, each validator will receive as an input
-        # the value returned from the previous validator
-        yield cls.validate
-
-    @classmethod
-    def validate(
+    def _docarray_validate(
         cls: Type[T],
-        value: Union[T, np.ndarray, List[Any], Tuple[Any], Any],
-        field: 'ModelField',
-        config: 'BaseConfig',
+        value: Union[T, np.ndarray, str, List[Any], Tuple[Any], Any],
     ) -> T:
+
+        if isinstance(value, str):
+            value = orjson.loads(value)
+
         if isinstance(value, np.ndarray):
             return cls._docarray_from_native(value)
         elif isinstance(value, NdArray):
@@ -134,6 +128,7 @@ class NdArray(np.ndarray, AbstractTensor, Generic[ShapeT]):
             return cls._docarray_from_native(value.detach().cpu().numpy())
         elif tf_available and isinstance(value, tf.Tensor):
             return cls._docarray_from_native(value.numpy())
+
         elif jax_available and isinstance(value, jnp.ndarray):
             return cls._docarray_from_native(value.__array__())
         elif isinstance(value, list) or isinstance(value, tuple):
@@ -142,12 +137,12 @@ class NdArray(np.ndarray, AbstractTensor, Generic[ShapeT]):
                 return cls._docarray_from_native(arr_from_list)
             except Exception:
                 pass  # handled below
-        else:
-            try:
-                arr: np.ndarray = np.ndarray(value)
-                return cls._docarray_from_native(arr)
-            except Exception:
-                pass  # handled below
+        try:
+            arr: np.ndarray = np.ndarray(value)
+            return cls._docarray_from_native(arr)
+        except Exception:
+            pass  # handled below
+        breakpoint()
         raise ValueError(f'Expected a numpy.ndarray compatible type, got {type(value)}')
 
     @classmethod
@@ -176,9 +171,9 @@ class NdArray(np.ndarray, AbstractTensor, Generic[ShapeT]):
         ```python
         from docarray.typing import NdArray
         import numpy as np
+        from pydantic import parse_obj_as
 
-        t1 = NdArray.validate(np.zeros((3, 224, 224)), None, None)
-        # here t1 is a docarray NdArray
+        t1 = parse_obj_as(NdArray, np.zeros((3, 224, 224)))
         t2 = t1.unwrap()
         # here t2 is a pure np.ndarray but t1 is still a Docarray NdArray
         # But both share the same underlying memory

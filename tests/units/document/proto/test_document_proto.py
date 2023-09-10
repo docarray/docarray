@@ -6,6 +6,7 @@ import torch
 
 from docarray import DocList
 from docarray.base_doc import AnyDoc, BaseDoc
+from docarray.documents.image import ImageDoc
 from docarray.typing import NdArray, TorchTensor
 from docarray.utils._internal.misc import is_tf_available
 
@@ -113,7 +114,7 @@ def test_proto_with_chunks_doc_pytorch():
 @pytest.mark.proto
 def test_optional_field_in_doc():
     class CustomDoc(BaseDoc):
-        text: Optional[str]
+        text: Optional[str] = None
 
     CustomDoc.from_protobuf(CustomDoc().to_protobuf())
 
@@ -124,7 +125,7 @@ def test_optional_field_nested_in_doc():
         title: str
 
     class CustomDoc(BaseDoc):
-        text: Optional[InnerDoc]
+        text: Optional[InnerDoc] = None
 
     CustomDoc.from_protobuf(CustomDoc().to_protobuf())
 
@@ -314,7 +315,7 @@ def test_any_doc_proto():
     doc = AnyDoc(hello='world')
     pt = doc.to_protobuf()
     doc2 = AnyDoc.from_protobuf(pt)
-    assert doc2.dict()['hello'] == 'world'
+    assert doc2.hello == 'world'
 
 
 @pytest.mark.proto
@@ -359,3 +360,13 @@ def test_nested_dict_typed():
     )
 
     DocList[ResultTestDoc].from_protobuf(da.to_protobuf())
+
+
+def test_image_doc_proto():
+
+    doc = ImageDoc(url="aux.png")
+    pt = doc.to_protobuf()
+    assert "aux.png" in str(pt)
+    d2 = ImageDoc.from_protobuf(pt)
+
+    assert doc.url == d2.url

@@ -31,7 +31,7 @@ class PointsAndColors(BaseDoc):
     """
 
     points: AnyTensor
-    colors: Optional[AnyTensor]
+    colors: Optional[AnyTensor] = None
 
     @classmethod
     def validate(

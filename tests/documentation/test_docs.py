@@ -4,6 +4,7 @@ import pytest
 from mktestdocs import grab_code_blocks
 from mktestdocs.__main__ import _executors, check_raw_string
 
+from docarray.utils._internal.pydantic import is_pydantic_v2
 from tests.index.elastic.fixture import start_storage_v8  # noqa: F401
 
 file_to_skip = ['fastAPI', 'jina', 'index', 'first_steps.md']
@@ -63,11 +64,13 @@ for file in file_to_remove:
     files_to_check.remove(file)
 
 
+@pytest.mark.skipif(is_pydantic_v2, reason="Not working with pydantic v2 for now")
 @pytest.mark.parametrize('fpath', files_to_check, ids=str)
 def test_files_good(fpath):
     check_md_file(fpath=fpath, memory=True, keyword_ignore=['pickle', 'jac'])
 
 
+@pytest.mark.skipif(is_pydantic_v2, reason="Not working with pydantic v2 for now")
 def test_readme():
     check_md_file(
         fpath='README.md',

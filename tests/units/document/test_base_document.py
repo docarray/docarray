@@ -1,4 +1,4 @@
-from typing import List, Optional
+from typing import Any, List, Optional, Tuple
 
 import numpy as np
 import pytest
@@ -6,6 +6,7 @@ import pytest
 from docarray import DocList, DocVec
 from docarray.base_doc.doc import BaseDoc
 from docarray.typing import NdArray
+from docarray.utils._internal.pydantic import is_pydantic_v2
 
 
 def test_base_document_init():
@@ -85,6 +86,8 @@ def nested_docs_docvec():
 def test_nested_to_dict(nested_docs):
     d = nested_docs.dict()
     assert (d['docs'][0]['simple_tens'] == np.ones(10)).all()
+    assert isinstance(d['docs'], list)
+    assert not isinstance(d['docs'], DocList)
 
 
 def test_nested_docvec_to_dict(nested_docs_docvec):
@@ -107,6 +110,7 @@ def test_nested_to_dict_exclude_dict(nested_docs):
     assert 'hello' not in d.keys()
 
 
+@pytest.mark.skipif(is_pydantic_v2, reason="Not working with pydantic v2 for now")
 def test_nested_to_json(nested_docs):
     d = nested_docs.json()
     nested_docs.__class__.parse_raw(d)
@@ -118,7 +122,7 @@ def nested_none_docs():
         simple_tens: NdArray[10]
 
     class NestedDoc(BaseDoc):
-        docs: Optional[DocList[SimpleDoc]]
+        docs: Optional[DocList[SimpleDoc]] = None
         hello: str = 'world'
 
     nested_docs = NestedDoc()
@@ -135,3 +139,12 @@ def test_nested_none_to_json(nested_none_docs):
     d = nested_none_docs.json()
     d = nested_none_docs.__class__.parse_raw(d)
     assert d.dict() == {'docs': None, 'hello': 'world', 'id': nested_none_docs.id}
+
+
+def test_get_get_field_inner_type():
+    class MyDoc(BaseDoc):
+        tuple_: Tuple
+
+    field_type = MyDoc._get_field_inner_type("tuple_")
+
+    assert field_type == Any

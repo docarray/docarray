@@ -1,6 +1,7 @@
 from typing import TYPE_CHECKING, Any, Generic, Type, TypeVar, Union, cast
 
 import numpy as np
+import orjson
 
 from docarray.base_doc.base_node import BaseNode
 from docarray.typing.proto_register import _register_proto
@@ -13,8 +14,6 @@ from docarray.utils._internal.misc import (
 
 if TYPE_CHECKING:
     import tensorflow as tf  # type: ignore
-    from pydantic import BaseConfig
-    from pydantic.fields import ModelField
 
     from docarray.computation.tensorflow_backend import TensorFlowCompBackend
     from docarray.proto import NdArrayProto
@@ -196,18 +195,9 @@ class TensorFlowTensor(AbstractTensor, Generic[ShapeT], metaclass=metaTensorFlow
             yield self[i]
 
     @classmethod
-    def __get_validators__(cls):
-        # one or more validators may be yielded which will be called in the
-        # order to validate the input, each validator will receive as an input
-        # the value returned from the previous validator
-        yield cls.validate
-
-    @classmethod
-    def validate(
+    def _docarray_validate(
         cls: Type[T],
-        value: Union[T, np.ndarray, Any],
-        field: 'ModelField',
-        config: 'BaseConfig',
+        value: Union[T, np.ndarray, str, Any],
     ) -> T:
         if isinstance(value, TensorFlowTensor):
             return cast(T, value)
@@ -221,12 +211,15 @@ class TensorFlowTensor(AbstractTensor, Generic[ShapeT], metaclass=metaTensorFlow
             return cls._docarray_from_native(value.detach().cpu().numpy())
         elif jax_available and isinstance(value, jnp.ndarray):
             return cls._docarray_from_native(value.__array__())
-        else:
-            try:
-                arr: tf.Tensor = tf.constant(value)
-                return cls(tensor=arr)
-            except Exception:
-                pass  # handled below
+        elif isinstance(value, str):
+            value = orjson.loads(value)
+
+        try:
+            arr: tf.Tensor = tf.constant(value)
+            return cls(tensor=arr)
+        except Exception:
+            pass  # handled below
+
         raise ValueError(
             f'Expected a tensorflow.Tensor compatible type, got {type(value)}'
         )

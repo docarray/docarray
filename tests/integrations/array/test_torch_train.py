@@ -9,7 +9,7 @@ from docarray.typing import TorchTensor
 def test_torch_train():
     class Mmdoc(BaseDoc):
         text: str
-        tensor: Optional[TorchTensor[3, 224, 224]]
+        tensor: Optional[TorchTensor[3, 224, 224]] = None
 
     N = 10
 

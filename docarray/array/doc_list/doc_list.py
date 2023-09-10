@@ -24,11 +24,15 @@ from docarray.array.doc_list.pushpull import PushPullMixin
 from docarray.array.list_advance_indexing import IndexIterType, ListAdvancedIndexing
 from docarray.base_doc import AnyDoc, BaseDoc
 from docarray.typing import NdArray
+from docarray.utils._internal.pydantic import is_pydantic_v2
+
+if is_pydantic_v2:
+    from pydantic import GetCoreSchemaHandler
+    from pydantic_core import core_schema
+
 from docarray.utils._internal._typing import safe_issubclass
 
 if TYPE_CHECKING:
-    from pydantic import BaseConfig
-    from pydantic.fields import ModelField
 
     from docarray.array.doc_vec.doc_vec import DocVec
     from docarray.proto import DocListProto
@@ -215,11 +219,15 @@ class DocList(
               :return: Returns a list of the field value for each document
               in the doc_list like container
         """
-        field_type = self.__class__.doc_type._get_field_type(field)
+        field_type = self.__class__.doc_type._get_field_annotation(field)
+        field_info = self.__class__.doc_type._docarray_fields()[field]
+        is_field_required = (
+            field_info.is_required() if is_pydantic_v2 else field_info.required
+        )
 
         if (
             not is_union_type(field_type)
-            and self.__class__.doc_type.__fields__[field].required
+            and is_field_required
             and isinstance(field_type, type)
             and safe_issubclass(field_type, BaseDoc)
         ):
@@ -263,11 +271,9 @@ class DocList(
         return DocVec.__class_getitem__(self.doc_type)(self, tensor_type=tensor_type)
 
     @classmethod
-    def validate(
+    def _docarray_validate(
         cls: Type[T],
         value: Union[T, Iterable[BaseDoc]],
-        field: 'ModelField',
-        config: 'BaseConfig',
     ):
         from docarray.array.doc_vec.doc_vec import DocVec
 
@@ -336,3 +342,13 @@ class DocList(
 
     def __repr__(self):
         return AnyDocArray.__repr__(self)  # type: ignore
+
+    if is_pydantic_v2:
+
+        @classmethod
+        def __get_pydantic_core_schema__(
+            cls, _source_type: Any, _handler: GetCoreSchemaHandler
+        ) -> core_schema.CoreSchema:
+            return core_schema.general_plain_validator_function(
+                cls.validate,
+            )

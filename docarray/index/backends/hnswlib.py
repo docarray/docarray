@@ -32,9 +32,7 @@ from docarray.index.abstract import (
     _raise_not_composable,
     _raise_not_supported,
 )
-from docarray.index.backends.helper import (
-    _collect_query_args,
-)
+from docarray.index.backends.helper import _collect_query_args
 from docarray.proto import DocProto
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
 from docarray.typing.tensor.ndarray import NdArray
@@ -591,7 +589,7 @@ class HnswDocumentIndex(BaseDocIndex, Generic[TSchema]):
         if self._apply_optim_no_embedding_in_sqlite:
             for k, v in reconstruct_embeddings.items():
                 node_proto = (
-                    schema_cls._get_field_type(k)
+                    schema_cls._get_field_annotation(k)
                     ._docarray_from_ndarray(np.array(v))
                     ._to_node_protobuf()
                 )

@@ -30,6 +30,7 @@ from docarray.base_doc import BaseDoc
 from docarray.base_doc.mixins.io import _type_to_protobuf
 from docarray.typing import NdArray
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
+from docarray.utils._internal.pydantic import is_pydantic_v2
 
 if TYPE_CHECKING:
     import csv
@@ -147,7 +148,7 @@ class IOMixinDocVec(IOMixinDocList):
 
         for key, col in doc_cols.items():
             if col is not None:
-                col_doc_type = cls.doc_type._get_field_type(key)
+                col_doc_type = cls.doc_type._get_field_annotation(key)
                 doc_cols[key] = cls.__class_getitem__(col_doc_type)._from_json_col_dict(
                     col, tensor_type=tensor_type
                 )
@@ -156,7 +157,7 @@ class IOMixinDocVec(IOMixinDocList):
 
         for key, col in docs_vec_cols.items():
             if col is not None:
-                col_doc_type = cls.doc_type._get_field_type(key).doc_type
+                col_doc_type = cls.doc_type._get_field_annotation(key).doc_type
                 col_ = ListAdvancedIndexing(
                     cls.__class_getitem__(col_doc_type)._from_json_col_dict(
                         vec, tensor_type=tensor_type
@@ -169,12 +170,15 @@ class IOMixinDocVec(IOMixinDocList):
 
         for key, col in any_cols.items():
             if col is not None:
-                col_type = cls.doc_type._get_field_type(key)
-                col_type = (
-                    col_type
-                    if cls.doc_type.__fields__[key].required
-                    else Optional[col_type]
+                col_type = cls.doc_type._get_field_annotation(key)
+
+                field_required = (
+                    cls.doc_type._docarray_fields()[key].is_required()
+                    if is_pydantic_v2
+                    else cls.doc_type._docarray_fields()[key].required
                 )
+
+                col_type = col_type if field_required else Optional[col_type]
                 col_ = ListAdvancedIndexing(parse_obj_as(col_type, val) for val in col)
                 any_cols[key] = col_
             else:
@@ -188,7 +192,7 @@ class IOMixinDocVec(IOMixinDocList):
 
     @classmethod
     def from_protobuf(
-        cls: Type[T], pb_msg: 'DocVecProto', tensor_type: Type[AbstractTensor] = NdArray  # type: ignore
+        cls: Type[T], pb_msg: 'DocVecProto', tensor_type: Type[AbstractTensor] = NdArray
     ) -> T:
         """create a DocVec from a protobuf message
         :param pb_msg: the protobuf message to deserialize
@@ -216,7 +220,7 @@ class IOMixinDocVec(IOMixinDocList):
                 # handle values that were None before serialization
                 doc_columns[doc_col_name] = None
             else:
-                col_doc_type: Type = cls.doc_type._get_field_type(doc_col_name)
+                col_doc_type: Type = cls.doc_type._get_field_annotation(doc_col_name)
                 doc_columns[doc_col_name] = cls.__class_getitem__(
                     col_doc_type
                 ).from_protobuf(doc_col_proto, tensor_type=tensor_type)
@@ -229,7 +233,7 @@ class IOMixinDocVec(IOMixinDocList):
             else:
                 vec_list = ListAdvancedIndexing()
                 for doc_list_proto in docs_vec_col_proto.data:
-                    col_doc_type = cls.doc_type._get_field_type(
+                    col_doc_type = cls.doc_type._get_field_annotation(
                         docs_vec_col_name
                     ).doc_type
                     vec_list.append(

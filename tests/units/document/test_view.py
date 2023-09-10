@@ -11,7 +11,7 @@ def test_document_view():
         tensor: AnyTensor
         name: str
 
-    docs = [MyDoc(tensor=np.zeros((10, 10)), name='hello', id=i) for i in range(4)]
+    docs = [MyDoc(tensor=np.zeros((10, 10)), name='hello', id=str(i)) for i in range(4)]
 
     doc_vec = DocVec[MyDoc](docs)
     storage = doc_vec._storage

@@ -1,4 +1,4 @@
-from typing import Any, Optional, Type, Union
+from typing import Any, List, Optional, Type, Union
 
 from rich.highlighter import RegexHighlighter
 from rich.theme import Theme
@@ -50,7 +50,11 @@ class DocumentSummary:
         console.print(panel)
 
     @staticmethod
-    def _get_schema(cls: Type['BaseDoc'], doc_name: Optional[str] = None) -> Tree:
+    def _get_schema(
+        cls: Type['BaseDoc'],
+        doc_name: Optional[str] = None,
+        recursion_list: Optional[List] = None,
+    ) -> Tree:
         """Get Documents schema as a rich.tree.Tree object."""
         import re
 
@@ -58,10 +62,18 @@ class DocumentSummary:
 
         from docarray import BaseDoc, DocList
 
+        if recursion_list is None:
+            recursion_list = []
+
+        if cls in recursion_list:
+            return Tree(cls.__name__)
+        else:
+            recursion_list.append(cls)
+
         root = cls.__name__ if doc_name is None else f'{doc_name}: {cls.__name__}'
         tree = Tree(root, highlight=True)
 
-        for field_name, value in cls.__fields__.items():
+        for field_name, value in cls._docarray_fields().items():
             if field_name != 'id':
                 field_type = value.annotation
                 field_cls = str(field_type).replace('[', '\[')
@@ -73,19 +85,35 @@ class DocumentSummary:
                     sub_tree = Tree(node_name, highlight=True)
                     for arg in field_type.__args__:
                         if safe_issubclass(arg, BaseDoc):
-                            sub_tree.add(DocumentSummary._get_schema(cls=arg))
+                            sub_tree.add(
+                                DocumentSummary._get_schema(
+                                    cls=arg, recursion_list=recursion_list
+                                )
+                            )
                         elif safe_issubclass(arg, DocList):
-                            sub_tree.add(DocumentSummary._get_schema(cls=arg.doc_type))
+                            sub_tree.add(
+                                DocumentSummary._get_schema(
+                                    cls=arg.doc_type, recursion_list=recursion_list
+                                )
+                            )
                     tree.add(sub_tree)
 
                 elif safe_issubclass(field_type, BaseDoc):
                     tree.add(
-                        DocumentSummary._get_schema(cls=field_type, doc_name=field_name)
+                        DocumentSummary._get_schema(
+                            cls=field_type,
+                            doc_name=field_name,
+                            recursion_list=recursion_list,
+                        )
                     )
 
                 elif safe_issubclass(field_type, DocList):
                     sub_tree = Tree(node_name, highlight=True)
-                    sub_tree.add(DocumentSummary._get_schema(cls=field_type.doc_type))
+                    sub_tree.add(
+                        DocumentSummary._get_schema(
+                            cls=field_type.doc_type, recursion_list=recursion_list
+                        )
+                    )
                     tree.add(sub_tree)
 
                 else:

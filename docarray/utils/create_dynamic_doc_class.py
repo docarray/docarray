@@ -1,11 +1,12 @@
 from typing import Any, Dict, List, Optional, Type, Union
 
-from pydantic import create_model
+from pydantic import BaseModel, create_model
 from pydantic.fields import FieldInfo
 
 from docarray import BaseDoc, DocList
 from docarray.typing import AnyTensor
 from docarray.utils._internal._typing import safe_issubclass
+from docarray.utils._internal.pydantic import is_pydantic_v2
 
 RESERVED_KEYS = [
     'type',
@@ -20,7 +21,7 @@ RESERVED_KEYS = [
 ]
 
 
-def create_pure_python_type_model(model: Any) -> BaseDoc:
+def create_pure_python_type_model(model: BaseModel) -> BaseDoc:
     """
     Take a Pydantic model and cast DocList fields into List fields.
 
@@ -49,6 +50,11 @@ def create_pure_python_type_model(model: Any) -> BaseDoc:
     :param model: The input model
     :return: A new subclass of BaseDoc, where every DocList type in the schema is replaced by List.
     """
+    if is_pydantic_v2:
+        raise NotImplementedError(
+            'This method is not supported in Pydantic 2.0. Please use Pydantic 1.8.2 or lower.'
+        )
+
     fields: Dict[str, Any] = {}
     for field_name, field in model.__annotations__.items():
         if field_name not in model.__fields__:
@@ -67,7 +73,7 @@ def create_pure_python_type_model(model: Any) -> BaseDoc:
     )
 
 
-def _get_field_type_from_schema(
+def _get_field_annotation_from_schema(
     field_schema: Dict[str, Any],
     field_name: str,
     root_schema: Dict[str, Any],
@@ -108,7 +114,7 @@ def _get_field_type_from_schema(
                 )
             else:
                 any_of_types.append(
-                    _get_field_type_from_schema(
+                    _get_field_annotation_from_schema(
                         any_of_schema,
                         field_name,
                         root_schema=root_schema,
@@ -186,7 +192,7 @@ def _get_field_type_from_schema(
                     )
                     ret = DocList[doc_type]
     elif field_type == 'array':
-        ret = _get_field_type_from_schema(
+        ret = _get_field_annotation_from_schema(
             field_schema=field_schema.get('items', {}),
             field_name=field_name,
             root_schema=root_schema,
@@ -257,7 +263,7 @@ def create_base_doc_from_schema(
         return cached_models[base_doc_name]
     for field_name, field_schema in schema.get('properties', {}).items():
 
-        field_type = _get_field_type_from_schema(
+        field_type = _get_field_annotation_from_schema(
             field_schema=field_schema,
             field_name=field_name,
             root_schema=schema,

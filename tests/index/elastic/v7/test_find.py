@@ -141,6 +141,7 @@ def test_find_torch():
     assert torch.allclose(docs[0].tens, index_docs[-1].tens)
 
 
+@pytest.mark.tensorflow
 def test_find_tensorflow():
     from docarray.typing import TensorFlowTensor
 

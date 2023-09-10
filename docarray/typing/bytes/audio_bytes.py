@@ -1,47 +1,22 @@
 import io
-from typing import TYPE_CHECKING, Any, Tuple, Type, TypeVar
+from typing import Tuple, TypeVar
 
 import numpy as np
 from pydantic import parse_obj_as
-from pydantic.validators import bytes_validator
 
-from docarray.typing.abstract_type import AbstractType
+from docarray.typing.bytes.base_bytes import BaseBytes
 from docarray.typing.proto_register import _register_proto
 from docarray.typing.tensor.audio import AudioNdArray
 from docarray.utils._internal.misc import import_library
-
-if TYPE_CHECKING:
-    from pydantic.fields import BaseConfig, ModelField
-
-    from docarray.proto import NodeProto
 
 T = TypeVar('T', bound='AudioBytes')
 
 
 @_register_proto(proto_type_name='audio_bytes')
-class AudioBytes(bytes, AbstractType):
+class AudioBytes(BaseBytes):
     """
     Bytes that store an audio and that can be load into an Audio tensor
     """
-
-    @classmethod
-    def validate(
-        cls: Type[T],
-        value: Any,
-        field: 'ModelField',
-        config: 'BaseConfig',
-    ) -> T:
-        value = bytes_validator(value)
-        return cls(value)
-
-    @classmethod
-    def from_protobuf(cls: Type[T], pb_msg: T) -> T:
-        return parse_obj_as(cls, pb_msg)
-
-    def _to_node_protobuf(self: T) -> 'NodeProto':
-        from docarray.proto import NodeProto
-
-        return NodeProto(blob=self, type=self._proto_type_name)
 
     def load(self) -> Tuple[AudioNdArray, int]:
         """

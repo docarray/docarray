@@ -2,6 +2,7 @@ from copy import copy
 from typing import TYPE_CHECKING, Any, Generic, Type, TypeVar, Union, cast
 
 import numpy as np
+import orjson
 
 from docarray.base_doc.base_node import BaseNode
 from docarray.typing.proto_register import _register_proto
@@ -14,8 +15,6 @@ from docarray.utils._internal.misc import (
 
 if TYPE_CHECKING:
     import torch
-    from pydantic import BaseConfig
-    from pydantic.fields import ModelField
 
     from docarray.computation.torch_backend import TorchCompBackend
     from docarray.proto import NdArrayProto
@@ -156,18 +155,9 @@ class TorchTensor(
     __parametrized_meta__ = metaTorchAndNode
 
     @classmethod
-    def __get_validators__(cls):
-        # one or more validators may be yielded which will be called in the
-        # order to validate the input, each validator will receive as an input
-        # the value returned from the previous validator
-        yield cls.validate
-
-    @classmethod
-    def validate(
+    def _docarray_validate(
         cls: Type[T],
-        value: Union[T, np.ndarray, Any],
-        field: 'ModelField',
-        config: 'BaseConfig',
+        value: Union[T, np.ndarray, str, Any],
     ) -> T:
         if isinstance(value, TorchTensor):
             return cast(T, value)
@@ -181,12 +171,14 @@ class TorchTensor(
             return cls._docarray_from_ndarray(value)
         elif jax_available and isinstance(value, jnp.ndarray):
             return cls._docarray_from_ndarray(value.__array__())
-        else:
-            try:
-                arr: torch.Tensor = torch.tensor(value)
-                return cls._docarray_from_native(arr)
-            except Exception:
-                pass  # handled below
+        elif isinstance(value, str):
+            value = orjson.loads(value)
+        try:
+            arr: torch.Tensor = torch.tensor(value)
+            return cls._docarray_from_native(arr)
+        except Exception:
+            pass  # handled below
+
         raise ValueError(f'Expected a torch.Tensor compatible type, got {type(value)}')
 
     def _docarray_to_json_compatible(self) -> np.ndarray:
@@ -209,8 +201,10 @@ class TorchTensor(
         ```python
         from docarray.typing import TorchTensor
         import torch
+        from pydantic import parse_obj_as
 
-        t = TorchTensor.validate(torch.zeros(3, 224, 224), None, None)
+
+        t = parse_obj_as(TorchTensor, torch.zeros(3, 224, 224))
         # here t is a docarray TorchTensor
         t2 = t.unwrap()
         # here t2 is a pure torch.Tensor but t1 is still a Docarray TorchTensor

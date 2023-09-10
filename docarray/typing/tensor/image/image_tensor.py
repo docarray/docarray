@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, Any, Type, TypeVar, Union, cast
+from typing import Any, Type, TypeVar, Union, cast
 
 import numpy as np
 
@@ -33,11 +33,6 @@ if tf_available:
         ImageTensorFlowTensor,
     )
     from docarray.typing.tensor.tensorflow_tensor import TensorFlowTensor
-
-
-if TYPE_CHECKING:
-    from pydantic import BaseConfig
-    from pydantic.fields import ModelField
 
 
 T = TypeVar("T", bound="ImageTensor")
@@ -85,15 +80,9 @@ class ImageTensor(AnyTensor, AbstractImageTensor):
     """
 
     @classmethod
-    def __get_validators__(cls):
-        yield cls.validate
-
-    @classmethod
-    def validate(
+    def _docarray_validate(
         cls: Type[T],
         value: Union[T, np.ndarray, Any],
-        field: "ModelField",
-        config: "BaseConfig",
     ):
         if torch_available:
             if isinstance(value, TorchTensor):
@@ -111,7 +100,7 @@ class ImageTensor(AnyTensor, AbstractImageTensor):
             elif isinstance(value, jnp.ndarray):
                 return ImageJaxArray._docarray_from_native(value)  # noqa
         try:
-            return ImageNdArray.validate(value, field, config)
+            return ImageNdArray._docarray_validate(value)
         except Exception:  # noqa
             pass
         raise TypeError(

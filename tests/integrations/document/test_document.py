@@ -13,6 +13,7 @@ from docarray.documents.helper import (
     create_doc_from_typeddict,
 )
 from docarray.typing import AudioNdArray
+from docarray.utils._internal.pydantic import is_pydantic_v2
 
 
 def test_multi_modal_doc():
@@ -82,6 +83,7 @@ def test_create_doc():
     assert issubclass(MyAudio, AudioDoc)
 
 
+@pytest.mark.skipif(is_pydantic_v2, reason="Not working with pydantic v2 for now")
 def test_create_doc_from_typeddict():
     class MyMultiModalDoc(TypedDict):
         image: ImageDoc

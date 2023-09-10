@@ -280,7 +280,7 @@ def test_get_from_slice_stacked():
 @pytest.mark.tensorflow
 def test_stack_none():
     class MyDoc(BaseDoc):
-        tensor: Optional[AnyTensor]
+        tensor: Optional[AnyTensor] = None
 
     da = DocVec[MyDoc](
         [MyDoc(tensor=None) for _ in range(10)], tensor_type=TensorFlowTensor

@@ -5,6 +5,7 @@ import pytest
 
 from docarray import BaseDoc, DocList
 from docarray.documents import ImageDoc, TextDoc
+from docarray.utils._internal.pydantic import is_pydantic_v2
 from docarray.utils.filter import filter_docs
 
 
@@ -243,6 +244,9 @@ def test_logic_filter(docs, dict_api):
     assert len(result) == 3
 
 
+@pytest.mark.skipif(
+    is_pydantic_v2, reason="Not working with pydantic v2"
+)  # TextDoc validation with string is not working with pydantic v2
 @pytest.mark.parametrize('dict_api', [True, False])
 def test_from_docstring(dict_api):
     class MyDocument(BaseDoc):

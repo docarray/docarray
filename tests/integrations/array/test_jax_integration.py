@@ -21,7 +21,7 @@ def test_basic_jax_operation():
         return array.tensor
 
     class Mmdoc(BaseDoc):
-        tensor: Optional[JaxArray[3, 224, 224]]
+        tensor: Optional[JaxArray[3, 224, 224]] = None
 
     N = 10
 

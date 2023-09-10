@@ -26,7 +26,7 @@ def _is_access_path_valid(doc_type: Type['BaseDoc'], access_path: str) -> bool:
     Check if a given access path ("__"-separated) is a valid path for a given Document class.
     """
 
-    field_type = _get_field_type_by_access_path(doc_type, access_path)
+    field_type = _get_field_annotation_by_access_path(doc_type, access_path)
     return field_type is not None
 
 
@@ -129,7 +129,7 @@ def _update_nested_dicts(
             _update_nested_dicts(to_update[k], update_with[k])
 
 
-def _get_field_type_by_access_path(
+def _get_field_annotation_by_access_path(
     doc_type: Type['BaseDoc'], access_path: str
 ) -> Optional[Type]:
     """
@@ -142,17 +142,17 @@ def _get_field_type_by_access_path(
     from docarray import BaseDoc, DocList
 
     field, _, remaining = access_path.partition('__')
-    field_valid = field in doc_type.__fields__.keys()
+    field_valid = field in doc_type._docarray_fields().keys()
 
     if field_valid:
         if len(remaining) == 0:
-            return doc_type._get_field_type(field)
+            return doc_type._get_field_annotation(field)
         else:
-            d = doc_type._get_field_type(field)
+            d = doc_type._get_field_annotation(field)
             if safe_issubclass(d, DocList):
-                return _get_field_type_by_access_path(d.doc_type, remaining)
+                return _get_field_annotation_by_access_path(d.doc_type, remaining)
             elif safe_issubclass(d, BaseDoc):
-                return _get_field_type_by_access_path(d, remaining)
+                return _get_field_annotation_by_access_path(d, remaining)
             else:
                 return None
     else:
@@ -245,14 +245,4 @@ def get_paths(
 
 
 def _shallow_copy_doc(doc):
-    cls = doc.__class__
-    shallow_copy = cls.__new__(cls)
-
-    field_set = set(doc.__fields_set__)
-    object.__setattr__(shallow_copy, '__fields_set__', field_set)
-
-    for field_name, field_ in doc.__fields__.items():
-        val = doc.__getattr__(field_name)
-        setattr(shallow_copy, field_name, val)
-
-    return shallow_copy
+    return doc.__class__._shallow_copy(doc)

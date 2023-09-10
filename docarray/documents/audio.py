@@ -94,11 +94,11 @@ class AudioDoc(BaseDoc):
     ```
     """
 
-    url: Optional[AudioUrl]
-    tensor: Optional[AudioTensor]
-    embedding: Optional[AnyEmbedding]
-    bytes_: Optional[AudioBytes]
-    frame_rate: Optional[int]
+    url: Optional[AudioUrl] = None
+    tensor: Optional[AudioTensor] = None
+    embedding: Optional[AnyEmbedding] = None
+    bytes_: Optional[AudioBytes] = None
+    frame_rate: Optional[int] = None
 
     @classmethod
     def validate(

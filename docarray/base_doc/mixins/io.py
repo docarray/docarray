@@ -14,11 +14,12 @@ from typing import (
     Type,
     TypeVar,
     Union,
-    get_origin,
 )
+from typing import _GenericAlias as GenericAlias
+from typing import get_origin
 
 import numpy as np
-from typing_inspect import is_union_type
+from typing_inspect import get_args, is_union_type
 
 from docarray.base_doc.base_node import BaseNode
 from docarray.typing import NdArray
@@ -26,14 +27,17 @@ from docarray.typing.proto_register import _PROTO_TYPE_NAME_TO_CLASS
 from docarray.utils._internal._typing import safe_issubclass
 from docarray.utils._internal.compress import _compress_bytes, _decompress_bytes
 from docarray.utils._internal.misc import import_library
+from docarray.utils._internal.pydantic import is_pydantic_v2
 
 if TYPE_CHECKING:
     import tensorflow as tf  # type: ignore
     import torch
-    from pydantic.fields import ModelField
+    from pydantic.fields import FieldInfo
 
     from docarray.proto import DocProto, NodeProto
     from docarray.typing import TensorFlowTensor, TorchTensor
+
+
 else:
     tf = import_library('tensorflow', raise_error=False)
     if tf is not None:
@@ -128,19 +132,19 @@ class IOMixin(Iterable[Tuple[str, Any]]):
     IOMixin to define all the bytes/protobuf/json related part of BaseDoc
     """
 
-    __fields__: Dict[str, 'ModelField']
+    _docarray_fields: Dict[str, 'FieldInfo']
 
     class Config:
         _load_extra_fields_from_protobuf: bool
 
     @classmethod
     @abstractmethod
-    def _get_field_type(cls, field: str) -> Type:
+    def _get_field_annotation(cls, field: str) -> Type:
         ...
 
     @classmethod
-    def _get_field_type_array(cls, field: str) -> Type:
-        return cls._get_field_type(field)
+    def _get_field_annotation_array(cls, field: str) -> Type:
+        return cls._get_field_annotation(field)
 
     def __bytes__(self) -> bytes:
         return self.to_bytes()
@@ -238,7 +242,7 @@ class IOMixin(Iterable[Tuple[str, Any]]):
         for field_name in pb_msg.data:
             if (
                 not (cls.Config._load_extra_fields_from_protobuf)
-                and field_name not in cls.__fields__.keys()
+                and field_name not in cls._docarray_fields().keys()
             ):
                 continue  # optimization we don't even load the data if the key does not
                 # match any field in the cls or in the mapping
@@ -263,12 +267,11 @@ class IOMixin(Iterable[Tuple[str, Any]]):
         :param field_name: the name of the field
         :return: the loaded field
         """
-
         if field_name is not None and field_type is not None:
             raise ValueError("field_type and field_name cannot be both passed")
 
         field_type = field_type or (
-            cls._get_field_type(field_name) if field_name else None
+            cls._get_field_annotation(field_name) if field_name else None
         )
 
         content_type_dict = _PROTO_TYPE_NAME_TO_CLASS
@@ -306,7 +309,7 @@ class IOMixin(Iterable[Tuple[str, Any]]):
                 raise ValueError(
                     'field_name cannot be None when trying to deserialize a BaseDoc'
                 )
-            return_field = cls._get_field_type_array(field_name).from_protobuf(
+            return_field = cls._get_field_annotation_array(field_name).from_protobuf(
                 getattr(value, content_key)
             )  # we get to the parent class
         elif content_key is None:
@@ -322,11 +325,15 @@ class IOMixin(Iterable[Tuple[str, Any]]):
                 return_field = getattr(value, content_key)
 
             elif content_key in arg_to_container.keys():
-                field_type = (
-                    cls.__fields__[field_name].type_
-                    if field_name and field_name in cls.__fields__
-                    else None
-                )
+
+                if field_name and field_name in cls._docarray_fields():
+                    field_type = cls._get_field_inner_type(field_name)
+                else:
+                    field_type = None
+
+                if isinstance(field_type, GenericAlias):
+                    field_type = field_type.__args__[0]
+
                 return_field = arg_to_container[content_key](
                     cls._get_content_from_node_proto(node, field_type=field_type)
                     for node in getattr(value, content_key).data
@@ -334,11 +341,23 @@ class IOMixin(Iterable[Tuple[str, Any]]):
 
             elif content_key == 'dict':
                 deser_dict: Dict[str, Any] = dict()
-                field_type = (
-                    cls.__fields__[field_name].type_
-                    if field_name and field_name in cls.__fields__
-                    else None
-                )
+
+                if field_name and field_name in cls._docarray_fields():
+
+                    if is_pydantic_v2:
+                        dict_args = get_args(
+                            cls._docarray_fields()[field_name].annotation
+                        )
+                        if len(dict_args) < 2:
+                            field_type = Any
+                        else:
+                            field_type = dict_args[1]
+                    else:
+                        field_type = cls._docarray_fields()[field_name].type_
+
+                else:
+                    field_type = None
+
                 for key_name, node in value.dict.data.items():
                     deser_dict[key_name] = cls._get_content_from_node_proto(
                         node, field_type=field_type
@@ -385,14 +404,14 @@ class IOMixin(Iterable[Tuple[str, Any]]):
         return DocProto(data=data)
 
     def _to_node_protobuf(self) -> 'NodeProto':
-        from docarray.proto import NodeProto
-
         """Convert Document into a NodeProto protobuf message. This function should be
         called when the Document is nest into another Document that need to be
         converted into a protobuf
 
         :return: the nested item protobuf message
         """
+        from docarray.proto import NodeProto
+
         return NodeProto(doc=self.to_protobuf())
 
     @classmethod
@@ -405,8 +424,8 @@ class IOMixin(Iterable[Tuple[str, Any]]):
         from docarray import BaseDoc
 
         paths = []
-        for field in cls.__fields__.keys():
-            field_type = cls._get_field_type(field)
+        for field in cls._docarray_fields().keys():
+            field_type = cls._get_field_annotation(field)
             if not is_union_type(field_type) and safe_issubclass(field_type, BaseDoc):
                 sub_paths = field_type._get_access_paths()
                 for path in sub_paths:
@@ -414,3 +433,18 @@ class IOMixin(Iterable[Tuple[str, Any]]):
             else:
                 paths.append(field)
         return paths
+
+    @classmethod
+    def from_json(
+        cls: Type[T],
+        data: str,
+    ) -> T:
+        """Build Document object from json data
+        :return: a Document object
+        """
+        # TODO: add tests
+
+        if is_pydantic_v2:
+            return cls.model_validate_json(data)
+        else:
+            return cls.parse_raw(data)

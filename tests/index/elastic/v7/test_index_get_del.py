@@ -4,7 +4,7 @@ import numpy as np
 import pytest
 
 from docarray import BaseDoc, DocList
-from docarray.documents import ImageDoc, TextDoc
+from docarray.documents import TextDoc
 from docarray.index import ElasticV7DocIndex
 from docarray.typing import NdArray
 from tests.index.elastic.fixture import (  # noqa: F401
@@ -265,7 +265,7 @@ def test_index_multi_modal_doc():
 
     doc = [
         MyMultiModalDoc(
-            image=ImageDoc(embedding=np.random.randn(128)), text=TextDoc(text='hello')
+            image=MyImageDoc(embedding=np.random.randn(128)), text=TextDoc(text='hello')
         )
     ]
     index.index(doc)

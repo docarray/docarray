@@ -67,7 +67,7 @@ def test_any_doc_list_proto():
     doc = AnyDoc(hello='world')
     pt = DocList([doc]).to_protobuf()
     docs = DocList.from_protobuf(pt)
-    assert docs[0].dict()['hello'] == 'world'
+    assert docs[0].hello == 'world'
 
 
 @pytest.mark.proto

@@ -10,11 +10,11 @@ from docarray import BaseDoc
 from docarray.base_doc.io.json import orjson_dumps
 from docarray.typing import AudioBytes, AudioTorchTensor, AudioUrl
 from docarray.typing.url.mimetypes import (
-    OBJ_MIMETYPE,
     AUDIO_MIMETYPE,
-    VIDEO_MIMETYPE,
     IMAGE_MIMETYPE,
+    OBJ_MIMETYPE,
     TEXT_MIMETYPE,
+    VIDEO_MIMETYPE,
 )
 from docarray.utils._internal.misc import is_tf_available
 from tests import TOYDATA_DIR
@@ -53,7 +53,7 @@ def test_audio_url(file_url):
 def test_load_audio_url_to_audio_torch_tensor_field(file_url):
     class MyAudioDoc(BaseDoc):
         audio_url: AudioUrl
-        tensor: Optional[AudioTorchTensor]
+        tensor: Optional[AudioTorchTensor] = None
 
     doc = MyAudioDoc(audio_url=file_url)
     doc.tensor, _ = doc.audio_url.load()
@@ -72,7 +72,7 @@ def test_load_audio_url_to_audio_torch_tensor_field(file_url):
 def test_load_audio_url_to_audio_tensorflow_tensor_field(file_url):
     class MyAudioDoc(BaseDoc):
         audio_url: AudioUrl
-        tensor: Optional[AudioTensorFlowTensor]
+        tensor: Optional[AudioTensorFlowTensor] = None
 
     doc = MyAudioDoc(audio_url=file_url)
     doc.tensor, _ = doc.audio_url.load()

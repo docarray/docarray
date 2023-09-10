@@ -24,11 +24,13 @@ from docarray.base_doc.io.json import orjson_dumps
 from docarray.computation import AbstractComputationalBackend
 from docarray.typing.abstract_type import AbstractType
 from docarray.utils._internal._typing import safe_issubclass
+from docarray.utils._internal.pydantic import is_pydantic_v2
+
+if is_pydantic_v2:
+    from pydantic import GetCoreSchemaHandler, GetJsonSchemaHandler
+    from pydantic_core import CoreSchema, core_schema
 
 if TYPE_CHECKING:
-    from pydantic import BaseConfig
-    from pydantic.fields import ModelField
-
     from docarray.proto import NdArrayProto, NodeProto
 
 T = TypeVar('T', bound='AbstractTensor')
@@ -237,25 +239,57 @@ class AbstractTensor(Generic[TTensor, T], AbstractType, ABC, Sized):
             raise TypeError(f'{item} is not a valid tensor shape.')
         return item
 
-    @classmethod
-    def __modify_schema__(cls, field_schema: Dict[str, Any]) -> None:
-        field_schema.update(type='array', items={'type': 'number'})
-        if cls.__docarray_target_shape__ is not None:
-            shape_info = (
-                '[' + ', '.join([str(s) for s in cls.__docarray_target_shape__]) + ']'
-            )
-            if (
-                reduce(mul, cls.__docarray_target_shape__, 1)
-                <= DISPLAY_TENSOR_OPENAPI_MAX_ITEMS
-            ):
-                # custom example only for 'small' shapes, otherwise it is too big to display
-                example_payload = orjson_dumps(
-                    np.zeros(cls.__docarray_target_shape__)
-                ).decode()
-                field_schema.update(example=example_payload)
-        else:
-            shape_info = 'not specified'
-        field_schema['tensor/array shape'] = shape_info
+    if is_pydantic_v2:
+
+        @classmethod
+        def __get_pydantic_json_schema__(
+            cls, core_schema: CoreSchema, handler: GetJsonSchemaHandler
+        ) -> Dict[str, Any]:
+            json_schema = {}
+            json_schema.update(type='array', items={'type': 'number'})
+            if cls.__docarray_target_shape__ is not None:
+                shape_info = (
+                    '['
+                    + ', '.join([str(s) for s in cls.__docarray_target_shape__])
+                    + ']'
+                )
+                if (
+                    reduce(mul, cls.__docarray_target_shape__, 1)
+                    <= DISPLAY_TENSOR_OPENAPI_MAX_ITEMS
+                ):
+                    # custom example only for 'small' shapes, otherwise it is too big to display
+                    example_payload = orjson_dumps(
+                        np.zeros(cls.__docarray_target_shape__)
+                    ).decode()
+                    json_schema.update(example=example_payload)
+            else:
+                shape_info = 'not specified'
+            json_schema['tensor/array shape'] = shape_info
+            return json_schema
+
+    else:
+
+        @classmethod
+        def __modify_schema__(cls, field_schema: Dict[str, Any]) -> None:
+            field_schema.update(type='array', items={'type': 'number'})
+            if cls.__docarray_target_shape__ is not None:
+                shape_info = (
+                    '['
+                    + ', '.join([str(s) for s in cls.__docarray_target_shape__])
+                    + ']'
+                )
+                if (
+                    reduce(mul, cls.__docarray_target_shape__, 1)
+                    <= DISPLAY_TENSOR_OPENAPI_MAX_ITEMS
+                ):
+                    # custom example only for 'small' shapes, otherwise it is too big to display
+                    example_payload = orjson_dumps(
+                        np.zeros(cls.__docarray_target_shape__)
+                    ).decode()
+                    field_schema.update(example=example_payload)
+            else:
+                shape_info = 'not specified'
+            field_schema['tensor/array shape'] = shape_info
 
     @classmethod
     def _docarray_create_parametrized_type(cls: Type[T], shape: Tuple[int]):
@@ -269,13 +303,11 @@ class AbstractTensor(Generic[TTensor, T], AbstractType, ABC, Sized):
             __docarray_target_shape__ = shape
 
             @classmethod
-            def validate(
+            def _docarray_validate(
                 _cls,
                 value: Any,
-                field: 'ModelField',
-                config: 'BaseConfig',
             ):
-                t = super().validate(value, field, config)
+                t = super()._docarray_validate(value)
                 return _cls.__docarray_validate_shape__(
                     t, _cls.__docarray_target_shape__
                 )
@@ -356,3 +388,18 @@ class AbstractTensor(Generic[TTensor, T], AbstractType, ABC, Sized):
     def _docarray_to_ndarray(self) -> np.ndarray:
         """cast itself to a numpy array"""
         ...
+
+    if is_pydantic_v2:
+
+        @classmethod
+        def __get_pydantic_core_schema__(
+            cls, _source_type: Any, handler: GetCoreSchemaHandler
+        ) -> core_schema.CoreSchema:
+            return core_schema.general_plain_validator_function(
+                cls.validate,
+                serialization=core_schema.plain_serializer_function_ser_schema(
+                    function=orjson_dumps,
+                    return_schema=handler.generate_schema(bytes),
+                    when_used="json-unless-none",
+                ),
+            )

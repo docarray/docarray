@@ -55,9 +55,9 @@ def test_stacked_proto():
 @pytest.mark.proto
 def test_proto_none_tensor_column():
     class MyOtherDoc(BaseDoc):
-        embedding: Union[NdArray, None]
+        embedding: Union[NdArray, None] = None
         other_embedding: NdArray
-        third_embedding: Union[NdArray, None]
+        third_embedding: Union[NdArray, None] = None
 
     da = DocVec[MyOtherDoc](
         [
@@ -89,8 +89,8 @@ def test_proto_none_doc_column():
         embedding: NdArray
 
     class MyDoc(BaseDoc):
-        inner: Union[InnerDoc, None]
-        other_inner: Union[InnerDoc, None]
+        inner: Union[InnerDoc, None] = None
+        other_inner: Union[InnerDoc, None] = None
 
     da = DocVec[MyDoc](
         [
@@ -115,10 +115,10 @@ def test_proto_none_docvec_column():
         embedding: NdArray
 
     class MyDoc(BaseDoc):
-        inner_l: Union[DocList[InnerDoc], None]
-        inner_v: Union[DocVec[InnerDoc], None]
-        inner_exists_v: Union[DocVec[InnerDoc], None]
-        inner_exists_l: Union[DocList[InnerDoc], None]
+        inner_l: Union[DocList[InnerDoc], None] = None
+        inner_v: Union[DocVec[InnerDoc], None] = None
+        inner_exists_v: Union[DocVec[InnerDoc], None] = None
+        inner_exists_l: Union[DocList[InnerDoc], None] = None
 
     def _make_inner_list():
         return DocList[InnerDoc](
@@ -211,8 +211,8 @@ def test_proto_any_column():
 @pytest.mark.proto
 def test_proto_none_any_column():
     class MyDoc(BaseDoc):
-        text: Optional[str]
-        d: Optional[Dict]
+        text: Optional[str] = None
+        d: Optional[Dict] = None
 
     da = DocVec[MyDoc](
         [

@@ -1,6 +1,7 @@
-from typing import TYPE_CHECKING, Any, Generic, List, Tuple, Type, TypeVar, Union, cast
+from typing import TYPE_CHECKING, Any, Generic, Type, TypeVar, Union, cast
 
 import numpy as np
+import orjson
 
 from docarray.typing.proto_register import _register_proto
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
@@ -9,8 +10,6 @@ from docarray.utils._internal.misc import import_library
 if TYPE_CHECKING:
     import jax
     import jax.numpy as jnp
-    from pydantic import BaseConfig
-    from pydantic.fields import ModelField
 
     from docarray.computation.jax_backend import JaxCompBackend
     from docarray.proto import NdArrayProto
@@ -127,11 +126,9 @@ class JaxArray(AbstractTensor, Generic[ShapeT], metaclass=metaJax):
         yield cls.validate
 
     @classmethod
-    def validate(
+    def _docarray_validate(
         cls: Type[T],
-        value: Union[T, jnp.ndarray, List[Any], Tuple[Any], Any],
-        field: 'ModelField',
-        config: 'BaseConfig',
+        value: Union[T, np.ndarray, str, Any],
     ) -> T:
         if isinstance(value, jax.Array):
             return cls._docarray_from_native(value)
@@ -143,12 +140,15 @@ class JaxArray(AbstractTensor, Generic[ShapeT], metaclass=metaJax):
                 return cls._docarray_from_native(arr_from_list)
             except Exception:
                 pass  # handled below
-        else:
-            try:
-                arr: jnp.ndarray = jnp.ndarray(value)
-                return cls._docarray_from_native(arr)
-            except Exception:
-                pass  # handled below
+        elif isinstance(value, str):
+            value = orjson.loads(value)
+
+        try:
+            arr: jnp.ndarray = jnp.ndarray(value)
+            return cls._docarray_from_native(arr)
+        except Exception:
+            pass  # handled below
+
         raise ValueError(f'Expected a numpy.ndarray compatible type, got {type(value)}')
 
     @classmethod
@@ -186,7 +186,7 @@ class JaxArray(AbstractTensor, Generic[ShapeT], metaclass=metaJax):
 
     def unwrap(self) -> jnp.ndarray:
         """
-        Return the original ndarray without making a copy in memory.
+        Return the original jax ndarray without making a copy in memory.
 
         The original view remains intact and is still a Document `JaxArray`
         but the return object is a pure `np.ndarray` and both objects share
@@ -196,12 +196,13 @@ class JaxArray(AbstractTensor, Generic[ShapeT], metaclass=metaJax):
 
         ```python
         from docarray.typing import JaxArray
-        import numpy as np
+        import jax.numpy as jnp
+        from pydantic import parse_obj_as
 
-        t1 = JaxArray.validate(np.zeros((3, 224, 224)), None, None)
-        # here t1 is a docarray NdArray
+        t1 = parse_obj_as(JaxArray, jnp.zeros((3, 224, 224)))
+        # here t1 is a docarray JaxArray
         t2 = t1.unwrap()
-        # here t2 is a pure np.ndarray but t1 is still a Docarray JaxArray
+        # here t2 is a pure jnp.ndarray but t1 is still a Docarray JaxArray
         # But both share the same underlying memory
         ```
 

@@ -1,6 +1,5 @@
 from collections import ChainMap
 from typing import (
-    TYPE_CHECKING,
     Any,
     Dict,
     Iterable,
@@ -17,7 +16,7 @@ from typing import (
     overload,
 )
 
-from pydantic import BaseConfig, parse_obj_as
+from pydantic import parse_obj_as
 from typing_inspect import typingGenericAlias
 
 from docarray.array.any_array import AnyDocArray
@@ -28,16 +27,18 @@ from docarray.array.list_advance_indexing import ListAdvancedIndexing
 from docarray.base_doc import AnyDoc, BaseDoc
 from docarray.typing import NdArray
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
+from docarray.utils._internal.pydantic import is_pydantic_v2
+
+if is_pydantic_v2:
+    from pydantic import GetCoreSchemaHandler
+    from pydantic_core import core_schema
+
 from docarray.utils._internal._typing import is_tensor_union, safe_issubclass
 from docarray.utils._internal.misc import (
     is_jax_available,
     is_tf_available,
     is_torch_available,
 )
-
-if TYPE_CHECKING:
-    from pydantic.fields import ModelField
-
 
 torch_available = is_torch_available()
 if torch_available:
@@ -147,12 +148,15 @@ class DocVec(IOMixinDocVec, AnyDocArray[T_doc]):  # type: ignore
             else DocList.__class_getitem__(self.doc_type)(docs)
         )
 
-        for field_name, field in self.doc_type.__fields__.items():
+        for field_name, field in self.doc_type._docarray_fields().items():
             # here we iterate over the field of the docs schema, and we collect the data
             # from each document and put them in the corresponding column
-            field_type: Type = self.doc_type._get_field_type(field_name)
+            field_type: Type = self.doc_type._get_field_annotation(field_name)
 
-            is_field_required = self.doc_type.__fields__[field_name].required
+            field_info = self.doc_type._docarray_fields()[field_name]
+            is_field_required = (
+                field_info.is_required() if is_pydantic_v2 else field_info.required
+            )
 
             first_doc_is_none = getattr(docs[0], field_name) is None
 
@@ -317,11 +321,9 @@ class DocVec(IOMixinDocVec, AnyDocArray[T_doc]):  # type: ignore
         return docs
 
     @classmethod
-    def validate(
+    def _docarray_validate(
         cls: Type[T],
         value: Union[T, Iterable[T_doc]],
-        field: 'ModelField',
-        config: 'BaseConfig',
     ) -> T:
         if isinstance(value, cls):
             return value
@@ -512,7 +514,7 @@ class DocVec(IOMixinDocVec, AnyDocArray[T_doc]):  # type: ignore
                 if col is not None:
                     validation_class = col.__unparametrizedcls__ or col.__class__
                 else:
-                    validation_class = self.doc_type.__fields__[field].type_
+                    validation_class = self.doc_type._get_field_annotation(field)
 
                 # TODO shape check should be handle by the tensor validation
 
@@ -521,7 +523,9 @@ class DocVec(IOMixinDocVec, AnyDocArray[T_doc]):  # type: ignore
 
             elif field in self._storage.doc_columns.keys():
                 values_ = parse_obj_as(
-                    DocVec.__class_getitem__(self.doc_type._get_field_type(field)),
+                    DocVec.__class_getitem__(
+                        self.doc_type._get_field_annotation(field)
+                    ),
                     values,
                 )
                 self._storage.doc_columns[field] = values_
@@ -657,3 +661,13 @@ class DocVec(IOMixinDocVec, AnyDocArray[T_doc]):  # type: ignore
     def __class_getitem__(cls, item: Union[Type[BaseDoc], TypeVar, str]):
         # call implementation in AnyDocArray
         return super(IOMixinDocVec, cls).__class_getitem__(item)
+
+    if is_pydantic_v2:
+
+        @classmethod
+        def __get_pydantic_core_schema__(
+            cls, _source_type: Any, _handler: GetCoreSchemaHandler
+        ) -> core_schema.CoreSchema:
+            return core_schema.general_plain_validator_function(
+                cls.validate,
+            )

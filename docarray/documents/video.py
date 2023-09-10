@@ -97,12 +97,12 @@ class VideoDoc(BaseDoc):
     ```
     """
 
-    url: Optional[VideoUrl]
+    url: Optional[VideoUrl] = None
     audio: Optional[AudioDoc] = AudioDoc()
-    tensor: Optional[VideoTensor]
-    key_frame_indices: Optional[AnyTensor]
-    embedding: Optional[AnyEmbedding]
-    bytes_: Optional[VideoBytes]
+    tensor: Optional[VideoTensor] = None
+    key_frame_indices: Optional[AnyTensor] = None
+    embedding: Optional[AnyEmbedding] = None
+    bytes_: Optional[VideoBytes] = None
 
     @classmethod
     def validate(
