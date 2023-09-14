@@ -2,6 +2,8 @@ from typing import TYPE_CHECKING, Any, Optional, Type, TypeVar, Union
 
 import numpy as np
 
+from pydantic import Field
+
 from docarray.base_doc import BaseDoc
 from docarray.typing import AnyEmbedding, AudioUrl
 from docarray.typing.bytes.audio_bytes import AudioBytes
@@ -94,11 +96,29 @@ class AudioDoc(BaseDoc):
     ```
     """
 
-    url: Optional[AudioUrl] = None
-    tensor: Optional[AudioTensor] = None
-    embedding: Optional[AnyEmbedding] = None
-    bytes_: Optional[AudioBytes] = None
-    frame_rate: Optional[int] = None
+    url: Optional[AudioUrl] = Field(
+        description='The url to a (potentially remote) audio file that can be loaded',
+        example='https://github.com/docarray/docarray/blob/main/tests/toydata/hello.mp3?raw=true',
+        default=None,
+    )
+    tensor: Optional[AudioTensor] = Field(
+        description='Tensor object of the audio which can be specified to one of `AudioNdArray`, `AudioTorchTensor`, `AudioTensorFlowTensor`',
+        default=None,
+    )
+    embedding: Optional[AnyEmbedding] = Field(
+        description='Store an embedding: a vector representation of the audio.',
+        example=[0, 1, 0],
+        default=None,
+    )
+    bytes_: Optional[AudioBytes] = Field(
+        description='Bytes representation pf the audio',
+        default=None,
+    )
+    frame_rate: Optional[int] = Field(
+        description='An integer representing the frame rate of the audio.',
+        example=24,
+        default=None,
+    )
 
     @classmethod
     def validate(
