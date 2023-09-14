@@ -1,5 +1,7 @@
 from typing import Any, Optional, Type, TypeVar, Union
 
+from pydantic import Field
+
 from docarray.base_doc import BaseDoc
 from docarray.typing import TextUrl
 from docarray.typing.tensor.embedding import AnyEmbedding
@@ -102,10 +104,25 @@ class TextDoc(BaseDoc):
 
     """
 
-    text: Optional[str] = None
-    url: Optional[TextUrl] = None
-    embedding: Optional[AnyEmbedding] = None
-    bytes_: Optional[bytes] = None
+    text: Optional[str] = Field(
+        description='The text content stored in the document',
+        example='This is an example text content of the document',
+        default=None,
+    )
+    url: Optional[TextUrl] = Field(
+        description='URL to a (potentially remote) text file that can be loaded',
+        example='https://www.w3.org/History/19921103-hypertext/hypertext/README.html',
+        default=None,
+    )
+    embedding: Optional[AnyEmbedding] = Field(
+        description='Store an embedding: a vector representation of the text',
+        example=[1, 0, 1],
+        default=None,
+    )
+    bytes_: Optional[bytes] = Field(
+        description='Bytes representation of the text',
+        default=None,
+    )
 
     def __init__(self, text: Optional[str] = None, **kwargs):
         if 'text' not in kwargs:
