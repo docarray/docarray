@@ -2,11 +2,14 @@ from typing import TYPE_CHECKING, Any, Optional, Type, TypeVar, Union
 
 import numpy as np
 
+from pydantic import Field
+
 from docarray.base_doc import BaseDoc
 from docarray.typing import AnyEmbedding, ImageBytes, ImageUrl
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
 from docarray.typing.tensor.image.image_tensor import ImageTensor
 from docarray.utils._internal.misc import import_library
+
 
 if TYPE_CHECKING:
     import tensorflow as tf  # type: ignore
@@ -92,10 +95,24 @@ class ImageDoc(BaseDoc):
     ```
     """
 
-    url: Optional[ImageUrl] = None
-    tensor: Optional[ImageTensor] = None
-    embedding: Optional[AnyEmbedding] = None
-    bytes_: Optional[ImageBytes] = None
+    url: Optional[ImageUrl] = Field(
+        description='URL to a (potentially remote) image file that needs to be loaded',
+        example='https://github.com/docarray/docarray/blob/main/tests/toydata/image-data/apple.png?raw=true',
+        default=None,
+    )
+    tensor: Optional[ImageTensor] = Field(
+        description='Tensor object of the image which can be specifed to one of `ImageNdArray`, `ImageTorchTensor`, `ImageTensorflowTensor`.',
+        default=None,
+    )
+    embedding: Optional[AnyEmbedding] = Field(
+        description='Store an embedding: a vector representation of the image.',
+        example=[1, 0, 1],
+        default=None,
+    )
+    bytes_: Optional[ImageBytes] = Field(
+        description='Bytes object of the image which is an instance of `ImageBytes`.',
+        default=None,
+    )
 
     @classmethod
     def validate(
