@@ -211,7 +211,7 @@ def get_paths(
     :param recursive: If recursive is true, the pattern '**' will match any
         files and zero or more directories and subdirectories
     :param size: the maximum number of the files
-    :param exclude_regex: if set, then filenames that match to this pattern
+    :param exclude_regex: if set, then filenames matching this pattern
         are not included.
     :yield: file paths
 
