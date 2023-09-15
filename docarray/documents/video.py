@@ -2,6 +2,8 @@ from typing import TYPE_CHECKING, Any, Optional, Type, TypeVar, Union
 
 import numpy as np
 
+from pydantic import Field
+
 from docarray.base_doc import BaseDoc
 from docarray.documents import AudioDoc
 from docarray.typing import AnyEmbedding, AnyTensor, VideoBytes
@@ -97,12 +99,33 @@ class VideoDoc(BaseDoc):
     ```
     """
 
-    url: Optional[VideoUrl] = None
-    audio: Optional[AudioDoc] = AudioDoc()
-    tensor: Optional[VideoTensor] = None
-    key_frame_indices: Optional[AnyTensor] = None
-    embedding: Optional[AnyEmbedding] = None
-    bytes_: Optional[VideoBytes] = None
+    url: Optional[VideoUrl] = Field(
+        description='URL to a (potentially remote) video file that needs to be loaded',
+        example='https://github.com/docarray/docarray/blob/main/tests/toydata/mov_bbb.mp4?raw=true',
+        default=None,
+    )
+    audio: Optional[AudioDoc] = Field(
+        description='Audio document associated with the video',
+        default=None,
+    )
+    tensor: Optional[VideoTensor] = Field(
+        description='Tensor object representing the video which be specified to one of `VideoNdArray`, `VideoTorchTensor`, `VideoTensorFlowTensor`',
+        default=None,
+    )
+    key_frame_indices: Optional[AnyTensor] = Field(
+        description='List of all the key frames in the video',
+        example=[0, 1, 2, 3, 4],
+        default=None,
+    )
+    embedding: Optional[AnyEmbedding] = Field(
+        description='Store an embedding: a vector representation of the video',
+        example=[1, 0, 1],
+        default=None,
+    )
+    bytes_: Optional[VideoBytes] = Field(
+        description='Bytes representation of the video',
+        default=None,
+    )
 
     @classmethod
     def validate(
