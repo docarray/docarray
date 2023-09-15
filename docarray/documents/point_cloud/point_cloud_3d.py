@@ -2,6 +2,8 @@ from typing import TYPE_CHECKING, Any, Optional, Type, TypeVar, Union
 
 import numpy as np
 
+from pydantic import Field
+
 from docarray.base_doc import BaseDoc
 from docarray.documents.point_cloud.points_and_colors import PointsAndColors
 from docarray.typing import AnyEmbedding, PointCloud3DUrl
@@ -107,10 +109,25 @@ class PointCloud3D(BaseDoc):
     ```
     """
 
-    url: Optional[PointCloud3DUrl] = None
-    tensors: Optional[PointsAndColors] = None
-    embedding: Optional[AnyEmbedding] = None
-    bytes_: Optional[bytes] = None
+    url: Optional[PointCloud3DUrl] = Field(
+        description='URL to a file containing point cloud information. Can be remote (web) URL, or a local file path.',
+        example='https://people.sc.fsu.edu/~jburkardt/data/obj/al.obj',
+        default=None,
+    )
+    tensors: Optional[PointsAndColors] = Field(
+        description='A tensor object of 3D point cloud of type `PointsAndColors`.',
+        example=[[0, 0, 1], [1, 0, 1], [0, 1, 1]],
+        default=None,
+    )
+    embedding: Optional[AnyEmbedding] = Field(
+        description='Store an embedding: a vector representation of 3D point cloud.',
+        example=[1, 1, 1],
+        default=None,
+    )
+    bytes_: Optional[bytes] = Field(
+        description='Bytes representation of 3D point cloud.',
+        default=None,
+    )
 
     @classmethod
     def validate(
