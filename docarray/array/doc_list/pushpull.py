@@ -5,7 +5,6 @@ from typing import (
     Dict,
     Iterable,
     Iterator,
-    Optional,
     Tuple,
     Type,
     TypeVar,
@@ -15,7 +14,7 @@ from typing import (
 from typing_extensions import Literal
 from typing_inspect import get_args
 
-PUSH_PULL_PROTOCOL = Literal['jac', 's3', 'file']
+PUSH_PULL_PROTOCOL = Literal['s3', 'file']
 SUPPORTED_PUSH_PULL_PROTOCOLS = get_args(PUSH_PULL_PROTOCOL)
 
 if TYPE_CHECKING:  # pragma: no cover
@@ -55,18 +54,13 @@ class PushPullMixin(Iterable['BaseDoc']):
         """
         Get the backend for the given protocol.
 
-        :param protocol: the protocol to use, e.g. 'jac', 'file', 's3'
+        :param protocol: the protocol to use, e.g. 'file', 's3'
         :return: the backend class
         """
         if protocol in cls.__backends__:
             return cls.__backends__[protocol]
 
-        if protocol == 'jac':
-            from docarray.store.jac import JACDocStore
-
-            cls.__backends__[protocol] = JACDocStore
-            logging.debug('Loaded Jina AI Cloud backend')
-        elif protocol == 'file':
+        if protocol == 'file':
             from docarray.store.file import FileDocStore
 
             cls.__backends__[protocol] = FileDocStore
@@ -84,22 +78,18 @@ class PushPullMixin(Iterable['BaseDoc']):
     def push(
         self,
         url: str,
-        public: bool = True,
         show_progress: bool = False,
-        branding: Optional[Dict] = None,
+        **kwargs,
     ) -> Dict:
         """Push this `DocList` object to the specified url.
 
         :param url: url specifying the protocol and save name of the `DocList`. Should be of the form ``protocol://namespace/name``. e.g. ``s3://bucket/path/to/namespace/name``, ``file:///path/to/folder/name``
-        :param public:  Only used by ``jac`` protocol. If true, anyone can pull a `DocList` if they know its name.
-            Setting this to false will restrict access to only the creator.
         :param show_progress: If true, a progress bar will be displayed.
-        :param branding: Only used by ``jac`` protocol. A dictionary of branding information to be sent to Jina AI Cloud. {"icon": "emoji", "background": "#fff"}
         """
         logging.info(f'Pushing {len(self)} docs to {url}')
         protocol, name = self.__class__.resolve_url(url)
         return self.__class__.get_pushpull_backend(protocol).push(
-            self, name, public, show_progress, branding  # type: ignore
+            self, name, show_progress  # type: ignore
         )
 
     @classmethod
@@ -107,23 +97,17 @@ class PushPullMixin(Iterable['BaseDoc']):
         cls: Type[SelfPushPullMixin],
         docs: Iterator['BaseDoc'],
         url: str,
-        public: bool = True,
         show_progress: bool = False,
-        branding: Optional[Dict] = None,
     ) -> Dict:
         """Push a stream of documents to the specified url.
 
         :param docs: a stream of documents
         :param url: url specifying the protocol and save name of the `DocList`. Should be of the form ``protocol://namespace/name``. e.g. ``s3://bucket/path/to/namespace/name``, ``file:///path/to/folder/name``
-        :param public:  Only used by ``jac`` protocol. If true, anyone can pull a `DocList` if they know its name.
         :param show_progress: If true, a progress bar will be displayed.
-        :param branding: Only used by ``jac`` protocol. A dictionary of branding information to be sent to Jina AI Cloud. {"icon": "emoji", "background": "#fff"}
         """
         logging.info(f'Pushing stream to {url}')
         protocol, name = cls.resolve_url(url)
-        return cls.get_pushpull_backend(protocol).push_stream(
-            docs, name, public, show_progress, branding
-        )
+        return cls.get_pushpull_backend(protocol).push_stream(docs, name, show_progress)
 
     @classmethod
     def pull(

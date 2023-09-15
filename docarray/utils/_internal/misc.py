@@ -45,7 +45,6 @@ INSTALL_INSTRUCTIONS = {
     'fastapi': '"docarray[web]"',
     'torch': '"docarray[torch]"',
     'tensorflow': 'protobuf==3.19.0 tensorflow',
-    'hubble': '"docarray[jac]"',
     'smart_open': '"docarray[aws]"',
     'boto3': '"docarray[aws]"',
     'botocore': '"docarray[aws]"',

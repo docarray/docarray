@@ -98,40 +98,29 @@ class FileDocStore(AbstractDocStore):
         cls: Type[SelfFileDocStore],
         docs: 'DocList',
         name: str,
-        public: bool,
         show_progress: bool,
-        branding: Optional[Dict],
     ) -> Dict:
         """Push this [`DocList`][docarray.DocList] object to the specified file path.
 
         :param docs: The `DocList` to push.
         :param name: The file path to push to.
-        :param public: Not used by the ``file`` protocol.
         :param show_progress: If true, a progress bar will be displayed.
-        :param branding: Not used by the ``file`` protocol.
         """
-        return cls.push_stream(iter(docs), name, public, show_progress, branding)
+        return cls.push_stream(iter(docs), name, show_progress)
 
     @classmethod
     def push_stream(
         cls: Type[SelfFileDocStore],
         docs: Iterator['BaseDoc'],
         name: str,
-        public: bool = True,
         show_progress: bool = False,
-        branding: Optional[Dict] = None,
     ) -> Dict:
         """Push a stream of documents to the specified file path.
 
         :param docs: a stream of documents
         :param name: The file path to push to.
-        :param public: Not used by the ``file`` protocol.
         :param show_progress: If true, a progress bar will be displayed.
-        :param branding: Not used by the ``file`` protocol.
         """
-        if branding is not None:
-            logging.warning('branding is not supported for "file" protocol')
-
         source = _to_binary_stream(
             docs, protocol='protobuf', compress='gzip', show_progress=show_progress
         )
