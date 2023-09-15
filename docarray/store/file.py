@@ -1,6 +1,6 @@
 import logging
 from pathlib import Path
-from typing import Dict, Iterator, List, Optional, Type, TypeVar
+from typing import Dict, Iterator, List, Type, TypeVar
 
 from typing_extensions import TYPE_CHECKING
 
