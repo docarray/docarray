@@ -1,9 +1,12 @@
 from typing import Any, Optional, Type, TypeVar, Union
 
+from pydantic import Field
+
 from docarray.base_doc import BaseDoc
 from docarray.documents.mesh.vertices_and_faces import VerticesAndFaces
 from docarray.typing.tensor.embedding import AnyEmbedding
 from docarray.typing.url.url_3d.mesh_url import Mesh3DUrl
+
 
 T = TypeVar('T', bound='Mesh3D')
 
@@ -103,10 +106,24 @@ class Mesh3D(BaseDoc):
 
     """
 
-    url: Optional[Mesh3DUrl] = None
-    tensors: Optional[VerticesAndFaces] = None
-    embedding: Optional[AnyEmbedding] = None
-    bytes_: Optional[bytes] = None
+    url: Optional[Mesh3DUrl] = Field(
+        description='URL to a file containing 3D mesh information. Can be remote (web) URL, or a local file path.',
+        example='https://people.sc.fsu.edu/~jburkardt/data/obj/al.obj',
+        default=None,
+    )
+    tensors: Optional[VerticesAndFaces] = Field(
+        description='A tensor object of 3D mesh of type `VerticesAndFaces`.',
+        example=[[0, 1, 1], [1, 0, 1], [1, 1, 0]],
+        default=None,
+    )
+    embedding: Optional[AnyEmbedding] = Field(
+        description='Store an embedding: a vector representation of the 3D mesh.',
+        default=[1, 0, 1],
+    )
+    bytes_: Optional[bytes] = Field(
+        description='Bytes representation of 3D mesh.',
+        default=None,
+    )
 
     @classmethod
     def validate(
