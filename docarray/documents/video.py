@@ -39,13 +39,16 @@ class VideoDoc(BaseDoc):
     You can use this Document directly:
 
     ```python
-    from docarray.documents import VideoDoc
+    from docarray.documents import VideoDoc, AudioDoc
 
     # use it directly
     vid = VideoDoc(
         url='https://github.com/docarray/docarray/blob/main/tests/toydata/mov_bbb.mp4?raw=true'
     )
-    vid.tensor, vid.audio.tensor, vid.key_frame_indices = vid.url.load()
+    tensor, audio_tensor, key_frame_indices = vid.url.load()
+    vid.tensor = tensor
+    vid.audio = AudioDoc(tensor=audio_tensor)
+    vid.key_frame_indices = key_frame_indices
     # model = MyEmbeddingModel()
     # vid.embedding = model(vid.tensor)
     ```
