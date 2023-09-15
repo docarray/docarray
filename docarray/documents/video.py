@@ -105,7 +105,7 @@ class VideoDoc(BaseDoc):
         default=None,
     )
     audio: Optional[AudioDoc] = Field(
-        description='Audio document document associated with the video',
+        description='Audio document associated with the video',
         default=None,
     )
     tensor: Optional[VideoTensor] = Field(
