@@ -16,7 +16,7 @@ from typing import (
 
 from pydantic import parse_obj_as
 from typing_extensions import SupportsIndex
-from typing_inspect import is_union_type
+from typing_inspect import is_union_type, is_typevar
 
 from docarray.array.any_array import AnyDocArray
 from docarray.array.doc_list.io import IOMixinDocList
@@ -337,8 +337,15 @@ class DocList(
 
         if isinstance(item, type) and safe_issubclass(item, BaseDoc):
             return AnyDocArray.__class_getitem__.__func__(cls, item)  # type: ignore
-        else:
-            return super().__class_getitem__(item)
+        if (
+            isinstance(item, object)
+            and not is_typevar(item)
+            and not isinstance(item, str)
+            and item is not Any
+        ):
+            raise TypeError('Expecting a type, got object instead')
+
+        return super().__class_getitem__(item)
 
     def __repr__(self):
         return AnyDocArray.__repr__(self)  # type: ignore
