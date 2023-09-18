@@ -8,7 +8,6 @@ from docarray.utils._internal.misc import (
 )
 
 if TYPE_CHECKING:
-    from docarray.store.jac import JACDocStore  # noqa: F401
     from docarray.store.s3 import S3DocStore  # noqa: F401
 
 __all__ = ['FileDocStore']
@@ -16,10 +15,7 @@ __all__ = ['FileDocStore']
 
 def __getattr__(name: str):
     lib: types.ModuleType
-    if name == 'JACDocStore':
-        import_library('hubble', raise_error=True)
-        import docarray.store.jac as lib
-    elif name == 'S3DocStore':
+    if name == 'S3DocStore':
         import_library('smart_open', raise_error=True)
         import_library('botocore', raise_error=True)
         import_library('boto3', raise_error=True)
