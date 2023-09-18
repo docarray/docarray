@@ -173,7 +173,6 @@ def test_create_pydantic_model_from_schema(transformation):
         assert doc.ia == f'ID {i}'
 
 
-@pytest.mark.skipif(is_pydantic_v2, reason="Not working with pydantic v2 for now")
 @pytest.mark.parametrize('transformation', ['proto', 'json'])
 def test_create_empty_doc_list_from_schema(transformation):
     class CustomDoc(BaseDoc):
@@ -259,7 +258,6 @@ def test_create_empty_doc_list_from_schema(transformation):
     assert len(custom_da) == 0
 
 
-@pytest.mark.skipif(is_pydantic_v2, reason="Not working with pydantic v2 for now")
 def test_create_with_field_info():
     class CustomDoc(BaseDoc):
         """Here I have the description of the class"""

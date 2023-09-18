@@ -73,9 +73,8 @@ def create_pure_python_type_model(model: BaseModel) -> BaseDoc:
         except TypeError:
             fields[field_name] = (field, field_info)
 
-    validators = model.__validators__ if not is_pydantic_v2 else {'__validators__': model.__pydantic_validator__}
     return create_model(
-        model.__name__, __base__=model, __validators__=validators, **fields
+        model.__name__, __base__=model, **fields
     )
 
 
@@ -208,7 +207,7 @@ def _get_field_annotation_from_schema(
             definitions=definitions,
         )
     elif field_type == 'null':
-        ret = None
+        ret = Type[None]
     else:
         if num_recursions > 0:
             raise ValueError(
@@ -262,9 +261,8 @@ def create_base_doc_from_schema(
     :param definitions: Parameter used when this method is called recursively to reuse root definitions of other schemas.
     :return: A BaseDoc class dynamically created following the `schema`.
     """
-    print(f'schema {schema}')
     if not definitions:
-        definitions = schema.get('definitions', {})
+        definitions = schema.get('definitions', {}) if not is_pydantic_v2 else schema.get('$defs')
 
     cached_models = cached_models if cached_models is not None else {}
     fields: Dict[str, Any] = {}
@@ -287,11 +285,11 @@ def create_base_doc_from_schema(
         )
 
     model = create_model(base_doc_name, __base__=BaseDoc, **fields)
-    model.__config__.title = schema.get('title', model.__config__.title)
+    #model.__config__.title = schema.get('title', model.__config__.title)
 
     for k in RESERVED_KEYS:
         if k in schema:
             schema.pop(k)
-    model.__config__.schema_extra = schema
+    #model.__config__.schema_extra = schema
     cached_models[base_doc_name] = model
     return model
