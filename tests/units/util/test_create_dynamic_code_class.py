@@ -14,7 +14,6 @@ from docarray.utils.create_dynamic_doc_class import (
 )
 
 
-@pytest.mark.skipif(is_pydantic_v2, reason="Not working with pydantic v2 for now")
 @pytest.mark.parametrize('transformation', ['proto', 'json'])
 def test_create_pydantic_model_from_schema(transformation):
     class Nested2Doc(BaseDoc):

@@ -50,16 +50,20 @@ def create_pure_python_type_model(model: BaseModel) -> BaseDoc:
     :param model: The input model
     :return: A new subclass of BaseDoc, where every DocList type in the schema is replaced by List.
     """
-    if is_pydantic_v2:
-        raise NotImplementedError(
-            'This method is not supported in Pydantic 2.0. Please use Pydantic 1.8.2 or lower.'
-        )
+#    if is_pydantic_v2:
+#        raise NotImplementedError(
+#            'This method is not supported in Pydantic 2.0. Please use Pydantic 1.8.2 or lower.'
+#        )
 
     fields: Dict[str, Any] = {}
     for field_name, field in model.__annotations__.items():
         if field_name not in model.__fields__:
             continue
-        field_info = model.__fields__[field_name].field_info
+
+        if is_pydantic_v2:
+            field_info = model.__fields__[field_name]
+        else:
+            field_info = model.__fields__[field_name].field_info
         try:
             if safe_issubclass(field, DocList):
                 t: Any = field.doc_type
@@ -68,8 +72,10 @@ def create_pure_python_type_model(model: BaseModel) -> BaseDoc:
                 fields[field_name] = (field, field_info)
         except TypeError:
             fields[field_name] = (field, field_info)
+
+    validators = model.__validators__ if not is_pydantic_v2 else {'__validators__': model.__pydantic_validator__}
     return create_model(
-        model.__name__, __base__=model, __validators__=model.__validators__, **fields
+        model.__name__, __base__=model, __validators__=validators, **fields
     )
 
 
@@ -201,6 +207,8 @@ def _get_field_annotation_from_schema(
             num_recursions=num_recursions + 1,
             definitions=definitions,
         )
+    elif field_type == 'null':
+        ret = None
     else:
         if num_recursions > 0:
             raise ValueError(
@@ -254,6 +262,7 @@ def create_base_doc_from_schema(
     :param definitions: Parameter used when this method is called recursively to reuse root definitions of other schemas.
     :return: A BaseDoc class dynamically created following the `schema`.
     """
+    print(f'schema {schema}')
     if not definitions:
         definitions = schema.get('definitions', {})
 
