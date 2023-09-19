@@ -5,6 +5,10 @@ from pydantic import Field
 from docarray.base_doc import BaseDoc
 from docarray.typing import TextUrl
 from docarray.typing.tensor.embedding import AnyEmbedding
+from docarray.utils._internal.pydantic import is_pydantic_v2
+
+if is_pydantic_v2:
+    from pydantic_core import core_schema
 
 T = TypeVar('T', bound='TextDoc')
 
@@ -124,19 +128,64 @@ class TextDoc(BaseDoc):
         default=None,
     )
 
-    def __init__(self, text: Optional[str] = None, **kwargs):
-        if 'text' not in kwargs:
-            kwargs['text'] = text
-        super().__init__(**kwargs)
+    if is_pydantic_v2:
 
-    @classmethod
-    def validate(
-        cls: Type[T],
-        value: Union[str, Any],
-    ) -> T:
-        if isinstance(value, str):
-            value = cls(text=value)
-        return super().validate(value)
+        def __init__(__pydantic_self__, *arg, **data) -> None:  # type: ignore
+            """Custom init function that allow validation without a dict as input but just a default value"""
+            # `__tracebackhide__` tells pytest and some other tools to omit this function from tracebacks
+
+            __tracebackhide__ = True
+
+            if len(arg) == 1 and not data:
+                data = {'text': arg[0]}
+            elif len(arg) > 1:
+                raise TypeError(
+                    f'__init__() takes 1 positional argument but {len(arg)} were given'
+                )
+
+            __pydantic_self__.__pydantic_validator__.validate_python(
+                data, self_instance=__pydantic_self__
+            )
+
+    else:
+
+        def __init__(self, text: Optional[str] = None, **kwargs):
+            if 'text' not in kwargs:
+                kwargs['text'] = text
+            super().__init__(**kwargs)
+
+    if is_pydantic_v2:
+
+        @classmethod
+        def __get_pydantic_core_schema__(
+            cls, source, handler
+        ) -> core_schema.CoreSchema:
+            if '__pydantic_core_schema__' in cls.__dict__:
+                if not cls.__pydantic_generic_metadata__['origin']:
+                    schema = cls.__pydantic_core_schema__
+
+            schema = handler(source)
+            return core_schema.general_wrap_validator_function(
+                function=cls._docarray_default_value_validation, schema=schema
+            )
+
+        @classmethod
+        def _docarray_default_value_validation(cls, value, model_validator, _):
+            if not isinstance(value, dict):
+                value = {'text': value}
+            return model_validator(value)
+
+    else:
+
+        @classmethod
+        def validate(
+            cls: Type[T],
+            value: Union[str, Any],
+        ) -> T:
+            if isinstance(value, str):
+                value = {'text': value}
+
+            return super().validate(value)
 
     def __eq__(self, other: Any) -> bool:
         if isinstance(other, str):
