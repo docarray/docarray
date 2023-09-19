@@ -117,7 +117,7 @@ class BaseDocIndex(ABC, Generic[TSchema]):
 
     def is_index_empty(self) -> bool:
         """
-        Check if the index is empty by comparing the number of documents to zero.
+        Check if index is empty by comparing the number of documents to zero.
 
         :return: True if the index is empty, False otherwise.
         """
