@@ -145,6 +145,8 @@ class TextDoc(PredefinedDoc):
     def _docarray_custom_val(cls, value: Any) -> Dict[str, Any]:
         if not isinstance(value, dict):
             new_value = {'text': value}
+        else:
+            new_value = value
         return new_value
 
     def __eq__(self, other: Any) -> bool:

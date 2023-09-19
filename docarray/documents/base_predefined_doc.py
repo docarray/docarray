@@ -5,7 +5,7 @@ from docarray.base_doc.doc import BaseDoc
 from docarray.utils._internal.pydantic import is_pydantic_v2
 
 if is_pydantic_v2:
-    from pydantic_core import CoreSchema, core_schema
+    from pydantic_core import core_schema
 
 
 class PredefinedDoc(BaseDoc, ABC):
@@ -13,15 +13,17 @@ class PredefinedDoc(BaseDoc, ABC):
     Custom class for handling predefined documents and can override their init and validation input.
     """
 
-    @abstractmethod
     @classmethod
+    @abstractmethod
     def _docarray_custom_val(cls, value: Any) -> Dict[str, Any]:
         ...
 
     if is_pydantic_v2:
 
         @classmethod
-        def __get_pydantic_core_schema__(cls, source, handler) -> CoreSchema.CoreSchema:
+        def __get_pydantic_core_schema__(
+            cls, source, handler
+        ) -> core_schema.CoreSchema:
             if '__pydantic_core_schema__' in cls.__dict__:
                 if not cls.__pydantic_generic_metadata__['origin']:
                     schema = cls.__pydantic_core_schema__
