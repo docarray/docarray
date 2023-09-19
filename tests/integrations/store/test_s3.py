@@ -16,7 +16,7 @@ TOLERANCE_RATIO = 0.5  # Percentage of difference allowed in stream vs non-strea
 BUCKET: str = 'da-pushpull'
 RANDOM: str = uuid.uuid4().hex[:8]
 
-pytestmark = [pytest.mark.jac]
+pytestmark = [pytest.mark.s3]
 
 
 @pytest.fixture(scope="session")

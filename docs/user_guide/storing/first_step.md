@@ -14,13 +14,12 @@ DocArray offers two ways of storing your data, each of which have their own docu
 [`.push()`][docarray.array.doc_list.pushpull.PushPullMixin.push] and 
 [`.pull()`][docarray.array.doc_list.pushpull.PushPullMixin.pull] methods. 
 Under the hood, [DocStore][docarray.store.abstract_doc_store.AbstractDocStore] is used to persist a `DocList`. 
-You can either store your documents on-disk or upload them to [AWS S3](https://aws.amazon.com/s3/), 
-[minio](https://min.io) or [Jina AI Cloud](https://cloud.jina.ai/user/storage). 
+You can either store your documents on-disk or upload them to [AWS S3](https://aws.amazon.com/s3/) or
+[minio](https://min.io). 
 
 This section covers the following three topics:
 
   - [Storing](doc_store/store_file.md) [`BaseDoc`][docarray.base_doc.doc.BaseDoc], [`DocList`][docarray.array.doc_list.doc_list.DocList] and [`DocVec`][docarray.array.doc_vec.doc_vec.DocVec] on-disk
-  - [Storing on Jina AI Cloud](doc_store/store_jac.md) 
   - [Storing on S3](doc_store/store_s3.md)
    
 ## Document Index

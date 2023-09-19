@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import Dict, Iterator, List, Optional, Type
+from typing import Dict, Iterator, List, Type
 
 from typing_extensions import TYPE_CHECKING
 
@@ -35,17 +35,13 @@ class AbstractDocStore(ABC):
     def push(
         docs: 'DocList',
         name: str,
-        public: bool,
         show_progress: bool,
-        branding: Optional[Dict],
     ) -> Dict:
         """Push this DocList to the specified name.
 
         :param docs: The DocList to push
         :param name: The name to push to
-        :param public: Whether the DocList should be publicly accessible
         :param show_progress: If true, a progress bar will be displayed.
-        :param branding: Branding information to be stored with the DocList
         """
         ...
 
@@ -54,17 +50,13 @@ class AbstractDocStore(ABC):
     def push_stream(
         docs: Iterator['BaseDoc'],
         url: str,
-        public: bool = True,
         show_progress: bool = False,
-        branding: Optional[Dict] = None,
     ) -> Dict:
         """Push a stream of documents to the specified name.
 
         :param docs: a stream of documents
         :param url: The name to push to
-        :param public: Whether the DocList should be publicly accessible
         :param show_progress: If true, a progress bar will be displayed.
-        :param branding: Branding information to be stored with the DocList
         """
         ...
 
