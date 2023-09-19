@@ -115,6 +115,14 @@ class BaseDocIndex(ABC, Generic[TSchema]):
         self._subindices: Dict[str, BaseDocIndex] = {}
         self._init_subindex()
 
+    def is_index_empty(self) -> bool:
+        """
+        Check if the index is empty by comparing the number of documents to zero.
+
+        :return: True if the index is empty, False otherwise.
+        """
+        return self.num_docs() == 0
+
     ###############################################
     # Inner classes for query builder and configs #
     # Subclasses must subclass & implement these  #
