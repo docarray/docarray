@@ -405,8 +405,10 @@ class IOMixinDocList(Iterable[T_doc]):
                 f'{list(compress(field_names, [not v for v in valid_paths]))}'
             )
 
+        print(f'doc_type {doc_type}')
         for access_path2val in rows:
             doc_dict: Dict[Any, Any] = _access_path_dict_to_nested_dict(access_path2val)
+            print(f'doc_dict {doc_dict}')
             docs.append(doc_type.parse_obj(doc_dict))
 
         return cls(docs)
@@ -515,8 +517,11 @@ class IOMixinDocList(Iterable[T_doc]):
 
         for row in df.itertuples():
             access_path2val = row._asdict()
+            print(f'access_path2val {access_path2val}')
+
             access_path2val.pop('index', None)
             doc_dict = _access_path_dict_to_nested_dict(access_path2val)
+            print(f'doc_type {doc_type} and doc_dict {doc_dict}')
             docs.append(doc_type.parse_obj(doc_dict))
 
         return docs

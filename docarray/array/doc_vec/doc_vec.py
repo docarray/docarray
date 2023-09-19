@@ -149,6 +149,7 @@ class DocVec(IOMixinDocVec, AnyDocArray[T_doc]):  # type: ignore
         )
 
         for field_name, field in self.doc_type._docarray_fields().items():
+
             # here we iterate over the field of the docs schema, and we collect the data
             # from each document and put them in the corresponding column
             field_type: Type = self.doc_type._get_field_annotation(field_name)
@@ -157,6 +158,8 @@ class DocVec(IOMixinDocVec, AnyDocArray[T_doc]):  # type: ignore
             is_field_required = (
                 field_info.is_required() if is_pydantic_v2 else field_info.required
             )
+
+            print(f'field_name {field_name} => field {field} => field_type {field_type}')
 
             first_doc_is_none = getattr(docs[0], field_name) is None
 
@@ -199,6 +202,7 @@ class DocVec(IOMixinDocVec, AnyDocArray[T_doc]):  # type: ignore
                     field_type = tensor_type
 
             if isinstance(field_type, type):
+                print(f'A')
                 if tf_available and safe_issubclass(field_type, TensorFlowTensor):
                     # tf.Tensor does not allow item assignment, therefore the
                     # optimized way
@@ -261,15 +265,27 @@ class DocVec(IOMixinDocVec, AnyDocArray[T_doc]):  # type: ignore
                             cast(AbstractTensor, tensor_columns[field_name])[i] = val
 
                 elif safe_issubclass(field_type, BaseDoc):
+                    print(f'B')
                     if first_doc_is_none:
                         _verify_optional_field_of_docs(docs)
                         doc_columns[field_name] = None
                     else:
                         if is_field_required:
+                            print(f'C')
+                            try:
+                                print(getattr(
+                                    docs, field_name
+                                )[0])
+                            except:
+                                pass
+                            print(f'JOAN')
                             doc_columns[field_name] = getattr(
                                 docs, field_name
                             ).to_doc_vec(tensor_type=self.tensor_type)
+                            print(f'JOAN-2')
+                            print(f'CC {doc_columns[field_name].to_json()}')
                         else:
+                            print(f'D')
                             doc_columns[field_name] = DocList.__class_getitem__(
                                 field_type
                             )(getattr(docs, field_name)).to_doc_vec(
@@ -300,6 +316,7 @@ class DocVec(IOMixinDocVec, AnyDocArray[T_doc]):  # type: ignore
                     getattr(docs, field_name)
                 )
 
+        print(f'doc_columns {doc_columns}')
         self._storage = ColumnStorage(
             tensor_columns,
             doc_columns,

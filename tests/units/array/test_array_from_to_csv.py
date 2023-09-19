@@ -35,6 +35,7 @@ def test_to_from_csv(tmpdir, nested_doc_cls):
     )
     tmp_file = str(tmpdir / 'tmp.csv')
     da.to_csv(tmp_file)
+    print(f'tmp_file {tmp_file}')
     assert os.path.isfile(tmp_file)
 
     da_from = DocList[nested_doc_cls].from_csv(tmp_file)
