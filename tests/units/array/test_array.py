@@ -487,3 +487,13 @@ def test_legacy_doc():
     newDoc = LegacyDocument()
     da = DocList[LegacyDocument]([newDoc])
     da.summary()
+
+
+def test_parameterize_list():
+    from docarray import DocList, BaseDoc
+
+    with pytest.raises(TypeError) as excinfo:
+        doc = DocList[BaseDoc()]
+        assert doc is None
+
+    assert str(excinfo.value) == 'Expecting a type, got object instead'
