@@ -423,7 +423,7 @@ class HnswDocumentIndex(BaseDocIndex, Generic[TSchema]):
 
     def num_docs(self) -> int:
         """
-        Get the number of documents.
+        Get number of documents.
         """
         if self.is_index_empty == 0:
             self.is_index_empty = self._get_num_docs_hnsw()
