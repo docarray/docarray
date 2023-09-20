@@ -425,17 +425,9 @@ class HnswDocumentIndex(BaseDocIndex, Generic[TSchema]):
         """
         Get the number of documents.
         """
-        if self._num_docs == 0:
-            self._num_docs = self._get_num_docs_hnsw()
-        return self._num_docs
-
-    def is_index_empty(self) -> bool:
-        """
-        Check if the index is empty by comparing the number of documents to zero.
-
-        :return: True if the index is empty, False otherwise.
-        """
-        return self.num_docs() == 0
+        if self.is_index_empty == 0:
+            self.is_index_empty = self._get_num_docs_hnsw()
+        return self.is_index_empty
 
     ###############################################
     # Helpers                                     #
