@@ -193,6 +193,14 @@ class BaseDocIndex(ABC, Generic[TSchema]):
         """Return the number of indexed documents"""
         ...
 
+    @property
+    def _is_index_empty(self) -> bool:
+        """
+        Check if index is empty by comparing the number of documents to zero.
+        :return: True if the index is empty, False otherwise.
+        """
+        return self.num_docs() == 0
+
     @abstractmethod
     def _del_items(self, doc_ids: Sequence[str]):
         """Delete Documents from the index.
@@ -1212,7 +1220,7 @@ class BaseDocIndex(ABC, Generic[TSchema]):
         :param item: the given BaseDoc
         :return: if the given BaseDoc item is contained in the index/subindices
         """
-        if self.num_docs() == 0:
+        if self._is_index_empty:
             return False
 
         if safe_issubclass(type(item), BaseDoc):
