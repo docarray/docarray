@@ -23,3 +23,14 @@ def test_doc():
 
     assert doc.text1.text == 'hello'
     assert doc.text2.text == 'world'
+
+
+def test_doc_2():
+    class MyDoc(BaseDoc):
+        text1: TextDoc
+        text2: TextDoc
+
+    doc = MyDoc(text1='hello1', text2='hello2')
+
+    assert doc.text1.text == 'hello1'
+    assert doc.text2.text == 'hello2'

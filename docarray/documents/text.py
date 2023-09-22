@@ -147,6 +147,7 @@ class TextDoc(PredefinedDoc):
             new_value = {'text': value}
         else:
             new_value = value
+        print(new_value)
         return new_value
 
     def __eq__(self, other: Any) -> bool:

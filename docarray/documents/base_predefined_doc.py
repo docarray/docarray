@@ -35,6 +35,7 @@ class PredefinedDoc(BaseDoc, ABC):
 
         @classmethod
         def _docarray_default_value_validation(cls, value, model_validator, _):
+            # print(value)
             return model_validator(cls._docarray_custom_val(value))
 
     else:
