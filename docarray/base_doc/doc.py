@@ -61,7 +61,7 @@ T_update = TypeVar('T_update', bound='UpdateMixin')
 ExcludeType = Optional[Union['AbstractSetIntStr', 'MappingIntStrAny']]
 
 
-class BaseDocWoId(BaseModel, IOMixin, UpdateMixin, BaseNode):
+class BaseDocWithoutId(BaseModel, IOMixin, UpdateMixin, BaseNode):
     """
     BaseDocWoId is the class behind BaseDoc, it should not be used directly unless you know what you are doing.
     It is basically a BaseDoc without the ID field
@@ -518,7 +518,7 @@ class BaseDocWoId(BaseModel, IOMixin, UpdateMixin, BaseNode):
         :param allow_pickle: allow pickle protocol
         :return: a document
         """
-        return super(BaseDocWoId, cls).parse_raw(
+        return super(BaseDocWithoutId, cls).parse_raw(
             b,
             content_type=content_type,
             encoding=encoding,
@@ -557,7 +557,7 @@ class BaseDocWoId(BaseModel, IOMixin, UpdateMixin, BaseNode):
     to_json = BaseModel.model_dump_json if is_pydantic_v2 else json
 
 
-class BaseDoc(BaseDocWoId):
+class BaseDoc(BaseDocWithoutId):
     """
     BaseDoc is the base class for all Documents. This class should be subclassed
     to create new Document types with a specific schema.
