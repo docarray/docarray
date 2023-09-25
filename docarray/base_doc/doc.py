@@ -518,7 +518,7 @@ class BaseDocWoId(BaseModel, IOMixin, UpdateMixin, BaseNode):
         :param allow_pickle: allow pickle protocol
         :return: a document
         """
-        return super(BaseDoc, cls).parse_raw(
+        return super(BaseDocWoId, cls).parse_raw(
             b,
             content_type=content_type,
             encoding=encoding,
