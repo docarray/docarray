@@ -64,7 +64,9 @@ ExcludeType = Optional[Union['AbstractSetIntStr', 'MappingIntStrAny']]
 class BaseDocWithoutId(BaseModel, IOMixin, UpdateMixin, BaseNode):
     """
     BaseDocWoId is the class behind BaseDoc, it should not be used directly unless you know what you are doing.
-    It is basically a BaseDoc without the ID field
+    It is basically a BaseDoc without the ID field.
+    !!! warning
+        This class cannot be used with DocumentIndex. Only BaseDoc is compatible
     """
 
     if is_pydantic_v2:
