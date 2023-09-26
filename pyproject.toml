@@ -105,7 +105,8 @@ pytest-asyncio = ">=0.20.2"
 
 
 [tool.poetry.group.docs.dependencies]
-mkdocstrings = {extras = ["python"], version = ">=0.20.0"}
+mkdocstrings = {extras = ["python"], version = ">=0.23.0"}
+mkdocstrings-python= ">=1.7.0"
 mkdocs-material= ">=9.1.2"
 mkdocs-awesome-pages-plugin = ">=2.8.0"
 mktestdocs= ">=0.2.0"
