@@ -1,10 +1,11 @@
 from typing import Any, Optional, Type, TypeVar, Union
 
-from pydantic import Field
+from pydantic import Field, model_validator
 
 from docarray.base_doc import BaseDoc
 from docarray.typing import TextUrl
 from docarray.typing.tensor.embedding import AnyEmbedding
+from docarray.utils._internal.pydantic import is_pydantic_v2
 
 T = TypeVar('T', bound='TextDoc')
 
@@ -129,14 +130,26 @@ class TextDoc(BaseDoc):
             kwargs['text'] = text
         super().__init__(**kwargs)
 
-    @classmethod
-    def validate(
-        cls: Type[T],
-        value: Union[str, Any],
-    ) -> T:
-        if isinstance(value, str):
-            value = cls(text=value)
-        return super().validate(value)
+    if is_pydantic_v2:
+
+        @model_validator(mode='before')
+        @classmethod
+        def validate_model_before(cls, values):
+            if isinstance(values, str):
+                return {'text': values}
+            else:
+                return values
+
+    else:
+
+        @classmethod
+        def validate(
+            cls: Type[T],
+            value: Union[str, Any],
+        ) -> T:
+            if isinstance(value, str):
+                value = cls(text=value)
+            return super().validate(value)
 
     def __eq__(self, other: Any) -> bool:
         if isinstance(other, str):
