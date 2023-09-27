@@ -1,12 +1,15 @@
 from typing import Any, Optional, Type, TypeVar, Union
 
-from pydantic import Field, model_validator
+from pydantic import Field
 
 from docarray.base_doc import BaseDoc
 from docarray.documents.mesh.vertices_and_faces import VerticesAndFaces
 from docarray.typing.tensor.embedding import AnyEmbedding
 from docarray.typing.url.url_3d.mesh_url import Mesh3DUrl
 from docarray.utils._internal.pydantic import is_pydantic_v2
+
+if is_pydantic_v2:
+    from pydantic import model_validator
 
 T = TypeVar('T', bound='Mesh3D')
 

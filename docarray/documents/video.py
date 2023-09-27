@@ -1,7 +1,7 @@
 from typing import TYPE_CHECKING, Any, Dict, Optional, Type, TypeVar, Union
 
 import numpy as np
-from pydantic import Field, model_validator
+from pydantic import Field
 
 from docarray.base_doc import BaseDoc
 from docarray.documents import AudioDoc
@@ -11,6 +11,9 @@ from docarray.typing.tensor.video.video_tensor import VideoTensor
 from docarray.typing.url.video_url import VideoUrl
 from docarray.utils._internal.misc import import_library
 from docarray.utils._internal.pydantic import is_pydantic_v2
+
+if is_pydantic_v2:
+    from pydantic import model_validator
 
 if TYPE_CHECKING:
     import tensorflow as tf  # type: ignore

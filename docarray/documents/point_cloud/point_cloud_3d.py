@@ -1,7 +1,7 @@
 from typing import TYPE_CHECKING, Any, Optional, Type, TypeVar, Union
 
 import numpy as np
-from pydantic import Field, model_validator
+from pydantic import Field
 
 from docarray.base_doc import BaseDoc
 from docarray.documents.point_cloud.points_and_colors import PointsAndColors
@@ -9,6 +9,9 @@ from docarray.typing import AnyEmbedding, PointCloud3DUrl
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
 from docarray.utils._internal.misc import import_library
 from docarray.utils._internal.pydantic import is_pydantic_v2
+
+if is_pydantic_v2:
+    from pydantic import model_validator
 
 if TYPE_CHECKING:
     import tensorflow as tf  # type: ignore
