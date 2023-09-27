@@ -335,6 +335,8 @@ class DocList(
 
     @classmethod
     def __class_getitem__(cls, item: Union[Type[BaseDocWithoutId], TypeVar, str]):
+        if cls.doc_type != AnyDoc:
+            raise TypeError(f'{cls} object is not subscriptable')
 
         if isinstance(item, type) and safe_issubclass(item, BaseDocWithoutId):
             return AnyDocArray.__class_getitem__.__func__(cls, item)  # type: ignore
