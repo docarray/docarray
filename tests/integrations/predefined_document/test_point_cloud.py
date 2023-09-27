@@ -6,7 +6,6 @@ from pydantic import parse_obj_as
 from docarray import BaseDoc
 from docarray.documents import PointCloud3D
 from docarray.utils._internal.misc import is_tf_available
-from docarray.utils._internal.pydantic import is_pydantic_v2
 from tests import TOYDATA_DIR
 
 tf_available = is_tf_available()
@@ -30,26 +29,22 @@ def test_point_cloud(file_url):
     assert isinstance(point_cloud.tensors.points, np.ndarray)
 
 
-@pytest.mark.skipif(is_pydantic_v2, reason="Not working with pydantic v2 for now")
 def test_point_cloud_np():
     pc = parse_obj_as(PointCloud3D, np.zeros((10, 3)))
     assert (pc.tensors.points == np.zeros((10, 3))).all()
 
 
-@pytest.mark.skipif(is_pydantic_v2, reason="Not working with pydantic v2 for now")
 def test_point_cloud_torch():
     pc = parse_obj_as(PointCloud3D, torch.zeros(10, 3))
     assert (pc.tensors.points == torch.zeros(10, 3)).all()
 
 
-@pytest.mark.skipif(is_pydantic_v2, reason="Not working with pydantic v2 for now")
 @pytest.mark.tensorflow
 def test_point_cloud_tensorflow():
     pc = parse_obj_as(PointCloud3D, tf.zeros((10, 3)))
     assert tnp.allclose(pc.tensors.points.tensor, tf.zeros((10, 3)))
 
 
-@pytest.mark.skipif(is_pydantic_v2, reason="Not working with pydantic v2 for now")
 def test_point_cloud_shortcut_doc():
     class MyDoc(BaseDoc):
         pc: PointCloud3D
@@ -66,7 +61,6 @@ def test_point_cloud_shortcut_doc():
     assert (doc.pc3.tensors.points == torch.zeros(10, 3)).all()
 
 
-@pytest.mark.skipif(is_pydantic_v2, reason="Not working with pydantic v2 for now")
 @pytest.mark.tensorflow
 def test_point_cloud_shortcut_doc_tf():
     class MyDoc(BaseDoc):
