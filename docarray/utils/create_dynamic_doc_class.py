@@ -50,10 +50,10 @@ def create_pure_python_type_model(model: BaseModel) -> BaseDoc:
     :param model: The input model
     :return: A new subclass of BaseDoc, where every DocList type in the schema is replaced by List.
     """
-#    if is_pydantic_v2:
-#        raise NotImplementedError(
-#            'This method is not supported in Pydantic 2.0. Please use Pydantic 1.8.2 or lower.'
-#        )
+    #    if is_pydantic_v2:
+    #        raise NotImplementedError(
+    #            'This method is not supported in Pydantic 2.0. Please use Pydantic 1.8.2 or lower.'
+    #        )
 
     fields: Dict[str, Any] = {}
     for field_name, field in model.__annotations__.items():
@@ -73,9 +73,7 @@ def create_pure_python_type_model(model: BaseModel) -> BaseDoc:
         except TypeError:
             fields[field_name] = (field, field_info)
 
-    return create_model(
-        model.__name__, __base__=model, **fields
-    )
+    return create_model(model.__name__, __base__=model, **fields)
 
 
 def _get_field_annotation_from_schema(
@@ -262,7 +260,9 @@ def create_base_doc_from_schema(
     :return: A BaseDoc class dynamically created following the `schema`.
     """
     if not definitions:
-        definitions = schema.get('definitions', {}) if not is_pydantic_v2 else schema.get('$defs')
+        definitions = (
+            schema.get('definitions', {}) if not is_pydantic_v2 else schema.get('$defs')
+        )
 
     cached_models = cached_models if cached_models is not None else {}
     fields: Dict[str, Any] = {}
@@ -285,11 +285,11 @@ def create_base_doc_from_schema(
         )
 
     model = create_model(base_doc_name, __base__=BaseDoc, **fields)
-    #model.__config__.title = schema.get('title', model.__config__.title)
+    # model.__config__.title = schema.get('title', model.__config__.title)
 
     for k in RESERVED_KEYS:
         if k in schema:
             schema.pop(k)
-    #model.__config__.schema_extra = schema
+    # model.__config__.schema_extra = schema
     cached_models[base_doc_name] = model
     return model

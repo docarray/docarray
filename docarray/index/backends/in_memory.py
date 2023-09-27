@@ -195,7 +195,7 @@ class InMemoryExactNNIndex(BaseDocIndex, Generic[TSchema]):
 
         Note: '_embedding_map' is a dictionary mapping fields to their corresponding embeddings.
         """
-        if self.num_docs() == 0:
+        if self._is_index_empty:
             self._embedding_map = dict()
         else:
             for field_, embedding in self._embedding_map.items():
@@ -361,7 +361,7 @@ class InMemoryExactNNIndex(BaseDocIndex, Generic[TSchema]):
         self._logger.debug(f'Executing `find` for search field {search_field}')
         self._validate_search_field(search_field)
 
-        if self.num_docs() == 0:
+        if self._is_index_empty:
             return FindResult(documents=[], scores=[])  # type: ignore
 
         config = self._column_infos[search_field].config
@@ -414,7 +414,7 @@ class InMemoryExactNNIndex(BaseDocIndex, Generic[TSchema]):
         self._logger.debug(f'Executing `find_batched` for search field {search_field}')
         self._validate_search_field(search_field)
 
-        if self.num_docs() == 0:
+        if self._is_index_empty:
             return FindResultBatched(documents=[], scores=[])  # type: ignore
 
         config = self._column_infos[search_field].config

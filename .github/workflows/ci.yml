@@ -305,6 +305,7 @@ jobs:
           poetry install --all-extras
           ./scripts/install_pydantic_v2.sh ${{ matrix.pydantic-version }}
           poetry run pip install protobuf==3.20.0
+          poetry run pip install google-auth==2.23.0
           poetry run pip install tensorflow==2.12.0
           poetry run pip uninstall -y torch
           poetry run pip install torch

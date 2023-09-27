@@ -87,6 +87,7 @@ class MilvusDocumentIndex(BaseDocIndex, Generic[TSchema]):
         self._client = connections.connect(
             db_name="default",
             host=self._db_config.host,
+            port=self._db_config.port,
             user=self._db_config.user,
             password=self._db_config.password,
             token=self._db_config.token,
