@@ -4,11 +4,12 @@ from pydantic import parse_obj_as
 
 from docarray.base_doc.doc import BaseDoc
 from docarray.documents import Mesh3D
-from docarray.utils._internal.pydantic import is_pydantic_v2
 from tests import TOYDATA_DIR
 
 LOCAL_OBJ_FILE = str(TOYDATA_DIR / 'tetrahedron.obj')
 REMOTE_OBJ_FILE = 'https://people.sc.fsu.edu/~jburkardt/data/obj/al.obj'
+
+pytestmark = [pytest.mark.mesh]
 
 
 @pytest.mark.slow
@@ -23,13 +24,11 @@ def test_mesh(file_url: str):
     assert isinstance(mesh.tensors.faces, np.ndarray)
 
 
-@pytest.mark.skipif(is_pydantic_v2, reason="Not working with pydantic v2 for now")
 def test_str_init():
     t = parse_obj_as(Mesh3D, 'http://hello.ply')
     assert t.url == 'http://hello.ply'
 
 
-@pytest.mark.skipif(is_pydantic_v2, reason="Not working with pydantic v2 for now")
 def test_doc():
     class MyDoc(BaseDoc):
         mesh1: Mesh3D
