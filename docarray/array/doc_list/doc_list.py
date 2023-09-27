@@ -16,13 +16,14 @@ from typing import (
 
 from pydantic import parse_obj_as
 from typing_extensions import SupportsIndex
-from typing_inspect import is_union_type, is_typevar
+from typing_inspect import is_typevar, is_union_type
 
 from docarray.array.any_array import AnyDocArray
 from docarray.array.doc_list.io import IOMixinDocList
 from docarray.array.doc_list.pushpull import PushPullMixin
 from docarray.array.list_advance_indexing import IndexIterType, ListAdvancedIndexing
-from docarray.base_doc import AnyDoc, BaseDoc
+from docarray.base_doc import AnyDoc
+from docarray.base_doc.doc import BaseDocWithoutId
 from docarray.typing import NdArray
 from docarray.utils._internal.pydantic import is_pydantic_v2
 
@@ -40,7 +41,7 @@ if TYPE_CHECKING:
     from docarray.typing.tensor.abstract_tensor import AbstractTensor
 
 T = TypeVar('T', bound='DocList')
-T_doc = TypeVar('T_doc', bound=BaseDoc)
+T_doc = TypeVar('T_doc', bound=BaseDocWithoutId)
 
 
 class DocList(
@@ -120,7 +121,7 @@ class DocList(
 
     """
 
-    doc_type: Type[BaseDoc] = AnyDoc
+    doc_type: Type[BaseDocWithoutId] = AnyDoc
 
     def __init__(
         self,
@@ -229,7 +230,7 @@ class DocList(
             not is_union_type(field_type)
             and is_field_required
             and isinstance(field_type, type)
-            and safe_issubclass(field_type, BaseDoc)
+            and safe_issubclass(field_type, BaseDocWithoutId)
         ):
             # calling __class_getitem__ ourselves is a hack otherwise mypy complain
             # most likely a bug in mypy though
@@ -273,7 +274,7 @@ class DocList(
     @classmethod
     def _docarray_validate(
         cls: Type[T],
-        value: Union[T, Iterable[BaseDoc]],
+        value: Union[T, Iterable[BaseDocWithoutId]],
     ):
         from docarray.array.doc_vec.doc_vec import DocVec
 
@@ -333,11 +334,11 @@ class DocList(
         return super().__getitem__(item)
 
     @classmethod
-    def __class_getitem__(cls, item: Union[Type[BaseDoc], TypeVar, str]):
+    def __class_getitem__(cls, item: Union[Type[BaseDocWithoutId], TypeVar, str]):
         if cls.doc_type != AnyDoc:
             raise TypeError(f'{cls} object is not subscriptable')
 
-        if isinstance(item, type) and safe_issubclass(item, BaseDoc):
+        if isinstance(item, type) and safe_issubclass(item, BaseDocWithoutId):
             return AnyDocArray.__class_getitem__.__func__(cls, item)  # type: ignore
         if (
             isinstance(item, object)
