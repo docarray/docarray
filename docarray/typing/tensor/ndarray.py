@@ -142,7 +142,6 @@ class NdArray(np.ndarray, AbstractTensor, Generic[ShapeT]):
             return cls._docarray_from_native(arr)
         except Exception:
             pass  # handled below
-        breakpoint()
         raise ValueError(f'Expected a numpy.ndarray compatible type, got {type(value)}')
 
     @classmethod
