@@ -50,10 +50,6 @@ def create_pure_python_type_model(model: BaseModel) -> BaseDoc:
     :param model: The input model
     :return: A new subclass of BaseDoc, where every DocList type in the schema is replaced by List.
     """
-    #    if is_pydantic_v2:
-    #        raise NotImplementedError(
-    #            'This method is not supported in Pydantic 2.0. Please use Pydantic 1.8.2 or lower.'
-    #        )
 
     fields: Dict[str, Any] = {}
     for field_name, field in model.__annotations__.items():
@@ -279,17 +275,42 @@ def create_base_doc_from_schema(
             num_recursions=0,
             definitions=definitions,
         )
-        fields[field_name] = (
-            field_type,
-            FieldInfo(default=field_schema.pop('default', None), **field_schema),
-        )
+        if not is_pydantic_v2:
+            field_schema['default'] = field_schema.get('default', None)
+            fields[field_name] = (
+                field_type,
+                FieldInfo(**field_schema),
+            )
+        else:
+            field_kwargs = {}
+            field_json_schema_extra = {}
+            for k, v in field_schema.items():
+                if k in FieldInfo.__slots__:
+                    field_kwargs[k] = v
+                else:
+                    field_json_schema_extra[k] = v
+            fields[field_name] = (
+                field_type,
+                FieldInfo(
+                    json_schema_extra=field_json_schema_extra,
+                    **field_kwargs,
+                ),
+            )
 
     model = create_model(base_doc_name, __base__=BaseDoc, **fields)
-    # model.__config__.title = schema.get('title', model.__config__.title)
+    if not is_pydantic_v2:
+        model.__config__.title = schema.get('title', model.__config__.title)
+    else:
+        set_title = schema.get('title', model.model_config.get('title', None))
+        if set_title:
+            model.model_config['title'] = set_title
 
     for k in RESERVED_KEYS:
         if k in schema:
             schema.pop(k)
-    # model.__config__.schema_extra = schema
+    if not is_pydantic_v2:
+        model.__config__.schema_extra = schema
+    else:
+        model.model_config['json_schema_extra'] = schema
     cached_models[base_doc_name] = model
     return model

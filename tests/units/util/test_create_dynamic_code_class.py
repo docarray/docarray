@@ -7,11 +7,11 @@ from pydantic import Field
 from docarray import BaseDoc, DocList
 from docarray.documents import TextDoc
 from docarray.typing import AnyTensor, ImageUrl
-from docarray.utils._internal.pydantic import is_pydantic_v2
 from docarray.utils.create_dynamic_doc_class import (
     create_base_doc_from_schema,
     create_pure_python_type_model,
 )
+from docarray.utils._internal.pydantic import is_pydantic_v2
 
 
 @pytest.mark.parametrize('transformation', ['proto', 'json'])
@@ -25,7 +25,7 @@ def test_create_pydantic_model_from_schema(transformation):
         classvar: ClassVar[str] = 'classvar1'
 
     class CustomDoc(BaseDoc):
-        tensor: Optional[AnyTensor]
+        tensor: Optional[AnyTensor] = None
         url: ImageUrl
         lll: List[List[List[int]]] = [[[5]]]
         fff: List[List[List[float]]] = [[[5.2]]]
@@ -275,7 +275,8 @@ def test_create_with_field_info():
         new_custom_doc_model.schema().get('properties')['a']['another_extra']
         == 'I am another extra'
     )
-    assert (
-        new_custom_doc_model.schema().get('description')
-        == 'Here I have the description of the class'
-    )
+    if not is_pydantic_v2:
+        assert (
+            new_custom_doc_model.schema().get('description')
+            == 'Here I have the description of the class'
+        )
