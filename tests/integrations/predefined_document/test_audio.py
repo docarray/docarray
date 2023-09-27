@@ -11,7 +11,6 @@ from docarray.documents import AudioDoc
 from docarray.typing import AudioUrl
 from docarray.typing.tensor.audio import AudioNdArray, AudioTorchTensor
 from docarray.utils._internal.misc import is_tf_available
-from docarray.utils._internal.pydantic import is_pydantic_v2
 from tests import TOYDATA_DIR
 
 tf_available = is_tf_available()
@@ -184,32 +183,27 @@ def test_extend_audio(file_url):
 
 
 # Validating predefined docs against url or tensor is not yet working with pydantic v28
-@pytest.mark.skipif(is_pydantic_v2, reason="Not working with pydantic v2 for now")
 def test_audio_np():
     audio = parse_obj_as(AudioDoc, np.zeros((10, 10, 3)))
     assert (audio.tensor == np.zeros((10, 10, 3))).all()
 
 
-@pytest.mark.skipif(is_pydantic_v2, reason="Not working with pydantic v2 for now")
 def test_audio_torch():
     audio = parse_obj_as(AudioDoc, torch.zeros(10, 10, 3))
     assert (audio.tensor == torch.zeros(10, 10, 3)).all()
 
 
-@pytest.mark.skipif(is_pydantic_v2, reason="Not working with pydantic v2 for now")
 @pytest.mark.tensorflow
 def test_audio_tensorflow():
     audio = parse_obj_as(AudioDoc, tf.zeros((10, 10, 3)))
     assert tnp.allclose(audio.tensor.tensor, tf.zeros((10, 10, 3)))
 
 
-@pytest.mark.skipif(is_pydantic_v2, reason="Not working with pydantic v2 for now")
 def test_audio_bytes():
     audio = parse_obj_as(AudioDoc, torch.zeros(10, 10, 3))
     audio.bytes_ = audio.tensor.to_bytes()
 
 
-@pytest.mark.skipif(is_pydantic_v2, reason="Not working with pydantic v2 for now")
 def test_audio_shortcut_doc():
     class MyDoc(BaseDoc):
         audio: AudioDoc

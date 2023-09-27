@@ -156,4 +156,4 @@ class PointCloud3D(BaseDoc):
             cls: Type[T],
             value: Union[str, AbstractTensor, Any],
         ) -> T:
-            return cls._validate(value)
+            return super().validate(cls._validate(value))
