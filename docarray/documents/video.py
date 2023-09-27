@@ -1,8 +1,7 @@
-from typing import TYPE_CHECKING, Any, Optional, Type, TypeVar, Union
+from typing import TYPE_CHECKING, Any, Dict, Optional, Type, TypeVar, Union
 
 import numpy as np
-
-from pydantic import Field
+from pydantic import Field, model_validator
 
 from docarray.base_doc import BaseDoc
 from docarray.documents import AudioDoc
@@ -11,6 +10,7 @@ from docarray.typing.tensor.abstract_tensor import AbstractTensor
 from docarray.typing.tensor.video.video_tensor import VideoTensor
 from docarray.typing.url.video_url import VideoUrl
 from docarray.utils._internal.misc import import_library
+from docarray.utils._internal.pydantic import is_pydantic_v2
 
 if TYPE_CHECKING:
     import tensorflow as tf  # type: ignore
@@ -131,17 +131,30 @@ class VideoDoc(BaseDoc):
     )
 
     @classmethod
-    def validate(
-        cls: Type[T],
-        value: Union[str, AbstractTensor, Any],
-    ) -> T:
+    def _validate(cls, value) -> Dict[str, Any]:
         if isinstance(value, str):
-            value = cls(url=value)
+            value = dict(url=value)
         elif isinstance(value, (AbstractTensor, np.ndarray)) or (
             torch is not None
             and isinstance(value, torch.Tensor)
             or (tf is not None and isinstance(value, tf.Tensor))
         ):
-            value = cls(tensor=value)
+            value = dict(tensor=value)
 
-        return super().validate(value)
+        return value
+
+    if is_pydantic_v2:
+
+        @model_validator(mode='before')
+        @classmethod
+        def validate_model_before(cls, value):
+            return cls._validate(value)
+
+    else:
+
+        @classmethod
+        def validate(
+            cls: Type[T],
+            value: Union[str, AbstractTensor, Any],
+        ) -> T:
+            return super().validate(cls._validate(value))

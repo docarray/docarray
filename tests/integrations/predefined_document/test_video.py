@@ -4,10 +4,9 @@ import torch
 from pydantic import parse_obj_as
 
 from docarray import BaseDoc
-from docarray.documents import VideoDoc, AudioDoc
+from docarray.documents import AudioDoc, VideoDoc
 from docarray.typing import AudioNdArray, NdArray, VideoNdArray
 from docarray.utils._internal.misc import is_tf_available
-from docarray.utils._internal.pydantic import is_pydantic_v2
 from tests import TOYDATA_DIR
 
 tf_available = is_tf_available()
@@ -18,6 +17,9 @@ if tf_available:
 
 LOCAL_VIDEO_FILE = str(TOYDATA_DIR / 'mov_bbb.mp4')
 REMOTE_VIDEO_FILE = 'https://github.com/docarray/docarray/blob/main/tests/toydata/mov_bbb.mp4?raw=true'  # noqa: E501
+
+
+pytestmark = [pytest.mark.video]
 
 
 @pytest.mark.slow
@@ -35,26 +37,22 @@ def test_video(file_url):
     assert isinstance(vid.key_frame_indices, NdArray)
 
 
-@pytest.mark.skipif(is_pydantic_v2, reason="Not working with pydantic v2 for now")
 def test_video_np():
     video = parse_obj_as(VideoDoc, np.zeros((10, 10, 3)))
     assert (video.tensor == np.zeros((10, 10, 3))).all()
 
 
-@pytest.mark.skipif(is_pydantic_v2, reason="Not working with pydantic v2 for now")
 def test_video_torch():
     video = parse_obj_as(VideoDoc, torch.zeros(10, 10, 3))
     assert (video.tensor == torch.zeros(10, 10, 3)).all()
 
 
-@pytest.mark.skipif(is_pydantic_v2, reason="Not working with pydantic v2 for now")
 @pytest.mark.tensorflow
 def test_video_tensorflow():
     video = parse_obj_as(VideoDoc, tf.zeros((10, 10, 3)))
     assert tnp.allclose(video.tensor.tensor, tf.zeros((10, 10, 3)))
 
 
-@pytest.mark.skipif(is_pydantic_v2, reason="Not working with pydantic v2 for now")
 def test_video_shortcut_doc():
     class MyDoc(BaseDoc):
         video: VideoDoc
