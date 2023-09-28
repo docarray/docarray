@@ -7,14 +7,13 @@ from pydantic import Field
 from docarray import BaseDoc, DocList
 from docarray.documents import TextDoc
 from docarray.typing import AnyTensor, ImageUrl
-from docarray.utils._internal.pydantic import is_pydantic_v2
 from docarray.utils.create_dynamic_doc_class import (
     create_base_doc_from_schema,
     create_pure_python_type_model,
 )
+from docarray.utils._internal.pydantic import is_pydantic_v2
 
 
-@pytest.mark.skipif(is_pydantic_v2, reason="Not working with pydantic v2 for now")
 @pytest.mark.parametrize('transformation', ['proto', 'json'])
 def test_create_pydantic_model_from_schema(transformation):
     class Nested2Doc(BaseDoc):
@@ -26,7 +25,7 @@ def test_create_pydantic_model_from_schema(transformation):
         classvar: ClassVar[str] = 'classvar1'
 
     class CustomDoc(BaseDoc):
-        tensor: Optional[AnyTensor]
+        tensor: Optional[AnyTensor] = None
         url: ImageUrl
         lll: List[List[List[int]]] = [[[5]]]
         fff: List[List[List[float]]] = [[[5.2]]]
@@ -80,7 +79,10 @@ def test_create_pydantic_model_from_schema(transformation):
     assert len(custom_partial_da) == 1
     assert custom_partial_da[0].url == 'photo.jpg'
     assert custom_partial_da[0].lll == [[[40]]]
-    assert custom_partial_da[0].lu == ['3', '4']  # Union validates back to string
+    if is_pydantic_v2:
+        assert custom_partial_da[0].lu == [3, 4]
+    else:
+        assert custom_partial_da[0].lu == ['3', '4']  # Union validates back to string
     assert custom_partial_da[0].fff == [[[40.2]]]
     assert custom_partial_da[0].di == {'a': 2}
     assert custom_partial_da[0].d == {'b': 'a'}
@@ -99,7 +101,10 @@ def test_create_pydantic_model_from_schema(transformation):
     assert len(original_back) == 1
     assert original_back[0].url == 'photo.jpg'
     assert original_back[0].lll == [[[40]]]
-    assert original_back[0].lu == ['3', '4']  # Union validates back to string
+    if is_pydantic_v2:
+        assert original_back[0].lu == [3, 4]  # Union validates back to string
+    else:
+        assert original_back[0].lu == ['3', '4']  # Union validates back to string
     assert original_back[0].fff == [[[40.2]]]
     assert original_back[0].di == {'a': 2}
     assert original_back[0].d == {'b': 'a'}
@@ -174,7 +179,6 @@ def test_create_pydantic_model_from_schema(transformation):
         assert doc.ia == f'ID {i}'
 
 
-@pytest.mark.skipif(is_pydantic_v2, reason="Not working with pydantic v2 for now")
 @pytest.mark.parametrize('transformation', ['proto', 'json'])
 def test_create_empty_doc_list_from_schema(transformation):
     class CustomDoc(BaseDoc):
@@ -260,7 +264,6 @@ def test_create_empty_doc_list_from_schema(transformation):
     assert len(custom_da) == 0
 
 
-@pytest.mark.skipif(is_pydantic_v2, reason="Not working with pydantic v2 for now")
 def test_create_with_field_info():
     class CustomDoc(BaseDoc):
         """Here I have the description of the class"""
