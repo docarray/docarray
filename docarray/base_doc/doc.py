@@ -419,7 +419,6 @@ class BaseDocWithoutId(BaseModel, IOMixin, UpdateMixin, BaseNode):
             which fields to include or exclude.
 
             """
-
             exclude, original_exclude, doclist_exclude_fields = self._exclude_doclist(
                 exclude=exclude
             )
@@ -447,6 +446,20 @@ class BaseDocWithoutId(BaseModel, IOMixin, UpdateMixin, BaseNode):
 
     else:
 
+        def _copy_view_pydantic_v2(self: T) -> T:
+            """
+            perform a deep copy, the new doc has its own data
+            """
+            data = {}
+            for key, value in self.__dict__.to_dict().items():
+                if isinstance(value, BaseDocWithoutId):
+                    data[key] = value._copy_view_pydantic_v2()
+                else:
+                    data[key] = value
+
+            doc = self.__class__.model_construct(**data)
+            return doc
+
         def model_dump(  # type: ignore
             self,
             *,
@@ -460,7 +473,7 @@ class BaseDocWithoutId(BaseModel, IOMixin, UpdateMixin, BaseNode):
             round_trip: bool = False,
             warnings: bool = True,
         ) -> Dict[str, Any]:
-            def _model_dump(cls):
+            def _model_dump(doc):
 
                 (
                     exclude_,
@@ -468,7 +481,7 @@ class BaseDocWithoutId(BaseModel, IOMixin, UpdateMixin, BaseNode):
                     doclist_exclude_fields,
                 ) = self._exclude_doclist(exclude=exclude)
 
-                data = cls.model_dump(
+                data = doc.model_dump(
                     mode=mode,
                     include=include,
                     exclude=exclude_,
@@ -495,7 +508,7 @@ class BaseDocWithoutId(BaseModel, IOMixin, UpdateMixin, BaseNode):
                 ## for some reason use ColumnViewStorage to dump the data is not working with
                 ## pydantic v2, so we need to create a new doc and dump it
 
-                new_doc = self.__class__.model_construct(**self.__dict__.to_dict())
+                new_doc = self._copy_view_pydantic_v2()
                 return _model_dump(new_doc)
             else:
                 return _model_dump(super())
