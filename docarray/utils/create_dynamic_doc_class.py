@@ -3,6 +3,7 @@ from typing import Any, Dict, List, Optional, Type, Union
 from pydantic import BaseModel, create_model
 from pydantic.fields import FieldInfo
 
+from docarray.base_doc.doc import BaseDocWithoutId
 from docarray import BaseDoc, DocList
 from docarray.typing import AnyTensor
 from docarray.utils._internal._typing import safe_issubclass
@@ -50,16 +51,19 @@ def create_pure_python_type_model(model: BaseModel) -> BaseDoc:
     :param model: The input model
     :return: A new subclass of BaseDoc, where every DocList type in the schema is replaced by List.
     """
-    if is_pydantic_v2:
-        raise NotImplementedError(
-            'This method is not supported in Pydantic 2.0. Please use Pydantic 1.8.2 or lower.'
-        )
-
     fields: Dict[str, Any] = {}
-    for field_name, field in model.__annotations__.items():
-        if field_name not in model.__fields__:
+    import copy
+
+    fields_copy = copy.deepcopy(model.__fields__)
+    annotations_copy = copy.deepcopy(model.__annotations__)
+    for field_name, field in annotations_copy.items():
+        if field_name not in fields_copy:
             continue
-        field_info = model.__fields__[field_name].field_info
+
+        if is_pydantic_v2:
+            field_info = fields_copy[field_name]
+        else:
+            field_info = fields_copy[field_name].field_info
         try:
             if safe_issubclass(field, DocList):
                 t: Any = field.doc_type
@@ -68,9 +72,8 @@ def create_pure_python_type_model(model: BaseModel) -> BaseDoc:
                 fields[field_name] = (field, field_info)
         except TypeError:
             fields[field_name] = (field, field_info)
-    return create_model(
-        model.__name__, __base__=model, __validators__=model.__validators__, **fields
-    )
+
+    return create_model(model.__name__, __base__=model, __doc__=model.__doc__, **fields)
 
 
 def _get_field_annotation_from_schema(
@@ -201,6 +204,8 @@ def _get_field_annotation_from_schema(
             num_recursions=num_recursions + 1,
             definitions=definitions,
         )
+    elif field_type == 'null':
+        ret = None
     else:
         if num_recursions > 0:
             raise ValueError(
@@ -255,14 +260,18 @@ def create_base_doc_from_schema(
     :return: A BaseDoc class dynamically created following the `schema`.
     """
     if not definitions:
-        definitions = schema.get('definitions', {})
+        definitions = (
+            schema.get('definitions', {}) if not is_pydantic_v2 else schema.get('$defs')
+        )
 
     cached_models = cached_models if cached_models is not None else {}
     fields: Dict[str, Any] = {}
     if base_doc_name in cached_models:
         return cached_models[base_doc_name]
+    has_id = False
     for field_name, field_schema in schema.get('properties', {}).items():
-
+        if field_name == 'id':
+            has_id = True
         field_type = _get_field_annotation_from_schema(
             field_schema=field_schema,
             field_name=field_name,
@@ -272,17 +281,43 @@ def create_base_doc_from_schema(
             num_recursions=0,
             definitions=definitions,
         )
-        fields[field_name] = (
-            field_type,
-            FieldInfo(default=field_schema.pop('default', None), **field_schema),
-        )
+        if not is_pydantic_v2:
+            field_schema['default'] = field_schema.get('default', None)
+            fields[field_name] = (
+                field_type,
+                FieldInfo(**field_schema),
+            )
+        else:
+            field_kwargs = {}
+            field_json_schema_extra = {}
+            for k, v in field_schema.items():
+                if k in FieldInfo.__slots__:
+                    field_kwargs[k] = v
+                else:
+                    field_json_schema_extra[k] = v
+            fields[field_name] = (
+                field_type,
+                FieldInfo(
+                    json_schema_extra=field_json_schema_extra,
+                    **field_kwargs,
+                ),
+            )
 
-    model = create_model(base_doc_name, __base__=BaseDoc, **fields)
-    model.__config__.title = schema.get('title', model.__config__.title)
+    base_model = BaseDoc if has_id else BaseDocWithoutId
+    model = create_model(base_doc_name, __base__=base_model, **fields)
+    if not is_pydantic_v2:
+        model.__config__.title = schema.get('title', model.__config__.title)
+    else:
+        set_title = schema.get('title', model.model_config.get('title', None))
+        if set_title:
+            model.model_config['title'] = set_title
 
     for k in RESERVED_KEYS:
         if k in schema:
             schema.pop(k)
-    model.__config__.schema_extra = schema
+    if not is_pydantic_v2:
+        model.__config__.schema_extra = schema
+    else:
+        model.model_config['json_schema_extra'] = schema
     cached_models[base_doc_name] = model
     return model
