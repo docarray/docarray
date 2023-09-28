@@ -6,7 +6,6 @@ import pytest
 from docarray import DocList, DocVec
 from docarray.base_doc.doc import BaseDoc
 from docarray.typing import NdArray
-from docarray.utils._internal.pydantic import is_pydantic_v2
 
 
 def test_base_document_init():
