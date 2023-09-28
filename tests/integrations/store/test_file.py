@@ -11,7 +11,7 @@ from docarray.utils._internal.cache import _get_cache_path
 from tests.integrations.store import gen_text_docs, get_test_da, profile_memory
 
 DA_LEN: int = 2**10
-TOLERANCE_RATIO = 0.1 # Percentage of difference allowed when streaming between a long and a shorter DA
+TOLERANCE_RATIO = 0.1  # Percentage of difference allowed when streaming between a long and a shorter DA
 
 
 def test_path_resolution():
@@ -131,12 +131,17 @@ def test_pull_stream_vs_pull_full(tmp_path: Path):
         long_total_stream == long_total_full
     ), 'Streamed and non-streamed pull should have similar statistics'
 
-    assert long_full_peak > long_stream_peak, 'Peak of memory using full should be larger than when streaming'
-    assert short_full_peak > short_stream_peak, 'Peak of memory using full should be larger than when streaming'
+    assert (
+        long_full_peak > long_stream_peak
+    ), 'Peak of memory using full should be larger than when streaming'
+    assert (
+        short_full_peak > short_stream_peak
+    ), 'Peak of memory using full should be larger than when streaming'
     if not is_pydantic_v2:
         # I bet there is some memory that Pydantic is leaking
         assert (
-            abs(long_stream_peak - short_stream_peak) / short_stream_peak < TOLERANCE_RATIO
+            abs(long_stream_peak - short_stream_peak) / short_stream_peak
+            < TOLERANCE_RATIO
         ), 'Streamed memory usage should not be dependent on the size of the data'
         assert (
             abs(long_full_peak - short_full_peak) / short_full_peak > TOLERANCE_RATIO

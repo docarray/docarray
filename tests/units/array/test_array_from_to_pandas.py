@@ -6,7 +6,6 @@ import pytest
 from docarray import BaseDoc, DocList, DocVec
 from docarray.documents import ImageDoc
 from docarray.typing import NdArray, TorchTensor
-from docarray.utils._internal.pydantic import is_pydantic_v2
 
 
 @pytest.fixture()
@@ -136,7 +135,6 @@ def test_union_type_error():
     assert docs_copy == docs_basic
 
 
-@pytest.mark.skipif(is_pydantic_v2, reason="Not working with pydantic v2")
 @pytest.mark.parametrize('tensor_type', [NdArray, TorchTensor])
 def test_from_to_pandas_tensor_type(tensor_type):
     class MyDoc(BaseDoc):
