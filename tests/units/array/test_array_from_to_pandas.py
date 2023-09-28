@@ -22,7 +22,6 @@ def nested_doc_cls():
     return MyDocNested
 
 
-@pytest.mark.skipif(is_pydantic_v2, reason="Not working with pydantic v2")
 @pytest.mark.parametrize('doc_vec', [False, True])
 def test_to_from_pandas_df(nested_doc_cls, doc_vec):
     da = DocList[nested_doc_cls](
