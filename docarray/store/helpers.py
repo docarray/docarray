@@ -174,32 +174,36 @@ def _from_binary_stream(
     compress: Optional[str] = None,
     show_progress: bool = False,
 ) -> Iterator['T']:
-    if show_progress:
-        pbar, t = _get_progressbar(
-            'Deserializing', disable=not show_progress, total=total
-        )
-    else:
-        pbar = nullcontext()
-
-    with pbar:
+    try:
         if show_progress:
-            _total_size = 0
-            pbar.start_task(t)
-        while True:
-            len_bytes = stream.read(4)
-            if len(len_bytes) < 4:
-                raise ValueError('Unexpected end of stream')
-            len_item = int.from_bytes(len_bytes, 'big', signed=False)
-            if len_item == 0:
-                break
-            item_bytes = stream.read(len_item)
-            if len(item_bytes) < len_item:
-                raise ValueError('Unexpected end of stream')
-            item = cls.from_bytes(item_bytes, protocol=protocol, compress=compress)
+            pbar, t = _get_progressbar(
+                'Deserializing', disable=not show_progress, total=total
+            )
+        else:
+            pbar = nullcontext()
 
-            yield item
-
+        with pbar:
             if show_progress:
-                _total_size += len_item + 4
-                pbar.update(t, advance=1, total_size=str(filesize.decimal(_total_size)))
+                _total_size = 0
+                pbar.start_task(t)
+            while True:
+                len_bytes = stream.read(4)
+                if len(len_bytes) < 4:
+                    raise ValueError('Unexpected end of stream')
+                len_item = int.from_bytes(len_bytes, 'big', signed=False)
+                if len_item == 0:
+                    break
+                item_bytes = stream.read(len_item)
+                if len(item_bytes) < len_item:
+                    raise ValueError('Unexpected end of stream')
+                item = cls.from_bytes(item_bytes, protocol=protocol, compress=compress)
+
+                yield item
+
+                if show_progress:
+                    _total_size += len_item + 4
+                    pbar.update(
+                        t, advance=1, total_size=str(filesize.decimal(_total_size))
+                    )
+    finally:
         stream.close()
