@@ -52,14 +52,18 @@ def create_pure_python_type_model(model: BaseModel) -> BaseDoc:
     :return: A new subclass of BaseDoc, where every DocList type in the schema is replaced by List.
     """
     fields: Dict[str, Any] = {}
-    for field_name, field in model.__annotations__.items():
-        if field_name not in model.__fields__:
+    import copy
+
+    fields_copy = copy.deepcopy(model.__fields__)
+    annotations_copy = copy.deepcopy(model.__annotations__)
+    for field_name, field in annotations_copy.items():
+        if field_name not in fields_copy:
             continue
 
         if is_pydantic_v2:
-            field_info = model.__fields__[field_name]
+            field_info = fields_copy[field_name]
         else:
-            field_info = model.__fields__[field_name].field_info
+            field_info = fields_copy[field_name].field_info
         try:
             if safe_issubclass(field, DocList):
                 t: Any = field.doc_type
@@ -69,7 +73,7 @@ def create_pure_python_type_model(model: BaseModel) -> BaseDoc:
         except TypeError:
             fields[field_name] = (field, field_info)
 
-    return create_model(model.__name__, __base__=model, **fields)
+    return create_model(model.__name__, __base__=model, __doc__=model.__doc__, **fields)
 
 
 def _get_field_annotation_from_schema(
