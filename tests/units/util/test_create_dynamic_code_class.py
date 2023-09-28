@@ -11,8 +11,6 @@ from docarray.utils.create_dynamic_doc_class import (
     create_base_doc_from_schema,
     create_pure_python_type_model,
 )
-from docarray.utils._internal.pydantic import is_pydantic_v2
-
 
 @pytest.mark.parametrize('transformation', ['proto', 'json'])
 def test_create_pydantic_model_from_schema(transformation):

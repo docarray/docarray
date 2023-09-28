@@ -51,7 +51,6 @@ def create_pure_python_type_model(model: BaseModel) -> BaseDoc:
     :param model: The input model
     :return: A new subclass of BaseDoc, where every DocList type in the schema is replaced by List.
     """
-
     fields: Dict[str, Any] = {}
     for field_name, field in model.__annotations__.items():
         if field_name not in model.__fields__:
@@ -202,7 +201,7 @@ def _get_field_annotation_from_schema(
             definitions=definitions,
         )
     elif field_type == 'null':
-        ret = Type[None]
+        ret = None
     else:
         if num_recursions > 0:
             raise ValueError(
@@ -265,8 +264,10 @@ def create_base_doc_from_schema(
     fields: Dict[str, Any] = {}
     if base_doc_name in cached_models:
         return cached_models[base_doc_name]
+    has_id = False
     for field_name, field_schema in schema.get('properties', {}).items():
-
+        if field_name == 'id':
+            has_id = True
         field_type = _get_field_annotation_from_schema(
             field_schema=field_schema,
             field_name=field_name,
@@ -298,7 +299,8 @@ def create_base_doc_from_schema(
                 ),
             )
 
-    model = create_model(base_doc_name, __base__=BaseDocWithoutId, **fields)
+    base_model = BaseDoc if has_id else BaseDocWithoutId
+    model = create_model(base_doc_name, __base__=base_model, **fields)
     if not is_pydantic_v2:
         model.__config__.title = schema.get('title', model.__config__.title)
     else:
