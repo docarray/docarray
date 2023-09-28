@@ -103,7 +103,6 @@ class ImageTensor(AnyTensor, AbstractImageTensor):
             return ImageNdArray._docarray_validate(value)
         except Exception:  # noqa
             pass
-        breakpoint()
         raise TypeError(
             f"Expected one of [torch.Tensor, tensorflow.Tensor, numpy.ndarray] "
             f"compatible type, got {type(value)}"
