@@ -275,8 +275,7 @@ def test_create_with_field_info():
         new_custom_doc_model.schema().get('properties')['a']['another_extra']
         == 'I am another extra'
     )
-    if not is_pydantic_v2:
-        assert (
-            new_custom_doc_model.schema().get('description')
-            == 'Here I have the description of the class'
-        )
+    assert (
+        new_custom_doc_model.schema().get('description')
+        == 'Here I have the description of the class'
+    )

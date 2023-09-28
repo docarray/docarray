@@ -3,6 +3,7 @@ from typing import Any, Dict, List, Optional, Type, Union
 from pydantic import BaseModel, create_model
 from pydantic.fields import FieldInfo
 
+from docarray.base_doc.doc import BaseDocWithoutId
 from docarray import BaseDoc, DocList
 from docarray.typing import AnyTensor
 from docarray.utils._internal._typing import safe_issubclass
@@ -297,7 +298,7 @@ def create_base_doc_from_schema(
                 ),
             )
 
-    model = create_model(base_doc_name, __base__=BaseDoc, **fields)
+    model = create_model(base_doc_name, __base__=BaseDocWithoutId, **fields)
     if not is_pydantic_v2:
         model.__config__.title = schema.get('title', model.__config__.title)
     else:
