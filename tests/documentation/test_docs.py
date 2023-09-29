@@ -70,7 +70,6 @@ def test_files_good(fpath):
     check_md_file(fpath=fpath, memory=True, keyword_ignore=['pickle', 'jac'])
 
 
-@pytest.mark.skipif(is_pydantic_v2, reason="Not working with pydantic v2 for now")
 def test_readme():
     check_md_file(
         fpath='README.md',
