@@ -73,10 +73,10 @@ class BaseDocWithoutId(BaseModel, IOMixin, UpdateMixin, BaseNode):
 
     if is_pydantic_v2:
 
-        class ConfigDocARray(ConfigDict):
+        class ConfigDocArray(ConfigDict):
             _load_extra_fields_from_protobuf: bool
 
-        model_config = ConfigDocARray(
+        model_config = ConfigDocArray(
             validate_assignment=True,
             _load_extra_fields_from_protobuf=False,
             json_encoders={AbstractTensor: lambda x: x},
