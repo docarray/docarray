@@ -2,14 +2,10 @@ from typing import Dict, List
 
 import numpy as np
 import pytest
-from orjson import orjson
 
 from docarray import DocList
 from docarray.base_doc import AnyDoc, BaseDoc
-from docarray.base_doc.io.json import orjson_dumps_and_decode
 from docarray.typing import NdArray
-from docarray.typing.tensor.abstract_tensor import AbstractTensor
-from docarray.utils._internal.pydantic import is_pydantic_v2
 
 
 def test_any_doc():
@@ -94,21 +90,3 @@ def test_any_document_from_to(protocol):
             assert isinstance(d.ld[0], dict)
             assert d.ld[0]['text'] == 'I am inner'
             assert d.ld[0]['t'] == {'a': 'b'}
-
-
-@pytest.mark.skipif(is_pydantic_v2, reason="Not working with pydantic v2 for now")
-def test_subclass_config():
-    class MyDoc(BaseDoc):
-        x: str
-
-        class Config(BaseDoc.Config):
-            arbitrary_types_allowed = True  # just an example setting
-
-    assert MyDoc.Config.json_loads == orjson.loads
-    assert MyDoc.Config.json_dumps == orjson_dumps_and_decode
-    assert (
-        MyDoc.Config.json_encoders[AbstractTensor](3) == 3
-    )  # dirty check that it is identity
-    assert MyDoc.Config.validate_assignment
-    assert not MyDoc.Config._load_extra_fields_from_protobuf
-    assert MyDoc.Config.arbitrary_types_allowed

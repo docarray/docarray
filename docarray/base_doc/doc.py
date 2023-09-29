@@ -51,6 +51,8 @@ if is_pydantic_v2:
         'set[int] | set[str] | dict[int, Any] | dict[str, Any] | None'
     )
 
+    from pydantic import ConfigDict
+
 
 _console: Console = Console()
 
@@ -71,10 +73,14 @@ class BaseDocWithoutId(BaseModel, IOMixin, UpdateMixin, BaseNode):
 
     if is_pydantic_v2:
 
-        class Config:
-            validate_assignment = True
-            _load_extra_fields_from_protobuf = False
-            json_encoders = {AbstractTensor: lambda x: x}
+        class ConfigDocARray(ConfigDict):
+            _load_extra_fields_from_protobuf: bool
+
+        model_config = ConfigDocARray(
+            validate_assignment=True,
+            _load_extra_fields_from_protobuf=False,
+            json_encoders={AbstractTensor: lambda x: x},
+        )
 
     else:
 
