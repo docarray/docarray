@@ -177,7 +177,7 @@ def test_subclass_config_v2():
     class MyDoc(BaseDoc):
         x: str
 
-        model_config = BaseDoc.ConfigDocArray.ConfigDict(
+        model_config = BaseDoc.ConfigDocArray(
             arbitrary_types_allowed=True
         )  # just an example setting
 

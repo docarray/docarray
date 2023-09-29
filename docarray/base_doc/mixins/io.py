@@ -238,10 +238,14 @@ class IOMixin(Iterable[Tuple[str, Any]]):
         """
 
         fields: Dict[str, Any] = {}
-
+        load_extra_field = (
+            cls.model_config['_load_extra_fields_from_protobuf']
+            if is_pydantic_v2
+            else cls.Config._load_extra_fields_from_protobuf
+        )
         for field_name in pb_msg.data:
             if (
-                not (cls.Config._load_extra_fields_from_protobuf)
+                not (load_extra_field)
                 and field_name not in cls._docarray_fields().keys()
             ):
                 continue  # optimization we don't even load the data if the key does not
