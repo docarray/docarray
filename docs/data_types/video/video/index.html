@@ -766,8 +766,8 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../user_guide/storing/doc_store/store_jac/" class="md-nav__link">
-        Store on Jina AI Cloud
+      <a href="../../../user_guide/storing/doc_store/store_jac.md" class="md-nav__link">
+        None
       </a>
     </li>
   
@@ -1648,8 +1648,6 @@
         
           
         
-          
-        
       
       
         <label class="md-nav__link" for="__nav_6_5" id="__nav_6_5_label" tabindex="0">
@@ -1686,20 +1684,6 @@
     <li class="md-nav__item">
       <a href="../../../API_reference/doc_store/file_doc_store/" class="md-nav__link">
         FileDocStore
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../../API_reference/doc_store/jac_doc_store/" class="md-nav__link">
-        JACDocStore
       </a>
     </li>
   
@@ -2355,12 +2339,12 @@ Given the key frame indices, you can access selected scenes:</p>
 <h2 id="getting-started-predefined-videodoc">Getting started - Predefined <code>VideoDoc</code></h2>
 <p>To get started and play around with your video data, DocArray provides a predefined <a class="autorefs autorefs-internal" href="../../../API_reference/documents/documents/#docarray.documents.video.VideoDoc"><code>VideoDoc</code></a>, which includes all of the previously mentioned functionalities:</p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="k">class</span> <span class="nc">VideoDoc</span><span class="p">(</span><span class="n">BaseDoc</span><span class="p">):</span>
-</span><span id="__span-11-2"><a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a>    <span class="n">url</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">VideoUrl</span><span class="p">]</span>
+</span><span id="__span-11-2"><a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a>    <span class="n">url</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">VideoUrl</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
 </span><span id="__span-11-3"><a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a>    <span class="n">audio</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">AudioDoc</span><span class="p">]</span> <span class="o">=</span> <span class="n">AudioDoc</span><span class="p">()</span>
-</span><span id="__span-11-4"><a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a>    <span class="n">tensor</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">VideoTensor</span><span class="p">]</span>
-</span><span id="__span-11-5"><a id="__codelineno-11-5" name="__codelineno-11-5" href="#__codelineno-11-5"></a>    <span class="n">key_frame_indices</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">AnyTensor</span><span class="p">]</span>
-</span><span id="__span-11-6"><a id="__codelineno-11-6" name="__codelineno-11-6" href="#__codelineno-11-6"></a>    <span class="n">embedding</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">AnyEmbedding</span><span class="p">]</span>
-</span><span id="__span-11-7"><a id="__codelineno-11-7" name="__codelineno-11-7" href="#__codelineno-11-7"></a>    <span class="n">bytes_</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bytes</span><span class="p">]</span>
+</span><span id="__span-11-4"><a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a>    <span class="n">tensor</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">VideoTensor</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+</span><span id="__span-11-5"><a id="__codelineno-11-5" name="__codelineno-11-5" href="#__codelineno-11-5"></a>    <span class="n">key_frame_indices</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">AnyTensor</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+</span><span id="__span-11-6"><a id="__codelineno-11-6" name="__codelineno-11-6" href="#__codelineno-11-6"></a>    <span class="n">embedding</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">AnyEmbedding</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+</span><span id="__span-11-7"><a id="__codelineno-11-7" name="__codelineno-11-7" href="#__codelineno-11-7"></a>    <span class="n">bytes_</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bytes</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
 </span></code></pre></div>
 <p>You can use this class directly or extend it to your preference:</p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span>
@@ -2370,7 +2354,7 @@ Given the key frame indices, you can access selected scenes:</p>
 </span><span id="__span-12-5"><a id="__codelineno-12-5" name="__codelineno-12-5" href="#__codelineno-12-5"></a>
 </span><span id="__span-12-6"><a id="__codelineno-12-6" name="__codelineno-12-6" href="#__codelineno-12-6"></a><span class="c1"># extend it</span>
 </span><span id="__span-12-7"><a id="__codelineno-12-7" name="__codelineno-12-7" href="#__codelineno-12-7"></a><span class="k">class</span> <span class="nc">MyVideo</span><span class="p">(</span><span class="n">VideoDoc</span><span class="p">):</span>
-</span><span id="__span-12-8"><a id="__codelineno-12-8" name="__codelineno-12-8" href="#__codelineno-12-8"></a>    <span class="n">name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
+</span><span id="__span-12-8"><a id="__codelineno-12-8" name="__codelineno-12-8" href="#__codelineno-12-8"></a>    <span class="n">name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
 </span><span id="__span-12-9"><a id="__codelineno-12-9" name="__codelineno-12-9" href="#__codelineno-12-9"></a>
 </span><span id="__span-12-10"><a id="__codelineno-12-10" name="__codelineno-12-10" href="#__codelineno-12-10"></a>
 </span><span id="__span-12-11"><a id="__codelineno-12-11" name="__codelineno-12-11" href="#__codelineno-12-11"></a><span class="n">video</span> <span class="o">=</span> <span class="n">MyVideo</span><span class="p">(</span>

@@ -932,8 +932,8 @@
   
   
     <li class="md-nav__item">
-      <a href="user_guide/storing/doc_store/store_jac/" class="md-nav__link">
-        Store on Jina AI Cloud
+      <a href="user_guide/storing/doc_store/store_jac.md" class="md-nav__link">
+        None
       </a>
     </li>
   
@@ -1729,8 +1729,6 @@
         
           
         
-          
-        
       
       
         <label class="md-nav__link" for="__nav_6_5" id="__nav_6_5_label" tabindex="0">
@@ -1767,20 +1765,6 @@
     <li class="md-nav__item">
       <a href="API_reference/doc_store/file_doc_store/" class="md-nav__link">
         FileDocStore
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="API_reference/doc_store/jac_doc_store/" class="md-nav__link">
-        JACDocStore
       </a>
     </li>
   
@@ -2476,8 +2460,8 @@ Furthermore, we have a <a href="#coming-from-pydantic">specific section</a> dedi
 </span><span id="__span-2-10"><a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a>    <span class="n">image_url</span><span class="p">:</span> <span class="n">ImageUrl</span>  <span class="c1"># could also be VideoUrl, AudioUrl, etc.</span>
 </span><span id="__span-2-11"><a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a>    <span class="n">image_tensor</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span>
 </span><span id="__span-2-12"><a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a>        <span class="n">TorchTensor</span><span class="p">[</span><span class="mi">1704</span><span class="p">,</span> <span class="mi">2272</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
-</span><span id="__span-2-13"><a id="__codelineno-2-13" name="__codelineno-2-13" href="#__codelineno-2-13"></a>    <span class="p">]</span>  <span class="c1"># could also be NdArray or TensorflowTensor</span>
-</span><span id="__span-2-14"><a id="__codelineno-2-14" name="__codelineno-2-14" href="#__codelineno-2-14"></a>    <span class="n">embedding</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">TorchTensor</span><span class="p">]</span>
+</span><span id="__span-2-13"><a id="__codelineno-2-13" name="__codelineno-2-13" href="#__codelineno-2-13"></a>    <span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># could also be NdArray or TensorflowTensor</span>
+</span><span id="__span-2-14"><a id="__codelineno-2-14" name="__codelineno-2-14" href="#__codelineno-2-14"></a>    <span class="n">embedding</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">TorchTensor</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
 </span></code></pre></div>
 <p>So not only can you define the types of your data, you can even <strong>specify the shape of your tensors!</strong></p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="c1"># Create a document</span>
@@ -2914,8 +2898,8 @@ While DocArray's <code>TorchTensor</code> is a subclass of <code>torch.Tensor</c
 </span><span id="__span-18-6"><a id="__codelineno-18-6" name="__codelineno-18-6" href="#__codelineno-18-6"></a>
 </span><span id="__span-18-7"><a id="__codelineno-18-7" name="__codelineno-18-7" href="#__codelineno-18-7"></a>
 </span><span id="__span-18-8"><a id="__codelineno-18-8" name="__codelineno-18-8" href="#__codelineno-18-8"></a><span class="k">class</span> <span class="nc">Podcast</span><span class="p">(</span><span class="n">BaseDoc</span><span class="p">):</span>
-</span><span id="__span-18-9"><a id="__codelineno-18-9" name="__codelineno-18-9" href="#__codelineno-18-9"></a>    <span class="n">audio_tensor</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">AudioTensorFlowTensor</span><span class="p">]</span>
-</span><span id="__span-18-10"><a id="__codelineno-18-10" name="__codelineno-18-10" href="#__codelineno-18-10"></a>    <span class="n">embedding</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">AudioTensorFlowTensor</span><span class="p">]</span>
+</span><span id="__span-18-9"><a id="__codelineno-18-9" name="__codelineno-18-9" href="#__codelineno-18-9"></a>    <span class="n">audio_tensor</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">AudioTensorFlowTensor</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+</span><span id="__span-18-10"><a id="__codelineno-18-10" name="__codelineno-18-10" href="#__codelineno-18-10"></a>    <span class="n">embedding</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">AudioTensorFlowTensor</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
 </span><span id="__span-18-11"><a id="__codelineno-18-11" name="__codelineno-18-11" href="#__codelineno-18-11"></a>
 </span><span id="__span-18-12"><a id="__codelineno-18-12" name="__codelineno-18-12" href="#__codelineno-18-12"></a>
 </span><span id="__span-18-13"><a id="__codelineno-18-13" name="__codelineno-18-13" href="#__codelineno-18-13"></a><span class="k">class</span> <span class="nc">MyPodcastModel</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
@@ -2977,10 +2961,11 @@ Good question!</p>
 </span><span id="__span-19-34"><a id="__codelineno-19-34" name="__codelineno-19-34" href="#__codelineno-19-34"></a>    <span class="p">)</span>
 </span><span id="__span-19-35"><a id="__codelineno-19-35" name="__codelineno-19-35" href="#__codelineno-19-35"></a>    <span class="k">return</span> <span class="n">doc</span>
 </span><span id="__span-19-36"><a id="__codelineno-19-36" name="__codelineno-19-36" href="#__codelineno-19-36"></a>
-</span><span id="__span-19-37"><a id="__codelineno-19-37" name="__codelineno-19-37" href="#__codelineno-19-37"></a><span class="n">input_doc</span> <span class="o">=</span> <span class="n">InputDoc</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s1">''</span><span class="p">,</span> <span class="n">img</span><span class="o">=</span><span class="n">ImageDoc</span><span class="p">(</span><span class="n">tensor</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">((</span><span class="mi">3</span><span class="p">,</span> <span class="mi">224</span><span class="p">,</span> <span class="mi">224</span><span class="p">))))</span>
-</span><span id="__span-19-38"><a id="__codelineno-19-38" name="__codelineno-19-38" href="#__codelineno-19-38"></a>
-</span><span id="__span-19-39"><a id="__codelineno-19-39" name="__codelineno-19-39" href="#__codelineno-19-39"></a><span class="k">async</span> <span class="k">with</span> <span class="n">AsyncClient</span><span class="p">(</span><span class="n">app</span><span class="o">=</span><span class="n">app</span><span class="p">,</span> <span class="n">base_url</span><span class="o">=</span><span class="s2">"http://test"</span><span class="p">)</span> <span class="k">as</span> <span class="n">ac</span><span class="p">:</span>
-</span><span id="__span-19-40"><a id="__codelineno-19-40" name="__codelineno-19-40" href="#__codelineno-19-40"></a>    <span class="n">response</span> <span class="o">=</span> <span class="k">await</span> <span class="n">ac</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">"/embed/"</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">input_doc</span><span class="o">.</span><span class="n">json</span><span class="p">())</span>
+</span><span id="__span-19-37"><a id="__codelineno-19-37" name="__codelineno-19-37" href="#__codelineno-19-37"></a>
+</span><span id="__span-19-38"><a id="__codelineno-19-38" name="__codelineno-19-38" href="#__codelineno-19-38"></a><span class="n">input_doc</span> <span class="o">=</span> <span class="n">InputDoc</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s1">''</span><span class="p">,</span> <span class="n">img</span><span class="o">=</span><span class="n">ImageDoc</span><span class="p">(</span><span class="n">tensor</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">((</span><span class="mi">3</span><span class="p">,</span> <span class="mi">224</span><span class="p">,</span> <span class="mi">224</span><span class="p">))))</span>
+</span><span id="__span-19-39"><a id="__codelineno-19-39" name="__codelineno-19-39" href="#__codelineno-19-39"></a>
+</span><span id="__span-19-40"><a id="__codelineno-19-40" name="__codelineno-19-40" href="#__codelineno-19-40"></a><span class="k">async</span> <span class="k">with</span> <span class="n">AsyncClient</span><span class="p">(</span><span class="n">app</span><span class="o">=</span><span class="n">app</span><span class="p">,</span> <span class="n">base_url</span><span class="o">=</span><span class="s2">"http://test"</span><span class="p">)</span> <span class="k">as</span> <span class="n">ac</span><span class="p">:</span>
+</span><span id="__span-19-41"><a id="__codelineno-19-41" name="__codelineno-19-41" href="#__codelineno-19-41"></a>    <span class="n">response</span> <span class="o">=</span> <span class="k">await</span> <span class="n">ac</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">"/embed/"</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">input_doc</span><span class="o">.</span><span class="n">json</span><span class="p">())</span>
 </span></code></pre></div>
 <p>Just like a vanilla Pydantic model!</p>
 </details>

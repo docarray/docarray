@@ -766,8 +766,8 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../user_guide/storing/doc_store/store_jac/" class="md-nav__link">
-        Store on Jina AI Cloud
+      <a href="../../../user_guide/storing/doc_store/store_jac.md" class="md-nav__link">
+        None
       </a>
     </li>
   
@@ -1565,8 +1565,6 @@
         
           
         
-          
-        
       
       
         <label class="md-nav__link" for="__nav_6_5" id="__nav_6_5_label" tabindex="0">
@@ -1603,20 +1601,6 @@
     <li class="md-nav__item">
       <a href="../../doc_store/file_doc_store/" class="md-nav__link">
         FileDocStore
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../doc_store/jac_doc_store/" class="md-nav__link">
-        JACDocStore
       </a>
     </li>
   
@@ -2172,6 +2156,7 @@
 
 
 
+
 <h2 id="docarray.utils.reduce" class="doc doc-heading">
           <code>docarray.utils.reduce</code>
 
@@ -2192,12 +2177,14 @@
 
 
 
+
 <div class="doc doc-object doc-function">
 
 
 
+
 <h3 id="docarray.utils.reduce.reduce" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">reduce</span><span class="p">(</span><span class="n">left</span><span class="p">,</span> <span class="n">right</span><span class="p">,</span> <span class="n">left_id_map</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
+          <code class="highlight language-python"><span class="n">reduce</span><span class="p">(</span><span class="n">left</span><span class="p">,</span> <span class="n">right</span><span class="p">,</span> <span class="n">left_id_map</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
 
 </h3>
 
@@ -2211,6 +2198,8 @@ to the first DocList if they do not exist.
 If a Document exists in both DocLists (identified by ID),
 the data properties are merged with priority to the left Document.</p>
 <p>Nested DocLists are also reduced in the same way.</p>
+
+
 
   <p><strong>Parameters:</strong></p>
   <table>
@@ -2228,7 +2217,11 @@ the data properties are merged with priority to the left Document.</p>
           <td>
                 <code><a class="autorefs autorefs-internal" title="docarray.DocList" href="../../array/da/#docarray.array.doc_list.doc_list.DocList">DocList</a></code>
           </td>
-          <td><p>First DocList to be reduced. Changes will be applied to it in-place</p></td>
+          <td>
+            <div class="doc-md-description">
+              <p>First DocList to be reduced. Changes will be applied to it in-place</p>
+            </div>
+          </td>
           <td>
               <em>required</em>
           </td>
@@ -2238,7 +2231,11 @@ the data properties are merged with priority to the left Document.</p>
           <td>
                 <code><a class="autorefs autorefs-internal" title="docarray.DocList" href="../../array/da/#docarray.array.doc_list.doc_list.DocList">DocList</a></code>
           </td>
-          <td><p>Second DocList to be reduced</p></td>
+          <td>
+            <div class="doc-md-description">
+              <p>Second DocList to be reduced</p>
+            </div>
+          </td>
           <td>
               <em>required</em>
           </td>
@@ -2248,13 +2245,19 @@ the data properties are merged with priority to the left Document.</p>
           <td>
                 <code><span title="typing.Optional">Optional</span>[<span title="typing.Dict">Dict</span>]</code>
           </td>
-          <td><p>Optional parameter to be passed in repeated calls for optimizations, keeping a map of the Document ID to its offset in the DocList</p></td>
+          <td>
+            <div class="doc-md-description">
+              <p>Optional parameter to be passed in repeated calls for optimizations, keeping a map of the Document ID to its offset in the DocList</p>
+            </div>
+          </td>
           <td>
                 <code>None</code>
           </td>
         </tr>
     </tbody>
   </table>
+
+
 
   <p><strong>Returns:</strong></p>
   <table>
@@ -2269,14 +2272,18 @@ the data properties are merged with priority to the left Document.</p>
           <td>
                 <code><a class="autorefs autorefs-internal" title="docarray.DocList" href="../../array/da/#docarray.array.doc_list.doc_list.DocList">DocList</a></code>
           </td>
-          <td><p>Reduced DocList</p></td>
+          <td>
+            <div class="doc-md-description">
+              <p>Reduced DocList</p>
+            </div>
+          </td>
         </tr>
     </tbody>
   </table>
 
-      <details class="quote">
-        <summary>Source code in <code>docarray/utils/reduce.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-8"> 8</a></span>
+          <details class="quote">
+            <summary>Source code in <code>docarray/utils/reduce.py</code></summary>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-8"> 8</a></span>
 <span class="normal"><a href="#__codelineno-0-9"> 9</a></span>
 <span class="normal"><a href="#__codelineno-0-10">10</a></span>
 <span class="normal"><a href="#__codelineno-0-11">11</a></span>
@@ -2336,17 +2343,19 @@ the data properties are merged with priority to the left Document.</p>
 </span><span id="__span-0-36"><a id="__codelineno-0-36" name="__codelineno-0-36"></a>
 </span><span id="__span-0-37"><a id="__codelineno-0-37" name="__codelineno-0-37"></a>    <span class="k">return</span> <span class="n">left</span>
 </span></code></pre></div></td></tr></table></div>
-      </details>
+          </details>
   </div>
 
 </div>
+
 
 <div class="doc doc-object doc-function">
 
 
 
+
 <h3 id="docarray.utils.reduce.reduce_all" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">reduce_all</span><span class="p">(</span><span class="n">docs</span><span class="p">)</span></code>
+          <code class="highlight language-python"><span class="n">reduce_all</span><span class="p">(</span><span class="n">docs</span><span class="p">)</span></code>
 
 </h3>
 
@@ -2373,6 +2382,8 @@ when applying reduction.</li>
 </ul>
 </div>
 
+
+
   <p><strong>Parameters:</strong></p>
   <table>
     <thead>
@@ -2389,13 +2400,19 @@ when applying reduction.</li>
           <td>
                 <code><span title="typing.List">List</span>[<a class="autorefs autorefs-internal" title="docarray.DocList" href="../../array/da/#docarray.array.doc_list.doc_list.DocList">DocList</a>]</code>
           </td>
-          <td><p>List of DocLists to be reduced</p></td>
+          <td>
+            <div class="doc-md-description">
+              <p>List of DocLists to be reduced</p>
+            </div>
+          </td>
           <td>
               <em>required</em>
           </td>
         </tr>
     </tbody>
   </table>
+
+
 
   <p><strong>Returns:</strong></p>
   <table>
@@ -2410,14 +2427,18 @@ when applying reduction.</li>
           <td>
                 <code><a class="autorefs autorefs-internal" title="docarray.DocList" href="../../array/da/#docarray.array.doc_list.doc_list.DocList">DocList</a></code>
           </td>
-          <td><p>the resulting DocList</p></td>
+          <td>
+            <div class="doc-md-description">
+              <p>the resulting DocList</p>
+            </div>
+          </td>
         </tr>
     </tbody>
   </table>
 
-      <details class="quote">
-        <summary>Source code in <code>docarray/utils/reduce.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-40">40</a></span>
+          <details class="quote">
+            <summary>Source code in <code>docarray/utils/reduce.py</code></summary>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-40">40</a></span>
 <span class="normal"><a href="#__codelineno-0-41">41</a></span>
 <span class="normal"><a href="#__codelineno-0-42">42</a></span>
 <span class="normal"><a href="#__codelineno-0-43">43</a></span>
@@ -2485,7 +2506,7 @@ when applying reduction.</li>
 </span><span id="__span-0-72"><a id="__codelineno-0-72" name="__codelineno-0-72"></a>        <span class="n">reduce</span><span class="p">(</span><span class="n">left</span><span class="p">,</span> <span class="n">other_docs</span><span class="p">,</span> <span class="n">left_id_map</span><span class="p">)</span>
 </span><span id="__span-0-73"><a id="__codelineno-0-73" name="__codelineno-0-73"></a>    <span class="k">return</span> <span class="n">left</span>
 </span></code></pre></div></td></tr></table></div>
-      </details>
+          </details>
   </div>
 
 </div>

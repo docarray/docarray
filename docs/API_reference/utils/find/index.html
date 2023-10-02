@@ -766,8 +766,8 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../user_guide/storing/doc_store/store_jac/" class="md-nav__link">
-        Store on Jina AI Cloud
+      <a href="../../../user_guide/storing/doc_store/store_jac.md" class="md-nav__link">
+        None
       </a>
     </li>
   
@@ -1565,8 +1565,6 @@
         
           
         
-          
-        
       
       
         <label class="md-nav__link" for="__nav_6_5" id="__nav_6_5_label" tabindex="0">
@@ -1603,20 +1601,6 @@
     <li class="md-nav__item">
       <a href="../../doc_store/file_doc_store/" class="md-nav__link">
         FileDocStore
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../doc_store/jac_doc_store/" class="md-nav__link">
-        JACDocStore
       </a>
     </li>
   
@@ -2172,6 +2156,7 @@
 
 
 
+
 <h2 id="docarray.utils.find" class="doc doc-heading">
           <code>docarray.utils.find</code>
 
@@ -2192,12 +2177,14 @@
 
 
 
+
 <div class="doc doc-object doc-function">
 
 
 
+
 <h3 id="docarray.utils.find.find" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">find</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="n">query</span><span class="p">,</span> <span class="n">search_field</span><span class="o">=</span><span class="s1">''</span><span class="p">,</span> <span class="n">metric</span><span class="o">=</span><span class="s1">'cosine_sim'</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">descending</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">cache</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
+          <code class="highlight language-python"><span class="n">find</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="n">query</span><span class="p">,</span> <span class="n">search_field</span><span class="o">=</span><span class="s1">''</span><span class="p">,</span> <span class="n">metric</span><span class="o">=</span><span class="s1">'cosine_sim'</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">descending</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">cache</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
 
 </h3>
 
@@ -2245,6 +2232,8 @@ multi vector search please take a look at the <a class="autorefs autorefs-intern
 </span></code></pre></div>
 <hr>
 
+
+
   <p><strong>Parameters:</strong></p>
   <table>
     <thead>
@@ -2261,7 +2250,11 @@ multi vector search please take a look at the <a class="autorefs autorefs-intern
           <td>
                 <code><a class="autorefs autorefs-internal" title="docarray.array.any_array.AnyDocArray" href="../../array/any_da/#docarray.array.any_array.AnyDocArray">AnyDocArray</a></code>
           </td>
-          <td><p>the index of Documents to search in</p></td>
+          <td>
+            <div class="doc-md-description">
+              <p>the index of Documents to search in</p>
+            </div>
+          </td>
           <td>
               <em>required</em>
           </td>
@@ -2271,7 +2264,11 @@ multi vector search please take a look at the <a class="autorefs autorefs-intern
           <td>
                 <code><span title="typing.Union">Union</span>[<a class="autorefs autorefs-internal" title="docarray.typing.AnyTensor" href="../../typing/tensor/tensor/#docarray.typing.tensor.AnyTensor">AnyTensor</a>, <a class="autorefs autorefs-internal" title="docarray.base_doc.BaseDoc" href="../../base_doc/base_doc/#docarray.base_doc.doc.BaseDoc">BaseDoc</a>]</code>
           </td>
-          <td><p>the query to search for</p></td>
+          <td>
+            <div class="doc-md-description">
+              <p>the query to search for</p>
+            </div>
+          </td>
           <td>
               <em>required</em>
           </td>
@@ -2281,7 +2278,11 @@ multi vector search please take a look at the <a class="autorefs autorefs-intern
           <td>
                 <code>str</code>
           </td>
-          <td><p>the tensor-like field in the index to use for the similarity computation</p></td>
+          <td>
+            <div class="doc-md-description">
+              <p>the tensor-like field in the index to use for the similarity computation</p>
+            </div>
+          </td>
           <td>
                 <code>''</code>
           </td>
@@ -2291,7 +2292,11 @@ multi vector search please take a look at the <a class="autorefs autorefs-intern
           <td>
                 <code>str</code>
           </td>
-          <td><p>the distance metric to use for the similarity computation. Can be one of the following strings: 'cosine_sim' for cosine similarity, 'euclidean_dist' for euclidean distance, 'sqeuclidean_dist' for squared euclidean distance</p></td>
+          <td>
+            <div class="doc-md-description">
+              <p>the distance metric to use for the similarity computation. Can be one of the following strings: 'cosine_sim' for cosine similarity, 'euclidean_dist' for euclidean distance, 'sqeuclidean_dist' for squared euclidean distance</p>
+            </div>
+          </td>
           <td>
                 <code>'cosine_sim'</code>
           </td>
@@ -2301,7 +2306,11 @@ multi vector search please take a look at the <a class="autorefs autorefs-intern
           <td>
                 <code>int</code>
           </td>
-          <td><p>return the top <code>limit</code> results</p></td>
+          <td>
+            <div class="doc-md-description">
+              <p>return the top <code>limit</code> results</p>
+            </div>
+          </td>
           <td>
                 <code>10</code>
           </td>
@@ -2311,7 +2320,11 @@ multi vector search please take a look at the <a class="autorefs autorefs-intern
           <td>
                 <code><span title="typing.Optional">Optional</span>[str]</code>
           </td>
-          <td><p>the computational device to use, can be either <code>cpu</code> or a <code>cuda</code> device.</p></td>
+          <td>
+            <div class="doc-md-description">
+              <p>the computational device to use, can be either <code>cpu</code> or a <code>cuda</code> device.</p>
+            </div>
+          </td>
           <td>
                 <code>None</code>
           </td>
@@ -2321,7 +2334,11 @@ multi vector search please take a look at the <a class="autorefs autorefs-intern
           <td>
                 <code><span title="typing.Optional">Optional</span>[bool]</code>
           </td>
-          <td><p>sort the results in descending order. Per default, this is chosen based on the <code>metric</code> argument.</p></td>
+          <td>
+            <div class="doc-md-description">
+              <p>sort the results in descending order. Per default, this is chosen based on the <code>metric</code> argument.</p>
+            </div>
+          </td>
           <td>
                 <code>None</code>
           </td>
@@ -2331,13 +2348,19 @@ multi vector search please take a look at the <a class="autorefs autorefs-intern
           <td>
                 <code><span title="typing.Optional">Optional</span>[<span title="typing.Dict">Dict</span>[str, <span title="typing.Tuple">Tuple</span>[<a class="autorefs autorefs-internal" title="docarray.typing.AnyTensor" href="../../typing/tensor/tensor/#docarray.typing.tensor.AnyTensor">AnyTensor</a>, <span title="typing.Optional">Optional</span>[<span title="typing.List">List</span>[int]]]]]</code>
           </td>
-          <td><p>Precomputed data storing the valid index data per search field together with the valid indexes to account for deleted entries.</p></td>
+          <td>
+            <div class="doc-md-description">
+              <p>Precomputed data storing the valid index data per search field together with the valid indexes to account for deleted entries.</p>
+            </div>
+          </td>
           <td>
                 <code>None</code>
           </td>
         </tr>
     </tbody>
   </table>
+
+
 
   <p><strong>Returns:</strong></p>
   <table>
@@ -2352,14 +2375,18 @@ multi vector search please take a look at the <a class="autorefs autorefs-intern
           <td>
                 <code><span title="docarray.utils.find.FindResult">FindResult</span></code>
           </td>
-          <td><p>A named tuple of the form (DocList, AnyTensor), where the first element contains the closes matches for the query, and the second element contains the corresponding scores.</p></td>
+          <td>
+            <div class="doc-md-description">
+              <p>A named tuple of the form (DocList, AnyTensor), where the first element contains the closes matches for the query, and the second element contains the corresponding scores.</p>
+            </div>
+          </td>
         </tr>
     </tbody>
   </table>
 
-      <details class="quote">
-        <summary>Source code in <code>docarray/utils/find.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-83"> 83</a></span>
+          <details class="quote">
+            <summary>Source code in <code>docarray/utils/find.py</code></summary>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-83"> 83</a></span>
 <span class="normal"><a href="#__codelineno-0-84"> 84</a></span>
 <span class="normal"><a href="#__codelineno-0-85"> 85</a></span>
 <span class="normal"><a href="#__codelineno-0-86"> 86</a></span>
@@ -2529,17 +2556,19 @@ multi vector search please take a look at the <a class="autorefs autorefs-intern
 </span><span id="__span-0-166"><a id="__codelineno-0-166" name="__codelineno-0-166"></a>    <span class="p">)</span>
 </span><span id="__span-0-167"><a id="__codelineno-0-167" name="__codelineno-0-167"></a>    <span class="k">return</span> <span class="n">FindResult</span><span class="p">(</span><span class="n">documents</span><span class="o">=</span><span class="n">docs</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">scores</span><span class="o">=</span><span class="n">scores</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
 </span></code></pre></div></td></tr></table></div>
-      </details>
+          </details>
   </div>
 
 </div>
+
 
 <div class="doc doc-object doc-function">
 
 
 
+
 <h3 id="docarray.utils.find.find_batched" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">find_batched</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="n">query</span><span class="p">,</span> <span class="n">search_field</span><span class="o">=</span><span class="s1">''</span><span class="p">,</span> <span class="n">metric</span><span class="o">=</span><span class="s1">'cosine_sim'</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">descending</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">cache</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
+          <code class="highlight language-python"><span class="n">find_batched</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="n">query</span><span class="p">,</span> <span class="n">search_field</span><span class="o">=</span><span class="s1">''</span><span class="p">,</span> <span class="n">metric</span><span class="o">=</span><span class="s1">'cosine_sim'</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">descending</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">cache</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
 
 </h3>
 
@@ -2593,6 +2622,8 @@ multi vector search please take a look at the <a class="autorefs autorefs-intern
 </span></code></pre></div>
 <hr>
 
+
+
   <p><strong>Parameters:</strong></p>
   <table>
     <thead>
@@ -2609,7 +2640,11 @@ multi vector search please take a look at the <a class="autorefs autorefs-intern
           <td>
                 <code><a class="autorefs autorefs-internal" title="docarray.array.any_array.AnyDocArray" href="../../array/any_da/#docarray.array.any_array.AnyDocArray">AnyDocArray</a></code>
           </td>
-          <td><p>the index of Documents to search in</p></td>
+          <td>
+            <div class="doc-md-description">
+              <p>the index of Documents to search in</p>
+            </div>
+          </td>
           <td>
               <em>required</em>
           </td>
@@ -2619,7 +2654,11 @@ multi vector search please take a look at the <a class="autorefs autorefs-intern
           <td>
                 <code><span title="typing.Union">Union</span>[<a class="autorefs autorefs-internal" title="docarray.typing.AnyTensor" href="../../typing/tensor/tensor/#docarray.typing.tensor.AnyTensor">AnyTensor</a>, <a class="autorefs autorefs-internal" title="docarray.array.doc_list.doc_list.DocList" href="../../array/da/#docarray.array.doc_list.doc_list.DocList">DocList</a>]</code>
           </td>
-          <td><p>the query to search for</p></td>
+          <td>
+            <div class="doc-md-description">
+              <p>the query to search for</p>
+            </div>
+          </td>
           <td>
               <em>required</em>
           </td>
@@ -2629,7 +2668,11 @@ multi vector search please take a look at the <a class="autorefs autorefs-intern
           <td>
                 <code>str</code>
           </td>
-          <td><p>the tensor-like field in the index to use for the similarity computation</p></td>
+          <td>
+            <div class="doc-md-description">
+              <p>the tensor-like field in the index to use for the similarity computation</p>
+            </div>
+          </td>
           <td>
                 <code>''</code>
           </td>
@@ -2639,7 +2682,11 @@ multi vector search please take a look at the <a class="autorefs autorefs-intern
           <td>
                 <code>str</code>
           </td>
-          <td><p>the distance metric to use for the similarity computation. Can be one of the following strings: 'cosine_sim' for cosine similarity, 'euclidean_dist' for euclidean distance, 'sqeuclidean_dist' for squared euclidean distance</p></td>
+          <td>
+            <div class="doc-md-description">
+              <p>the distance metric to use for the similarity computation. Can be one of the following strings: 'cosine_sim' for cosine similarity, 'euclidean_dist' for euclidean distance, 'sqeuclidean_dist' for squared euclidean distance</p>
+            </div>
+          </td>
           <td>
                 <code>'cosine_sim'</code>
           </td>
@@ -2649,7 +2696,11 @@ multi vector search please take a look at the <a class="autorefs autorefs-intern
           <td>
                 <code>int</code>
           </td>
-          <td><p>return the top <code>limit</code> results</p></td>
+          <td>
+            <div class="doc-md-description">
+              <p>return the top <code>limit</code> results</p>
+            </div>
+          </td>
           <td>
                 <code>10</code>
           </td>
@@ -2659,7 +2710,11 @@ multi vector search please take a look at the <a class="autorefs autorefs-intern
           <td>
                 <code><span title="typing.Optional">Optional</span>[str]</code>
           </td>
-          <td><p>the computational device to use, can be either <code>cpu</code> or a <code>cuda</code> device.</p></td>
+          <td>
+            <div class="doc-md-description">
+              <p>the computational device to use, can be either <code>cpu</code> or a <code>cuda</code> device.</p>
+            </div>
+          </td>
           <td>
                 <code>None</code>
           </td>
@@ -2669,7 +2724,11 @@ multi vector search please take a look at the <a class="autorefs autorefs-intern
           <td>
                 <code><span title="typing.Optional">Optional</span>[bool]</code>
           </td>
-          <td><p>sort the results in descending order. Per default, this is chosen based on the <code>metric</code> argument.</p></td>
+          <td>
+            <div class="doc-md-description">
+              <p>sort the results in descending order. Per default, this is chosen based on the <code>metric</code> argument.</p>
+            </div>
+          </td>
           <td>
                 <code>None</code>
           </td>
@@ -2679,13 +2738,19 @@ multi vector search please take a look at the <a class="autorefs autorefs-intern
           <td>
                 <code><span title="typing.Optional">Optional</span>[<span title="typing.Dict">Dict</span>[str, <span title="typing.Tuple">Tuple</span>[<a class="autorefs autorefs-internal" title="docarray.typing.AnyTensor" href="../../typing/tensor/tensor/#docarray.typing.tensor.AnyTensor">AnyTensor</a>, <span title="typing.Optional">Optional</span>[<span title="typing.List">List</span>[int]]]]]</code>
           </td>
-          <td><p>Precomputed data storing the valid index data per search field together with the valid indexes to account for deleted entries.</p></td>
+          <td>
+            <div class="doc-md-description">
+              <p>Precomputed data storing the valid index data per search field together with the valid indexes to account for deleted entries.</p>
+            </div>
+          </td>
           <td>
                 <code>None</code>
           </td>
         </tr>
     </tbody>
   </table>
+
+
 
   <p><strong>Returns:</strong></p>
   <table>
@@ -2700,14 +2765,18 @@ multi vector search please take a look at the <a class="autorefs autorefs-intern
           <td>
                 <code><span title="docarray.utils.find.FindResultBatched">FindResultBatched</span></code>
           </td>
-          <td><p>A named tuple of the form (DocList, AnyTensor), where the first element contains the closest matches for each query, and the second element contains the corresponding scores.</p></td>
+          <td>
+            <div class="doc-md-description">
+              <p>A named tuple of the form (DocList, AnyTensor), where the first element contains the closest matches for each query, and the second element contains the corresponding scores.</p>
+            </div>
+          </td>
         </tr>
     </tbody>
   </table>
 
-      <details class="quote">
-        <summary>Source code in <code>docarray/utils/find.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-170">170</a></span>
+          <details class="quote">
+            <summary>Source code in <code>docarray/utils/find.py</code></summary>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-170">170</a></span>
 <span class="normal"><a href="#__codelineno-0-171">171</a></span>
 <span class="normal"><a href="#__codelineno-0-172">172</a></span>
 <span class="normal"><a href="#__codelineno-0-173">173</a></span>
@@ -2933,7 +3002,7 @@ multi vector search please take a look at the <a class="autorefs autorefs-intern
 </span><span id="__span-0-281"><a id="__codelineno-0-281" name="__codelineno-0-281"></a>        <span class="n">scores</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">scores_per_query</span><span class="p">)</span>
 </span><span id="__span-0-282"><a id="__codelineno-0-282" name="__codelineno-0-282"></a>    <span class="k">return</span> <span class="n">FindResultBatched</span><span class="p">(</span><span class="n">documents</span><span class="o">=</span><span class="n">batched_docs</span><span class="p">,</span> <span class="n">scores</span><span class="o">=</span><span class="n">scores</span><span class="p">)</span>
 </span></code></pre></div></td></tr></table></div>
-      </details>
+          </details>
   </div>
 
 </div>

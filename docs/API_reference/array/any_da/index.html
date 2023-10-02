@@ -766,8 +766,8 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../user_guide/storing/doc_store/store_jac/" class="md-nav__link">
-        Store on Jina AI Cloud
+      <a href="../../../user_guide/storing/doc_store/store_jac.md" class="md-nav__link">
+        None
       </a>
     </li>
   
@@ -1642,8 +1642,6 @@
         
           
         
-          
-        
       
       
         <label class="md-nav__link" for="__nav_6_5" id="__nav_6_5_label" tabindex="0">
@@ -1680,20 +1678,6 @@
     <li class="md-nav__item">
       <a href="../../doc_store/file_doc_store/" class="md-nav__link">
         FileDocStore
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../doc_store/jac_doc_store/" class="md-nav__link">
-        JACDocStore
       </a>
     </li>
   
@@ -2200,22 +2184,22 @@
 
 
 
+
 <h2 id="docarray.array.any_array.AnyDocArray" class="doc doc-heading">
-        <code>docarray.array.any_array.AnyDocArray</code>
+          <code>docarray.array.any_array.AnyDocArray</code>
 
 
 </h2>
 
 
   <div class="doc doc-contents first">
-      <p class="doc doc-class-bases">
-        Bases: <code><span title="typing.Sequence">Sequence</span>[<span title="docarray.array.any_array.T_doc">T_doc</span>]</code>, <code><span title="typing.Generic">Generic</span>[<span title="docarray.array.any_array.T_doc">T_doc</span>]</code>, <code><span title="docarray.typing.abstract_type.AbstractType">AbstractType</span></code></p>
+          <p class="doc doc-class-bases">
+            Bases: <code><span title="typing.Sequence">Sequence</span>[<span title="docarray.array.any_array.T_doc">T_doc</span>]</code>, <code><span title="typing.Generic">Generic</span>[<span title="docarray.array.any_array.T_doc">T_doc</span>]</code>, <code><span title="docarray.typing.abstract_type.AbstractType">AbstractType</span></code></p>
 
 
-
-        <details class="quote">
-          <summary>Source code in <code>docarray/array/any_array.py</code></summary>
-          <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-44"> 44</a></span>
+            <details class="quote">
+              <summary>Source code in <code>docarray/array/any_array.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-44"> 44</a></span>
 <span class="normal"><a href="#__codelineno-0-45"> 45</a></span>
 <span class="normal"><a href="#__codelineno-0-46"> 46</a></span>
 <span class="normal"><a href="#__codelineno-0-47"> 47</a></span>
@@ -2495,18 +2479,18 @@
 <span class="normal"><a href="#__codelineno-0-321">321</a></span>
 <span class="normal"><a href="#__codelineno-0-322">322</a></span>
 <span class="normal"><a href="#__codelineno-0-323">323</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-0-44"><a id="__codelineno-0-44" name="__codelineno-0-44"></a><span class="k">class</span> <span class="nc">AnyDocArray</span><span class="p">(</span><span class="n">Sequence</span><span class="p">[</span><span class="n">T_doc</span><span class="p">],</span> <span class="n">Generic</span><span class="p">[</span><span class="n">T_doc</span><span class="p">],</span> <span class="n">AbstractType</span><span class="p">):</span>
-</span><span id="__span-0-45"><a id="__codelineno-0-45" name="__codelineno-0-45"></a>    <span class="n">doc_type</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">BaseDoc</span><span class="p">]</span>
-</span><span id="__span-0-46"><a id="__codelineno-0-46" name="__codelineno-0-46"></a>    <span class="n">__typed_da__</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="n">Type</span><span class="p">[</span><span class="s1">'AnyDocArray'</span><span class="p">],</span> <span class="n">Dict</span><span class="p">[</span><span class="n">Type</span><span class="p">[</span><span class="n">BaseDoc</span><span class="p">],</span> <span class="n">Type</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{}</span>
+</span><span id="__span-0-45"><a id="__codelineno-0-45" name="__codelineno-0-45"></a>    <span class="n">doc_type</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">BaseDocWithoutId</span><span class="p">]</span>
+</span><span id="__span-0-46"><a id="__codelineno-0-46" name="__codelineno-0-46"></a>    <span class="n">__typed_da__</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="n">Type</span><span class="p">[</span><span class="s1">'AnyDocArray'</span><span class="p">],</span> <span class="n">Dict</span><span class="p">[</span><span class="n">Type</span><span class="p">[</span><span class="n">BaseDocWithoutId</span><span class="p">],</span> <span class="n">Type</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{}</span>
 </span><span id="__span-0-47"><a id="__codelineno-0-47" name="__codelineno-0-47"></a>
 </span><span id="__span-0-48"><a id="__codelineno-0-48" name="__codelineno-0-48"></a>    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 </span><span id="__span-0-49"><a id="__codelineno-0-49" name="__codelineno-0-49"></a>        <span class="k">return</span> <span class="sa">f</span><span class="s1">'&lt;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s1"> (length=</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="si">}</span><span class="s1">)&gt;'</span>
 </span><span id="__span-0-50"><a id="__codelineno-0-50" name="__codelineno-0-50"></a>
 </span><span id="__span-0-51"><a id="__codelineno-0-51" name="__codelineno-0-51"></a>    <span class="nd">@classmethod</span>
-</span><span id="__span-0-52"><a id="__codelineno-0-52" name="__codelineno-0-52"></a>    <span class="k">def</span> <span class="nf">__class_getitem__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">item</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Type</span><span class="p">[</span><span class="n">BaseDoc</span><span class="p">],</span> <span class="n">TypeVar</span><span class="p">,</span> <span class="nb">str</span><span class="p">]):</span>
+</span><span id="__span-0-52"><a id="__codelineno-0-52" name="__codelineno-0-52"></a>    <span class="k">def</span> <span class="nf">__class_getitem__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">item</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Type</span><span class="p">[</span><span class="n">BaseDocWithoutId</span><span class="p">],</span> <span class="n">TypeVar</span><span class="p">,</span> <span class="nb">str</span><span class="p">]):</span>
 </span><span id="__span-0-53"><a id="__codelineno-0-53" name="__codelineno-0-53"></a>        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="nb">type</span><span class="p">):</span>
 </span><span id="__span-0-54"><a id="__codelineno-0-54" name="__codelineno-0-54"></a>            <span class="k">return</span> <span class="n">Generic</span><span class="o">.</span><span class="n">__class_getitem__</span><span class="o">.</span><span class="vm">__func__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">item</span><span class="p">)</span>  <span class="c1"># type: ignore</span>
 </span><span id="__span-0-55"><a id="__codelineno-0-55" name="__codelineno-0-55"></a>            <span class="c1"># this do nothing that checking that item is valid type var or str</span>
-</span><span id="__span-0-56"><a id="__codelineno-0-56" name="__codelineno-0-56"></a>        <span class="k">if</span> <span class="ow">not</span> <span class="n">safe_issubclass</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">BaseDoc</span><span class="p">):</span>
+</span><span id="__span-0-56"><a id="__codelineno-0-56" name="__codelineno-0-56"></a>        <span class="k">if</span> <span class="ow">not</span> <span class="n">safe_issubclass</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">BaseDocWithoutId</span><span class="p">):</span>
 </span><span id="__span-0-57"><a id="__codelineno-0-57" name="__codelineno-0-57"></a>            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
 </span><span id="__span-0-58"><a id="__codelineno-0-58" name="__codelineno-0-58"></a>                <span class="sa">f</span><span class="s1">'</span><span class="si">{</span><span class="bp">cls</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s1">[item] item should be a Document not a </span><span class="si">{</span><span class="n">item</span><span class="si">}</span><span class="s1"> '</span>
 </span><span id="__span-0-59"><a id="__codelineno-0-59" name="__codelineno-0-59"></a>            <span class="p">)</span>
@@ -2519,9 +2503,9 @@
 </span><span id="__span-0-66"><a id="__codelineno-0-66" name="__codelineno-0-66"></a>            <span class="k">global</span> <span class="n">_DocArrayTyped</span>
 </span><span id="__span-0-67"><a id="__codelineno-0-67" name="__codelineno-0-67"></a>
 </span><span id="__span-0-68"><a id="__codelineno-0-68" name="__codelineno-0-68"></a>            <span class="k">class</span> <span class="nc">_DocArrayTyped</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>  <span class="c1"># type: ignore</span>
-</span><span id="__span-0-69"><a id="__codelineno-0-69" name="__codelineno-0-69"></a>                <span class="n">doc_type</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">BaseDoc</span><span class="p">]</span> <span class="o">=</span> <span class="n">cast</span><span class="p">(</span><span class="n">Type</span><span class="p">[</span><span class="n">BaseDoc</span><span class="p">],</span> <span class="n">item</span><span class="p">)</span>
+</span><span id="__span-0-69"><a id="__codelineno-0-69" name="__codelineno-0-69"></a>                <span class="n">doc_type</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">BaseDocWithoutId</span><span class="p">]</span> <span class="o">=</span> <span class="n">cast</span><span class="p">(</span><span class="n">Type</span><span class="p">[</span><span class="n">BaseDocWithoutId</span><span class="p">],</span> <span class="n">item</span><span class="p">)</span>
 </span><span id="__span-0-70"><a id="__codelineno-0-70" name="__codelineno-0-70"></a>
-</span><span id="__span-0-71"><a id="__codelineno-0-71" name="__codelineno-0-71"></a>            <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">_DocArrayTyped</span><span class="o">.</span><span class="n">doc_type</span><span class="o">.</span><span class="n">__fields__</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+</span><span id="__span-0-71"><a id="__codelineno-0-71" name="__codelineno-0-71"></a>            <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">_DocArrayTyped</span><span class="o">.</span><span class="n">doc_type</span><span class="o">.</span><span class="n">_docarray_fields</span><span class="p">()</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
 </span><span id="__span-0-72"><a id="__codelineno-0-72" name="__codelineno-0-72"></a>
 </span><span id="__span-0-73"><a id="__codelineno-0-73" name="__codelineno-0-73"></a>                <span class="k">def</span> <span class="nf">_property_generator</span><span class="p">(</span><span class="n">val</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
 </span><span id="__span-0-74"><a id="__codelineno-0-74" name="__codelineno-0-74"></a>                    <span class="k">def</span> <span class="nf">_getter</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -2775,7 +2759,7 @@
 </span><span id="__span-0-322"><a id="__codelineno-0-322" name="__codelineno-0-322"></a>        <span class="p">):</span>
 </span><span id="__span-0-323"><a id="__codelineno-0-323" name="__codelineno-0-323"></a>            <span class="k">yield</span> <span class="bp">self</span><span class="p">[</span><span class="n">indices</span><span class="p">[</span><span class="n">i</span> <span class="o">*</span> <span class="n">batch_size</span> <span class="p">:</span> <span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">batch_size</span><span class="p">]]</span>
 </span></code></pre></div></td></tr></table></div>
-        </details>
+            </details>
 
   
 
@@ -2789,16 +2773,18 @@
 
 
 
+
 <div class="doc doc-object doc-function">
 
 
 
+
 <h3 id="docarray.array.any_array.AnyDocArray.from_protobuf" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">from_protobuf</span><span class="p">(</span><span class="n">pb_msg</span><span class="p">)</span></code>
+          <code class="highlight language-python"><span class="n">from_protobuf</span><span class="p">(</span><span class="n">pb_msg</span><span class="p">)</span></code>
   
   <span class="doc doc-labels">
-      <small class="doc doc-label doc-label-classmethod"><code>classmethod</code></small>
       <small class="doc doc-label doc-label-abstractmethod"><code>abstractmethod</code></small>
+      <small class="doc doc-label doc-label-classmethod"><code>classmethod</code></small>
   </span>
 
 </h3>
@@ -2808,9 +2794,9 @@
   
       <p>create a Document from a protobuf message</p>
 
-      <details class="quote">
-        <summary>Source code in <code>docarray/array/any_array.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-147">147</a></span>
+          <details class="quote">
+            <summary>Source code in <code>docarray/array/any_array.py</code></summary>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-147">147</a></span>
 <span class="normal"><a href="#__codelineno-0-148">148</a></span>
 <span class="normal"><a href="#__codelineno-0-149">149</a></span>
 <span class="normal"><a href="#__codelineno-0-150">150</a></span>
@@ -2820,17 +2806,19 @@
 </span><span id="__span-0-150"><a id="__codelineno-0-150" name="__codelineno-0-150"></a><span class="w">    </span><span class="sd">"""create a Document from a protobuf message"""</span>
 </span><span id="__span-0-151"><a id="__codelineno-0-151" name="__codelineno-0-151"></a>    <span class="o">...</span>
 </span></code></pre></div></td></tr></table></div>
-      </details>
+          </details>
   </div>
 
 </div>
+
 
 <div class="doc doc-object doc-function">
 
 
 
+
 <h3 id="docarray.array.any_array.AnyDocArray.summary" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">summary</span><span class="p">()</span></code>
+          <code class="highlight language-python"><span class="n">summary</span><span class="p">()</span></code>
 
 </h3>
 
@@ -2840,9 +2828,9 @@
       <p>Print a summary of this <a class="autorefs autorefs-internal" href="../da/#docarray.array.doc_list.doc_list.DocList"><code>DocList</code></a> object and a summary of the schema of its
 Document type.</p>
 
-      <details class="quote">
-        <summary>Source code in <code>docarray/array/any_array.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-282">282</a></span>
+          <details class="quote">
+            <summary>Source code in <code>docarray/array/any_array.py</code></summary>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-282">282</a></span>
 <span class="normal"><a href="#__codelineno-0-283">283</a></span>
 <span class="normal"><a href="#__codelineno-0-284">284</a></span>
 <span class="normal"><a href="#__codelineno-0-285">285</a></span>
@@ -2854,17 +2842,19 @@ Document type.</p>
 </span><span id="__span-0-286"><a id="__codelineno-0-286" name="__codelineno-0-286"></a><span class="sd">    """</span>
 </span><span id="__span-0-287"><a id="__codelineno-0-287" name="__codelineno-0-287"></a>    <span class="n">DocArraySummary</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">summary</span><span class="p">()</span>
 </span></code></pre></div></td></tr></table></div>
-      </details>
+          </details>
   </div>
 
 </div>
+
 
 <div class="doc doc-object doc-function">
 
 
 
+
 <h3 id="docarray.array.any_array.AnyDocArray.to_protobuf" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">to_protobuf</span><span class="p">()</span></code>
+          <code class="highlight language-python"><span class="n">to_protobuf</span><span class="p">()</span></code>
   
   <span class="doc doc-labels">
       <small class="doc doc-label doc-label-abstractmethod"><code>abstractmethod</code></small>
@@ -2877,9 +2867,9 @@ Document type.</p>
   
       <p>Convert DocList into a Protobuf message</p>
 
-      <details class="quote">
-        <summary>Source code in <code>docarray/array/any_array.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-153">153</a></span>
+          <details class="quote">
+            <summary>Source code in <code>docarray/array/any_array.py</code></summary>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-153">153</a></span>
 <span class="normal"><a href="#__codelineno-0-154">154</a></span>
 <span class="normal"><a href="#__codelineno-0-155">155</a></span>
 <span class="normal"><a href="#__codelineno-0-156">156</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-0-153"><a id="__codelineno-0-153" name="__codelineno-0-153"></a><span class="nd">@abstractmethod</span>
@@ -2887,17 +2877,19 @@ Document type.</p>
 </span><span id="__span-0-155"><a id="__codelineno-0-155" name="__codelineno-0-155"></a><span class="w">    </span><span class="sd">"""Convert DocList into a Protobuf message"""</span>
 </span><span id="__span-0-156"><a id="__codelineno-0-156" name="__codelineno-0-156"></a>    <span class="o">...</span>
 </span></code></pre></div></td></tr></table></div>
-      </details>
+          </details>
   </div>
 
 </div>
+
 
 <div class="doc doc-object doc-function">
 
 
 
+
 <h3 id="docarray.array.any_array.AnyDocArray.traverse_flat" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">traverse_flat</span><span class="p">(</span><span class="n">access_path</span><span class="p">)</span></code>
+          <code class="highlight language-python"><span class="n">traverse_flat</span><span class="p">(</span><span class="n">access_path</span><span class="p">)</span></code>
   
   <span class="doc doc-labels">
       <small class="doc doc-label doc-label-abstractmethod"><code>abstractmethod</code></small>
@@ -2974,6 +2966,8 @@ type <code>AnyTensor</code>, the doc_vec tensor will be returned instead of a li
 </span><span id="__span-2-17"><a id="__codelineno-2-17" name="__codelineno-2-17" href="#__codelineno-2-17"></a><span class="p">)</span>  <span class="c1"># tensor of shape (2, 3, 224, 224)</span>
 </span></code></pre></div>
 
+
+
   <p><strong>Parameters:</strong></p>
   <table>
     <thead>
@@ -2990,13 +2984,19 @@ type <code>AnyTensor</code>, the doc_vec tensor will be returned instead of a li
           <td>
                 <code>str</code>
           </td>
-          <td><p>a string that represents the access path ("__"-separated).</p></td>
+          <td>
+            <div class="doc-md-description">
+              <p>a string that represents the access path ("__"-separated).</p>
+            </div>
+          </td>
           <td>
               <em>required</em>
           </td>
         </tr>
     </tbody>
   </table>
+
+
 
   <p><strong>Returns:</strong></p>
   <table>
@@ -3011,14 +3011,18 @@ type <code>AnyTensor</code>, the doc_vec tensor will be returned instead of a li
           <td>
                 <code><span title="typing.Union">Union</span>[<span title="typing.List">List</span>[<span title="typing.Any">Any</span>], <a class="autorefs autorefs-internal" title="docarray.typing.tensor.abstract_tensor.AbstractTensor" href="../../typing/tensor/tensor/#docarray.typing.tensor.abstract_tensor.AbstractTensor">AbstractTensor</a>]</code>
           </td>
-          <td><p>list of the accessed objects, flattened if nested.</p></td>
+          <td>
+            <div class="doc-md-description">
+              <p>list of the accessed objects, flattened if nested.</p>
+            </div>
+          </td>
         </tr>
     </tbody>
   </table>
 
-      <details class="quote">
-        <summary>Source code in <code>docarray/array/any_array.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-170">170</a></span>
+          <details class="quote">
+            <summary>Source code in <code>docarray/array/any_array.py</code></summary>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-170">170</a></span>
 <span class="normal"><a href="#__codelineno-0-171">171</a></span>
 <span class="normal"><a href="#__codelineno-0-172">172</a></span>
 <span class="normal"><a href="#__codelineno-0-173">173</a></span>
@@ -3188,7 +3192,7 @@ type <code>AnyTensor</code>, the doc_vec tensor will be returned instead of a li
 </span><span id="__span-0-253"><a id="__codelineno-0-253" name="__codelineno-0-253"></a><span class="sd">    """</span>
 </span><span id="__span-0-254"><a id="__codelineno-0-254" name="__codelineno-0-254"></a>    <span class="o">...</span>
 </span></code></pre></div></td></tr></table></div>
-      </details>
+          </details>
   </div>
 
 </div>

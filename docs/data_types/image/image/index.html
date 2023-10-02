@@ -766,8 +766,8 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../user_guide/storing/doc_store/store_jac/" class="md-nav__link">
-        Store on Jina AI Cloud
+      <a href="../../../user_guide/storing/doc_store/store_jac.md" class="md-nav__link">
+        None
       </a>
     </li>
   
@@ -1641,8 +1641,6 @@
         
           
         
-          
-        
       
       
         <label class="md-nav__link" for="__nav_6_5" id="__nav_6_5_label" tabindex="0">
@@ -1679,20 +1677,6 @@
     <li class="md-nav__item">
       <a href="../../../API_reference/doc_store/file_doc_store/" class="md-nav__link">
         FileDocStore
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../../API_reference/doc_store/jac_doc_store/" class="md-nav__link">
-        JACDocStore
       </a>
     </li>
   
@@ -2223,7 +2207,7 @@ This section will show you how to load and handle image data using DocArray.</p>
 </span><span id="__span-1-11"><a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a>    <span class="n">url</span><span class="o">=</span><span class="s1">'https://github.com/docarray/docarray/blob/main/tests/toydata/image-data/apple.png?raw=true'</span>
 </span><span id="__span-1-12"><a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a><span class="p">)</span>
 </span></code></pre></div>
-<p>To load the image data you can call <a class="autorefs autorefs-internal" href="../../../API_reference/typing/url/#docarray.typing.url.image_url.ImageUrl.load"><code>.load()</code></a> on the <code>url</code> attribute. By default, <a class="autorefs autorefs-internal" href="../../../API_reference/typing/url/#docarray.typing.url.image_url.ImageUrl.load"><code>ImageUrl.load()</code></a> returns an <a class="autorefs autorefs-internal" href="../../../API_reference/typing/tensor/image/#docarray.typing.tensor.image.image_ndarray.ImageNdArray"><code>ImageNdArray</code></a> object:</p>
+<p>To load the image data you can call <a class="autorefs autorefs-internal" href="../../../API_reference/typing/url/#docarray.typing.url.ImageUrl.load"><code>.load()</code></a> on the <code>url</code> attribute. By default, <a class="autorefs autorefs-internal" href="../../../API_reference/typing/url/#docarray.typing.url.ImageUrl.load"><code>ImageUrl.load()</code></a> returns an <a class="autorefs autorefs-internal" href="../../../API_reference/typing/tensor/image/#docarray.typing.tensor.image.image_ndarray.ImageNdArray"><code>ImageNdArray</code></a> object:</p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="kn">from</span> <span class="nn">docarray.typing</span> <span class="kn">import</span> <span class="n">ImageNdArray</span>
 </span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>
 </span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="n">img</span><span class="o">.</span><span class="n">tensor</span> <span class="o">=</span> <span class="n">img</span><span class="o">.</span><span class="n">url</span><span class="o">.</span><span class="n">load</span><span class="p">()</span>
@@ -2255,7 +2239,7 @@ This section will show you how to load and handle image data using DocArray.</p>
 </span><span id="__span-3-15"><a id="__codelineno-3-15" name="__codelineno-3-15" href="#__codelineno-3-15"></a><span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">img</span><span class="o">.</span><span class="n">tf_tensor</span><span class="p">,</span> <span class="n">ImageTensorFlowTensor</span><span class="p">)</span>
 </span><span id="__span-3-16"><a id="__codelineno-3-16" name="__codelineno-3-16" href="#__codelineno-3-16"></a><span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">img</span><span class="o">.</span><span class="n">torch_tensor</span><span class="p">,</span> <span class="n">ImageTorchTensor</span><span class="p">)</span>
 </span></code></pre></div>
-<p>You can also load the URL content as a <a href="https://pillow.readthedocs.io/en/stable/reference/Image.html#PIL.Image.Image"><code>PIL.Image.Image</code></a> instance using <a class="autorefs autorefs-internal" href="../../../API_reference/typing/url/#docarray.typing.url.image_url.ImageUrl.load_pil"><code>ImageUrl.load_pil()</code></a>:</p>
+<p>You can also load the URL content as a <a href="https://pillow.readthedocs.io/en/stable/reference/Image.html#PIL.Image.Image"><code>PIL.Image.Image</code></a> instance using <a class="autorefs autorefs-internal" href="../../../API_reference/typing/url/#docarray.typing.url.ImageUrl.load_pil"><code>ImageUrl.load_pil()</code></a>:</p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="kn">from</span> <span class="nn">PIL.Image</span> <span class="kn">import</span> <span class="n">Image</span> <span class="k">as</span> <span class="n">PILImage</span>
 </span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>
 </span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="n">img</span> <span class="o">=</span> <span class="n">MyImage</span><span class="p">(</span>
@@ -2328,10 +2312,10 @@ Let's say, for instance, all your images are of size <code>(200, 300, 3)</code>.
 <h2 id="getting-started-predefined-imagedoc">Getting started - Predefined <code>ImageDoc</code></h2>
 <p>To get started and play around with the image modality, DocArray provides a predefined <a class="autorefs autorefs-internal" href="../../../API_reference/documents/documents/#docarray.documents.image.ImageDoc"><code>ImageDoc</code></a>, which includes all of the previously mentioned functionalities:</p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="k">class</span> <span class="nc">ImageDoc</span><span class="p">(</span><span class="n">BaseDoc</span><span class="p">):</span>
-</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>    <span class="n">url</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ImageUrl</span><span class="p">]</span>
-</span><span id="__span-9-3"><a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a>    <span class="n">tensor</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ImageTensor</span><span class="p">]</span>
-</span><span id="__span-9-4"><a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a>    <span class="n">embedding</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">AnyEmbedding</span><span class="p">]</span>
-</span><span id="__span-9-5"><a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a>    <span class="n">bytes_</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ImageBytes</span><span class="p">]</span>
+</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>    <span class="n">url</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ImageUrl</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+</span><span id="__span-9-3"><a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a>    <span class="n">tensor</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ImageTensor</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+</span><span id="__span-9-4"><a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a>    <span class="n">embedding</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">AnyEmbedding</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+</span><span id="__span-9-5"><a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a>    <span class="n">bytes_</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ImageBytes</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
 </span></code></pre></div>
 <p>You can use this class directly or extend it to your preference:</p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="kn">from</span> <span class="nn">docarray.documents</span> <span class="kn">import</span> <span class="n">ImageDoc</span>
@@ -2342,7 +2326,7 @@ Let's say, for instance, all your images are of size <code>(200, 300, 3)</code>.
 </span><span id="__span-10-6"><a id="__codelineno-10-6" name="__codelineno-10-6" href="#__codelineno-10-6"></a><span class="c1"># extending ImageDoc</span>
 </span><span id="__span-10-7"><a id="__codelineno-10-7" name="__codelineno-10-7" href="#__codelineno-10-7"></a><span class="k">class</span> <span class="nc">MyImage</span><span class="p">(</span><span class="n">ImageDoc</span><span class="p">):</span>
 </span><span id="__span-10-8"><a id="__codelineno-10-8" name="__codelineno-10-8" href="#__codelineno-10-8"></a>    <span class="n">image_title</span><span class="p">:</span> <span class="nb">str</span>
-</span><span id="__span-10-9"><a id="__codelineno-10-9" name="__codelineno-10-9" href="#__codelineno-10-9"></a>    <span class="n">second_embedding</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">AnyEmbedding</span><span class="p">]</span>
+</span><span id="__span-10-9"><a id="__codelineno-10-9" name="__codelineno-10-9" href="#__codelineno-10-9"></a>    <span class="n">second_embedding</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">AnyEmbedding</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
 </span><span id="__span-10-10"><a id="__codelineno-10-10" name="__codelineno-10-10" href="#__codelineno-10-10"></a>
 </span><span id="__span-10-11"><a id="__codelineno-10-11" name="__codelineno-10-11" href="#__codelineno-10-11"></a>
 </span><span id="__span-10-12"><a id="__codelineno-10-12" name="__codelineno-10-12" href="#__codelineno-10-12"></a><span class="n">image</span> <span class="o">=</span> <span class="n">MyImage</span><span class="p">(</span>

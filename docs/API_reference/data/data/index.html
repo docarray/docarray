@@ -766,8 +766,8 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../user_guide/storing/doc_store/store_jac/" class="md-nav__link">
-        Store on Jina AI Cloud
+      <a href="../../../user_guide/storing/doc_store/store_jac.md" class="md-nav__link">
+        None
       </a>
     </li>
   
@@ -1608,8 +1608,6 @@
         
           
         
-          
-        
       
       
         <label class="md-nav__link" for="__nav_6_5" id="__nav_6_5_label" tabindex="0">
@@ -1646,20 +1644,6 @@
     <li class="md-nav__item">
       <a href="../../doc_store/file_doc_store/" class="md-nav__link">
         FileDocStore
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../doc_store/jac_doc_store/" class="md-nav__link">
-        JACDocStore
       </a>
     </li>
   
@@ -2132,16 +2116,17 @@
 
 
 
+
 <h2 id="docarray.data.torch_dataset.MultiModalDataset" class="doc doc-heading">
-        <code>docarray.data.torch_dataset.MultiModalDataset</code>
+          <code>docarray.data.torch_dataset.MultiModalDataset</code>
 
 
 </h2>
 
 
   <div class="doc doc-contents first">
-      <p class="doc doc-class-bases">
-        Bases: <code><span title="torch.utils.data.Dataset">Dataset</span></code>, <code><span title="typing.Generic">Generic</span>[<span title="docarray.data.torch_dataset.T_doc">T_doc</span>]</code></p>
+          <p class="doc doc-class-bases">
+            Bases: <code><span title="torch.utils.data.Dataset">Dataset</span></code>, <code><span title="typing.Generic">Generic</span>[<span title="docarray.data.torch_dataset.T_doc">T_doc</span>]</code></p>
 
   
       <p>A dataset that can be used inside a PyTorch DataLoader.
@@ -2217,6 +2202,8 @@ not return a value.</p>
 </span></code></pre></div>
 <hr>
 
+
+
   <p><strong>Parameters:</strong></p>
   <table>
     <thead>
@@ -2231,9 +2218,13 @@ not return a value.</p>
         <tr>
           <td><code>docs</code></td>
           <td>
-                <code>DocList[T_doc]</code>
+                <code><a class="autorefs autorefs-internal" title="docarray.DocList" href="../../array/da/#docarray.array.doc_list.doc_list.DocList">DocList</a>[<span title="docarray.data.torch_dataset.T_doc">T_doc</span>]</code>
           </td>
-          <td><p>the <code>DocList</code> to be used as the dataset</p></td>
+          <td>
+            <div class="doc-md-description">
+              <p>the <code>DocList</code> to be used as the dataset</p>
+            </div>
+          </td>
           <td>
               <em>required</em>
           </td>
@@ -2243,7 +2234,11 @@ not return a value.</p>
           <td>
                 <code><span title="typing.Dict">Dict</span>[str, <span title="typing.Callable">Callable</span>]</code>
           </td>
-          <td><p>a dictionary of field names and preprocessing functions</p></td>
+          <td>
+            <div class="doc-md-description">
+              <p>a dictionary of field names and preprocessing functions</p>
+            </div>
+          </td>
           <td>
               <em>required</em>
           </td>
@@ -2251,10 +2246,9 @@ not return a value.</p>
     </tbody>
   </table>
 
-
-        <details class="quote">
-          <summary>Source code in <code>docarray/data/torch_dataset.py</code></summary>
-          <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-12"> 12</a></span>
+            <details class="quote">
+              <summary>Source code in <code>docarray/data/torch_dataset.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-12"> 12</a></span>
 <span class="normal"><a href="#__codelineno-0-13"> 13</a></span>
 <span class="normal"><a href="#__codelineno-0-14"> 14</a></span>
 <span class="normal"><a href="#__codelineno-0-15"> 15</a></span>
@@ -2554,7 +2548,7 @@ not return a value.</p>
 </span><span id="__span-0-160"><a id="__codelineno-0-160" name="__codelineno-0-160"></a>
 </span><span id="__span-0-161"><a id="__codelineno-0-161" name="__codelineno-0-161"></a>        <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">__typed_ds__</span><span class="p">[</span><span class="n">item</span><span class="p">]</span>
 </span></code></pre></div></td></tr></table></div>
-        </details>
+            </details>
 
   
 

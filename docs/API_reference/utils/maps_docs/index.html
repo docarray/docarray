@@ -766,8 +766,8 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../user_guide/storing/doc_store/store_jac/" class="md-nav__link">
-        Store on Jina AI Cloud
+      <a href="../../../user_guide/storing/doc_store/store_jac.md" class="md-nav__link">
+        None
       </a>
     </li>
   
@@ -1565,8 +1565,6 @@
         
           
         
-          
-        
       
       
         <label class="md-nav__link" for="__nav_6_5" id="__nav_6_5_label" tabindex="0">
@@ -1603,20 +1601,6 @@
     <li class="md-nav__item">
       <a href="../../doc_store/file_doc_store/" class="md-nav__link">
         FileDocStore
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../doc_store/jac_doc_store/" class="md-nav__link">
-        JACDocStore
       </a>
     </li>
   
@@ -2172,6 +2156,7 @@
 
 
 
+
 <h2 id="docarray.utils.map" class="doc doc-heading">
           <code>docarray.utils.map</code>
 
@@ -2192,12 +2177,14 @@
 
 
 
+
 <div class="doc doc-object doc-function">
 
 
 
+
 <h3 id="docarray.utils.map.map_docs" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">map_docs</span><span class="p">(</span><span class="n">docs</span><span class="p">,</span> <span class="n">func</span><span class="p">,</span> <span class="n">backend</span><span class="o">=</span><span class="s1">'thread'</span><span class="p">,</span> <span class="n">num_worker</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">pool</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">show_progress</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></code>
+          <code class="highlight language-python"><span class="n">map_docs</span><span class="p">(</span><span class="n">docs</span><span class="p">,</span> <span class="n">func</span><span class="p">,</span> <span class="n">backend</span><span class="o">=</span><span class="s1">'thread'</span><span class="p">,</span> <span class="n">num_worker</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">pool</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">show_progress</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></code>
 
 </h3>
 
@@ -2233,6 +2220,8 @@ yielding the results.</p>
 </span></code></pre></div>
 <hr>
 
+
+
   <p><strong>Parameters:</strong></p>
   <table>
     <thead>
@@ -2249,7 +2238,11 @@ yielding the results.</p>
           <td>
                 <code><span title="docarray.utils.map.T">T</span></code>
           </td>
-          <td><p>DocList to apply function to</p></td>
+          <td>
+            <div class="doc-md-description">
+              <p>DocList to apply function to</p>
+            </div>
+          </td>
           <td>
               <em>required</em>
           </td>
@@ -2259,7 +2252,11 @@ yielding the results.</p>
           <td>
                 <code><span title="typing.Callable">Callable</span>[[<span title="docarray.utils.map.T_doc">T_doc</span>], <span title="docarray.utils.map.T_doc">T_doc</span>]</code>
           </td>
-          <td><p>a function that takes a <a class="autorefs autorefs-internal" href="../../base_doc/base_doc/#docarray.base_doc.doc.BaseDoc"><code>BaseDoc</code></a> as input and outputs a <a class="autorefs autorefs-internal" href="../../base_doc/base_doc/#docarray.base_doc.doc.BaseDoc"><code>BaseDoc</code></a>.</p></td>
+          <td>
+            <div class="doc-md-description">
+              <p>a function that takes a <a class="autorefs autorefs-internal" href="../../base_doc/base_doc/#docarray.base_doc.doc.BaseDoc"><code>BaseDoc</code></a> as input and outputs a <a class="autorefs autorefs-internal" href="../../base_doc/base_doc/#docarray.base_doc.doc.BaseDoc"><code>BaseDoc</code></a>.</p>
+            </div>
+          </td>
           <td>
               <em>required</em>
           </td>
@@ -2269,7 +2266,11 @@ yielding the results.</p>
           <td>
                 <code>str</code>
           </td>
-          <td><p><code>thread</code> for multithreading and <code>process</code> for multiprocessing. Defaults to <code>thread</code>. In general, if <code>func</code> is IO-bound then <code>thread</code> is a good choice. On the other hand, if <code>func</code> is CPU-bound, then you may use <code>process</code>. In practice, you should try yourselves to figure out the best value. However, if you wish to modify the elements in-place, regardless of IO/CPU-bound, you should always use <code>thread</code> backend. Note that computation that is offloaded to non-python code (e.g. through np/torch/tf) falls under the "IO-bound" category.  !!! warning When using <code>process</code> backend, your <code>func</code> should not modify elements in-place. This is because the multiprocessing backend passes the variable via pickle and works in another process. The passed object and the original object do <strong>not</strong> share the same memory.</p></td>
+          <td>
+            <div class="doc-md-description">
+              <p><code>thread</code> for multithreading and <code>process</code> for multiprocessing. Defaults to <code>thread</code>. In general, if <code>func</code> is IO-bound then <code>thread</code> is a good choice. On the other hand, if <code>func</code> is CPU-bound, then you may use <code>process</code>. In practice, you should try yourselves to figure out the best value. However, if you wish to modify the elements in-place, regardless of IO/CPU-bound, you should always use <code>thread</code> backend. Note that computation that is offloaded to non-python code (e.g. through np/torch/tf) falls under the "IO-bound" category.  !!! warning When using <code>process</code> backend, your <code>func</code> should not modify elements in-place. This is because the multiprocessing backend passes the variable via pickle and works in another process. The passed object and the original object do <strong>not</strong> share the same memory.</p>
+            </div>
+          </td>
           <td>
                 <code>'thread'</code>
           </td>
@@ -2279,7 +2280,11 @@ yielding the results.</p>
           <td>
                 <code><span title="typing.Optional">Optional</span>[int]</code>
           </td>
-          <td><p>the number of parallel workers. If not given, the number of CPUs in the system will be used.</p></td>
+          <td>
+            <div class="doc-md-description">
+              <p>the number of parallel workers. If not given, the number of CPUs in the system will be used.</p>
+            </div>
+          </td>
           <td>
                 <code>None</code>
           </td>
@@ -2289,7 +2294,11 @@ yielding the results.</p>
           <td>
                 <code><span title="typing.Optional">Optional</span>[<span title="typing.Union">Union</span>[<span title="multiprocessing.pool.Pool">Pool</span>, <span title="multiprocessing.pool.ThreadPool">ThreadPool</span>]]</code>
           </td>
-          <td><p>use an existing/external process or thread pool. If given, you will be responsible for closing the pool.</p></td>
+          <td>
+            <div class="doc-md-description">
+              <p>use an existing/external process or thread pool. If given, you will be responsible for closing the pool.</p>
+            </div>
+          </td>
           <td>
                 <code>None</code>
           </td>
@@ -2299,13 +2308,19 @@ yielding the results.</p>
           <td>
                 <code>bool</code>
           </td>
-          <td><p>show a progress bar. Defaults to False.</p></td>
+          <td>
+            <div class="doc-md-description">
+              <p>show a progress bar. Defaults to False.</p>
+            </div>
+          </td>
           <td>
                 <code>False</code>
           </td>
         </tr>
     </tbody>
   </table>
+
+
 
   <p><strong>Returns:</strong></p>
   <table>
@@ -2320,14 +2335,18 @@ yielding the results.</p>
           <td>
                 <code><span title="typing.Generator">Generator</span>[<span title="docarray.utils.map.T_doc">T_doc</span>, None, None]</code>
           </td>
-          <td><p>yield Documents returned from <code>func</code></p></td>
+          <td>
+            <div class="doc-md-description">
+              <p>yield Documents returned from <code>func</code></p>
+            </div>
+          </td>
         </tr>
     </tbody>
   </table>
 
-      <details class="quote">
-        <summary>Source code in <code>docarray/utils/map.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-17"> 17</a></span>
+          <details class="quote">
+            <summary>Source code in <code>docarray/utils/map.py</code></summary>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-17"> 17</a></span>
 <span class="normal"><a href="#__codelineno-0-18"> 18</a></span>
 <span class="normal"><a href="#__codelineno-0-19"> 19</a></span>
 <span class="normal"><a href="#__codelineno-0-20"> 20</a></span>
@@ -2501,17 +2520,19 @@ yielding the results.</p>
 </span><span id="__span-0-102"><a id="__codelineno-0-102" name="__codelineno-0-102"></a>        <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">track</span><span class="p">(</span><span class="n">imap</span><span class="p">,</span> <span class="n">total</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">docs</span><span class="p">),</span> <span class="n">disable</span><span class="o">=</span><span class="ow">not</span> <span class="n">show_progress</span><span class="p">):</span>
 </span><span id="__span-0-103"><a id="__codelineno-0-103" name="__codelineno-0-103"></a>            <span class="k">yield</span> <span class="n">x</span>
 </span></code></pre></div></td></tr></table></div>
-      </details>
+          </details>
   </div>
 
 </div>
+
 
 <div class="doc doc-object doc-function">
 
 
 
+
 <h3 id="docarray.utils.map.map_docs_batched" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">map_docs_batched</span><span class="p">(</span><span class="n">docs</span><span class="p">,</span> <span class="n">func</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">,</span> <span class="n">backend</span><span class="o">=</span><span class="s1">'thread'</span><span class="p">,</span> <span class="n">num_worker</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">shuffle</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">pool</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">show_progress</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></code>
+          <code class="highlight language-python"><span class="n">map_docs_batched</span><span class="p">(</span><span class="n">docs</span><span class="p">,</span> <span class="n">func</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">,</span> <span class="n">backend</span><span class="o">=</span><span class="s1">'thread'</span><span class="p">,</span> <span class="n">num_worker</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">shuffle</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">pool</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">show_progress</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></code>
 
 </h3>
 
@@ -2549,6 +2570,8 @@ Each element in the returned iterator is an <code>AnyDocArray</code>.</p>
 </span></code></pre></div>
 <hr>
 
+
+
   <p><strong>Parameters:</strong></p>
   <table>
     <thead>
@@ -2565,7 +2588,11 @@ Each element in the returned iterator is an <code>AnyDocArray</code>.</p>
           <td>
                 <code><span title="docarray.utils.map.T">T</span></code>
           </td>
-          <td><p>DocList to apply function to</p></td>
+          <td>
+            <div class="doc-md-description">
+              <p>DocList to apply function to</p>
+            </div>
+          </td>
           <td>
               <em>required</em>
           </td>
@@ -2575,7 +2602,11 @@ Each element in the returned iterator is an <code>AnyDocArray</code>.</p>
           <td>
                 <code>int</code>
           </td>
-          <td><p>Size of each generated batch (except the last one, which might be smaller).</p></td>
+          <td>
+            <div class="doc-md-description">
+              <p>Size of each generated batch (except the last one, which might be smaller).</p>
+            </div>
+          </td>
           <td>
               <em>required</em>
           </td>
@@ -2585,7 +2616,11 @@ Each element in the returned iterator is an <code>AnyDocArray</code>.</p>
           <td>
                 <code>bool</code>
           </td>
-          <td><p>If set, shuffle the Documents before dividing into minibatches.</p></td>
+          <td>
+            <div class="doc-md-description">
+              <p>If set, shuffle the Documents before dividing into minibatches.</p>
+            </div>
+          </td>
           <td>
                 <code>False</code>
           </td>
@@ -2595,7 +2630,11 @@ Each element in the returned iterator is an <code>AnyDocArray</code>.</p>
           <td>
                 <code><span title="typing.Callable">Callable</span>[[<span title="docarray.utils.map.T">T</span>], <span title="typing.Union">Union</span>[<span title="docarray.utils.map.T">T</span>, <span title="docarray.utils.map.T_doc">T_doc</span>]]</code>
           </td>
-          <td><p>a function that takes an :class:<code>AnyDocArray</code> as input and outputs an :class:<code>AnyDocArray</code> or a :class:<code>BaseDoc</code>.</p></td>
+          <td>
+            <div class="doc-md-description">
+              <p>a function that takes an :class:<code>AnyDocArray</code> as input and outputs an :class:<code>AnyDocArray</code> or a :class:<code>BaseDoc</code>.</p>
+            </div>
+          </td>
           <td>
               <em>required</em>
           </td>
@@ -2605,7 +2644,11 @@ Each element in the returned iterator is an <code>AnyDocArray</code>.</p>
           <td>
                 <code>str</code>
           </td>
-          <td><p><code>thread</code> for multithreading and <code>process</code> for multiprocessing. Defaults to <code>thread</code>. In general, if <code>func</code> is IO-bound then <code>thread</code> is a good choice. On the other hand, if <code>func</code> is CPU-bound, then you may use <code>process</code>. In practice, you should try yourselves to figure out the best value. However, if you wish to modify the elements in-place, regardless of IO/CPU-bound, you should always use <code>thread</code> backend. Note that computation that is offloaded to non-python code (e.g. through np/torch/tf) falls under the "IO-bound" category.  !!! warning When using <code>process</code> backend, your <code>func</code> should not modify elements in-place. This is because the multiprocessing backend passes the variable via pickle and works in another process. The passed object and the original object do <strong>not</strong> share the same memory.</p></td>
+          <td>
+            <div class="doc-md-description">
+              <p><code>thread</code> for multithreading and <code>process</code> for multiprocessing. Defaults to <code>thread</code>. In general, if <code>func</code> is IO-bound then <code>thread</code> is a good choice. On the other hand, if <code>func</code> is CPU-bound, then you may use <code>process</code>. In practice, you should try yourselves to figure out the best value. However, if you wish to modify the elements in-place, regardless of IO/CPU-bound, you should always use <code>thread</code> backend. Note that computation that is offloaded to non-python code (e.g. through np/torch/tf) falls under the "IO-bound" category.  !!! warning When using <code>process</code> backend, your <code>func</code> should not modify elements in-place. This is because the multiprocessing backend passes the variable via pickle and works in another process. The passed object and the original object do <strong>not</strong> share the same memory.</p>
+            </div>
+          </td>
           <td>
                 <code>'thread'</code>
           </td>
@@ -2615,7 +2658,11 @@ Each element in the returned iterator is an <code>AnyDocArray</code>.</p>
           <td>
                 <code><span title="typing.Optional">Optional</span>[int]</code>
           </td>
-          <td><p>the number of parallel workers. If not given, then the number of CPUs in the system will be used.</p></td>
+          <td>
+            <div class="doc-md-description">
+              <p>the number of parallel workers. If not given, then the number of CPUs in the system will be used.</p>
+            </div>
+          </td>
           <td>
                 <code>None</code>
           </td>
@@ -2625,7 +2672,11 @@ Each element in the returned iterator is an <code>AnyDocArray</code>.</p>
           <td>
                 <code>bool</code>
           </td>
-          <td><p>show a progress bar</p></td>
+          <td>
+            <div class="doc-md-description">
+              <p>show a progress bar</p>
+            </div>
+          </td>
           <td>
                 <code>False</code>
           </td>
@@ -2635,13 +2686,19 @@ Each element in the returned iterator is an <code>AnyDocArray</code>.</p>
           <td>
                 <code><span title="typing.Optional">Optional</span>[<span title="typing.Union">Union</span>[<span title="multiprocessing.pool.Pool">Pool</span>, <span title="multiprocessing.pool.ThreadPool">ThreadPool</span>]]</code>
           </td>
-          <td><p>use an existing/external pool. If given, <code>backend</code> is ignored and you will be responsible for closing the pool.</p></td>
+          <td>
+            <div class="doc-md-description">
+              <p>use an existing/external pool. If given, <code>backend</code> is ignored and you will be responsible for closing the pool.</p>
+            </div>
+          </td>
           <td>
                 <code>None</code>
           </td>
         </tr>
     </tbody>
   </table>
+
+
 
   <p><strong>Returns:</strong></p>
   <table>
@@ -2656,14 +2713,18 @@ Each element in the returned iterator is an <code>AnyDocArray</code>.</p>
           <td>
                 <code><span title="typing.Generator">Generator</span>[<span title="typing.Union">Union</span>[<span title="docarray.utils.map.T">T</span>, <span title="docarray.utils.map.T_doc">T_doc</span>], None, None]</code>
           </td>
-          <td><p>yield DocLists returned from <code>func</code></p></td>
+          <td>
+            <div class="doc-md-description">
+              <p>yield DocLists returned from <code>func</code></p>
+            </div>
+          </td>
         </tr>
     </tbody>
   </table>
 
-      <details class="quote">
-        <summary>Source code in <code>docarray/utils/map.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-106">106</a></span>
+          <details class="quote">
+            <summary>Source code in <code>docarray/utils/map.py</code></summary>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-106">106</a></span>
 <span class="normal"><a href="#__codelineno-0-107">107</a></span>
 <span class="normal"><a href="#__codelineno-0-108">108</a></span>
 <span class="normal"><a href="#__codelineno-0-109">109</a></span>
@@ -2859,7 +2920,7 @@ Each element in the returned iterator is an <code>AnyDocArray</code>.</p>
 </span><span id="__span-0-202"><a id="__codelineno-0-202" name="__codelineno-0-202"></a>        <span class="p">):</span>
 </span><span id="__span-0-203"><a id="__codelineno-0-203" name="__codelineno-0-203"></a>            <span class="k">yield</span> <span class="n">x</span>
 </span></code></pre></div></td></tr></table></div>
-      </details>
+          </details>
   </div>
 
 </div>

@@ -766,8 +766,8 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../user_guide/storing/doc_store/store_jac/" class="md-nav__link">
-        Store on Jina AI Cloud
+      <a href="../../../user_guide/storing/doc_store/store_jac.md" class="md-nav__link">
+        None
       </a>
     </li>
   
@@ -1680,8 +1680,6 @@
         
           
         
-          
-        
       
       
         <label class="md-nav__link" for="__nav_6_5" id="__nav_6_5_label" tabindex="0">
@@ -1718,20 +1716,6 @@
     <li class="md-nav__item">
       <a href="../../../API_reference/doc_store/file_doc_store/" class="md-nav__link">
         FileDocStore
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../../API_reference/doc_store/jac_doc_store/" class="md-nav__link">
-        JACDocStore
       </a>
     </li>
   
@@ -2308,7 +2292,7 @@ This section will show you how to load and handle 3D data using DocArray.</p>
 </span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a>
 </span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="k">class</span> <span class="nc">MyMesh3D</span><span class="p">(</span><span class="n">BaseDoc</span><span class="p">):</span>
 </span><span id="__span-1-9"><a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a>    <span class="n">mesh_url</span><span class="p">:</span> <span class="n">Mesh3DUrl</span>
-</span><span id="__span-1-10"><a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a>    <span class="n">tensors</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">VerticesAndFaces</span><span class="p">]</span>
+</span><span id="__span-1-10"><a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a>    <span class="n">tensors</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">VerticesAndFaces</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
 </span><span id="__span-1-11"><a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a>
 </span><span id="__span-1-12"><a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a>
 </span><span id="__span-1-13"><a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a><span class="n">doc</span> <span class="o">=</span> <span class="n">MyMesh3D</span><span class="p">(</span><span class="n">mesh_url</span><span class="o">=</span><span class="s2">"https://people.sc.fsu.edu/~jburkardt/data/obj/al.obj"</span><span class="p">)</span>
@@ -3607,7 +3591,7 @@ init();&lt;/script&gt;&lt;/body&gt;
 </span><span id="__span-5-7"><a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a>
 </span><span id="__span-5-8"><a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a><span class="k">class</span> <span class="nc">MyPointCloud</span><span class="p">(</span><span class="n">BaseDoc</span><span class="p">):</span>
 </span><span id="__span-5-9"><a id="__codelineno-5-9" name="__codelineno-5-9" href="#__codelineno-5-9"></a>    <span class="n">url</span><span class="p">:</span> <span class="n">PointCloud3DUrl</span>
-</span><span id="__span-5-10"><a id="__codelineno-5-10" name="__codelineno-5-10" href="#__codelineno-5-10"></a>    <span class="n">tensors</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">PointsAndColors</span><span class="p">]</span>
+</span><span id="__span-5-10"><a id="__codelineno-5-10" name="__codelineno-5-10" href="#__codelineno-5-10"></a>    <span class="n">tensors</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">PointsAndColors</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
 </span><span id="__span-5-11"><a id="__codelineno-5-11" name="__codelineno-5-11" href="#__codelineno-5-11"></a>
 </span><span id="__span-5-12"><a id="__codelineno-5-12" name="__codelineno-5-12" href="#__codelineno-5-12"></a>
 </span><span id="__span-5-13"><a id="__codelineno-5-13" name="__codelineno-5-13" href="#__codelineno-5-13"></a><span class="n">doc</span> <span class="o">=</span> <span class="n">MyPointCloud</span><span class="p">(</span><span class="n">url</span><span class="o">=</span><span class="s2">"https://people.sc.fsu.edu/~jburkardt/data/obj/al.obj"</span><span class="p">)</span>
@@ -4890,19 +4874,19 @@ init();&lt;/script&gt;&lt;/body&gt;
 <h2 id="getting-started-predefined-documents">Getting started - Predefined documents</h2>
 <p>To get started and play around with the 3D modalities, DocArray provides the predefined documents <a class="autorefs autorefs-internal" href="../../../API_reference/documents/documents/#docarray.documents.mesh.Mesh3D"><code>Mesh3D</code></a> and <a class="autorefs autorefs-internal" href="../../../API_reference/documents/documents/#docarray.documents.point_cloud.PointCloud3D"><code>PointCloud3D</code></a>, which includes all of the previously mentioned functionalities.</p>
 <h3 id="mesh3d"><code>Mesh3D</code></h3>
-<p>The <a class="autorefs autorefs-internal" href="../../../API_reference/documents/documents/#docarray.documents.mesh.Mesh3D"><code>Mesh3D</code></a> class provides a <a class="autorefs autorefs-internal" href="../../../API_reference/typing/url/#docarray.typing.url.url_3d.Mesh3DUrl"><code>Mesh3DUrl</code></a> field and <a class="autorefs autorefs-internal" href="../../../API_reference/documents/documents/#docarray.documents.mesh.vertices_and_faces.VerticesAndFaces"><code>VerticesAndFaces</code></a> field.</p>
+<p>The <a class="autorefs autorefs-internal" href="../../../API_reference/documents/documents/#docarray.documents.mesh.Mesh3D"><code>Mesh3D</code></a> class provides a <a class="autorefs autorefs-internal" href="../../../API_reference/typing/url/#docarray.typing.url.url_3d.mesh_url.Mesh3DUrl"><code>Mesh3DUrl</code></a> field and <a class="autorefs autorefs-internal" href="../../../API_reference/documents/documents/#docarray.documents.mesh.vertices_and_faces.VerticesAndFaces"><code>VerticesAndFaces</code></a> field.</p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="k">class</span> <span class="nc">Mesh3D</span><span class="p">(</span><span class="n">BaseDoc</span><span class="p">):</span>
-</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>    <span class="n">url</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Mesh3DUrl</span><span class="p">]</span>
-</span><span id="__span-9-3"><a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a>    <span class="n">tensors</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">VerticesAndFaces</span><span class="p">]</span>
-</span><span id="__span-9-4"><a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a>    <span class="n">embedding</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">AnyEmbedding</span><span class="p">]</span>
-</span><span id="__span-9-5"><a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a>    <span class="n">bytes_</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bytes</span><span class="p">]</span>
+</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>    <span class="n">url</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Mesh3DUrl</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+</span><span id="__span-9-3"><a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a>    <span class="n">tensors</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">VerticesAndFaces</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+</span><span id="__span-9-4"><a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a>    <span class="n">embedding</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">AnyEmbedding</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+</span><span id="__span-9-5"><a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a>    <span class="n">bytes_</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bytes</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
 </span></code></pre></div>
 <h3 id="pointcloud3d"><code>PointCloud3D</code></h3>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="k">class</span> <span class="nc">PointCloud3D</span><span class="p">(</span><span class="n">BaseDoc</span><span class="p">):</span>
-</span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>    <span class="n">url</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">PointCloud3DUrl</span><span class="p">]</span>
-</span><span id="__span-10-3"><a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a>    <span class="n">tensors</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">PointsAndColors</span><span class="p">]</span>
-</span><span id="__span-10-4"><a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a>    <span class="n">embedding</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">AnyEmbedding</span><span class="p">]</span>
-</span><span id="__span-10-5"><a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a>    <span class="n">bytes_</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bytes</span><span class="p">]</span>
+</span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>    <span class="n">url</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">PointCloud3DUrl</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+</span><span id="__span-10-3"><a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a>    <span class="n">tensors</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">PointsAndColors</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+</span><span id="__span-10-4"><a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a>    <span class="n">embedding</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">AnyEmbedding</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+</span><span id="__span-10-5"><a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a>    <span class="n">bytes_</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bytes</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
 </span></code></pre></div>
 <p>You can use them directly, extend or compose them:</p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">BaseDoc</span>

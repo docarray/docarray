@@ -950,8 +950,8 @@
   
   
     <li class="md-nav__item">
-      <a href="../doc_store/store_jac/" class="md-nav__link">
-        Store on Jina AI Cloud
+      <a href="../doc_store/store_jac.md" class="md-nav__link">
+        None
       </a>
     </li>
   
@@ -1747,8 +1747,6 @@
         
           
         
-          
-        
       
       
         <label class="md-nav__link" for="__nav_6_5" id="__nav_6_5_label" tabindex="0">
@@ -1785,20 +1783,6 @@
     <li class="md-nav__item">
       <a href="../../../API_reference/doc_store/file_doc_store/" class="md-nav__link">
         FileDocStore
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../../API_reference/doc_store/jac_doc_store/" class="md-nav__link">
-        JACDocStore
       </a>
     </li>
   
@@ -2534,7 +2518,7 @@ field. But this is crucial information for any vector database to work properly!
 </span><span id="__span-7-9"><a id="__codelineno-7-9" name="__codelineno-7-9" href="#__codelineno-7-9"></a><span class="c1"># index the data</span>
 </span><span id="__span-7-10"><a id="__codelineno-7-10" name="__codelineno-7-10" href="#__codelineno-7-10"></a><span class="n">doc_index</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">docs</span><span class="p">)</span>
 </span></code></pre></div>
-<p>That call to [<code>index()</code>][docarray.index.backends.redis.RedisDocumentIndex.index] stores all Documents in <code>docs</code> in the Document Index,
+<p>That call to <a class="autorefs autorefs-internal" href="../../../API_reference/doc_index/backends/redis/#docarray.index.backends.redis.RedisDocumentIndex.index"><code>index()</code></a> stores all Documents in <code>docs</code> in the Document Index,
 ready to be retrieved in the next step.</p>
 <p>As you can see, <code>DocList[MyDoc]</code> and <code>RedisDocumentIndex[MyDoc]</code> both have <code>MyDoc</code> as a parameter.
 This means that they share the same schema, and in general, both the Document Index and the data that you want to store need to have compatible schemas.</p>

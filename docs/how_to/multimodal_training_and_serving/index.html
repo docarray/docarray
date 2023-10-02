@@ -766,8 +766,8 @@
   
   
     <li class="md-nav__item">
-      <a href="../../user_guide/storing/doc_store/store_jac/" class="md-nav__link">
-        Store on Jina AI Cloud
+      <a href="../../user_guide/storing/doc_store/store_jac.md" class="md-nav__link">
+        None
       </a>
     </li>
   
@@ -1647,8 +1647,6 @@
         
           
         
-          
-        
       
       
         <label class="md-nav__link" for="__nav_6_5" id="__nav_6_5_label" tabindex="0">
@@ -1685,20 +1683,6 @@
     <li class="md-nav__item">
       <a href="../../API_reference/doc_store/file_doc_store/" class="md-nav__link">
         FileDocStore
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../API_reference/doc_store/jac_doc_store/" class="md-nav__link">
-        JACDocStore
       </a>
     </li>
   
@@ -2269,7 +2253,7 @@ The <code>BaseDoc</code> class allows users to define their own (nested, multimo
 </span><span id="__span-6-6"><a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a>    <span class="n">attention_mask</span><span class="p">:</span> <span class="n">TorchTensor</span>
 </span></code></pre></div>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="k">class</span> <span class="nc">Text</span><span class="p">(</span><span class="n">BaseText</span><span class="p">):</span>
-</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>    <span class="n">tokens</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Tokens</span><span class="p">]</span>
+</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>    <span class="n">tokens</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Tokens</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
 </span></code></pre></div>
 <p>Notice the <a class="autorefs autorefs-internal" href="../../API_reference/typing/tensor/tensor/#docarray.typing.tensor.torch_tensor.TorchTensor"><code>TorchTensor</code></a> type. It is a thin wrapper around <code>torch.Tensor</code> that can be used like any other Torch tensor, 
 but also enables additional features. One such feature is shape parametrization (<code>TorchTensor[48]</code>), which lets you
@@ -2280,9 +2264,9 @@ hint and even enforce the desired shape of any tensor!</p>
 <p>Under the hood, an <code>ImageDoc</code> looks something like this (with the only main difference that it can take tensors from any
 supported ML framework):</p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="k">class</span> <span class="nc">ImageDoc</span><span class="p">(</span><span class="n">BaseDoc</span><span class="p">):</span>
-</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>    <span class="n">url</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ImageUrl</span><span class="p">]</span>
-</span><span id="__span-9-3"><a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a>    <span class="n">tensor</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">TorchTesor</span><span class="p">]</span>
-</span><span id="__span-9-4"><a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a>    <span class="n">embedding</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">TorchTensor</span><span class="p">]</span>
+</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>    <span class="n">url</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ImageUrl</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+</span><span id="__span-9-3"><a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a>    <span class="n">tensor</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">TorchTesor</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+</span><span id="__span-9-4"><a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a>    <span class="n">embedding</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">TorchTensor</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
 </span></code></pre></div>
 <p>Actually, the <code>BaseText</code> above also already includes <code>tensor</code>, <code>url</code> and <code>embedding</code> fields, so we can use those on our
 <code>Text</code> document as well.</p>
@@ -2294,10 +2278,11 @@ supported ML framework):</p>
 <p>You then need to forward declare the following types. This will allow the objects to be properly pickled and unpickled.</p>
 <p>This will be unnecessary once <a href="https://github.com/docarray/docarray/issues/1330">this issue</a> is resolved.</p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">DocVec</span>
-</span><span id="__span-11-2"><a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a><span class="n">DocVec</span><span class="p">[</span><span class="n">Tokens</span><span class="p">]</span>
-</span><span id="__span-11-3"><a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a><span class="n">DocVec</span><span class="p">[</span><span class="n">TextDoc</span><span class="p">]</span>
-</span><span id="__span-11-4"><a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a><span class="n">DocVec</span><span class="p">[</span><span class="n">ImageDoc</span><span class="p">]</span>
-</span><span id="__span-11-5"><a id="__codelineno-11-5" name="__codelineno-11-5" href="#__codelineno-11-5"></a><span class="n">DocVec</span><span class="p">[</span><span class="n">PairTextImage</span><span class="p">]</span>
+</span><span id="__span-11-2"><a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a>
+</span><span id="__span-11-3"><a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a><span class="n">DocVec</span><span class="p">[</span><span class="n">Tokens</span><span class="p">]</span>
+</span><span id="__span-11-4"><a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a><span class="n">DocVec</span><span class="p">[</span><span class="n">TextDoc</span><span class="p">]</span>
+</span><span id="__span-11-5"><a id="__codelineno-11-5" name="__codelineno-11-5" href="#__codelineno-11-5"></a><span class="n">DocVec</span><span class="p">[</span><span class="n">ImageDoc</span><span class="p">]</span>
+</span><span id="__span-11-6"><a id="__codelineno-11-6" name="__codelineno-11-6" href="#__codelineno-11-6"></a><span class="n">DocVec</span><span class="p">[</span><span class="n">PairTextImage</span><span class="p">]</span>
 </span></code></pre></div>
 <h3 id="create-the-dataset">Create the dataset</h3>
 <p>In this section we will create a multimodal pytorch dataset around the Flick8k dataset using DocArray.</p>

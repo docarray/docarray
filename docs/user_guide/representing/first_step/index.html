@@ -832,8 +832,8 @@
   
   
     <li class="md-nav__item">
-      <a href="../../storing/doc_store/store_jac/" class="md-nav__link">
-        Store on Jina AI Cloud
+      <a href="../../storing/doc_store/store_jac.md" class="md-nav__link">
+        None
       </a>
     </li>
   
@@ -1629,8 +1629,6 @@
         
           
         
-          
-        
       
       
         <label class="md-nav__link" for="__nav_6_5" id="__nav_6_5_label" tabindex="0">
@@ -1667,20 +1665,6 @@
     <li class="md-nav__item">
       <a href="../../../API_reference/doc_store/file_doc_store/" class="md-nav__link">
         FileDocStore
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../../API_reference/doc_store/jac_doc_store/" class="md-nav__link">
-        JACDocStore
       </a>
     </li>
   
@@ -2258,8 +2242,11 @@ This is what we call nested data representation. </p>
 <p><a class="autorefs autorefs-internal" href="../../../API_reference/base_doc/base_doc/#docarray.base_doc.doc.BaseDoc">BaseDoc</a> can be nested to represent any kind of data hierarchy.</p>
 </div>
 <h2 id="setting-a-pydantic-config-class">Setting a Pydantic <code>Config</code> class</h2>
-<p>Documents support setting a <code>Config</code> <a href="https://docs.pydantic.dev/latest/usage/model_config/">like any other Pydantic <code>BaseModel</code></a>.</p>
-<p>However, if you set a config, you should inherit from the <code>BaseDoc</code> config class:</p>
+<p>Documents support setting a custom <code>configuration</code> <a href="https://docs.pydantic.dev/latest/api/config/">like any other Pydantic <code>BaseModel</code></a>.</p>
+<p>Here is an example to extend the Config of a Document dependong on which version of Pydantic you are using.</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="1:2"><input checked id="__tabbed_1_1" name="__tabbed_1" type="radio"><input id="__tabbed_1_2" name="__tabbed_1" type="radio"><div class="tabbed-labels"><label for="__tabbed_1_1">Pydantic v1</label><label for="__tabbed_1_2">Pydantic v2</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
 <div class="language-python highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">BaseDoc</span>
 </span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>
 </span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>
@@ -2267,6 +2254,19 @@ This is what we call nested data representation. </p>
 </span><span id="__span-5-5"><a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a>    <span class="k">class</span> <span class="nc">Config</span><span class="p">(</span><span class="n">BaseDoc</span><span class="o">.</span><span class="n">Config</span><span class="p">):</span>
 </span><span id="__span-5-6"><a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a>        <span class="n">arbitrary_types_allowed</span> <span class="o">=</span> <span class="kc">True</span>  <span class="c1"># just an example setting</span>
 </span></code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="language-python highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">BaseDoc</span>
+</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>
+</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>
+</span><span id="__span-6-4"><a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="k">class</span> <span class="nc">MyDoc</span><span class="p">(</span><span class="n">BaseDoc</span><span class="p">):</span>
+</span><span id="__span-6-5"><a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a>    <span class="n">model_config</span> <span class="o">=</span> <span class="n">BaseDoc</span><span class="o">.</span><span class="n">ConfigDocArray</span><span class="o">.</span><span class="n">ConfigDict</span><span class="p">(</span>
+</span><span id="__span-6-6"><a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a>        <span class="n">arbitrary_types_allowed</span><span class="o">=</span><span class="kc">True</span>
+</span><span id="__span-6-7"><a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a>    <span class="p">)</span>  <span class="c1"># just an example setting</span>
+</span></code></pre></div>
+</div>
+</div>
+</div>
 <p>See also:</p>
 <ul>
 <li>The <a href="../array/">next part</a> of the representing section</li>
