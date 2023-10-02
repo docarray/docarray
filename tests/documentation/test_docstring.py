@@ -16,7 +16,6 @@ import docarray.index
 import docarray.store
 import docarray.typing
 from docarray.utils import filter, find, map
-from docarray.utils._internal.pydantic import is_pydantic_v2
 
 SUB_MODULE_TO_CHECK = [
     docarray,
@@ -54,7 +53,6 @@ for obj in obj_to_check:
     members.extend(get_codeblock_members(obj))
 
 
-@pytest.mark.skipif(is_pydantic_v2, reason="Not working with pydantic v2 for now")
 @pytest.mark.parametrize("obj", members, ids=lambda d: d.__qualname__)
 def test_member(obj):
     check_docstring(obj)

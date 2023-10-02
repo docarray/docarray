@@ -60,7 +60,7 @@ class Mesh3D(BaseDoc):
 
     # extend it
     class MyMesh3D(Mesh3D):
-        name: Optional[str]
+        name: Optional[str] = None
 
 
     mesh = MyMesh3D(url='https://people.sc.fsu.edu/~jburkardt/data/obj/al.obj')

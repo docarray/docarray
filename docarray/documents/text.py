@@ -54,7 +54,7 @@ class TextDoc(BaseDoc):
 
     # extend it
     class MyText(TextDoc):
-        second_embedding: Optional[AnyEmbedding]
+        second_embedding: Optional[AnyEmbedding] = None
 
 
     txt_doc = MyText(url='https://www.gutenberg.org/files/1065/1065-0.txt')

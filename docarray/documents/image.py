@@ -58,7 +58,7 @@ class ImageDoc(BaseDoc):
 
     # extend it
     class MyImage(ImageDoc):
-        second_embedding: Optional[AnyEmbedding]
+        second_embedding: Optional[AnyEmbedding] = None
 
 
     image = MyImage(

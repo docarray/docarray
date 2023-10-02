@@ -62,7 +62,7 @@ class PointCloud3D(BaseDoc):
 
     # extend it
     class MyPointCloud3D(PointCloud3D):
-        second_embedding: Optional[AnyEmbedding]
+        second_embedding: Optional[AnyEmbedding] = None
 
 
     pc = MyPointCloud3D(url='https://people.sc.fsu.edu/~jburkardt/data/obj/al.obj')

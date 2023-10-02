@@ -28,8 +28,8 @@ class VideoTorchTensor(TorchTensor, VideoTensorMixin, metaclass=metaTorchAndNode
 
     class MyVideoDoc(BaseDoc):
         title: str
-        url: Optional[VideoUrl]
-        video_tensor: Optional[VideoTorchTensor]
+        url: Optional[VideoUrl] = None
+        video_tensor: Optional[VideoTorchTensor] = None
 
 
     doc_1 = MyVideoDoc(

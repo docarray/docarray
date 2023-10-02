@@ -22,9 +22,9 @@ class AudioNdArray(AbstractAudioTensor, NdArray):
 
     class MyAudioDoc(BaseDoc):
         title: str
-        audio_tensor: Optional[AudioNdArray]
-        url: Optional[AudioUrl]
-        bytes_: Optional[AudioBytes]
+        audio_tensor: Optional[AudioNdArray] = None
+        url: Optional[AudioUrl] = None
+        bytes_: Optional[AudioBytes] = None
 
 
     # from tensor

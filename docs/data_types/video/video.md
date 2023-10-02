@@ -188,12 +188,12 @@ To get started and play around with your video data, DocArray provides a predefi
 
 ``` { .python }
 class VideoDoc(BaseDoc):
-    url: Optional[VideoUrl]
+    url: Optional[VideoUrl] = None
     audio: Optional[AudioDoc] = AudioDoc()
-    tensor: Optional[VideoTensor]
-    key_frame_indices: Optional[AnyTensor]
-    embedding: Optional[AnyEmbedding]
-    bytes_: Optional[bytes]
+    tensor: Optional[VideoTensor] = None
+    key_frame_indices: Optional[AnyTensor] = None
+    embedding: Optional[AnyEmbedding] = None
+    bytes_: Optional[bytes] = None
 ```
 
 You can use this class directly or extend it to your preference:
@@ -206,7 +206,7 @@ from docarray.documents import VideoDoc
 
 # extend it
 class MyVideo(VideoDoc):
-    name: Optional[str]
+    name: Optional[str] = None
 
 
 video = MyVideo(

@@ -25,9 +25,9 @@ class ImageNdArray(AbstractImageTensor, NdArray):
 
     class MyImageDoc(BaseDoc):
         title: str
-        tensor: Optional[ImageNdArray]
-        url: Optional[ImageUrl]
-        bytes: Optional[ImageBytes]
+        tensor: Optional[ImageNdArray] = None
+        url: Optional[ImageUrl] = None
+        bytes: Optional[ImageBytes] = None
 
 
     # from url

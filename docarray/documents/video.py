@@ -66,7 +66,7 @@ class VideoDoc(BaseDoc):
 
     # extend it
     class MyVideo(VideoDoc):
-        name: Optional[TextDoc]
+        name: Optional[TextDoc] = None
 
 
     video = MyVideo(

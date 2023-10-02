@@ -454,7 +454,7 @@ Both [`DocList`][docarray.array.doc_list.doc_list.DocList] and [`DocVec`][docarr
 
 
     class MyDoc(BaseDoc):
-        nested_doc: Optional[BaseDoc]
+        nested_doc: Optional[BaseDoc] = None
     ```
 
 Using nested optional fields differs slightly between DocList and DocVes, so watch out. But in a nutshell:
@@ -484,7 +484,7 @@ class ImageDoc(BaseDoc):
 
 
 class ArticleDoc(BaseDoc):
-    image: Optional[ImageDoc]
+    image: Optional[ImageDoc] = None
     title: str
 ```
 

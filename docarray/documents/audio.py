@@ -60,7 +60,7 @@ class AudioDoc(BaseDoc):
 
     # extend it
     class MyAudio(AudioDoc):
-        name: Optional[TextDoc]
+        name: Optional[TextDoc] = None
 
 
     audio = MyAudio(
