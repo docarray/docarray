@@ -42,7 +42,7 @@ from docarray.typing import Mesh3DUrl
 
 class MyMesh3D(BaseDoc):
     mesh_url: Mesh3DUrl
-    tensors: Optional[VerticesAndFaces]
+    tensors: Optional[VerticesAndFaces] = None
 
 
 doc = MyMesh3D(mesh_url="https://people.sc.fsu.edu/~jburkardt/data/obj/al.obj")
@@ -1355,7 +1355,7 @@ from docarray.typing import PointCloud3DUrl
 
 class MyPointCloud(BaseDoc):
     url: PointCloud3DUrl
-    tensors: Optional[PointsAndColors]
+    tensors: Optional[PointsAndColors] = None
 
 
 doc = MyPointCloud(url="https://people.sc.fsu.edu/~jburkardt/data/obj/al.obj")
@@ -2655,20 +2655,20 @@ The [`Mesh3D`][docarray.documents.mesh.Mesh3D] class provides a [`Mesh3DUrl`][do
 
 ``` { .python }
 class Mesh3D(BaseDoc):
-    url: Optional[Mesh3DUrl]
-    tensors: Optional[VerticesAndFaces]
-    embedding: Optional[AnyEmbedding]
-    bytes_: Optional[bytes]
+    url: Optional[Mesh3DUrl] = None
+    tensors: Optional[VerticesAndFaces] = None
+    embedding: Optional[AnyEmbedding] = None
+    bytes_: Optional[bytes] = None
 ```
 
 ### `PointCloud3D`
 
 ``` { .python }
 class PointCloud3D(BaseDoc):
-    url: Optional[PointCloud3DUrl]
-    tensors: Optional[PointsAndColors]
-    embedding: Optional[AnyEmbedding]
-    bytes_: Optional[bytes]
+    url: Optional[PointCloud3DUrl] = None
+    tensors: Optional[PointsAndColors] = None
+    embedding: Optional[AnyEmbedding] = None
+    bytes_: Optional[bytes] = None
 ```
 
 You can use them directly, extend or compose them:

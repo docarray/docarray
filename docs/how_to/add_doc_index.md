@@ -187,7 +187,7 @@ The values of `self._column_infos` are `_ColumnInfo` dataclasses, which have the
 class _ColumnInfo:
     docarray_type: Type
     db_type: Any
-    n_dim: Optional[int]
+    n_dim: Optional[int] = None
     config: Dict[str, Any]
 ```
 

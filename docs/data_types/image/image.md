@@ -171,10 +171,10 @@ To get started and play around with the image modality, DocArray provides a pred
 
 ``` { .python }
 class ImageDoc(BaseDoc):
-    url: Optional[ImageUrl]
-    tensor: Optional[ImageTensor]
-    embedding: Optional[AnyEmbedding]
-    bytes_: Optional[ImageBytes]
+    url: Optional[ImageUrl] = None
+    tensor: Optional[ImageTensor] = None
+    embedding: Optional[AnyEmbedding] = None
+    bytes_: Optional[ImageBytes] = None
 ```
 
 You can use this class directly or extend it to your preference:
@@ -188,7 +188,7 @@ from typing import Optional
 # extending ImageDoc
 class MyImage(ImageDoc):
     image_title: str
-    second_embedding: Optional[AnyEmbedding]
+    second_embedding: Optional[AnyEmbedding] = None
 
 
 image = MyImage(
