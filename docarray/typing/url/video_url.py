@@ -48,9 +48,9 @@ class VideoUrl(AnyUrl):
 
         class MyDoc(BaseDoc):
             video_url: VideoUrl
-            video: Optional[VideoNdArray]
-            audio: Optional[AudioNdArray]
-            key_frame_indices: Optional[NdArray]
+            video: Optional[VideoNdArray] = None
+            audio: Optional[AudioNdArray] = None
+            key_frame_indices: Optional[NdArray] = None
 
 
         doc = MyDoc(

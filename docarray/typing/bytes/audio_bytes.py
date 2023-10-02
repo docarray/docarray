@@ -33,9 +33,9 @@ class AudioBytes(BaseBytes):
 
         class MyAudio(BaseDoc):
             url: AudioUrl
-            tensor: Optional[AudioNdArray]
-            bytes_: Optional[AudioBytes]
-            frame_rate: Optional[float]
+            tensor: Optional[AudioNdArray] = None
+            bytes_: Optional[AudioBytes] = None
+            frame_rate: Optional[float] = None
 
 
         doc = MyAudio(url='https://www.kozco.com/tech/piano2.wav')

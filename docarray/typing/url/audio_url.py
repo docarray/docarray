@@ -46,7 +46,7 @@ class AudioUrl(AnyUrl):
 
         class MyDoc(BaseDoc):
             audio_url: AudioUrl
-            audio_tensor: Optional[AudioNdArray]
+            audio_tensor: Optional[AudioNdArray] = None
 
 
         doc = MyDoc(audio_url='https://www.kozco.com/tech/piano2.wav')

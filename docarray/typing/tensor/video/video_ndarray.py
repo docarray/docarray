@@ -29,8 +29,8 @@ class VideoNdArray(NdArray, VideoTensorMixin):
 
     class MyVideoDoc(BaseDoc):
         title: str
-        url: Optional[VideoUrl]
-        video_tensor: Optional[VideoNdArray]
+        url: Optional[VideoUrl] = None
+        video_tensor: Optional[VideoNdArray] = None
 
 
     doc_1 = MyVideoDoc(

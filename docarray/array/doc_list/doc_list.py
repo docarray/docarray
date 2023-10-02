@@ -68,7 +68,7 @@ class DocList(
 
 
     class Image(BaseDoc):
-        tensor: Optional[NdArray[100]]
+        tensor: Optional[NdArray[100]] = None
         url: ImageUrl
 
 
