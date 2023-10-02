@@ -3,9 +3,9 @@ import os
 import numpy as np
 import pytest
 
-from docarray import BaseDoc, DocList
+from docarray import BaseDoc, DocList, DocVec
 from docarray.documents import ImageDoc
-from docarray.typing import NdArray
+from docarray.typing import NdArray, TorchTensor
 
 
 class MyDoc(BaseDoc):
@@ -20,10 +20,11 @@ class MyDoc(BaseDoc):
 )
 @pytest.mark.parametrize('compress', ['lz4', 'bz2', 'lzma', 'zlib', 'gzip', None])
 @pytest.mark.parametrize('show_progress', [False, True])
-def test_array_save_load_binary(protocol, compress, tmp_path, show_progress):
+@pytest.mark.parametrize('array_cls', [DocList, DocVec])
+def test_array_save_load_binary(protocol, compress, tmp_path, show_progress, array_cls):
     tmp_file = os.path.join(tmp_path, 'test')
 
-    da = DocList[MyDoc](
+    da = array_cls[MyDoc](
         [
             MyDoc(
                 embedding=[1, 2, 3, 4, 5], text='hello', image=ImageDoc(url='aux.png')
@@ -36,7 +37,7 @@ def test_array_save_load_binary(protocol, compress, tmp_path, show_progress):
         tmp_file, protocol=protocol, compress=compress, show_progress=show_progress
     )
 
-    da2 = DocList[MyDoc].load_binary(
+    da2 = array_cls[MyDoc].load_binary(
         tmp_file, protocol=protocol, compress=compress, show_progress=show_progress
     )
 
@@ -56,8 +57,12 @@ def test_array_save_load_binary(protocol, compress, tmp_path, show_progress):
 )
 @pytest.mark.parametrize('compress', ['lz4', 'bz2', 'lzma', 'zlib', 'gzip', None])
 @pytest.mark.parametrize('show_progress', [False, True])
-def test_array_save_load_binary_streaming(protocol, compress, tmp_path, show_progress):
+@pytest.mark.parametrize('to_doc_vec', [True, False])
+def test_array_save_load_binary_streaming(
+    protocol, compress, tmp_path, show_progress, to_doc_vec
+):
     tmp_file = os.path.join(tmp_path, 'test')
+    array_cls = DocVec if to_doc_vec else DocList
 
     da = DocList[MyDoc]()
 
@@ -74,20 +79,44 @@ def test_array_save_load_binary_streaming(protocol, compress, tmp_path, show_pro
             )
 
     _extend_da()
+    if to_doc_vec:
+        da = da.to_doc_vec()
 
     da.save_binary(
         tmp_file, protocol=protocol, compress=compress, show_progress=show_progress
     )
 
-    da2 = DocList[MyDoc]()
-    da_generator = DocList[MyDoc].load_binary(
+    da_after = array_cls[MyDoc].load_binary(
         tmp_file, protocol=protocol, compress=compress, show_progress=show_progress
     )
 
-    for i, doc in enumerate(da_generator):
+    for i, doc in enumerate(da_after):
         assert doc.id == da[i].id
         assert doc.text == da[i].text
         assert doc.image.url == da[i].image.url
-        da2.append(doc)
 
-    assert len(da2) == 100
+    assert i == 99
+
+
+@pytest.mark.parametrize('tensor_type', [NdArray, TorchTensor])
+def test_save_load_tensor_type(tensor_type, tmp_path):
+    tmp_file = os.path.join(tmp_path, 'test123')
+
+    class MyDoc(BaseDoc):
+        embedding: tensor_type
+        text: str
+        image: ImageDoc
+
+    da = DocVec[MyDoc](
+        [
+            MyDoc(
+                embedding=[1, 2, 3, 4, 5], text='hello', image=ImageDoc(url='aux.png')
+            ),
+            MyDoc(embedding=[5, 4, 3, 2, 1], text='hello world', image=ImageDoc()),
+        ],
+        tensor_type=tensor_type,
+    )
+    da.save_binary(tmp_file)
+    da2 = DocVec[MyDoc].load_binary(tmp_file, tensor_type=tensor_type)
+    assert da2.tensor_type == tensor_type
+    assert isinstance(da2.embedding, tensor_type)

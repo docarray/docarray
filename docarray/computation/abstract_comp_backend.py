@@ -1,13 +1,13 @@
 import typing
 from abc import ABC, abstractmethod
-from typing import TYPE_CHECKING, Any, List, Optional, Tuple, TypeVar, Union
+from typing import TYPE_CHECKING, Any, List, Optional, Tuple, TypeVar, Union, Iterable
 
 if TYPE_CHECKING:
     import numpy as np
 
 # In practice all of the below will be the same type
 TTensor = TypeVar('TTensor')
-TTensorRetrieval = TypeVar('TTensorRetrieval')
+TTensorRetrieval = TypeVar('TTensorRetrieval', bound=Iterable)
 TTensorMetrics = TypeVar('TTensorMetrics')
 
 
@@ -154,6 +154,19 @@ class AbstractComputationalBackend(ABC, typing.Generic[TTensor]):
         :param x_range: a tuple represents tensors range.
         :param eps: a small jitter to avoid divide by zero
         :return: normalized data in `t_range`
+        """
+        ...
+
+    @classmethod
+    @abstractmethod
+    def equal(cls, tensor1: 'TTensor', tensor2: 'TTensor') -> bool:
+        """
+        Check if two tensors are equal.
+
+        :param tensor1: the first tensor
+        :param tensor2: the second tensor
+        :return: True if two tensors are equal, False otherwise.
+            If one or more of the inputs is not a tensor of this framework, return False.
         """
         ...
 

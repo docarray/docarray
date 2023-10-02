@@ -28,9 +28,9 @@ class ImageTorchTensor(AbstractImageTensor, TorchTensor, metaclass=metaTorchAndN
 
     class MyImageDoc(BaseDoc):
         title: str
-        tensor: Optional[ImageTorchTensor]
-        url: Optional[ImageUrl]
-        bytes: Optional[ImageBytes]
+        tensor: Optional[ImageTorchTensor] = None
+        url: Optional[ImageUrl] = None
+        bytes: Optional[ImageBytes] = None
 
 
     doc = MyImageDoc(

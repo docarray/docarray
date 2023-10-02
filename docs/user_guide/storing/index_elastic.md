@@ -33,7 +33,39 @@ DocArray comes with two Document Indexes for [Elasticsearch](https://www.elastic
 The following example is based on [ElasticDocIndex][docarray.index.backends.elastic.ElasticDocIndex],
 but will also work for [ElasticV7DocIndex][docarray.index.backends.elasticv7.ElasticV7DocIndex].
 
-# Start Elasticsearch
+
+## Basic usage
+This snippet demonstrates the basic usage of [ElasticDocIndex][docarray.index.backends.elastic.ElasticDocIndex]. It defines a document schema with a title and an embedding, 
+creates ten dummy documents with random embeddings, initializes an instance of [ElasticDocIndex][docarray.index.backends.elastic.ElasticDocIndex] to index these documents, 
+and performs a vector similarity search to retrieve the ten most similar documents to a given query vector.
+
+```python
+from docarray import BaseDoc, DocList
+from docarray.index import ElasticDocIndex  # or ElasticV7DocIndex
+from docarray.typing import NdArray
+import numpy as np
+
+# Define the document schema.
+class MyDoc(BaseDoc):
+    title: str 
+    embedding: NdArray[128]
+
+# Create dummy documents.
+docs = DocList[MyDoc](MyDoc(title=f'title #{i}', embedding=np.random.rand(128)) for i in range(10))
+
+# Initialize a new ElasticDocIndex instance and add the documents to the index.
+doc_index = ElasticDocIndex[MyDoc](index_name='my_index')
+doc_index.index(docs)
+
+# Perform a vector search.
+query = np.ones(128)
+retrieved_docs = doc_index.find(query, search_field='embedding', limit=10)
+```
+
+
+
+## Initialize
+
 
 You can use docker-compose to create a local Elasticsearch service with the following `docker-compose.yml`.
 
@@ -62,7 +94,7 @@ Run the following command in the folder of the above `docker-compose.yml` to sta
 docker-compose up
 ```
 
-## Construct
+### Schema definition
 
 To construct an index, you first need to define a schema in the form of a `Document`.
 
@@ -94,69 +126,107 @@ class SimpleDoc(BaseDoc):
 doc_index = ElasticDocIndex[SimpleDoc](hosts='http://localhost:9200')
 ```
 
-## Index documents
+### Using a predefined document as schema
 
-Use `.index()` to add documents into the index.
-The`.num_docs()` method returns the total number of documents in the index.
+DocArray offers a number of predefined documents, like [ImageDoc][docarray.documents.ImageDoc] and [TextDoc][docarray.documents.TextDoc].
+If you try to use these directly as a schema for a Document Index, you will get unexpected behavior:
+Depending on the backend, an exception will be raised, or no vector index for ANN lookup will be built.
+
+The reason for this is that predefined documents don't hold information about the dimensionality of their `.embedding`
+field. But this is crucial information for any vector database to work properly!
+
+You can work around this problem by subclassing the predefined document and adding the dimensionality information:
+
+=== "Using type hint"
+    ```python
+    from docarray.documents import TextDoc
+    from docarray.typing import NdArray
+    from docarray.index import ElasticDocIndex
+
+
+    class MyDoc(TextDoc):
+        embedding: NdArray[128]
+
+
+    db = ElasticDocIndex[MyDoc](index_name='test_db')
+    ```
+
+=== "Using Field()"
+    ```python
+    from docarray.documents import TextDoc
+    from docarray.typing import AnyTensor
+    from docarray.index import ElasticDocIndex
+    from pydantic import Field
+
+
+    class MyDoc(TextDoc):
+        embedding: AnyTensor = Field(dim=128)
+
+
+    db = ElasticDocIndex[MyDoc](index_name='test_db3')
+    ```
+
+Once you have defined the schema of your Document Index in this way, the data that you index can be either the predefined Document type or your custom Document type.
+
+The [next section](#index) goes into more detail about data indexing, but note that if you have some `TextDoc`s, `ImageDoc`s etc. that you want to index, you _don't_ need to cast them to `MyDoc`:
 
 ```python
-index_docs = [SimpleDoc(tensor=np.ones(128)) for _ in range(64)]
+from docarray import DocList
 
-doc_index.index(index_docs)
+# data of type TextDoc
+data = DocList[TextDoc](
+    [
+        TextDoc(text='hello world', embedding=np.random.rand(128)),
+        TextDoc(text='hello world', embedding=np.random.rand(128)),
+        TextDoc(text='hello world', embedding=np.random.rand(128)),
+    ]
+)
+
+# you can index this into Document Index of type MyDoc
+db.index(data)
+```
+
+
+## Index
+
+Now that you have a Document Index, you can add data to it, using the [`index()`][docarray.index.abstract.BaseDocIndex.index] method.
+The `.num_docs()` method returns the total number of documents in the index.
+
+```python
+from docarray import DocList
+
+# create some random data
+docs = DocList[SimpleDoc]([SimpleDoc(tensor=np.ones(128)) for _ in range(64)])
+
+doc_index.index(docs)
 
 print(f'number of docs in the index: {doc_index.num_docs()}')
 ```
 
-## Access documents
+As you can see, `DocList[SimpleDoc]` and `ElasticDocIndex[SimpleDoc]` both have `SimpleDoc` as a parameter.
+This means that they share the same schema, and in general, both the Document Index and the data that you want to store need to have compatible schemas.
 
-To access the `Doc`, you need to specify the `id`. You can also pass a list of `id` to access multiple documents.
+!!! question "When are two schemas compatible?"
+    The schemas of your Document Index and data need to be compatible with each other.
+    
+    Let's say A is the schema of your Document Index and B is the schema of your data.
+    There are a few rules that determine if schema A is compatible with schema B.
+    If _any_ of the following are true, then A and B are compatible:
 
-```python
-# access a single Doc
-doc_index[index_docs[16].id]
+    - A and B are the same class
+    - A and B have the same field names and field types
+    - A and B have the same field names, and, for every field, the type of B is a subclass of the type of A
 
-# access multiple Docs
-doc_index[index_docs[16].id, index_docs[17].id]
-```
-
-### Persistence
-
-You can hook into a database index that was persisted during a previous session.
-To do so, you need to specify `index_name` and the `hosts`:
-
-```python
-doc_index = ElasticDocIndex[SimpleDoc](
-    hosts='http://localhost:9200', index_name='previously_stored'
-)
-doc_index.index(index_docs)
-
-doc_index2 = ElasticDocIndex[SimpleDoc](
-    hosts='http://localhost:9200', index_name='previously_stored'
-)
-
-print(f'number of docs in the persisted index: {doc_index2.num_docs()}')
-```
+    In particular, this means that you can easily [index predefined documents](#using-a-predefined-document-as-schema) into a Document Index.
 
 
-## Delete documents
 
-To delete the documents, use the built-in function `del` with the `id` of the Documents that you want to delete.
-You can also pass a list of `id`s to delete multiple documents.
+## Vector search
 
-```python
-# delete a single Doc
-del doc_index[index_docs[16].id]
+Now that you have indexed your data, you can perform vector similarity search using the [`find()`][docarray.index.abstract.BaseDocIndex.find] method.
 
-# delete multiple Docs
-del doc_index[index_docs[17].id, index_docs[18].id]
-```
-
-## Find nearest neighbors
-
-The `.find()` method is used to find the nearest neighbors of a vector.
-
-You need to specify the `search_field` that is used when performing the vector search.
-This is the field that serves as the basis of comparison between your query and indexed Documents.
+You can use the [`find()`][docarray.index.abstract.BaseDocIndex.find] function with a document of the type `MyDoc` 
+to find similar documents within the Document Index:
 
 You can use the `limit` argument to configure how many documents to return.
 
@@ -165,192 +235,98 @@ You can use the `limit` argument to configure how many documents to return.
     This can lead to poor performance when the search involves many vectors.
     [ElasticDocIndex][docarray.index.backends.elastic.ElasticDocIndex] does not have this limitation.
 
-```python
-query = SimpleDoc(tensor=np.ones(128))
+=== "Search by Document"
 
-docs, scores = doc_index.find(query, limit=5, search_field='tensor')
-```
+    ```python
+    # create a query document
+    query = SimpleDoc(tensor=np.ones(128))
 
-## Nested data
+    # find similar documents
+    matches, scores = doc_index.find(query, search_field='tensor', limit=5)
 
-When using the index you can define multiple fields, including nesting documents inside another document.
+    print(f'{matches=}')
+    print(f'{matches.text=}')
+    print(f'{scores=}')
+    ```
 
-Consider the following example:
+=== "Search by raw vector"
 
-- You have `YouTubeVideoDoc` including the `tensor` field calculated based on the description.
-- `YouTubeVideoDoc` has `thumbnail` and `video` fields, each with their own `tensor`.
+    ```python
+    # create a query vector
+    query = np.random.rand(128)
 
-```python
-from docarray.typing import ImageUrl, VideoUrl, AnyTensor
+    # find similar documents
+    matches, scores = doc_index.find(query, search_field='tensor', limit=5)
+
+    print(f'{matches=}')
+    print(f'{matches.text=}')
+    print(f'{scores=}')
+    ```
+
+To peform a vector search, you need to specify a `search_field`. This is the field that serves as the
+basis of comparison between your query and the documents in the Document Index.
+
+In this example you only have one field (`tensor`) that is a vector, so you can trivially choose that one.
+In general, you could have multiple fields of type `NdArray` or `TorchTensor` or `TensorFlowTensor`, and you can choose
+which one to use for the search.
+
+The [`find()`][docarray.index.abstract.BaseDocIndex.find] method returns a named tuple containing the closest
+matching documents and their associated similarity scores.
+
+When searching on the subindex level, you can use the [`find_subindex()`][docarray.index.abstract.BaseDocIndex.find_subindex] method, which returns a named tuple containing the subindex documents, similarity scores and their associated root documents.
+
+How these scores are calculated depends on the backend, and can usually be [configured](#configuration).
 
 
-class ImageDoc(BaseDoc):
-    url: ImageUrl
-    tensor: AnyTensor = Field(similarity='cosine', dims=64)
+### Batched search
 
+You can also search for multiple documents at once, in a batch, using the [`find_batched()`][docarray.index.abstract.BaseDocIndex.find_batched] method.
 
-class VideoDoc(BaseDoc):
-    url: VideoUrl
-    tensor: AnyTensor = Field(similarity='cosine', dims=128)
+=== "Search by Documents"
 
-
-class YouTubeVideoDoc(BaseDoc):
-    title: str
-    description: str
-    thumbnail: ImageDoc
-    video: VideoDoc
-    tensor: AnyTensor = Field(similarity='cosine', dims=256)
-
-
-doc_index = ElasticDocIndex[YouTubeVideoDoc]()
-index_docs = [
-    YouTubeVideoDoc(
-        title=f'video {i+1}',
-        description=f'this is video from author {10*i}',
-        thumbnail=ImageDoc(url=f'http://example.ai/images/{i}', tensor=np.ones(64)),
-        video=VideoDoc(url=f'http://example.ai/videos/{i}', tensor=np.ones(128)),
-        tensor=np.ones(256),
+    ```python
+    # create some query Documents
+    queries = DocList[SimpleDoc](
+        SimpleDoc(tensor=np.random.rand(128)) for i in range(3)
     )
-    for i in range(8)
-]
-doc_index.index(index_docs)
-```
 
-**You can perform search on any nesting level** by using the dunder operator to specify the field defined in the nested data.
+    # find similar documents
+    matches, scores = doc_index.find_batched(queries, search_field='tensor', limit=5)
 
-In the following example, you can see how to perform vector search on the `tensor` field of the `YouTubeVideoDoc` or the `tensor` field of the `thumbnail` and `video` field:
+    print(f'{matches=}')
+    print(f'{matches[0].text=}')
+    print(f'{scores=}')
+    ```
 
-```python
-# example of find nested and flat index
-query_doc = YouTubeVideoDoc(
-    title=f'video query',
-    description=f'this is a query video',
-    thumbnail=ImageDoc(url=f'http://example.ai/images/1024', tensor=np.ones(64)),
-    video=VideoDoc(url=f'http://example.ai/videos/1024', tensor=np.ones(128)),
-    tensor=np.ones(256),
-)
+=== "Search by raw vectors"
 
-# find by the youtubevideo tensor
-docs, scores = doc_index.find(query_doc, search_field='tensor', limit=3)
+    ```python
+    # create some query vectors
+    query = np.random.rand(3, 128)
 
-# find by the thumbnail tensor
-docs, scores = doc_index.find(query_doc, search_field='thumbnail__tensor', limit=3)
+    # find similar documents
+    matches, scores = doc_index.find_batched(query, search_field='tensor', limit=5)
 
-# find by the video tensor
-docs, scores = doc_index.find(query_doc, search_field='video__tensor', limit=3)
-```
+    print(f'{matches=}')
+    print(f'{matches[0].text=}')
+    print(f'{scores=}')
+    ```
 
-To delete a nested data, you need to specify the `id`.
-
-!!! note
-    You can only delete `Doc` at the top level. Deletion of `Doc`s on lower levels is not yet supported.
-
-```python
-# example of delete nested and flat index
-del doc_index[index_docs[3].id, index_docs[4].id]
-```
-
-### Nested data with subindex
-
-In the following example you can see a complex schema that contains nested Documents with subindex.
-
-```python
-class ImageDoc(BaseDoc):
-    url: ImageUrl
-    tensor_image: AnyTensor = Field(dims=64)
+The [`find_batched()`][docarray.index.abstract.BaseDocIndex.find_batched] method returns a named tuple containing
+a list of `DocList`s, one for each query, containing the closest matching documents and their similarity scores.
 
 
-class VideoDoc(BaseDoc):
-    url: VideoUrl
-    images: DocList[ImageDoc]
-    tensor_video: AnyTensor = Field(dims=128)
 
+## Filter
 
-class MyDoc(BaseDoc):
-    docs: DocList[VideoDoc]
-    tensor: AnyTensor = Field(dims=256)
-
-
-# create a Document Index
-doc_index = ElasticDocIndex[MyDoc](index_name='subindex')
-
-# create some data
-index_docs = [
-    MyDoc(
-        docs=DocList[VideoDoc](
-            [
-                VideoDoc(
-                    url=f'http://example.ai/videos/{i}-{j}',
-                    images=DocList[ImageDoc](
-                        [
-                            ImageDoc(
-                                url=f'http://example.ai/images/{i}-{j}-{k}',
-                                tensor_image=np.ones(64),
-                            )
-                            for k in range(10)
-                        ]
-                    ),
-                    tensor_video=np.ones(128),
-                )
-                for j in range(10)
-            ]
-        ),
-        tensor=np.ones(256),
-    )
-    for i in range(10)
-]
-
-# index the Documents
-doc_index.index(index_docs)
-
-# find by the `VideoDoc` tensor
-root_docs, sub_docs, scores = doc_index.find_subindex(
-    np.ones(128), subindex='docs', search_field='tensor_video', limit=3
-)
-
-# find by the `ImageDoc` tensor
-root_docs, sub_docs, scores = doc_index.find_subindex(
-    np.ones(64), subindex='docs__images', search_field='tensor_image', limit=3
-)  # return both root and subindex docs
-
-# filter on subindex level
-query = {'match': {'url': 'http://example.ai/images/0-0-0'}}
-docs = doc_index.filter_subindex(query, subindex='docs__images')
-```
-
-## Other Elasticsearch queries
-
-Besides vector search, you can also perform other queries supported by Elasticsearch, such as text search, and various filters.
-
-### Text search
-
-As in "pure" Elasticsearch, you can use text search directly on the field of type `str`:
-
-```python
-class NewsDoc(BaseDoc):
-    text: str
-
-
-doc_index = ElasticDocIndex[NewsDoc]()
-index_docs = [
-    NewsDoc(id='0', text='this is a news for sport'),
-    NewsDoc(id='1', text='this is a news for finance'),
-    NewsDoc(id='2', text='this is another news for sport'),
-]
-doc_index.index(index_docs)
-query = 'finance'
-
-# search with text
-docs, scores = doc_index.text_search(query, search_field='text')
-```
-
-### Query Filter
+You can filter your documents by using the `filter()` or `filter_batched()` method with a corresponding filter query. 
+The query should follow [Elastic's query language](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-filter-context.html).
 
 The `filter()` method accepts queries that follow the [Elasticsearch Query DSL](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl.html) and consists of leaf and compound clauses.
 
 Using this, you can perform [keyword filters](#keyword-filter), [geolocation filters](#geolocation-filter) and [range filters](#range-filter).
 
-#### Keyword filter
+### Keyword filter
 
 To filter documents in your index by keyword, you can use `Field(col_type='keyword')` to enable keyword search for given fields:
 
@@ -373,7 +349,7 @@ query_filter = {'terms': {'category': ['sport']}}
 docs = doc_index.filter(query_filter)
 ```
 
-#### Geolocation filter
+### Geolocation filter
 
 To filter documents in your index by geolocation, you can use `Field(col_type='geo_point')` on a given field:
 
@@ -408,7 +384,7 @@ query = {
 docs = doc_index.filter(query)
 ```
 
-#### Range filter
+### Range filter
 
 You can have [range field types](https://www.elastic.co/guide/en/elasticsearch/reference/8.6/range.html) in your document schema and set `Field(col_type='integer_range')`(or also `date_range`, etc.) to filter documents based on the range of the field. 
 
@@ -444,11 +420,40 @@ query = {
 docs = doc_index.filter(query)
 ```
 
-### Hybrid serach and query builder
 
-To combine any of the "atomic" search approaches above, you can use the `QueryBuilder` to build your own hybrid query. 
+## Text search
 
-For this the `find()`, `filter()` and `text_search()` methods and their combination are supported.
+In addition to vector similarity search, the Document Index interface offers methods for text search:
+[`text_search()`][docarray.index.abstract.BaseDocIndex.text_search],
+as well as the batched version [`text_search_batched()`][docarray.index.abstract.BaseDocIndex.text_search_batched].
+
+As in "pure" Elasticsearch, you can use text search directly on the field of type `str`:
+
+```python
+class NewsDoc(BaseDoc):
+    text: str
+
+
+doc_index = ElasticDocIndex[NewsDoc]()
+index_docs = [
+    NewsDoc(id='0', text='this is a news for sport'),
+    NewsDoc(id='1', text='this is a news for finance'),
+    NewsDoc(id='2', text='this is another news for sport'),
+]
+doc_index.index(index_docs)
+query = 'finance'
+
+# search with text
+docs, scores = doc_index.text_search(query, search_field='text')
+```
+
+
+## Hybrid search
+
+Document Index supports atomic operations for vector similarity search, text search and filter search.
+
+To combine these operations into a single, hybrid search query, you can use the query builder that is accessible
+through [`build_query()`][docarray.index.abstract.BaseDocIndex.build_query]:
 
 For example, you can build a hybrid serach query that performs range filtering, vector search and text search:
 
@@ -478,7 +483,34 @@ docs, _ = doc_index.execute_query(q)
 
 You can also manually build a valid ES query and directly pass it to the `execute_query()` method.
 
-## Configuration options
+
+## Access documents
+
+To access a document, you need to specify its `id`. You can also pass a list of `id`s to access multiple documents.
+
+```python
+# access a single Doc
+doc_index[index_docs[1].id]
+
+# access multiple Docs
+doc_index[index_docs[2].id, index_docs[3].id]
+```
+
+## Delete documents
+
+To delete documents, use the built-in function `del` with the `id` of the documents that you want to delete.
+You can also pass a list of `id`s to delete multiple documents.
+
+```python
+# delete a single Doc
+del doc_index[index_docs[1].id]
+
+# delete multiple Docs
+del doc_index[index_docs[2].id, index_docs[3].id]
+```
+
+
+## Configuration
 
 ### DBConfig
 
@@ -487,22 +519,14 @@ The following configs can be set in `DBConfig`:
 | Name              | Description                                                                                                                            | Default                 |
 |-------------------|----------------------------------------------------------------------------------------------------------------------------------------|-------------------------|
 | `hosts`           | Hostname of the Elasticsearch server                                                                                                   | `http://localhost:9200` |
-| `es_config`       | Other ES [configuration options](https://www.elastic.co/guide/en/elasticsearch/client/python-api/8.6/config.html) in a Dict and pass to `Elasticsearch` client constructor, e.g. `cloud_id`, `api_key` | None |
-| `index_name`      | Elasticsearch index name, the name of Elasticsearch index object                                       | None. Data will be stored in an index named after the Document type used as schema. |
+| `es_config`       | Other ES [configuration options](https://www.elastic.co/guide/en/elasticsearch/client/python-api/8.6/config.html) in a Dict and pass to `Elasticsearch` client constructor, e.g. `cloud_id`, `api_key` | `None` |
+| `index_name`      | Elasticsearch index name, the name of Elasticsearch index object                                       | `None`. Data will be stored in an index named after the Document type used as schema. |
 | `index_settings`  | Other [index settings](https://www.elastic.co/guide/en/elasticsearch/reference/8.6/index-modules.html#index-modules-settings) in a Dict for creating the index    | dict  |
 | `index_mappings`  | Other [index mappings](https://www.elastic.co/guide/en/elasticsearch/reference/8.6/mapping.html) in a Dict for creating the index | dict  |
+| `default_column_config`  | The default configurations for every column type. | dict  |
 
 You can pass any of the above as keyword arguments to the `__init__()` method or pass an entire configuration object.
 See [here](docindex.md#configuration-options#customize-configurations) for more information.
-
-### RuntimeConfig
-
-The `RuntimeConfig` dataclass of `ElasticDocIndex` consists of `default_column_config` and `chunk_size`. You can change `chunk_size` for batch operations:
-
-```python
-doc_index = ElasticDocIndex[SimpleDoc]()
-doc_index.configure(ElasticDocIndex.RuntimeConfig(chunk_size=1000))
-```
 
 `default_column_config` is the default configurations for every column type. Since there are many column types in Elasticsearch, you can also consider changing the column config when defining the schema.
 
@@ -511,8 +535,45 @@ class SimpleDoc(BaseDoc):
     tensor: NdArray[128] = Field(similarity='l2_norm', m=32, num_candidates=5000)
 
 
-doc_index = ElasticDocIndex[SimpleDoc]()
+doc_index = ElasticDocIndex[SimpleDoc](index_name='my_index_1')
+```
+
+### RuntimeConfig
+
+The `RuntimeConfig` dataclass of `ElasticDocIndex` consists of `chunk_size`. You can change `chunk_size` for batch operations:
+
+```python
+doc_index = ElasticDocIndex[SimpleDoc](index_name='my_index_2')
+doc_index.configure(ElasticDocIndex.RuntimeConfig(chunk_size=1000))
 ```
 
 You can pass the above as keyword arguments to the `configure()` method or pass an entire configuration object.
 See [here](docindex.md#configuration-options#customize-configurations) for more information.
+
+
+### Persistence
+
+You can hook into a database index that was persisted during a previous session by 
+specifying the `index_name` and `hosts`:
+
+```python
+doc_index = ElasticDocIndex[MyDoc](
+    hosts='http://localhost:9200', index_name='previously_stored'
+)
+doc_index.index(index_docs)
+
+doc_index2 = ElasticDocIndex[MyDoc](
+    hosts='http://localhost:9200', index_name='previously_stored'
+)
+
+print(f'number of docs in the persisted index: {doc_index2.num_docs()}')
+```
+
+
+## Nested data and subindex search
+
+The examples provided primarily operate on a basic schema where each field corresponds to a straightforward type such as `str` or `NdArray`. 
+However, it is also feasible to represent and store nested documents in a Document Index, including scenarios where a document 
+contains a `DocList` of other documents. 
+
+Go to the [Nested Data](nested_data.md) section to learn more.

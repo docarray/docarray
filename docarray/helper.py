@@ -15,6 +15,8 @@ from typing import (
     Union,
 )
 
+from docarray.utils._internal._typing import safe_issubclass
+
 if TYPE_CHECKING:
     from docarray import BaseDoc
 
@@ -24,7 +26,7 @@ def _is_access_path_valid(doc_type: Type['BaseDoc'], access_path: str) -> bool:
     Check if a given access path ("__"-separated) is a valid path for a given Document class.
     """
 
-    field_type = _get_field_type_by_access_path(doc_type, access_path)
+    field_type = _get_field_annotation_by_access_path(doc_type, access_path)
     return field_type is not None
 
 
@@ -127,7 +129,7 @@ def _update_nested_dicts(
             _update_nested_dicts(to_update[k], update_with[k])
 
 
-def _get_field_type_by_access_path(
+def _get_field_annotation_by_access_path(
     doc_type: Type['BaseDoc'], access_path: str
 ) -> Optional[Type]:
     """
@@ -140,17 +142,17 @@ def _get_field_type_by_access_path(
     from docarray import BaseDoc, DocList
 
     field, _, remaining = access_path.partition('__')
-    field_valid = field in doc_type.__fields__.keys()
+    field_valid = field in doc_type._docarray_fields().keys()
 
     if field_valid:
         if len(remaining) == 0:
-            return doc_type._get_field_type(field)
+            return doc_type._get_field_annotation(field)
         else:
-            d = doc_type._get_field_type(field)
-            if issubclass(d, DocList):
-                return _get_field_type_by_access_path(d.doc_type, remaining)
-            elif issubclass(d, BaseDoc):
-                return _get_field_type_by_access_path(d, remaining)
+            d = doc_type._get_field_annotation(field)
+            if safe_issubclass(d, DocList):
+                return _get_field_annotation_by_access_path(d.doc_type, remaining)
+            elif safe_issubclass(d, BaseDoc):
+                return _get_field_annotation_by_access_path(d, remaining)
             else:
                 return None
     else:
@@ -240,3 +242,7 @@ def get_paths(
         num_docs += 1
         if size is not None and num_docs >= size:
             break
+
+
+def _shallow_copy_doc(doc):
+    return doc.__class__._shallow_copy(doc)

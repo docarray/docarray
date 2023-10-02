@@ -8,9 +8,3 @@ services:
       - ES_JAVA_OPTS=-Xmx1024m
     ports:
       - "9200:9200"
-    networks:
-      - elastic
-
-networks:
-  elastic:
-    name: elastic

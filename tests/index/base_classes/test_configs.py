@@ -23,10 +23,6 @@ class FakeQueryBuilder:
 class DBConfig(BaseDocIndex.DBConfig):
     work_dir: str = '.'
     other: int = 5
-
-
-@dataclass
-class RuntimeConfig(BaseDocIndex.RuntimeConfig):
     default_column_config: Dict[Type, Dict[str, Any]] = field(
         default_factory=lambda: {
             str: {
@@ -35,6 +31,10 @@ class RuntimeConfig(BaseDocIndex.RuntimeConfig):
             },
         }
     )
+
+
+@dataclass
+class RuntimeConfig(BaseDocIndex.RuntimeConfig):
     default_ef: int = 50
 
 
@@ -60,13 +60,14 @@ class DummyDocIndex(BaseDocIndex):
     _filter_batched = _identity
     _text_search = _identity
     _text_search_batched = _identity
+    _doc_exists = _identity
 
 
 def test_defaults():
     index = DummyDocIndex[SimpleDoc]()
     assert index._db_config.other == 5
     assert index._db_config.work_dir == '.'
-    assert index._runtime_config.default_column_config[str] == {
+    assert index._db_config.default_column_config[str] == {
         'dim': 128,
         'space': 'l2',
     }
@@ -77,15 +78,13 @@ def test_set_by_class():
     index = DummyDocIndex[SimpleDoc](DBConfig(work_dir='hi', other=10))
     assert index._db_config.other == 10
     assert index._db_config.work_dir == 'hi'
-    index.configure(RuntimeConfig(default_column_config={}, default_ef=10))
-    assert index._runtime_config.default_column_config == {}
+    index.configure(RuntimeConfig(default_ef=10))
+    assert index._runtime_config.default_ef == 10
 
     # change only some settings
     index = DummyDocIndex[SimpleDoc](DBConfig(work_dir='hi'))
     assert index._db_config.other == 5
     assert index._db_config.work_dir == 'hi'
-    index.configure(RuntimeConfig(default_column_config={}))
-    assert index._runtime_config.default_column_config == {}
 
 
 def test_set_by_kwargs():
@@ -93,20 +92,18 @@ def test_set_by_kwargs():
     index = DummyDocIndex[SimpleDoc](work_dir='hi', other=10)
     assert index._db_config.other == 10
     assert index._db_config.work_dir == 'hi'
-    index.configure(default_column_config={}, default_ef=10)
-    assert index._runtime_config.default_column_config == {}
+    index.configure(default_ef=10)
+    assert index._runtime_config.default_ef == 10
 
     # change only some settings
     index = DummyDocIndex[SimpleDoc](work_dir='hi')
     assert index._db_config.other == 5
     assert index._db_config.work_dir == 'hi'
-    index.configure(default_column_config={})
-    assert index._runtime_config.default_column_config == {}
 
 
 def test_default_column_config():
     index = DummyDocIndex[SimpleDoc]()
-    assert index._runtime_config.default_column_config == {
+    assert index._db_config.default_column_config == {
         str: {
             'dim': 128,
             'space': 'l2',

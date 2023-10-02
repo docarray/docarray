@@ -12,3 +12,4 @@ This section covers the following sections:
 - [3D Mesh](3d_mesh/3d_mesh.md)
 - [Table](table/table.md)
 - [Multimodal data](multimodal/multimodal.md)
+- [Tensor](tensor/tensor.md)

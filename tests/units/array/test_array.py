@@ -412,7 +412,7 @@ def test_reverse():
 
 
 class Image(BaseDoc):
-    tensor: Optional[NdArray]
+    tensor: Optional[NdArray] = None
     url: ImageUrl
 
 
@@ -467,7 +467,6 @@ def test_optional_field():
 
 
 def test_validate_list_dict():
-
     images = [
         dict(url=f'http://url.com/foo_{i}.png', tensor=NdArray(i)) for i in [2, 0, 1]
     ]
@@ -479,3 +478,32 @@ def test_validate_list_dict():
         'http://url.com/foo_0.png',
         'http://url.com/foo_1.png',
     ]
+
+
+def test_legacy_doc():
+    from docarray.documents.legacy import LegacyDocument
+
+    newDoc = LegacyDocument()
+    da = DocList[LegacyDocument]([newDoc])
+    da.summary()
+
+
+def test_parameterize_list():
+    from docarray import DocList, BaseDoc
+
+    with pytest.raises(TypeError) as excinfo:
+        da = DocList[BaseDoc()]
+        assert da is None
+
+    assert str(excinfo.value) == 'Expecting a type, got object instead'
+
+
+def test_not_double_subcriptable():
+    from docarray import DocList
+    from docarray.documents import TextDoc
+
+    with pytest.raises(TypeError) as excinfo:
+        da = DocList[TextDoc][TextDoc]
+        assert da is None
+
+    assert 'not subscriptable' in str(excinfo.value)

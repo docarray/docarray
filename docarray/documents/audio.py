@@ -1,6 +1,7 @@
-from typing import TYPE_CHECKING, Any, Optional, Type, TypeVar, Union
+from typing import TYPE_CHECKING, Any, Dict, Optional, Type, TypeVar, Union
 
 import numpy as np
+from pydantic import Field
 
 from docarray.base_doc import BaseDoc
 from docarray.typing import AnyEmbedding, AudioUrl
@@ -8,6 +9,10 @@ from docarray.typing.bytes.audio_bytes import AudioBytes
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
 from docarray.typing.tensor.audio.audio_tensor import AudioTensor
 from docarray.utils._internal.misc import import_library
+from docarray.utils._internal.pydantic import is_pydantic_v2
+
+if is_pydantic_v2:
+    from pydantic import model_validator
 
 if TYPE_CHECKING:
     import tensorflow as tf  # type: ignore
@@ -55,7 +60,7 @@ class AudioDoc(BaseDoc):
 
     # extend it
     class MyAudio(AudioDoc):
-        name: Optional[TextDoc]
+        name: Optional[TextDoc] = None
 
 
     audio = MyAudio(
@@ -94,24 +99,55 @@ class AudioDoc(BaseDoc):
     ```
     """
 
-    url: Optional[AudioUrl]
-    tensor: Optional[AudioTensor]
-    embedding: Optional[AnyEmbedding]
-    bytes_: Optional[AudioBytes]
-    frame_rate: Optional[int]
+    url: Optional[AudioUrl] = Field(
+        description='The url to a (potentially remote) audio file that can be loaded',
+        example='https://github.com/docarray/docarray/blob/main/tests/toydata/hello.mp3?raw=true',
+        default=None,
+    )
+    tensor: Optional[AudioTensor] = Field(
+        description='Tensor object of the audio which can be specified to one of `AudioNdArray`, `AudioTorchTensor`, `AudioTensorFlowTensor`',
+        default=None,
+    )
+    embedding: Optional[AnyEmbedding] = Field(
+        description='Store an embedding: a vector representation of the audio.',
+        example=[0, 1, 0],
+        default=None,
+    )
+    bytes_: Optional[AudioBytes] = Field(
+        description='Bytes representation pf the audio',
+        default=None,
+    )
+    frame_rate: Optional[int] = Field(
+        description='An integer representing the frame rate of the audio.',
+        example=24,
+        default=None,
+    )
 
     @classmethod
-    def validate(
-        cls: Type[T],
-        value: Union[str, AbstractTensor, Any],
-    ) -> T:
+    def _validate(cls, value) -> Dict[str, Any]:
         if isinstance(value, str):
-            value = cls(url=value)
+            value = dict(url=value)
         elif isinstance(value, (AbstractTensor, np.ndarray)) or (
             torch is not None
             and isinstance(value, torch.Tensor)
             or (tf is not None and isinstance(value, tf.Tensor))
         ):
-            value = cls(tensor=value)
+            value = dict(tensor=value)
 
-        return super().validate(value)
+        return value
+
+    if is_pydantic_v2:
+
+        @model_validator(mode='before')
+        @classmethod
+        def validate_model_before(cls, value):
+            return cls._validate(value)
+
+    else:
+
+        @classmethod
+        def validate(
+            cls: Type[T],
+            value: Union[str, AbstractTensor, Any],
+        ) -> T:
+            return super().validate(cls._validate(value))

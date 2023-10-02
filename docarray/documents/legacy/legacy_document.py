@@ -8,10 +8,10 @@ from docarray.typing import AnyEmbedding, AnyTensor
 
 class LegacyDocument(BaseDoc):
     """
-    This Document is the LegacyDocument. It follows the same schema as in DocArray v1.
+    This Document is the LegacyDocument. It follows the same schema as in DocArray <=0.21.
     It can be useful to start migrating a codebase from v1 to v2.
 
-    Nevertheless, the API is not totally compatible with DocArray v1 `Document`.
+    Nevertheless, the API is not totally compatible with DocArray <=0.21 `Document`.
     Indeed, none of the method associated with `Document` are present. Only the schema
     of the data is similar.
 
@@ -34,12 +34,12 @@ class LegacyDocument(BaseDoc):
 
     """
 
-    tensor: Optional[AnyTensor]
-    chunks: Optional[DocList[LegacyDocument]]
-    matches: Optional[DocList[LegacyDocument]]
-    blob: Optional[bytes]
-    text: Optional[str]
-    url: Optional[str]
-    embedding: Optional[AnyEmbedding]
+    tensor: Optional[AnyTensor] = None
+    chunks: Optional[DocList[LegacyDocument]] = None
+    matches: Optional[DocList[LegacyDocument]] = None
+    blob: Optional[bytes] = None
+    text: Optional[str] = None
+    url: Optional[str] = None
+    embedding: Optional[AnyEmbedding] = None
     tags: Dict[str, Any] = dict()
-    scores: Optional[Dict[str, Any]]
+    scores: Optional[Dict[str, Any]] = None

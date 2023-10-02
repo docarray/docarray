@@ -1,12 +1,17 @@
 from typing import TYPE_CHECKING, Any, Optional, Type, TypeVar, Union
 
 import numpy as np
+from pydantic import Field
 
 from docarray.base_doc import BaseDoc
 from docarray.documents.point_cloud.points_and_colors import PointsAndColors
 from docarray.typing import AnyEmbedding, PointCloud3DUrl
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
 from docarray.utils._internal.misc import import_library
+from docarray.utils._internal.pydantic import is_pydantic_v2
+
+if is_pydantic_v2:
+    from pydantic import model_validator
 
 if TYPE_CHECKING:
     import tensorflow as tf  # type: ignore
@@ -57,7 +62,7 @@ class PointCloud3D(BaseDoc):
 
     # extend it
     class MyPointCloud3D(PointCloud3D):
-        second_embedding: Optional[AnyEmbedding]
+        second_embedding: Optional[AnyEmbedding] = None
 
 
     pc = MyPointCloud3D(url='https://people.sc.fsu.edu/~jburkardt/data/obj/al.obj')
@@ -107,23 +112,51 @@ class PointCloud3D(BaseDoc):
     ```
     """
 
-    url: Optional[PointCloud3DUrl]
-    tensors: Optional[PointsAndColors]
-    embedding: Optional[AnyEmbedding]
-    bytes_: Optional[bytes]
+    url: Optional[PointCloud3DUrl] = Field(
+        description='URL to a file containing point cloud information. Can be remote (web) URL, or a local file path.',
+        example='https://people.sc.fsu.edu/~jburkardt/data/obj/al.obj',
+        default=None,
+    )
+    tensors: Optional[PointsAndColors] = Field(
+        description='A tensor object of 3D point cloud of type `PointsAndColors`.',
+        example=[[0, 0, 1], [1, 0, 1], [0, 1, 1]],
+        default=None,
+    )
+    embedding: Optional[AnyEmbedding] = Field(
+        description='Store an embedding: a vector representation of 3D point cloud.',
+        example=[1, 1, 1],
+        default=None,
+    )
+    bytes_: Optional[bytes] = Field(
+        description='Bytes representation of 3D point cloud.',
+        default=None,
+    )
 
     @classmethod
-    def validate(
-        cls: Type[T],
-        value: Union[str, AbstractTensor, Any],
-    ) -> T:
+    def _validate(self, value: Union[str, AbstractTensor, Any]) -> Any:
         if isinstance(value, str):
-            value = cls(url=value)
+            value = {'url': value}
         elif isinstance(value, (AbstractTensor, np.ndarray)) or (
             torch is not None
             and isinstance(value, torch.Tensor)
             or (tf is not None and isinstance(value, tf.Tensor))
         ):
-            value = cls(tensors=PointsAndColors(points=value))
+            value = {'tensors': PointsAndColors(points=value)}
 
-        return super().validate(value)
+        return value
+
+    if is_pydantic_v2:
+
+        @model_validator(mode='before')
+        @classmethod
+        def validate_model_before(cls, value):
+            return cls._validate(value)
+
+    else:
+
+        @classmethod
+        def validate(
+            cls: Type[T],
+            value: Union[str, AbstractTensor, Any],
+        ) -> T:
+            return super().validate(cls._validate(value))

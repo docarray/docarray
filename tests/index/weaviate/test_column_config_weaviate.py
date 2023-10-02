@@ -48,3 +48,9 @@ def test_index_name():
 
     index = WeaviateDocumentIndex[StringDoc]()
     assert index.index_name == StringDoc.__name__
+
+    index = WeaviateDocumentIndex[StringDoc](index_name='BaseDoc')
+    assert index.index_name == 'BaseDoc'
+
+    index = WeaviateDocumentIndex[StringDoc](index_name='index_name')
+    assert index.index_name == 'Index_name'

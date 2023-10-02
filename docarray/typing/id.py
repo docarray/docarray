@@ -1,15 +1,20 @@
-from typing import TYPE_CHECKING, Type, TypeVar, Union
+from typing import TYPE_CHECKING, Any, Type, TypeVar, Union
 from uuid import UUID
 
-from pydantic import BaseConfig, parse_obj_as
-from pydantic.fields import ModelField
+from pydantic import parse_obj_as
 
 from docarray.typing.proto_register import _register_proto
+from docarray.utils._internal.pydantic import is_pydantic_v2
 
 if TYPE_CHECKING:
     from docarray.proto import NodeProto
 
 from docarray.typing.abstract_type import AbstractType
+
+if is_pydantic_v2:
+    from pydantic import GetCoreSchemaHandler, GetJsonSchemaHandler
+    from pydantic.json_schema import JsonSchemaValue
+    from pydantic_core import core_schema
 
 T = TypeVar('T', bound='ID')
 
@@ -21,15 +26,9 @@ class ID(str, AbstractType):
     """
 
     @classmethod
-    def __get_validators__(cls):
-        yield cls.validate
-
-    @classmethod
-    def validate(
+    def _docarray_validate(
         cls: Type[T],
         value: Union[str, int, UUID],
-        field: 'ModelField',
-        config: 'BaseConfig',
     ) -> T:
         try:
             id: str = str(value)
@@ -56,3 +55,21 @@ class ID(str, AbstractType):
         :return: a string
         """
         return parse_obj_as(cls, pb_msg)
+
+    if is_pydantic_v2:
+
+        @classmethod
+        def __get_pydantic_core_schema__(
+            cls, source: Type[Any], handler: 'GetCoreSchemaHandler'
+        ) -> core_schema.CoreSchema:
+            return core_schema.general_plain_validator_function(
+                cls.validate,
+            )
+
+        @classmethod
+        def __get_pydantic_json_schema__(
+            cls, core_schema: core_schema.CoreSchema, handler: GetJsonSchemaHandler
+        ) -> JsonSchemaValue:
+            field_schema: dict[str, Any] = {}
+            field_schema.update(type='string')
+            return field_schema

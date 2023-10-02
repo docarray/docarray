@@ -1,6 +1,7 @@
+from typing import Dict, List
+
 import numpy as np
 import pytest
-from typing import Dict, List
 
 from docarray import DocList
 from docarray.base_doc import AnyDoc, BaseDoc
@@ -36,7 +37,7 @@ def test_any_document_from_to(protocol):
     class DocTest(BaseDoc):
         text: str
         tags: Dict[str, int]
-        l: List[int]
+        l_: List[int]
         d: InnerDoc
         ld: DocList[InnerDoc]
 
@@ -46,14 +47,14 @@ def test_any_document_from_to(protocol):
             DocTest(
                 text='type1',
                 tags={'type': 1},
-                l=[1, 2],
+                l_=[1, 2],
                 d=inner_doc,
                 ld=DocList[InnerDoc]([inner_doc]),
             ),
             DocTest(
                 text='type2',
                 tags={'type': 2},
-                l=[1, 2],
+                l_=[1, 2],
                 d=inner_doc,
                 ld=DocList[InnerDoc]([inner_doc]),
             ),
@@ -71,7 +72,7 @@ def test_any_document_from_to(protocol):
     for i, d in enumerate(aux):
         assert d.tags['type'] == i + 1
         assert d.text == f'type{i + 1}'
-        assert d.l == [1, 2]
+        assert d.l_ == [1, 2]
         if protocol == 'proto':
             assert isinstance(d.d, AnyDoc)
             assert d.d.text == 'I am inner'  # inner Document is a Dict

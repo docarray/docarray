@@ -30,6 +30,7 @@ from docarray.index.abstract import (
 )
 from docarray.typing import NdArray
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
+from docarray.utils._internal._typing import safe_issubclass
 from docarray.utils._internal.misc import import_library, torch_imported
 from docarray.utils.find import _FindResult
 
@@ -66,9 +67,10 @@ class QdrantDocumentIndex(BaseDocIndex, Generic[TSchema]):
 
     def __init__(self, db_config=None, **kwargs):
         """Initialize QdrantDocumentIndex"""
-        if db_config is not None and getattr(db_config, 'index_name'):
+        if db_config is not None and getattr(
+            db_config, 'index_name'
+        ):  # this is needed for subindices
             db_config.collection_name = db_config.index_name
-
         super().__init__(db_config=db_config, **kwargs)
         self._db_config: QdrantDocumentIndex.DBConfig = cast(
             QdrantDocumentIndex.DBConfig, self._db_config
@@ -240,11 +242,6 @@ class QdrantDocumentIndex(BaseDocIndex, Generic[TSchema]):
         optimizers_config: Optional[types.OptimizersConfigDiff] = None
         wal_config: Optional[types.WalConfigDiff] = None
         quantization_config: Optional[types.QuantizationConfig] = None
-
-    @dataclass
-    class RuntimeConfig(BaseDocIndex.RuntimeConfig):
-        """Dataclass that contains all "dynamic" configurations of QdrantDocumentIndex."""
-
         default_column_config: Dict[Type, Dict[str, Any]] = field(
             default_factory=lambda: {
                 'id': {},  # type: ignore[dict-item]
@@ -253,6 +250,18 @@ class QdrantDocumentIndex(BaseDocIndex, Generic[TSchema]):
             }
         )
 
+        def __post_init__(self):
+            if self.collection_name is None and self.index_name is not None:
+                self.collection_name = self.index_name
+            if self.index_name is None and self.collection_name is not None:
+                self.index_name = self.collection_name
+
+    @dataclass
+    class RuntimeConfig(BaseDocIndex.RuntimeConfig):
+        """Dataclass that contains all "dynamic" configurations of QdrantDocumentIndex."""
+
+        pass
+
     def python_type_to_db_type(self, python_type: Type) -> Any:
         """Map python type to database type.
         Takes any python type and returns the corresponding database column type.
@@ -260,10 +269,10 @@ class QdrantDocumentIndex(BaseDocIndex, Generic[TSchema]):
         :param python_type: a python type.
         :return: the corresponding database column type.
         """
-        if any(issubclass(python_type, vt) for vt in QDRANT_PY_VECTOR_TYPES):
+        if any(safe_issubclass(python_type, vt) for vt in QDRANT_PY_VECTOR_TYPES):
             return 'vector'
 
-        if issubclass(python_type, docarray.typing.id.ID):
+        if safe_issubclass(python_type, docarray.typing.id.ID):
             return 'id'
 
         return 'payload'
@@ -314,6 +323,17 @@ class QdrantDocumentIndex(BaseDocIndex, Generic[TSchema]):
         Get the number of documents.
         """
         return self._client.count(collection_name=self.collection_name).count
+
+    def _doc_exists(self, doc_id: str) -> bool:
+        response, _ = self._client.scroll(
+            collection_name=self.index_name,
+            scroll_filter=rest.Filter(
+                must=[
+                    rest.HasIdCondition(has_id=[self._to_qdrant_id(doc_id)]),
+                ],
+            ),
+        )
+        return len(response) > 0
 
     def _del_items(self, doc_ids: Sequence[str]):
         items = self._get_items(doc_ids)
@@ -550,7 +570,7 @@ class QdrantDocumentIndex(BaseDocIndex, Generic[TSchema]):
 
     def _filter_by_parent_id(self, id: str) -> Optional[List[str]]:
         response, _ = self._client.scroll(
-            collection_name=self._db_config.collection_name,  # type: ignore
+            collection_name=self.collection_name,  # type: ignore
             scroll_filter=rest.Filter(
                 must=[
                     rest.FieldCondition(
@@ -569,7 +589,7 @@ class QdrantDocumentIndex(BaseDocIndex, Generic[TSchema]):
         vectors: Dict[str, List[float]] = {}
         payload: Dict[str, Any] = {'__generated_vectors': []}
         for column_name, column_info in self._column_infos.items():
-            if issubclass(column_info.docarray_type, AnyDocArray):
+            if safe_issubclass(column_info.docarray_type, AnyDocArray):
                 continue
             if column_info.db_type in ['id', 'payload']:
                 payload[column_name] = row.get(column_name)
@@ -612,7 +632,11 @@ class QdrantDocumentIndex(BaseDocIndex, Generic[TSchema]):
         self, point: Union[rest.ScoredPoint, rest.Record]
     ) -> Dict[str, Any]:
         document = cast(Dict[str, Any], point.payload)
-        generated_vectors = document.pop('__generated_vectors')
+        generated_vectors = (
+            document.pop('__generated_vectors')
+            if '__generated_vectors' in document
+            else []
+        )
         vectors = point.vector if point.vector else dict()
         if not isinstance(vectors, dict):
             vectors = {'__default__': vectors}

@@ -31,6 +31,7 @@ from docarray.index.abstract import BaseDocIndex, FindResultBatched, _FindResult
 from docarray.typing import AnyTensor
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
 from docarray.typing.tensor.ndarray import NdArray
+from docarray.utils._internal._typing import safe_issubclass
 from docarray.utils._internal.misc import import_library
 from docarray.utils.find import FindResult, _FindResult
 
@@ -130,7 +131,7 @@ class WeaviateDocumentIndex(BaseDocIndex, Generic[TSchema]):
             field_overwrites.get(k, k)
             for k, v in self._column_infos.items()
             if v.config.get('is_embedding', False) is False
-            and not issubclass(v.docarray_type, AnyDocArray)
+            and not safe_issubclass(v.docarray_type, AnyDocArray)
         ]
 
     def _validate_columns(self) -> None:
@@ -201,7 +202,7 @@ class WeaviateDocumentIndex(BaseDocIndex, Generic[TSchema]):
 
         for column_name, column_info in column_infos.items():
             # in weaviate, we do not create a property for the doc's embeddings
-            if issubclass(column_info.docarray_type, AnyDocArray):
+            if safe_issubclass(column_info.docarray_type, AnyDocArray):
                 continue
             if column_name == self.embedding_column:
                 continue
@@ -224,9 +225,7 @@ class WeaviateDocumentIndex(BaseDocIndex, Generic[TSchema]):
         schema["properties"] = properties
         schema["class"] = self.index_name
 
-        # TODO: Use exists() instead of contains() when available
-        #       see https://github.com/weaviate/weaviate-python-client/issues/232
-        if self._client.schema.contains(schema):
+        if self._client.schema.exists(self.index_name):
             logging.warning(
                 f"Found index {self.index_name} with schema {schema}. Will reuse existing schema."
             )
@@ -244,11 +243,6 @@ class WeaviateDocumentIndex(BaseDocIndex, Generic[TSchema]):
         scopes: List[str] = field(default_factory=lambda: ["offline_access"])
         auth_api_key: Optional[str] = None
         embedded_options: Optional[EmbeddedOptions] = None
-
-    @dataclass
-    class RuntimeConfig(BaseDocIndex.RuntimeConfig):
-        """Dataclass that contains all "dynamic" configurations of WeaviateDocumentIndex."""
-
         default_column_config: Dict[Any, Dict[str, Any]] = field(
             default_factory=lambda: {
                 np.ndarray: {},
@@ -262,6 +256,20 @@ class WeaviateDocumentIndex(BaseDocIndex, Generic[TSchema]):
                 'blob': {},
             }
         )
+
+        def __post_init__(self):
+            # To prevent errors, it is important to capitalize the provided index name
+            # when working with Weaviate, as it stores index names in a capitalized format.
+            # Can't use .capitalize() because it modifies the whole string (See test).
+            self.index_name = (
+                self.index_name[0].upper() + self.index_name[1:]
+                if self.index_name
+                else None
+            )
+
+    @dataclass
+    class RuntimeConfig(BaseDocIndex.RuntimeConfig):
+        """Dataclass that contains all "dynamic" configurations of WeaviateDocumentIndex."""
 
         batch_config: Dict[str, Any] = field(
             default_factory=lambda: DEFAULT_BATCH_CONFIG
@@ -357,7 +365,7 @@ class WeaviateDocumentIndex(BaseDocIndex, Generic[TSchema]):
             query_vec_np, search_field=search_field, limit=limit, **kwargs
         )
 
-        if isinstance(docs, List):
+        if isinstance(docs, List) and not isinstance(docs, DocList):
             docs = self._dict_list_to_docarray(docs)
 
         return FindResult(documents=docs, scores=scores)
@@ -388,7 +396,7 @@ class WeaviateDocumentIndex(BaseDocIndex, Generic[TSchema]):
         index_name = self.index_name
         if search_field:
             logging.warning(
-                'Argument search_field is not supported for WeaviateDocumentIndex. Ignoring.'
+                'The search_field argument is not supported for the WeaviateDocumentIndex and will be ignored.'
             )
         near_vector: Dict[str, Any] = {
             "vector": query,
@@ -435,7 +443,7 @@ class WeaviateDocumentIndex(BaseDocIndex, Generic[TSchema]):
         queries: Union[AnyTensor, DocList],
         search_field: str = '',
         limit: int = 10,
-        **kwargs,
+        **kwargs: Any,
     ) -> FindResultBatched:
         """Find documents in the index using nearest neighbor search.
 
@@ -599,7 +607,7 @@ class WeaviateDocumentIndex(BaseDocIndex, Generic[TSchema]):
 
         results = (
             self._client.query.get(index_name, self.properties)
-            .with_bm25(bm25)
+            .with_bm25(**bm25)
             .with_limit(limit)
             .with_additional(["score", "vector"])
             .do()
@@ -620,7 +628,7 @@ class WeaviateDocumentIndex(BaseDocIndex, Generic[TSchema]):
 
             q = (
                 self._client.query.get(self.index_name, self.properties)
-                .with_bm25(bm25)
+                .with_bm25(**bm25)
                 .with_limit(limit)
                 .with_additional(["score", "vector"])
                 .with_alias(f'query_{i}')
@@ -696,7 +704,7 @@ class WeaviateDocumentIndex(BaseDocIndex, Generic[TSchema]):
             or None if ``python_type`` is not supported.
         """
         for allowed_type in WEAVIATE_PY_VEC_TYPES:
-            if issubclass(python_type, allowed_type):
+            if safe_issubclass(python_type, allowed_type):
                 return 'number[]'
 
         py_weaviate_type_map = {
@@ -710,7 +718,7 @@ class WeaviateDocumentIndex(BaseDocIndex, Generic[TSchema]):
         }
 
         for py_type, weaviate_type in py_weaviate_type_map.items():
-            if issubclass(python_type, py_type):
+            if safe_issubclass(python_type, py_type):
                 return weaviate_type
 
         raise ValueError(f'Unsupported column type for {type(self)}: {python_type}')
@@ -762,6 +770,21 @@ class WeaviateDocumentIndex(BaseDocIndex, Generic[TSchema]):
         ]
         return ids
 
+    def _doc_exists(self, doc_id: str) -> bool:
+        result = (
+            self._client.query.get(self.index_name, ['docarrayid'])
+            .with_where(
+                {
+                    "path": ['docarrayid'],
+                    "operator": "Equal",
+                    "valueString": f'{doc_id}',
+                }
+            )
+            .do()
+        )
+        docs = result["data"]["Get"][self.index_name]
+        return docs is not None and len(docs) > 0
+
     class QueryBuilder(BaseDocIndex.QueryBuilder):
         def __init__(self, document_index):
             self._queries = [
@@ -770,7 +793,7 @@ class WeaviateDocumentIndex(BaseDocIndex, Generic[TSchema]):
                 )
             ]
 
-        def build(self) -> Any:
+        def build(self, *args, **kwargs) -> Any:
             """Build the query object."""
             num_queries = len(self._queries)
 
@@ -831,6 +854,7 @@ class WeaviateDocumentIndex(BaseDocIndex, Generic[TSchema]):
             query,
             score_name: Literal["certainty", "distance"] = "certainty",
             score_threshold: Optional[float] = None,
+            **kwargs,
         ) -> Any:
             """
             Find k-nearest neighbors of the query.
@@ -840,6 +864,11 @@ class WeaviateDocumentIndex(BaseDocIndex, Generic[TSchema]):
             :param score_threshold: the threshold of the score
             :return: self
             """
+            if kwargs.get('search_field'):
+                logging.warning(
+                    'The search_field argument is not supported for the WeaviateDocumentIndex and will be ignored.'
+                )
+
             near_vector = {
                 "vector": query,
             }
@@ -883,7 +912,7 @@ class WeaviateDocumentIndex(BaseDocIndex, Generic[TSchema]):
 
             return self
 
-        def filter(self, where_filter) -> Any:
+        def filter(self, where_filter: Any) -> Any:
             """Find documents in the index based on a filter query
             :param where_filter: a filter
             :return: self
@@ -913,7 +942,6 @@ class WeaviateDocumentIndex(BaseDocIndex, Generic[TSchema]):
             return self
 
         def text_search(self, query: str, search_field: Optional[str] = None) -> Any:
-
             """Find documents in the index based on a text search query
 
             :param query: The text to search for

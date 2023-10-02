@@ -1,10 +1,24 @@
 from typing import TYPE_CHECKING, Any, Dict, Optional, Tuple, Type, TypeVar
 
-from pydantic import create_model, create_model_from_typeddict
+from pydantic import create_model
+
+from docarray.utils._internal.pydantic import is_pydantic_v2
+
+if not is_pydantic_v2:
+    from pydantic import create_model_from_typeddict
+else:
+
+    def create_model_from_typeddict(*args, **kwargs):
+        raise NotImplementedError(
+            "This function is not compatible with pydantic v2 anymore"
+        )
+
+
 from pydantic.config import BaseConfig
 from typing_extensions import TypedDict
 
 from docarray import BaseDoc
+from docarray.utils._internal._typing import safe_issubclass
 
 if TYPE_CHECKING:
     from pydantic.typing import AnyClassMethod
@@ -26,6 +40,12 @@ def create_doc(
     """
     Dynamically create a subclass of BaseDoc. This is a wrapper around pydantic's create_model.
 
+    !!! note
+        To pickle a dynamically created BaseDoc subclass:
+
+        - the class must be defined globally
+        - it must provide `__module__`
+
     ```python
     from docarray.documents import Audio
     from docarray.documents.helper import create_doc
@@ -38,8 +58,8 @@ def create_doc(
         tensor=(AudioNdArray, ...),
     )
 
-    assert issubclass(MyAudio, BaseDoc)
-    assert issubclass(MyAudio, Audio)
+    assert safe_issubclass(MyAudio, BaseDoc)
+    assert safe_issubclass(MyAudio, Audio)
     ```
 
     :param __model_name: name of the created model
@@ -54,7 +74,7 @@ def create_doc(
     :return: the new Document class
     """
 
-    if not issubclass(__base__, BaseDoc):
+    if not safe_issubclass(__base__, BaseDoc):
         raise ValueError(f'{type(__base__)} is not a BaseDoc or its subclass')
 
     doc = create_model(
@@ -96,8 +116,8 @@ def create_doc_from_typeddict(
 
     Doc = create_doc_from_typeddict(MyAudio, __base__=Audio)
 
-    assert issubclass(Doc, BaseDoc)
-    assert issubclass(Doc, Audio)
+    assert safe_issubclass(Doc, BaseDoc)
+    assert safe_issubclass(Doc, Audio)
     ```
 
     ---
@@ -108,7 +128,7 @@ def create_doc_from_typeddict(
     """
 
     if '__base__' in kwargs:
-        if not issubclass(kwargs['__base__'], BaseDoc):
+        if not safe_issubclass(kwargs['__base__'], BaseDoc):
             raise ValueError(f'{kwargs["__base__"]} is not a BaseDoc or its subclass')
     else:
         kwargs['__base__'] = BaseDoc
@@ -136,7 +156,7 @@ def create_doc_from_dict(model_name: str, data_dict: Dict[str, Any]) -> Type['T_
 
     MyDoc = create_doc_from_dict(model_name='MyDoc', data_dict=data_dict)
 
-    assert issubclass(MyDoc, BaseDoc)
+    assert safe_issubclass(MyDoc, BaseDoc)
     ```
 
     ---

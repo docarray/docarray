@@ -193,3 +193,65 @@ def test_subindex_del(index):
     assert index._subindices['docs'].num_docs() == 20
     assert index._subindices['list_docs'].num_docs() == 20
     assert index._subindices['list_docs']._subindices['docs'].num_docs() == 100
+
+
+def test_subindex_contain(index):
+    # Checks for individual simple_docs within list_docs
+    for i in range(4):
+        doc = index[f'{i + 1}']
+        for simple_doc in doc.list_docs:
+            assert index.subindex_contains(simple_doc) is True
+            for nested_doc in simple_doc.docs:
+                assert index.subindex_contains(nested_doc) is True
+
+    invalid_doc = SimpleDoc(
+        id='non_existent',
+        simple_tens=np.zeros(10),
+        simple_text='invalid',
+    )
+    assert index.subindex_contains(invalid_doc) is False
+
+    # Checks for an empty doc
+    empty_doc = SimpleDoc(
+        id='',
+        simple_tens=np.zeros(10),
+        simple_text='',
+    )
+    assert index.subindex_contains(empty_doc) is False
+
+    # Empty index
+    empty_index = QdrantDocumentIndex[MyDoc]()
+    assert (empty_doc in empty_index) is False
+
+
+def test_subindex_collections():
+    from typing import Optional
+    from docarray.typing.tensor import AnyTensor
+    from pydantic import Field
+
+    class MetaPathDoc(BaseDoc):
+        path_id: str
+        level: int
+        text: str
+        embedding: Optional[AnyTensor] = Field(space='cosine', dim=128)
+
+    class MetaCategoryDoc(BaseDoc):
+        node_id: Optional[str]
+        node_name: Optional[str]
+        name: Optional[str]
+        product_type_definitions: Optional[str]
+        leaf: bool
+        paths: Optional[DocList[MetaPathDoc]]
+        embedding: Optional[AnyTensor] = Field(space='cosine', dim=128)
+        channel: str
+        lang: str
+
+    db_config = QdrantDocumentIndex.DBConfig(
+        host='localhost',
+        collection_name="channel_category",
+    )
+
+    doc_index = QdrantDocumentIndex[MetaCategoryDoc](db_config)
+
+    assert doc_index._subindices["paths"].index_name == 'channel_category__paths'
+    assert doc_index._subindices["paths"].collection_name == 'channel_category__paths'

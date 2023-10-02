@@ -1,6 +1,6 @@
 # Array of documents
 
-DocArray allows users to represent and manipulate multi-modal data to build AI applications such as neural search and generative AI. 
+DocArray allows users to represent and manipulate multimodal data to build AI applications such as neural search and generative AI. 
 
 As you have seen in the [previous section](array.md), the fundamental building block of DocArray is the [`BaseDoc`][docarray.base_doc.doc.BaseDoc] class which represents a *single* document, a *single* datapoint.
 
@@ -256,20 +256,20 @@ This is where the custom syntax `DocList[DocType]` comes into play.
 !!! note
     `DocList[DocType]` creates a custom [`DocList`][docarray.array.doc_list.doc_list.DocList] that can only contain `DocType` Documents.
 
-This syntax is inspired by more statically typed languages, and even though it might offend Python purists, we believe that it is a good user experience to think of an Array of `BaseDoc`s rather than just an array of non-homogenous `BaseDoc`s.
+This syntax is inspired by more statically typed languages, and even though it might offend Python purists, we believe that it is a good user experience to think of an Array of `BaseDoc`s rather than just an array of heterogeneous `BaseDoc`s.
 
-That said, `AnyDocArray` can also be used to create a non-homogenous `AnyDocArray`:
+That said, `AnyDocArray` can also be used to create a heterogeneous `AnyDocArray`:
 
 !!! note
-    The default `DocList` can be used to create a non-homogenous list of `BaseDoc`.
+    The default `DocList` can be used to create a heterogeneous list of `BaseDoc`.
 
 !!! warning
-    `DocVec` cannot store non-homogenous `BaseDoc` and always needs the `DocVec[DocType]` syntax.
+    `DocVec` cannot store heterogeneous `BaseDoc` and always needs the `DocVec[DocType]` syntax.
 
-The usage of a non-homogenous `DocList` is similar to a normal Python list but still offers DocArray functionality
+The usage of a heterogeneous `DocList` is similar to a normal Python list but still offers DocArray functionality
 like [serialization and sending over the wire](../sending/first_step.md). However, it won't be able to extend the API of your custom schema to the Array level.
 
-Here is how you can instantiate a non-homogenous `DocList`:
+Here is how you can instantiate a heterogeneous `DocList`:
 
 ```python
 from docarray import BaseDoc, DocList
@@ -386,10 +386,10 @@ this means that if you call `docs.image` multiple times, under the hood you will
 Let's see how it will work with `DocVec`:
 
 ```python
-from docarray import DocList
+from docarray import DocVec
 import numpy as np
 
-docs = DocList[ImageDoc](
+docs = DocVec[ImageDoc](
     [ImageDoc(image=np.random.rand(3, 224, 224)) for _ in range(10)]
 )
 
@@ -454,12 +454,14 @@ Both [`DocList`][docarray.array.doc_list.doc_list.DocList] and [`DocVec`][docarr
 
 
     class MyDoc(BaseDoc):
-        nested_doc: Optional[BaseDoc]
+        nested_doc: Optional[BaseDoc] = None
     ```
 
 Using nested optional fields differs slightly between DocList and DocVes, so watch out. But in a nutshell:
     
 When accessing a nested BaseDoc:
+
+
 * DocList will return a list of documents if the field is optional and a DocList if the field is not optional
 * DocVec will return a DocVec if all documents are there, or None if all docs are None. No mix of docs and None allowed!
 * DocVec will behave the same for a tensor field instead of a BaseDoc
@@ -482,7 +484,7 @@ class ImageDoc(BaseDoc):
 
 
 class ArticleDoc(BaseDoc):
-    image: Optional[ImageDoc]
+    image: Optional[ImageDoc] = None
     title: str
 ```
 

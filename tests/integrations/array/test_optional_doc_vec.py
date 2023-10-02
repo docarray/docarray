@@ -12,7 +12,7 @@ def test_optional():
 
     class Image(BaseDoc):
         url: ImageUrl
-        features: Optional[Features]
+        features: Optional[Features] = None
 
     docs = DocVec[Image]([Image(url='http://url.com/foo.png') for _ in range(10)])
 

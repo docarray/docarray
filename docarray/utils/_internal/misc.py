@@ -22,6 +22,13 @@ else:
     tf_imported = True
 
 
+try:
+    import jax.numpy as jnp  # type: ignore # noqa: F401
+except (ImportError, TypeError):
+    jnp_imported = False
+else:
+    jnp_imported = True
+
 INSTALL_INSTRUCTIONS = {
     'google.protobuf': '"docarray[proto]"',
     'lz4': '"docarray[proto]"',
@@ -38,10 +45,11 @@ INSTALL_INSTRUCTIONS = {
     'fastapi': '"docarray[web]"',
     'torch': '"docarray[torch]"',
     'tensorflow': 'protobuf==3.19.0 tensorflow',
-    'hubble': '"docarray[jac]"',
     'smart_open': '"docarray[aws]"',
     'boto3': '"docarray[aws]"',
     'botocore': '"docarray[aws]"',
+    'redis': '"docarray[redis]"',
+    'pymilvus': '"docarray[milvus]"',
 }
 
 
@@ -75,6 +83,10 @@ def is_torch_available():
 
 def is_tf_available():
     return tf_imported
+
+
+def is_jax_available():
+    return jnp_imported
 
 
 def is_np_int(item: Any) -> bool:

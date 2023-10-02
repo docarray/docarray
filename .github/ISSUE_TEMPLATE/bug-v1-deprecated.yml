@@ -1,0 +1,66 @@
+name: 🐛 DocArray <=0.21 Bug (0.1.0 - 0.20.1) (Deprecated Version)
+description: Report a bug or unexpected behavior in DocArray version prior to v2 (0.21.1)
+labels: [bug V1, unconfirmed]
+
+body:
+  - type: markdown
+    attributes:
+      value:  Thank you for contributing to DocArray! 🙌
+
+  - type: markdown
+    attributes:
+      value:  "credits: This issue template is heavily inspired by [pydantic template](https://github.com/pydantic/pydantic/tree/main/.github/ISSUE_TEMPLATE)"
+
+
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Initial Checks
+      description: |
+        Just a few checks to make sure you need to create a bug report.
+      options:
+        - label: I have read and followed [the docs](https://docs.docarray.org/) and still think this is a bug
+          required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: |
+        Please explain what you're seeing and what you would expect to see.
+
+        Please provide as much detail as possible to make understanding and solving your problem as quick as possible. 🙏
+    validations:
+      required: true
+
+  - type: textarea
+    id: example
+    attributes:
+      label: Example Code
+      description: >
+        If applicable, please add a self-contained,
+        [minimal, reproducible, example](https://stackoverflow.com/help/minimal-reproducible-example)
+        demonstrating the bug.
+
+      placeholder: |
+        import docarray
+
+        ...
+      render: Python
+
+  - type: textarea
+    id: version
+    attributes:
+      label: Python, DocArray & OS Version
+      description: |
+        Which version of Python & DocArray are you using, and which Operating System?
+
+        Please run the following command and copy the output below:
+
+        ```bash
+        python -c "import docarray; print(docarray.__version__);"
+        ```
+
+      render: Text
+    validations:
+      required: true

@@ -1,22 +1,32 @@
 from typing import TYPE_CHECKING, Any, Generic, Type, TypeVar, Union, cast
 
 import numpy as np
+import orjson
 
 from docarray.base_doc.base_node import BaseNode
 from docarray.typing.proto_register import _register_proto
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
-from docarray.utils._internal.misc import import_library
+from docarray.utils._internal.misc import (
+    import_library,
+    is_jax_available,
+    is_torch_available,
+)
 
 if TYPE_CHECKING:
     import tensorflow as tf  # type: ignore
-    from pydantic import BaseConfig
-    from pydantic.fields import ModelField
 
     from docarray.computation.tensorflow_backend import TensorFlowCompBackend
     from docarray.proto import NdArrayProto
 else:
     tf = import_library('tensorflow', raise_error=True)
 
+torch_available = is_torch_available()
+if torch_available:
+    import torch
+
+jax_available = is_jax_available()
+if jax_available:
+    import jax.numpy as jnp
 
 T = TypeVar('T', bound='TensorFlowTensor')
 ShapeT = TypeVar('ShapeT')
@@ -42,7 +52,7 @@ class TensorFlowTensor(AbstractTensor, Generic[ShapeT], metaclass=metaTensorFlow
     intended for use in a Document.
 
     This enables (de)serialization from/to protobuf and json, data validation,
-    and coersion from compatible types like numpy.ndarray.
+    and coercion from compatible types like numpy.ndarray.
 
     This type can also be used in a parametrized way, specifying the shape of the
     tensor.
@@ -185,29 +195,31 @@ class TensorFlowTensor(AbstractTensor, Generic[ShapeT], metaclass=metaTensorFlow
             yield self[i]
 
     @classmethod
-    def __get_validators__(cls):
-        # one or more validators may be yielded which will be called in the
-        # order to validate the input, each validator will receive as an input
-        # the value returned from the previous validator
-        yield cls.validate
-
-    @classmethod
-    def validate(
+    def _docarray_validate(
         cls: Type[T],
-        value: Union[T, np.ndarray, Any],
-        field: 'ModelField',
-        config: 'BaseConfig',
+        value: Union[T, np.ndarray, str, Any],
     ) -> T:
         if isinstance(value, TensorFlowTensor):
             return cast(T, value)
         elif isinstance(value, tf.Tensor):
             return cls._docarray_from_native(value)
-        else:
-            try:
-                arr: tf.Tensor = tf.constant(value)
-                return cls(tensor=arr)
-            except Exception:
-                pass  # handled below
+        elif isinstance(value, np.ndarray):
+            return cls._docarray_from_ndarray(value)
+        elif isinstance(value, AbstractTensor):
+            return cls._docarray_from_ndarray(value._docarray_to_ndarray())
+        elif torch_available and isinstance(value, torch.Tensor):
+            return cls._docarray_from_native(value.detach().cpu().numpy())
+        elif jax_available and isinstance(value, jnp.ndarray):
+            return cls._docarray_from_native(value.__array__())
+        elif isinstance(value, str):
+            value = orjson.loads(value)
+
+        try:
+            arr: tf.Tensor = tf.constant(value)
+            return cls(tensor=arr)
+        except Exception:
+            pass  # handled below
+
         raise ValueError(
             f'Expected a tensorflow.Tensor compatible type, got {type(value)}'
         )
@@ -320,3 +332,19 @@ class TensorFlowTensor(AbstractTensor, Generic[ShapeT], metaclass=metaTensorFlow
 
     def __len__(self) -> int:
         return len(self.tensor)
+
+    @classmethod
+    def _docarray_from_ndarray(cls: Type[T], value: np.ndarray) -> T:
+        """Create a `tensor from a numpy array
+        PS: this function is different from `from_ndarray` because it is private under the docarray namesapce.
+        This allows us to avoid breaking change if one day we introduce a Tensor backend with a `from_ndarray` method.
+        """
+        return cls.from_ndarray(value)
+
+    def _docarray_to_ndarray(self) -> np.ndarray:
+        """cast itself to a numpy array"""
+        return self.tensor.numpy()
+
+    @property
+    def shape(self):
+        return tf.shape(self.tensor)

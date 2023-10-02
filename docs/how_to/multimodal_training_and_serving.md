@@ -101,7 +101,7 @@ class Tokens(BaseDoc):
 
 ```python
 class Text(BaseText):
-    tokens: Optional[Tokens]
+    tokens: Optional[Tokens] = None
 ```
 
 Notice the [`TorchTensor`][docarray.typing.TorchTensor] type. It is a thin wrapper around `torch.Tensor` that can be used like any other Torch tensor, 
@@ -119,9 +119,9 @@ supported ML framework):
 
 ```python
 class ImageDoc(BaseDoc):
-    url: Optional[ImageUrl]
-    tensor: Optional[TorchTesor]
-    embedding: Optional[TorchTensor]
+    url: Optional[ImageUrl] = None
+    tensor: Optional[TorchTesor] = None
+    embedding: Optional[TorchTensor] = None
 ```
 
 Actually, the `BaseText` above also already includes `tensor`, `url` and `embedding` fields, so we can use those on our
@@ -133,6 +133,19 @@ The final document used for training here is the `PairTextImage`, which simply c
 class PairTextImage(BaseDoc):
     text: TextDoc
     image: ImageDoc
+```
+
+You then need to forward declare the following types. This will allow the objects to be properly pickled and unpickled.
+
+This will be unnecessary once [this issue](https://github.com/docarray/docarray/issues/1330) is resolved.
+
+```python
+from docarray import DocVec
+
+DocVec[Tokens]
+DocVec[TextDoc]
+DocVec[ImageDoc]
+DocVec[PairTextImage]
 ```
 
 ### Create the dataset 

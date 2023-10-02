@@ -18,6 +18,8 @@ REMOTE_JPG = (
     'Dag_Sebastian_Ahlander_at_G%C3%B6teborg_Book_Fair_2012b.jpg'
 )
 
+pytestmark = [pytest.mark.image]
+
 
 @pytest.mark.slow
 @pytest.mark.internet

@@ -27,20 +27,7 @@ class MyDoc(BaseDoc):
 
 
 @pytest.fixture(scope='session')
-def index():
-    index = HnswDocumentIndex[MyDoc](work_dir='./tmp')
-    return index
-
-
-def test_subindex_init(index):
-    assert isinstance(index._subindices['docs'], HnswDocumentIndex)
-    assert isinstance(index._subindices['list_docs'], HnswDocumentIndex)
-    assert isinstance(
-        index._subindices['list_docs']._subindices['docs'], HnswDocumentIndex
-    )
-
-
-def test_subindex_index(index):
+def index_docs():
     my_docs = [
         MyDoc(
             id=f'{i}',
@@ -82,19 +69,34 @@ def test_subindex_index(index):
         )
         for i in range(5)
     ]
+    return my_docs
 
-    index.index(my_docs)
+
+def test_subindex_init(tmpdir, index_docs):
+    index = HnswDocumentIndex[MyDoc](work_dir=str(tmpdir))
+    index.index(index_docs)
+    assert isinstance(index._subindices['docs'], HnswDocumentIndex)
+    assert isinstance(index._subindices['list_docs'], HnswDocumentIndex)
+    assert isinstance(
+        index._subindices['list_docs']._subindices['docs'], HnswDocumentIndex
+    )
+
+
+def test_subindex_index(tmpdir, index_docs):
+    index = HnswDocumentIndex[MyDoc](work_dir=str(tmpdir))
+    index.index(index_docs)
     assert index.num_docs() == 5
     assert index._subindices['docs'].num_docs() == 25
     assert index._subindices['list_docs'].num_docs() == 25
     assert index._subindices['list_docs']._subindices['docs'].num_docs() == 125
 
 
-def test_subindex_get(index):
+def test_subindex_get(tmpdir, index_docs):
+    index = HnswDocumentIndex[MyDoc](work_dir=str(tmpdir))
+    index.index(index_docs)
     doc = index['1']
     assert type(doc) == MyDoc
     assert doc.id == '1'
-
     assert len(doc.docs) == 5
     assert type(doc.docs[0]) == SimpleDoc
     assert doc.docs[0].id == 'docs-1-0'
@@ -117,7 +119,9 @@ def test_subindex_get(index):
     assert np.allclose(doc.my_tens, np.ones(30) * 2)
 
 
-def test_find_subindex(index):
+def test_find_subindex(tmpdir, index_docs):
+    index = HnswDocumentIndex[MyDoc](work_dir=str(tmpdir))
+    index.index(index_docs)
     # root level
     query = np.ones((30,))
     with pytest.raises(ValueError):
@@ -149,9 +153,42 @@ def test_find_subindex(index):
         assert root_doc.id == f'{doc.id.split("-")[2]}'
 
 
-def test_subindex_del(index):
+def test_subindex_del(tmpdir, index_docs):
+    index = HnswDocumentIndex[MyDoc](work_dir=str(tmpdir))
+    index.index(index_docs)
     del index['0']
     assert index.num_docs() == 4
     assert index._subindices['docs'].num_docs() == 20
     assert index._subindices['list_docs'].num_docs() == 20
     assert index._subindices['list_docs']._subindices['docs'].num_docs() == 100
+
+
+def test_subindex_contain(tmpdir, index_docs):
+    index = HnswDocumentIndex[MyDoc](work_dir=str(tmpdir))
+    index.index(index_docs)
+    # Checks for individual simple_docs within list_docs
+    for i in range(4):
+        doc = index[f'{i + 1}']
+        for simple_doc in doc.list_docs:
+            assert index.subindex_contains(simple_doc) is True
+            for nested_doc in simple_doc.docs:
+                assert index.subindex_contains(nested_doc) is True
+
+    invalid_doc = SimpleDoc(
+        id='non_existent',
+        simple_tens=np.zeros(10),
+        simple_text='invalid',
+    )
+    assert index.subindex_contains(invalid_doc) is False
+
+    # Checks for an empty doc
+    empty_doc = SimpleDoc(
+        id='',
+        simple_tens=np.zeros(10),
+        simple_text='',
+    )
+    assert index.subindex_contains(empty_doc) is False
+
+    # Empty index
+    empty_index = HnswDocumentIndex[MyDoc]()
+    assert (empty_doc in empty_index) is False

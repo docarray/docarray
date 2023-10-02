@@ -22,9 +22,9 @@ class AudioTorchTensor(AbstractAudioTensor, TorchTensor, metaclass=metaTorchAndN
 
     class MyAudioDoc(BaseDoc):
         title: str
-        audio_tensor: Optional[AudioTorchTensor]
-        url: Optional[AudioUrl]
-        bytes_: Optional[AudioBytes]
+        audio_tensor: Optional[AudioTorchTensor] = None
+        url: Optional[AudioUrl] = None
+        bytes_: Optional[AudioBytes] = None
 
 
     doc_1 = MyAudioDoc(

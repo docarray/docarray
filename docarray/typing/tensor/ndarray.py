@@ -1,18 +1,40 @@
 from typing import TYPE_CHECKING, Any, Generic, List, Tuple, Type, TypeVar, Union, cast
 
 import numpy as np
+import orjson
 
+from docarray.base_doc.base_node import BaseNode
 from docarray.typing.proto_register import _register_proto
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
+from docarray.utils._internal.misc import (  # noqa
+    is_jax_available,
+    is_tf_available,
+    is_torch_available,
+)
+
+jax_available = is_jax_available()
+if jax_available:
+    import jax.numpy as jnp
+
+    from docarray.typing.tensor.jaxarray import JaxArray  # noqa: F401
+
+torch_available = is_torch_available()
+if torch_available:
+    import torch
+
+    from docarray.typing.tensor.torch_tensor import TorchTensor  # noqa: F401
+
+tf_available = is_tf_available()
+if tf_available:
+    import tensorflow as tf  # type: ignore
+
+    from docarray.typing.tensor.tensorflow_tensor import TensorFlowTensor  # noqa: F401
 
 if TYPE_CHECKING:
-    from pydantic import BaseConfig
-    from pydantic.fields import ModelField
 
     from docarray.computation.numpy_backend import NumpyCompBackend
     from docarray.proto import NdArrayProto
 
-from docarray.base_doc.base_node import BaseNode
 
 T = TypeVar('T', bound='NdArray')
 ShapeT = TypeVar('ShapeT')
@@ -31,7 +53,7 @@ class NdArray(np.ndarray, AbstractTensor, Generic[ShapeT]):
     """
     Subclass of `np.ndarray`, intended for use in a Document.
     This enables (de)serialization from/to protobuf and json, data validation,
-    and coersion from compatible types like `torch.Tensor`.
+    and coercion from compatible types like `torch.Tensor`.
 
     This type can also be used in a parametrized way, specifying the shape of the array.
 
@@ -88,35 +110,38 @@ class NdArray(np.ndarray, AbstractTensor, Generic[ShapeT]):
     __parametrized_meta__ = metaNumpy
 
     @classmethod
-    def __get_validators__(cls):
-        # one or more validators may be yielded which will be called in the
-        # order to validate the input, each validator will receive as an input
-        # the value returned from the previous validator
-        yield cls.validate
-
-    @classmethod
-    def validate(
+    def _docarray_validate(
         cls: Type[T],
-        value: Union[T, np.ndarray, List[Any], Tuple[Any], Any],
-        field: 'ModelField',
-        config: 'BaseConfig',
+        value: Union[T, np.ndarray, str, List[Any], Tuple[Any], Any],
     ) -> T:
+
+        if isinstance(value, str):
+            value = orjson.loads(value)
+
         if isinstance(value, np.ndarray):
             return cls._docarray_from_native(value)
         elif isinstance(value, NdArray):
             return cast(T, value)
+        elif isinstance(value, AbstractTensor):
+            return cls._docarray_from_native(value._docarray_to_ndarray())
+        elif torch_available and isinstance(value, torch.Tensor):
+            return cls._docarray_from_native(value.detach().cpu().numpy())
+        elif tf_available and isinstance(value, tf.Tensor):
+            return cls._docarray_from_native(value.numpy())
+
+        elif jax_available and isinstance(value, jnp.ndarray):
+            return cls._docarray_from_native(value.__array__())
         elif isinstance(value, list) or isinstance(value, tuple):
             try:
                 arr_from_list: np.ndarray = np.asarray(value)
                 return cls._docarray_from_native(arr_from_list)
             except Exception:
                 pass  # handled below
-        else:
-            try:
-                arr: np.ndarray = np.ndarray(value)
-                return cls._docarray_from_native(arr)
-            except Exception:
-                pass  # handled below
+        try:
+            arr: np.ndarray = np.ndarray(value)
+            return cls._docarray_from_native(arr)
+        except Exception:
+            pass  # handled below
         raise ValueError(f'Expected a numpy.ndarray compatible type, got {type(value)}')
 
     @classmethod
@@ -145,9 +170,9 @@ class NdArray(np.ndarray, AbstractTensor, Generic[ShapeT]):
         ```python
         from docarray.typing import NdArray
         import numpy as np
+        from pydantic import parse_obj_as
 
-        t1 = NdArray.validate(np.zeros((3, 224, 224)), None, None)
-        # here t1 is a docarray NdArray
+        t1 = parse_obj_as(NdArray, np.zeros((3, 224, 224)))
         t2 = t1.unwrap()
         # here t2 is a pure np.ndarray but t1 is still a Docarray NdArray
         # But both share the same underlying memory
@@ -200,3 +225,18 @@ class NdArray(np.ndarray, AbstractTensor, Generic[ShapeT]):
     def __class_getitem__(cls, item: Any, *args, **kwargs):
         # see here for mypy bug: https://github.com/python/mypy/issues/14123
         return AbstractTensor.__class_getitem__.__func__(cls, item)  # type: ignore
+
+    @classmethod
+    def _docarray_from_ndarray(cls: Type[T], value: np.ndarray) -> T:
+        """Create a `tensor from a numpy array
+        PS: this function is different from `from_ndarray` because it is private under the docarray namesapce.
+        This allows us to avoid breaking change if one day we introduce a Tensor backend with a `from_ndarray` method.
+        """
+        return cls._docarray_from_native(value)
+
+    def _docarray_to_ndarray(self) -> np.ndarray:
+        """Create a `tensor from a numpy array
+        PS: this function is different from `from_ndarray` because it is private under the docarray namesapce.
+        This allows us to avoid breaking change if one day we introduce a Tensor backend with a `from_ndarray` method.
+        """
+        return self.unwrap()

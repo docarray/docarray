@@ -17,7 +17,7 @@ def test_batch(shuffle, stack, batch_size, n_batches):
     da = DocList[MyDoc](
         [
             MyDoc(
-                id=i,
+                id=str(i),
                 tensor=np.zeros(t_shape),
             )
             for i in range(100)

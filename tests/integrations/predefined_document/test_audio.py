@@ -21,6 +21,8 @@ if tf_available:
     from docarray.typing.tensor import TensorFlowTensor
     from docarray.typing.tensor.audio import AudioTensorFlowTensor
 
+pytestmark = [pytest.mark.audio]
+
 LOCAL_AUDIO_FILES = [
     str(TOYDATA_DIR / 'hello.wav'),
     str(TOYDATA_DIR / 'olleh.wav'),
@@ -170,7 +172,7 @@ def test_save_audio_tensorflow(file_url, format, tmpdir):
 def test_extend_audio(file_url):
     class MyAudio(AudioDoc):
         title: str
-        tensor: Optional[AudioNdArray]
+        tensor: Optional[AudioNdArray] = None
 
     my_audio = MyAudio(title='my extended audio', url=file_url)
     tensor, _ = my_audio.url.load()
@@ -180,6 +182,7 @@ def test_extend_audio(file_url):
     assert isinstance(my_audio.url, AudioUrl)
 
 
+# Validating predefined docs against url or tensor is not yet working with pydantic v28
 def test_audio_np():
     audio = parse_obj_as(AudioDoc, np.zeros((10, 10, 3)))
     assert (audio.tensor == np.zeros((10, 10, 3))).all()

@@ -10,23 +10,30 @@ from typing import (
     Type,
     TypeVar,
     Union,
+    cast,
     overload,
 )
 
 from pydantic import parse_obj_as
 from typing_extensions import SupportsIndex
-from typing_inspect import is_union_type
+from typing_inspect import is_typevar, is_union_type
 
 from docarray.array.any_array import AnyDocArray
-from docarray.array.doc_list.io import IOMixinArray
+from docarray.array.doc_list.io import IOMixinDocList
 from docarray.array.doc_list.pushpull import PushPullMixin
 from docarray.array.list_advance_indexing import IndexIterType, ListAdvancedIndexing
-from docarray.base_doc import AnyDoc, BaseDoc
+from docarray.base_doc import AnyDoc
+from docarray.base_doc.doc import BaseDocWithoutId
 from docarray.typing import NdArray
+from docarray.utils._internal.pydantic import is_pydantic_v2
+
+if is_pydantic_v2:
+    from pydantic import GetCoreSchemaHandler
+    from pydantic_core import core_schema
+
+from docarray.utils._internal._typing import safe_issubclass
 
 if TYPE_CHECKING:
-    from pydantic import BaseConfig
-    from pydantic.fields import ModelField
 
     from docarray.array.doc_vec.doc_vec import DocVec
     from docarray.proto import DocListProto
@@ -34,13 +41,13 @@ if TYPE_CHECKING:
     from docarray.typing.tensor.abstract_tensor import AbstractTensor
 
 T = TypeVar('T', bound='DocList')
-T_doc = TypeVar('T_doc', bound=BaseDoc)
+T_doc = TypeVar('T_doc', bound=BaseDocWithoutId)
 
 
 class DocList(
     ListAdvancedIndexing[T_doc],
     PushPullMixin,
-    IOMixinArray,
+    IOMixinDocList,
     AnyDocArray[T_doc],
 ):
     """
@@ -61,7 +68,7 @@ class DocList(
 
 
     class Image(BaseDoc):
-        tensor: Optional[NdArray[100]]
+        tensor: Optional[NdArray[100]] = None
         url: ImageUrl
 
 
@@ -114,7 +121,7 @@ class DocList(
 
     """
 
-    doc_type: Type[BaseDoc] = AnyDoc
+    doc_type: Type[BaseDocWithoutId] = AnyDoc
 
     def __init__(
         self,
@@ -157,7 +164,9 @@ class DocList(
 
     def _validate_one_doc(self, doc: T_doc) -> T_doc:
         """Validate if a Document is compatible with this `DocList`"""
-        if not issubclass(self.doc_type, AnyDoc) and not isinstance(doc, self.doc_type):
+        if not safe_issubclass(self.doc_type, AnyDoc) and not isinstance(
+            doc, self.doc_type
+        ):
             raise ValueError(f'{doc} is not a {self.doc_type}')
         return doc
 
@@ -211,13 +220,17 @@ class DocList(
               :return: Returns a list of the field value for each document
               in the doc_list like container
         """
-        field_type = self.__class__.doc_type._get_field_type(field)
+        field_type = self.__class__.doc_type._get_field_annotation(field)
+        field_info = self.__class__.doc_type._docarray_fields()[field]
+        is_field_required = (
+            field_info.is_required() if is_pydantic_v2 else field_info.required
+        )
 
         if (
             not is_union_type(field_type)
-            and self.__class__.doc_type.__fields__[field].required
+            and is_field_required
             and isinstance(field_type, type)
-            and issubclass(field_type, BaseDoc)
+            and safe_issubclass(field_type, BaseDocWithoutId)
         ):
             # calling __class_getitem__ ourselves is a hack otherwise mypy complain
             # most likely a bug in mypy though
@@ -259,16 +272,24 @@ class DocList(
         return DocVec.__class_getitem__(self.doc_type)(self, tensor_type=tensor_type)
 
     @classmethod
-    def validate(
+    def _docarray_validate(
         cls: Type[T],
-        value: Union[T, Iterable[BaseDoc]],
-        field: 'ModelField',
-        config: 'BaseConfig',
+        value: Union[T, Iterable[BaseDocWithoutId]],
     ):
         from docarray.array.doc_vec.doc_vec import DocVec
 
-        if isinstance(value, (cls, DocVec)):
+        if isinstance(value, cls):
             return value
+        elif isinstance(value, DocVec):
+            if (
+                safe_issubclass(value.doc_type, cls.doc_type)
+                or value.doc_type == cls.doc_type
+            ):
+                return cast(T, value.to_doc_list())
+            else:
+                raise ValueError(
+                    f'DocList[value.doc_type] is not compatible with {cls}'
+                )
         elif isinstance(value, cls):
             return cls(value)
         elif isinstance(value, Iterable):
@@ -295,6 +316,12 @@ class DocList(
         """
         return super().from_protobuf(pb_msg)
 
+    @classmethod
+    def _get_proto_class(cls: Type[T]):
+        from docarray.proto import DocListProto
+
+        return DocListProto
+
     @overload
     def __getitem__(self, item: SupportsIndex) -> T_doc:
         ...
@@ -307,12 +334,31 @@ class DocList(
         return super().__getitem__(item)
 
     @classmethod
-    def __class_getitem__(cls, item: Union[Type[BaseDoc], TypeVar, str]):
+    def __class_getitem__(cls, item: Union[Type[BaseDocWithoutId], TypeVar, str]):
+        if cls.doc_type != AnyDoc:
+            raise TypeError(f'{cls} object is not subscriptable')
 
-        if isinstance(item, type) and issubclass(item, BaseDoc):
+        if isinstance(item, type) and safe_issubclass(item, BaseDocWithoutId):
             return AnyDocArray.__class_getitem__.__func__(cls, item)  # type: ignore
-        else:
-            return super().__class_getitem__(item)
+        if (
+            isinstance(item, object)
+            and not is_typevar(item)
+            and not isinstance(item, str)
+            and item is not Any
+        ):
+            raise TypeError('Expecting a type, got object instead')
+
+        return super().__class_getitem__(item)
 
     def __repr__(self):
         return AnyDocArray.__repr__(self)  # type: ignore
+
+    if is_pydantic_v2:
+
+        @classmethod
+        def __get_pydantic_core_schema__(
+            cls, _source_type: Any, _handler: GetCoreSchemaHandler
+        ) -> core_schema.CoreSchema:
+            return core_schema.general_plain_validator_function(
+                cls.validate,
+            )

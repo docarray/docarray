@@ -15,6 +15,8 @@ TOLERANCE_RATIO = 0.5  # Percentage of difference allowed in stream vs non-strea
 BUCKET: str = 'da-pushpull'
 RANDOM: str = uuid.uuid4().hex[:8]
 
+pytestmark = [pytest.mark.s3]
+
 
 @pytest.fixture(scope="session")
 def minio_container():
@@ -127,6 +129,7 @@ def test_pushpull_stream_correct(capsys):
     assert len(captured.err) == 0
 
 
+# for some reason this test is failing with pydantic v2
 @pytest.mark.slow
 def test_pull_stream_vs_pull_full():
     namespace_dir = f'{BUCKET}/test{RANDOM}/pull-stream-vs-pull-full'

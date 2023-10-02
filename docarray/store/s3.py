@@ -121,39 +121,28 @@ class S3DocStore(AbstractDocStore):
         cls: Type[SelfS3DocStore],
         docs: 'DocList',
         name: str,
-        public: bool = False,
         show_progress: bool = False,
-        branding: Optional[Dict] = None,
     ) -> Dict:
         """Push this [`DocList`][docarray.DocList] object to the specified bucket and key.
 
         :param docs: The `DocList` to push.
         :param name: The bucket and key to push to. e.g. my_bucket/my_key
-        :param public: Not used by the ``s3`` protocol.
         :param show_progress: If true, a progress bar will be displayed.
-        :param branding: Not used by the ``s3`` protocol.
         """
-        return cls.push_stream(iter(docs), name, public, show_progress, branding)
+        return cls.push_stream(iter(docs), name, show_progress)
 
     @staticmethod
     def push_stream(
         docs: Iterator['BaseDoc'],
         name: str,
-        public: bool = True,
         show_progress: bool = False,
-        branding: Optional[Dict] = None,
     ) -> Dict:
         """Push a stream of documents to the specified bucket and key.
 
         :param docs: a stream of documents
         :param name: The bucket and key to push to. e.g. my_bucket/my_key
-        :param public: Not used by the ``s3`` protocol.
         :param show_progress: If true, a progress bar will be displayed.
-        :param branding: Not used by the ``s3`` protocol.
         """
-        if branding is not None:
-            logging.warning("Branding is not supported for S3 push")
-
         bucket, name = name.split('/', 1)
         binary_stream = _to_binary_stream(
             docs, protocol='pickle', compress=None, show_progress=show_progress

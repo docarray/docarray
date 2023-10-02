@@ -101,8 +101,8 @@ To get started and play around with your text data, DocArray provides a predefin
 
 ``` { .python }
 class TextDoc(BaseDoc):
-    text: Optional[str]
-    url: Optional[TextUrl]
-    embedding: Optional[AnyEmbedding]
-    bytes_: Optional[bytes]
+    text: Optional[str] = None
+    url: Optional[TextUrl] = None
+    embedding: Optional[AnyEmbedding] = None
+    bytes_: Optional[bytes] = None
 ```

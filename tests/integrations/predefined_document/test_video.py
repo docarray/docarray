@@ -4,7 +4,7 @@ import torch
 from pydantic import parse_obj_as
 
 from docarray import BaseDoc
-from docarray.documents import VideoDoc
+from docarray.documents import AudioDoc, VideoDoc
 from docarray.typing import AudioNdArray, NdArray, VideoNdArray
 from docarray.utils._internal.misc import is_tf_available
 from tests import TOYDATA_DIR
@@ -19,12 +19,18 @@ LOCAL_VIDEO_FILE = str(TOYDATA_DIR / 'mov_bbb.mp4')
 REMOTE_VIDEO_FILE = 'https://github.com/docarray/docarray/blob/main/tests/toydata/mov_bbb.mp4?raw=true'  # noqa: E501
 
 
+pytestmark = [pytest.mark.video]
+
+
 @pytest.mark.slow
 @pytest.mark.internet
 @pytest.mark.parametrize('file_url', [LOCAL_VIDEO_FILE, REMOTE_VIDEO_FILE])
 def test_video(file_url):
     vid = VideoDoc(url=file_url)
-    vid.tensor, vid.audio.tensor, vid.key_frame_indices = vid.url.load()
+    tensor, audio_tensor, key_frame_indices = vid.url.load()
+    vid.tensor = tensor
+    vid.audio = AudioDoc(tensor=audio_tensor)
+    vid.key_frame_indices = key_frame_indices
 
     assert isinstance(vid.tensor, VideoNdArray)
     assert isinstance(vid.audio.tensor, AudioNdArray)

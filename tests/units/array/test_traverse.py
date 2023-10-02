@@ -25,7 +25,7 @@ def multi_model_docs():
 
     class MultiModalDoc(BaseDoc):
         mm_text: TextDoc
-        mm_tensor: Optional[TorchTensor[3, 2, 2]]
+        mm_tensor: Optional[TorchTensor[3, 2, 2]] = None
         mm_da: DocList[SubDoc]
 
     docs = DocList[MultiModalDoc](

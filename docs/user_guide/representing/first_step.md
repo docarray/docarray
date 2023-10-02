@@ -117,9 +117,39 @@ This representation can be used to [send](../sending/first_step.md) or [store](.
 
     [BaseDoc][docarray.base_doc.doc.BaseDoc] can be nested to represent any kind of data hierarchy.
 
+## Setting a Pydantic `Config` class
+
+Documents support setting a custom `configuration` [like any other Pydantic `BaseModel`](https://docs.pydantic.dev/latest/api/config/).
+
+Here is an example to extend the Config of a Document dependong on which version of Pydantic you are using.
+
+
+
+=== "Pydantic v1"
+    ```python
+    from docarray import BaseDoc
+
+
+    class MyDoc(BaseDoc):
+        class Config(BaseDoc.Config):
+            arbitrary_types_allowed = True  # just an example setting
+    ```
+
+=== "Pydantic v2"
+    ```python
+    from docarray import BaseDoc
+
+
+    class MyDoc(BaseDoc):
+        model_config = BaseDoc.ConfigDocArray.ConfigDict(
+            arbitrary_types_allowed=True
+        )  # just an example setting
+    ```
+
 See also:
 
 * The [next part](./array.md) of the representing section
 * API reference for the [BaseDoc][docarray.base_doc.doc.BaseDoc] class
 * The [Storing](../storing/first_step.md) section on how to store your data 
 * The [Sending](../sending/first_step.md) section on how to send your data
+

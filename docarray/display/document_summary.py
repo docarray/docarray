@@ -1,4 +1,4 @@
-from typing import Any, Optional, Type, Union
+from typing import Any, List, Optional, Type, Union
 
 from rich.highlighter import RegexHighlighter
 from rich.theme import Theme
@@ -10,6 +10,7 @@ from docarray.base_doc.doc import BaseDoc
 from docarray.display.tensor_display import TensorDisplay
 from docarray.typing import ID
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
+from docarray.utils._internal._typing import safe_issubclass
 
 if TYPE_CHECKING:
     from rich.console import Console, ConsoleOptions, RenderResult
@@ -49,7 +50,11 @@ class DocumentSummary:
         console.print(panel)
 
     @staticmethod
-    def _get_schema(cls: Type['BaseDoc'], doc_name: Optional[str] = None) -> Tree:
+    def _get_schema(
+        cls: Type['BaseDoc'],
+        doc_name: Optional[str] = None,
+        recursion_list: Optional[List] = None,
+    ) -> Tree:
         """Get Documents schema as a rich.tree.Tree object."""
         import re
 
@@ -57,15 +62,20 @@ class DocumentSummary:
 
         from docarray import BaseDoc, DocList
 
+        if recursion_list is None:
+            recursion_list = []
+
+        if cls in recursion_list:
+            return Tree(cls.__name__)
+        else:
+            recursion_list.append(cls)
+
         root = cls.__name__ if doc_name is None else f'{doc_name}: {cls.__name__}'
         tree = Tree(root, highlight=True)
 
-        for field_name, value in cls.__fields__.items():
+        for field_name, value in cls._docarray_fields().items():
             if field_name != 'id':
-                field_type = value.type_
-                if not value.required:
-                    field_type = Optional[field_type]
-
+                field_type = value.annotation
                 field_cls = str(field_type).replace('[', '\[')
                 field_cls = re.sub('<class \'|\'>|[a-zA-Z_]*[.]', '', field_cls)
 
@@ -74,20 +84,36 @@ class DocumentSummary:
                 if is_union_type(field_type) or is_optional_type(field_type):
                     sub_tree = Tree(node_name, highlight=True)
                     for arg in field_type.__args__:
-                        if issubclass(arg, BaseDoc):
-                            sub_tree.add(DocumentSummary._get_schema(cls=arg))
-                        elif issubclass(arg, DocList):
-                            sub_tree.add(DocumentSummary._get_schema(cls=arg.doc_type))
+                        if safe_issubclass(arg, BaseDoc):
+                            sub_tree.add(
+                                DocumentSummary._get_schema(
+                                    cls=arg, recursion_list=recursion_list
+                                )
+                            )
+                        elif safe_issubclass(arg, DocList):
+                            sub_tree.add(
+                                DocumentSummary._get_schema(
+                                    cls=arg.doc_type, recursion_list=recursion_list
+                                )
+                            )
                     tree.add(sub_tree)
 
-                elif issubclass(field_type, BaseDoc):
+                elif safe_issubclass(field_type, BaseDoc):
                     tree.add(
-                        DocumentSummary._get_schema(cls=field_type, doc_name=field_name)
+                        DocumentSummary._get_schema(
+                            cls=field_type,
+                            doc_name=field_name,
+                            recursion_list=recursion_list,
+                        )
                     )
 
-                elif issubclass(field_type, DocList):
+                elif safe_issubclass(field_type, DocList):
                     sub_tree = Tree(node_name, highlight=True)
-                    sub_tree.add(DocumentSummary._get_schema(cls=field_type.doc_type))
+                    sub_tree.add(
+                        DocumentSummary._get_schema(
+                            cls=field_type.doc_type, recursion_list=recursion_list
+                        )
+                    )
                     tree.add(sub_tree)
 
                 else:

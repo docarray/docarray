@@ -23,6 +23,7 @@ from typing import (
     Type,
     TypeVar,
     Union,
+    cast,
 )
 
 import orjson
@@ -40,10 +41,12 @@ from docarray.utils._internal.misc import import_library
 if TYPE_CHECKING:
     import pandas as pd
 
-    from docarray import DocList
+    from docarray.array.doc_vec.doc_vec import DocVec
+    from docarray.array.doc_vec.io import IOMixinDocVec
     from docarray.proto import DocListProto
+    from docarray.typing.tensor.abstract_tensor import AbstractTensor
 
-T = TypeVar('T', bound='IOMixinArray')
+T = TypeVar('T', bound='IOMixinDocList')
 T_doc = TypeVar('T_doc', bound=BaseDoc)
 
 ARRAY_PROTOCOLS = {'protobuf-array', 'pickle-array', 'json-array'}
@@ -97,7 +100,7 @@ class _LazyRequestReader:
         return self.content[item]
 
 
-class IOMixinArray(Iterable[T_doc]):
+class IOMixinDocList(Iterable[T_doc]):
     doc_type: Type[T_doc]
 
     @abstractmethod
@@ -180,7 +183,7 @@ class IOMixinArray(Iterable[T_doc]):
             elif protocol == 'pickle-array':
                 f.write(pickle.dumps(self))
             elif protocol == 'json-array':
-                f.write(self.to_json())
+                f.write(self.to_json().encode())
             elif protocol in SINGLE_PROTOCOLS:
                 f.write(
                     b''.join(
@@ -324,19 +327,19 @@ class IOMixinArray(Iterable[T_doc]):
         json_docs = orjson.loads(file)
         return cls([cls.doc_type(**v) for v in json_docs])
 
-    def to_json(self) -> bytes:
+    def to_json(self) -> str:
         """Convert the object into JSON bytes. Can be loaded via `.from_json`.
         :return: JSON serialization of `DocList`
         """
-        return orjson_dumps(self)
+        return orjson_dumps(self).decode('UTF-8')
 
     @classmethod
     def from_csv(
-        cls,
+        cls: Type['T'],
         file_path: str,
         encoding: str = 'utf-8',
         dialect: Union[str, csv.Dialect] = 'excel',
-    ) -> 'DocList':
+    ) -> 'T':
         """
         Load a DocList from a csv file following the schema defined in the
         [`.doc_type`][docarray.DocList] attribute.
@@ -358,10 +361,10 @@ class IOMixinArray(Iterable[T_doc]):
 
         :return: `DocList` object
         """
-        if cls.doc_type == AnyDoc:
+        if cls.doc_type == AnyDoc or cls.doc_type == BaseDoc:
             raise TypeError(
                 'There is no document schema defined. '
-                'Please specify the DocList\'s Document type using `DocList[MyDoc]`.'
+                f'Please specify the {cls}\'s Document type using `{cls}[MyDoc]`.'
             )
 
         if file_path.startswith('http'):
@@ -376,14 +379,15 @@ class IOMixinArray(Iterable[T_doc]):
 
     @classmethod
     def _from_csv_file(
-        cls, file: Union[StringIO, TextIOWrapper], dialect: Union[str, csv.Dialect]
-    ) -> 'DocList':
-        from docarray import DocList
+        cls: Type['T'],
+        file: Union[StringIO, TextIOWrapper],
+        dialect: Union[str, csv.Dialect],
+    ) -> 'T':
 
         rows = csv.DictReader(file, dialect=dialect)
 
         doc_type = cls.doc_type
-        docs = DocList.__class_getitem__(doc_type)()
+        docs = []
 
         field_names: List[str] = (
             [] if rows.fieldnames is None else [str(f) for f in rows.fieldnames]
@@ -405,7 +409,7 @@ class IOMixinArray(Iterable[T_doc]):
             doc_dict: Dict[Any, Any] = _access_path_dict_to_nested_dict(access_path2val)
             docs.append(doc_type.parse_obj(doc_dict))
 
-        return docs
+        return cls(docs)
 
     def to_csv(
         self, file_path: str, dialect: Union[str, csv.Dialect] = 'excel'
@@ -426,11 +430,11 @@ class IOMixinArray(Iterable[T_doc]):
             `'unix'` (for csv file generated on UNIX systems).
 
         """
-        if self.doc_type == AnyDoc:
+        if self.doc_type == AnyDoc or self.doc_type == BaseDoc:
             raise TypeError(
-                'DocList must be homogeneous to be converted to a csv.'
+                f'{type(self)} must be homogeneous to be converted to a csv.'
                 'There is no document schema defined. '
-                'Please specify the DocList\'s Document type using `DocList[MyDoc]`.'
+                f'Please specify the {type(self)}\'s Document type using `{type(self)}[MyDoc]`.'
             )
         fields = self.doc_type._get_access_paths()
 
@@ -443,7 +447,7 @@ class IOMixinArray(Iterable[T_doc]):
                 writer.writerow(doc_dict)
 
     @classmethod
-    def from_dataframe(cls, df: 'pd.DataFrame') -> 'DocList':
+    def from_dataframe(cls: Type['T'], df: 'pd.DataFrame') -> 'T':
         """
         Load a `DocList` from a `pandas.DataFrame` following the schema
         defined in the [`.doc_type`][docarray.DocList] attribute.
@@ -486,10 +490,10 @@ class IOMixinArray(Iterable[T_doc]):
         """
         from docarray import DocList
 
-        if cls.doc_type == AnyDoc:
+        if cls.doc_type == AnyDoc or cls.doc_type == BaseDoc:
             raise TypeError(
                 'There is no document schema defined. '
-                'Please specify the DocList\'s Document type using `DocList[MyDoc]`.'
+                f'Please specify the {cls}\'s Document type using `{cls}[MyDoc]`.'
             )
 
         doc_type = cls.doc_type
@@ -555,7 +559,7 @@ class IOMixinArray(Iterable[T_doc]):
         # Binary format for streaming case
 
         # V2 DocList streaming serialization format
-        # | 1 byte | 8 bytes | 4 bytes | variable(docarray v2) | 4 bytes | variable(docarray v2) ...
+        # | 1 byte | 8 bytes | 4 bytes | variable(DocArray >=0.30) | 4 bytes | variable(DocArray >=0.30) ...
 
         # 1 byte (uint8)
         version_byte = b'\x02'
@@ -564,17 +568,24 @@ class IOMixinArray(Iterable[T_doc]):
         return version_byte + num_docs_as_bytes
 
     @classmethod
+    @abstractmethod
+    def _get_proto_class(cls: Type[T]):
+        ...
+
+    @classmethod
     def _load_binary_all(
         cls: Type[T],
         file_ctx: Union[ContextManager[io.BufferedReader], ContextManager[bytes]],
         protocol: Optional[str],
         compress: Optional[str],
         show_progress: bool,
+        tensor_type: Optional[Type['AbstractTensor']] = None,
     ):
         """Read a `DocList` object from a binary file
         :param protocol: protocol to use. It can be 'pickle-array', 'protobuf-array', 'pickle' or 'protobuf'
         :param compress: compress algorithm to use between `lz4`, `bz2`, `lzma`, `zlib`, `gzip`
         :param show_progress: show progress bar, only works when protocol is `pickle` or `protobuf`
+        :param tensor_type: only relevant for DocVec; tensor_type of the DocVec
         :return: a `DocList`
         """
         with file_ctx as fp:
@@ -593,17 +604,23 @@ class IOMixinArray(Iterable[T_doc]):
                 compress = None
 
         if protocol is not None and protocol == 'protobuf-array':
-            from docarray.proto import DocListProto
+            proto = cls._get_proto_class()()
+            proto.ParseFromString(d)
 
-            dap = DocListProto()
-            dap.ParseFromString(d)
-
-            return cls.from_protobuf(dap)
+            if tensor_type is not None:
+                cls_ = cast('IOMixinDocVec', cls)
+                return cls_.from_protobuf(proto, tensor_type=tensor_type)
+            else:
+                return cls.from_protobuf(proto)
         elif protocol is not None and protocol == 'pickle-array':
             return pickle.loads(d)
 
         elif protocol is not None and protocol == 'json-array':
-            return cls.from_json(d)
+            if tensor_type is not None:
+                cls_ = cast('IOMixinDocVec', cls)
+                return cls_.from_json(d, tensor_type=tensor_type)
+            else:
+                return cls.from_json(d)
 
         # Binary format for streaming case
         else:
@@ -653,6 +670,10 @@ class IOMixinArray(Iterable[T_doc]):
                     pbar.update(
                         t, advance=1, total_size=str(filesize.decimal(_total_size))
                     )
+            if tensor_type is not None:
+                cls__ = cast(Type['DocVec'], cls)
+                # mypy doesn't realize that cls_ is callable
+                return cls__(docs, tensor_type=tensor_type)  # type: ignore
             return cls(docs)
 
     @classmethod
@@ -719,6 +740,27 @@ class IOMixinArray(Iterable[T_doc]):
                             t, advance=1, total_size=str(filesize.decimal(_total_size))
                         )
 
+    @staticmethod
+    def _get_file_context(
+        file: Union[str, bytes, pathlib.Path, io.BufferedReader, _LazyRequestReader],
+        protocol: str,
+        compress: Optional[str] = None,
+    ) -> Tuple[Union[nullcontext, io.BufferedReader], Optional[str], Optional[str]]:
+        load_protocol: Optional[str] = protocol
+        load_compress: Optional[str] = compress
+        file_ctx: Union[nullcontext, io.BufferedReader]
+        if isinstance(file, (io.BufferedReader, _LazyRequestReader, bytes)):
+            file_ctx = nullcontext(file)
+        # by checking path existence we allow file to be of type Path, LocalPath, PurePath and str
+        elif isinstance(file, (str, pathlib.Path)) and os.path.exists(file):
+            load_protocol, load_compress = _protocol_and_compress_from_file_path(
+                file, protocol, compress
+            )
+            file_ctx = open(file, 'rb')
+        else:
+            raise FileNotFoundError(f'cannot find file {file}')
+        return file_ctx, load_protocol, load_compress
+
     @classmethod
     def load_binary(
         cls: Type[T],
@@ -748,19 +790,9 @@ class IOMixinArray(Iterable[T_doc]):
         :return: a `DocList` object
 
         """
-        load_protocol: Optional[str] = protocol
-        load_compress: Optional[str] = compress
-        file_ctx: Union[nullcontext, io.BufferedReader]
-        if isinstance(file, (io.BufferedReader, _LazyRequestReader, bytes)):
-            file_ctx = nullcontext(file)
-        # by checking path existence we allow file to be of type Path, LocalPath, PurePath and str
-        elif isinstance(file, (str, pathlib.Path)) and os.path.exists(file):
-            load_protocol, load_compress = _protocol_and_compress_from_file_path(
-                file, protocol, compress
-            )
-            file_ctx = open(file, 'rb')
-        else:
-            raise FileNotFoundError(f'cannot find file {file}')
+        file_ctx, load_protocol, load_compress = cls._get_file_context(
+            file, protocol, compress
+        )
         if streaming:
             if load_protocol not in SINGLE_PROTOCOLS:
                 raise ValueError(

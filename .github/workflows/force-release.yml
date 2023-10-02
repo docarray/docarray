@@ -36,7 +36,7 @@ jobs:
 #          submodules: true
       - uses: actions/setup-python@v4
         with:
-          python-version: 3.7
+          python-version: 3.8
       - run: |
           git fetch --depth=1 origin +refs/tags/*:refs/tags/*
           npm install git-release-notes

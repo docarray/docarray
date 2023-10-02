@@ -120,3 +120,20 @@ def test_reduce_all(doc1, doc2):
     assert len(merged_doc.matches_with_same_id[0].matches) == 2
     assert merged_doc.inner_doc.integer == 3
     assert merged_doc.inner_doc.inner_list == ['c', 'd', 'a', 'b', 'c', 'd', 'a', 'b']
+
+
+def test_update_ndarray():
+    from docarray.typing import NdArray
+
+    import numpy as np
+
+    class MyDoc(BaseDoc):
+        embedding: NdArray[128]
+
+    embedding1 = np.random.rand(128)
+    embedding2 = np.random.rand(128)
+
+    doc1 = MyDoc(id='0', embedding=embedding1)
+    doc2 = MyDoc(id='0', embedding=embedding2)
+    doc1.update(doc2)
+    assert (doc1.embedding == embedding2).all()

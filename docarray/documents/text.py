@@ -1,8 +1,14 @@
 from typing import Any, Optional, Type, TypeVar, Union
 
+from pydantic import Field
+
 from docarray.base_doc import BaseDoc
 from docarray.typing import TextUrl
 from docarray.typing.tensor.embedding import AnyEmbedding
+from docarray.utils._internal.pydantic import is_pydantic_v2
+
+if is_pydantic_v2:
+    from pydantic import model_validator
 
 T = TypeVar('T', bound='TextDoc')
 
@@ -24,7 +30,7 @@ class TextDoc(BaseDoc):
     from docarray.documents import TextDoc
 
     # use it directly
-    txt_doc = TextDoc(url='http://www.jina.ai/')
+    txt_doc = TextDoc(url='https://www.gutenberg.org/files/1065/1065-0.txt')
     txt_doc.text = txt_doc.url.load()
     # model = MyEmbeddingModel()
     # txt_doc.embedding = model(txt_doc.text)
@@ -48,10 +54,10 @@ class TextDoc(BaseDoc):
 
     # extend it
     class MyText(TextDoc):
-        second_embedding: Optional[AnyEmbedding]
+        second_embedding: Optional[AnyEmbedding] = None
 
 
-    txt_doc = MyText(url='http://www.jina.ai/')
+    txt_doc = MyText(url='https://www.gutenberg.org/files/1065/1065-0.txt')
     txt_doc.text = txt_doc.url.load()
     # model = MyEmbeddingModel()
     # txt_doc.embedding = model(txt_doc.text)
@@ -93,8 +99,8 @@ class TextDoc(BaseDoc):
     ```python
     from docarray.documents import TextDoc
 
-    doc = TextDoc(text='This is the main text', url='exampleurl.com')
-    doc2 = TextDoc(text='This is the main text', url='exampleurl.com')
+    doc = TextDoc(text='This is the main text', url='exampleurl.com/file')
+    doc2 = TextDoc(text='This is the main text', url='exampleurl.com/file')
 
     doc == 'This is the main text'  # True
     doc == doc2  # True
@@ -102,24 +108,51 @@ class TextDoc(BaseDoc):
 
     """
 
-    text: Optional[str]
-    url: Optional[TextUrl]
-    embedding: Optional[AnyEmbedding]
-    bytes_: Optional[bytes]
+    text: Optional[str] = Field(
+        description='The text content stored in the document',
+        example='This is an example text content of the document',
+        default=None,
+    )
+    url: Optional[TextUrl] = Field(
+        description='URL to a (potentially remote) text file that can be loaded',
+        example='https://www.w3.org/History/19921103-hypertext/hypertext/README.html',
+        default=None,
+    )
+    embedding: Optional[AnyEmbedding] = Field(
+        description='Store an embedding: a vector representation of the text',
+        example=[1, 0, 1],
+        default=None,
+    )
+    bytes_: Optional[bytes] = Field(
+        description='Bytes representation of the text',
+        default=None,
+    )
 
     def __init__(self, text: Optional[str] = None, **kwargs):
         if 'text' not in kwargs:
             kwargs['text'] = text
         super().__init__(**kwargs)
 
-    @classmethod
-    def validate(
-        cls: Type[T],
-        value: Union[str, Any],
-    ) -> T:
-        if isinstance(value, str):
-            value = cls(text=value)
-        return super().validate(value)
+    if is_pydantic_v2:
+
+        @model_validator(mode='before')
+        @classmethod
+        def validate_model_before(cls, values):
+            if isinstance(values, str):
+                return {'text': values}
+            else:
+                return values
+
+    else:
+
+        @classmethod
+        def validate(
+            cls: Type[T],
+            value: Union[str, Any],
+        ) -> T:
+            if isinstance(value, str):
+                value = cls(text=value)
+            return super().validate(value)
 
     def __eq__(self, other: Any) -> bool:
         if isinstance(other, str):

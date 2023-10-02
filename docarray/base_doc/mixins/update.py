@@ -3,6 +3,8 @@ from typing import TYPE_CHECKING, Dict, List, Type, TypeVar
 
 from typing_inspect import get_origin
 
+from docarray.utils._internal._typing import safe_issubclass
+
 T = TypeVar('T', bound='UpdateMixin')
 
 if TYPE_CHECKING:
@@ -10,14 +12,14 @@ if TYPE_CHECKING:
 
 
 class UpdateMixin:
-    __fields__: Dict[str, 'ModelField']
+    _docarray_fields: Dict[str, 'ModelField']
 
     def _get_string_for_regex_filter(self):
         return str(self)
 
     @classmethod
     @abstractmethod
-    def _get_field_type(cls, field: str) -> Type['UpdateMixin']:
+    def _get_field_annotation(cls, field: str) -> Type['UpdateMixin']:
         ...
 
     def update(self, other: T):
@@ -68,10 +70,10 @@ class UpdateMixin:
         ---
         :param other: The Document with which to update the contents of this
         """
-        if type(self) != type(other):
+        if not _similar_schemas(self, other):
             raise Exception(
                 f'Update operation can only be applied to '
-                f'Documents of the same type. '
+                f'Documents of the same schema. '
                 f'Trying to update Document of type '
                 f'{type(self)} with Document of type '
                 f'{type(other)}'
@@ -104,11 +106,13 @@ class UpdateMixin:
             nested_docs_fields: List[str] = []
             nested_docarray_fields: List[str] = []
 
-            for field_name, field in doc.__fields__.items():
+            for field_name, field in doc._docarray_fields().items():
                 if field_name not in FORBIDDEN_FIELDS_TO_UPDATE:
-                    field_type = doc._get_field_type(field_name)
+                    field_type = doc._get_field_annotation(field_name)
 
-                    if isinstance(field_type, type) and issubclass(field_type, DocList):
+                    if isinstance(field_type, type) and safe_issubclass(
+                        field_type, DocList
+                    ):
                         nested_docarray_fields.append(field_name)
                     else:
                         origin = get_origin(field_type)
@@ -120,7 +124,7 @@ class UpdateMixin:
                             dict_fields.append(field_name)
                         else:
                             v = getattr(doc, field_name)
-                            if v:
+                            if v is not None:
                                 if isinstance(v, UpdateMixin):
                                     nested_docs_fields.append(field_name)
                                 else:
@@ -185,3 +189,7 @@ class UpdateMixin:
             elif dict1 is not None and dict2 is not None:
                 dict1.update(dict2)
                 setattr(self, field, dict1)
+
+
+def _similar_schemas(model1, model2):
+    return model1.__annotations__ == model2.__annotations__

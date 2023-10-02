@@ -1,20 +1,19 @@
 [tool.poetry]
 name = "docarray"
-version = '0.32.1'
+version = '0.39.0'
 description='The data structure for multimodal data'
 readme = 'README.md'
 authors=['DocArray']
 license='Apache 2.0'
-homepage = "https://docarray.jina.ai/"
+homepage = "https://docs.docarray.org/"
 repository = "https://github.com/docarray/docarray"
-documentation = "https://docarray.jina.ai/"
+documentation = "https://docs.docarray.org"
 keywords = ['docarray', 'deep-learning', 'data-structures cross-modal multi-modal',' unstructured-data',' nested-data','neural-search']
 classifiers = [
         'Development Status :: 5 - Production/Stable',
         'Intended Audience :: Developers',
         'Intended Audience :: Education',
         'Intended Audience :: Science/Research',
-        'Programming Language :: Python :: 3.7',
         'Programming Language :: Python :: 3.8',
         'Programming Language :: Python :: 3.9',
         'Programming Language :: Python :: 3.10',
@@ -35,10 +34,10 @@ classifiers = [
 ]
 
 [tool.poetry.dependencies]
-python = ">=3.7,<4.0"
-pydantic = ">=1.10.2"
+python = ">=3.8,<4.0"
+pydantic = ">=1.10.8"
 numpy = ">=1.17.3"
-protobuf = { version = ">=3.19.0", optional = true }
+protobuf = { version = ">=3.20.0", optional = true }
 torch = { version = ">=1.0.0", optional = true }
 orjson = ">=3.8.2"
 pillow = {version = ">=9.3.0", optional = true }
@@ -47,18 +46,21 @@ trimesh = {version = ">=3.17.1", extras = ["easy"], optional = true }
 typing-inspect = ">=0.8.0"
 types-requests = ">=2.28.11.6"
 av = {version = ">=10.0.0", optional = true}
-fastapi = {version = ">=0.87.0", optional = true }
+fastapi = {version = ">=0.100.0", optional = true }
 rich = ">=13.1.0"
-hnswlib = {version = ">=0.6.2", optional = true }
+hnswlib = {version = ">=0.7.0", optional = true }
 lz4 = {version= ">=1.0.0", optional = true}
 pydub = {version = "^0.25.1", optional = true }
 pandas = {version = ">=1.1.0", optional = true }
-weaviate-client = {version = ">=3.15", optional = true}
+weaviate-client = {version = ">=3.17, <3.18", optional = true}
 elasticsearch = {version = ">=7.10.1", optional = true }
 smart-open = {version = ">=6.3.0", extras = ["s3"], optional = true}
 jina-hubble-sdk = {version = ">=0.34.0", optional = true}
 elastic-transport = {version ="^8.4.0", optional = true }
-qdrant-client = {version = ">=1.1.4", python = "<3.12", optional = true }
+qdrant-client = {version = ">=1.4.0", python = "<3.12", optional = true }
+pymilvus = {version = "^2.2.12", optional = true }
+redis = {version = "^4.6.0", optional = true}
+jax = {version = ">=0.4.10", optional = true}
 
 [tool.poetry.extras]
 proto = ["protobuf", "lz4"]
@@ -75,9 +77,12 @@ torch = ["torch"]
 web = ["fastapi"]
 qdrant = ["qdrant-client"]
 weaviate = ["weaviate-client"]
+milvus = ["pymilvus"]
+redis = ['redis']
+jax = ["jaxlib","jax"]
 
 # all
-full = ["protobuf", "lz4", "pandas", "pillow", "types-pillow", "av", "pydub", "trimesh"]
+full = ["protobuf", "lz4", "pandas", "pillow", "types-pillow", "av", "pydub", "trimesh", "jax"]
 
 [tool.poetry.dev-dependencies]
 pytest = ">=7.0"
@@ -89,6 +94,9 @@ black = ">=22.10.0"
 isort = ">=5.10.1"
 ruff = ">=0.0.243"
 blacken-docs = ">=1.13.0"
+types-redis = ">=4.6.0.0"
+coverage = "==6.2"
+pytest-cov = "3.0.0"
 
 [tool.poetry.group.dev.dependencies]
 uvicorn = ">=0.19.0"
@@ -97,7 +105,8 @@ pytest-asyncio = ">=0.20.2"
 
 
 [tool.poetry.group.docs.dependencies]
-mkdocstrings = {extras = ["python"], version = ">=0.20.0"}
+mkdocstrings = {extras = ["python"], version = ">=0.23.0"}
+mkdocstrings-python= ">=1.7.0"
 mkdocs-material= ">=9.1.2"
 mkdocs-awesome-pages-plugin = ">=2.8.0"
 mktestdocs= ">=0.2.0"
@@ -148,7 +157,9 @@ markers = [
     "asyncio: marks that run async tests",
     "proto: mark tests that run with proto",
     "tensorflow: marks test using tensorflow and proto 3",
+    "jax: marks test using jax",
     "index: marks test using a document index",
     "benchmark: marks slow benchmarking tests",
     "elasticv8: marks test that run with ElasticSearch v8",
+    "jac: need to have access to jac cloud"
 ]

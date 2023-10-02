@@ -9,11 +9,13 @@ from tests import TOYDATA_DIR
 LOCAL_OBJ_FILE = str(TOYDATA_DIR / 'tetrahedron.obj')
 REMOTE_OBJ_FILE = 'https://people.sc.fsu.edu/~jburkardt/data/obj/al.obj'
 
+pytestmark = [pytest.mark.mesh]
+
 
 @pytest.mark.slow
 @pytest.mark.internet
 @pytest.mark.parametrize('file_url', [LOCAL_OBJ_FILE, REMOTE_OBJ_FILE])
-def test_mesh(file_url):
+def test_mesh(file_url: str):
     mesh = Mesh3D(url=file_url)
 
     mesh.tensors = mesh.url.load()

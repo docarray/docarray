@@ -19,33 +19,41 @@ from typing import (
 
 import numpy as np
 
-from docarray.base_doc import BaseDoc
+from docarray.base_doc.doc import BaseDocWithoutId
 from docarray.display.document_array_summary import DocArraySummary
+from docarray.exceptions.exceptions import UnusableObjectError
 from docarray.typing.abstract_type import AbstractType
-from docarray.utils._internal._typing import change_cls_name
+from docarray.utils._internal._typing import change_cls_name, safe_issubclass
 
 if TYPE_CHECKING:
     from docarray.proto import DocListProto, NodeProto
     from docarray.typing.tensor.abstract_tensor import AbstractTensor
 
 T = TypeVar('T', bound='AnyDocArray')
-T_doc = TypeVar('T_doc', bound=BaseDoc)
+T_doc = TypeVar('T_doc', bound=BaseDocWithoutId)
 IndexIterType = Union[slice, Iterable[int], Iterable[bool], None]
+
+UNUSABLE_ERROR_MSG = (
+    'This {cls} instance is in an unusable state. \n'
+    'The most common cause of this is converting a DocVec to a DocList. '
+    'After you call `doc_vec.to_doc_list()`, `doc_vec` cannot be used anymore. '
+    'Instead, you should do `doc_list = doc_vec.to_doc_list()` and only use `doc_list`.'
+)
 
 
 class AnyDocArray(Sequence[T_doc], Generic[T_doc], AbstractType):
-    doc_type: Type[BaseDoc]
-    __typed_da__: Dict[Type['AnyDocArray'], Dict[Type[BaseDoc], Type]] = {}
+    doc_type: Type[BaseDocWithoutId]
+    __typed_da__: Dict[Type['AnyDocArray'], Dict[Type[BaseDocWithoutId], Type]] = {}
 
     def __repr__(self):
         return f'<{self.__class__.__name__} (length={len(self)})>'
 
     @classmethod
-    def __class_getitem__(cls, item: Union[Type[BaseDoc], TypeVar, str]):
+    def __class_getitem__(cls, item: Union[Type[BaseDocWithoutId], TypeVar, str]):
         if not isinstance(item, type):
             return Generic.__class_getitem__.__func__(cls, item)  # type: ignore
             # this do nothing that checking that item is valid type var or str
-        if not issubclass(item, BaseDoc):
+        if not safe_issubclass(item, BaseDocWithoutId):
             raise ValueError(
                 f'{cls.__name__}[item] item should be a Document not a {item} '
             )
@@ -58,15 +66,23 @@ class AnyDocArray(Sequence[T_doc], Generic[T_doc], AbstractType):
             global _DocArrayTyped
 
             class _DocArrayTyped(cls):  # type: ignore
-                doc_type: Type[BaseDoc] = cast(Type[BaseDoc], item)
+                doc_type: Type[BaseDocWithoutId] = cast(Type[BaseDocWithoutId], item)
 
-            for field in _DocArrayTyped.doc_type.__fields__.keys():
+            for field in _DocArrayTyped.doc_type._docarray_fields().keys():
 
                 def _property_generator(val: str):
                     def _getter(self):
+                        if getattr(self, '_is_unusable', False):
+                            raise UnusableObjectError(
+                                UNUSABLE_ERROR_MSG.format(cls=cls.__name__)
+                            )
                         return self._get_data_column(val)
 
                     def _setter(self, value):
+                        if getattr(self, '_is_unusable', False):
+                            raise UnusableObjectError(
+                                UNUSABLE_ERROR_MSG.format(cls=cls.__name__)
+                            )
                         self._set_data_column(val, value)
 
                     # need docstring for the property

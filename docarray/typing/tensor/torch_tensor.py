@@ -2,22 +2,32 @@ from copy import copy
 from typing import TYPE_CHECKING, Any, Generic, Type, TypeVar, Union, cast
 
 import numpy as np
+import orjson
 
 from docarray.base_doc.base_node import BaseNode
 from docarray.typing.proto_register import _register_proto
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
-from docarray.utils._internal.misc import import_library
+from docarray.utils._internal.misc import (
+    import_library,
+    is_jax_available,
+    is_tf_available,
+)
 
 if TYPE_CHECKING:
     import torch
-    from pydantic import BaseConfig
-    from pydantic.fields import ModelField
 
     from docarray.computation.torch_backend import TorchCompBackend
     from docarray.proto import NdArrayProto
 else:
     torch = import_library('torch', raise_error=True)
 
+tf_available = is_tf_available()
+if tf_available:
+    import tensorflow as tf  # type: ignore
+
+jax_available = is_jax_available()
+if jax_available:
+    import jax.numpy as jnp
 
 T = TypeVar('T', bound='TorchTensor')
 ShapeT = TypeVar('ShapeT')
@@ -48,7 +58,7 @@ class TorchTensor(
     """
     Subclass of `torch.Tensor`, intended for use in a Document.
     This enables (de)serialization from/to protobuf and json, data validation,
-    and coersion from compatible types like numpy.ndarray.
+    and coercion from compatible types like numpy.ndarray.
 
     This type can also be used in a parametrized way,
     specifying the shape of the tensor.
@@ -101,35 +111,74 @@ class TorchTensor(
     ```
 
     ---
+
+
+    ## Compatibility with `torch.compile()`
+
+
+    PyTorch 2 [introduced compilation support](https://pytorch.org/blog/pytorch-2.0-release/) in the form of `torch.compile()`.
+
+    Currently, **`torch.compile()` does not properly support subclasses of `torch.Tensor` such as `TorchTensor`**.
+    The PyTorch team is currently working on a [fix for this issue](https://github.com/pytorch/pytorch/pull/105167#issuecomment-1678050808).
+
+    In the meantime, you can use the following workaround:
+
+    ### Workaround: Convert `TorchTensor` to `torch.Tensor` before calling `torch.compile()`
+
+    Converting any `TorchTensor`s tor `torch.Tensor` before calling `torch.compile()` side-steps the issue:
+
+    ```python
+    from docarray import BaseDoc
+    from docarray.typing import TorchTensor
+    import torch
+
+
+    class MyDoc(BaseDoc):
+        tensor: TorchTensor
+
+
+    doc = MyDoc(tensor=torch.zeros(128))
+
+
+    def foo(tensor: torch.Tensor):
+        return tensor @ tensor.t()
+
+
+    foo_compiled = torch.compile(foo)
+
+    # unwrap the tensor before passing it to torch.compile()
+    foo_compiled(doc.tensor.unwrap())
+    ```
+
     """
 
     __parametrized_meta__ = metaTorchAndNode
 
     @classmethod
-    def __get_validators__(cls):
-        # one or more validators may be yielded which will be called in the
-        # order to validate the input, each validator will receive as an input
-        # the value returned from the previous validator
-        yield cls.validate
-
-    @classmethod
-    def validate(
+    def _docarray_validate(
         cls: Type[T],
-        value: Union[T, np.ndarray, Any],
-        field: 'ModelField',
-        config: 'BaseConfig',
+        value: Union[T, np.ndarray, str, Any],
     ) -> T:
         if isinstance(value, TorchTensor):
             return cast(T, value)
         elif isinstance(value, torch.Tensor):
             return cls._docarray_from_native(value)
+        elif isinstance(value, AbstractTensor):
+            return cls._docarray_from_ndarray(value._docarray_to_ndarray())
+        elif tf_available and isinstance(value, tf.Tensor):
+            return cls._docarray_from_ndarray(value.numpy())
+        elif isinstance(value, np.ndarray):
+            return cls._docarray_from_ndarray(value)
+        elif jax_available and isinstance(value, jnp.ndarray):
+            return cls._docarray_from_ndarray(value.__array__())
+        elif isinstance(value, str):
+            value = orjson.loads(value)
+        try:
+            arr: torch.Tensor = torch.tensor(value)
+            return cls._docarray_from_native(arr)
+        except Exception:
+            pass  # handled below
 
-        else:
-            try:
-                arr: torch.Tensor = torch.tensor(value)
-                return cls._docarray_from_native(arr)
-            except Exception:
-                pass  # handled below
         raise ValueError(f'Expected a torch.Tensor compatible type, got {type(value)}')
 
     def _docarray_to_json_compatible(self) -> np.ndarray:
@@ -152,8 +201,10 @@ class TorchTensor(
         ```python
         from docarray.typing import TorchTensor
         import torch
+        from pydantic import parse_obj_as
 
-        t = TorchTensor.validate(torch.zeros(3, 224, 224), None, None)
+
+        t = parse_obj_as(TorchTensor, torch.zeros(3, 224, 224))
         # here t is a docarray TorchTensor
         t2 = t.unwrap()
         # here t2 is a pure torch.Tensor but t1 is still a Docarray TorchTensor
@@ -241,3 +292,22 @@ class TorchTensor(
             torch.Tensor if t in docarray_torch_tensors else t for t in types
         )
         return super().__torch_function__(func, types_, args, kwargs)
+
+    @classmethod
+    def _docarray_from_ndarray(cls: Type[T], value: np.ndarray) -> T:
+        """Create a `tensor from a numpy array
+        PS: this function is different from `from_ndarray` because it is private under the docarray namesapce.
+        This allows us to avoid breaking change if one day we introduce a Tensor backend with a `from_ndarray` method.
+        """
+        return cls.from_ndarray(value)
+
+    def _docarray_to_ndarray(self) -> np.ndarray:
+        """cast itself to a numpy array"""
+        return self.detach().cpu().numpy()
+
+    def new_empty(self, *args, **kwargs):
+        """
+        This method enables the deepcopy of `TorchTensor` by returning another instance of this subclass.
+        If this function is not implemented, the deepcopy will throw an RuntimeError from Torch.
+        """
+        return self.__class__(*args, **kwargs)

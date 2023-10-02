@@ -30,6 +30,7 @@ from docarray.typing import ID, AnyTensor
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
 from docarray.utils._internal._typing import is_tensor_union, safe_issubclass
 from docarray.utils._internal.misc import import_library
+from docarray.utils._internal.pydantic import is_pydantic_v2
 from docarray.utils.find import (
     FindResult,
     FindResultBatched,
@@ -145,9 +146,6 @@ class BaseDocIndex(ABC, Generic[TSchema]):
     @dataclass
     class DBConfig(ABC):
         index_name: Optional[str] = None
-
-    @dataclass
-    class RuntimeConfig(ABC):
         # default configurations for every column type
         # a dictionary from a column type (DB specific) to a dictionary
         # of default configurations for that type
@@ -155,6 +153,10 @@ class BaseDocIndex(ABC, Generic[TSchema]):
         # of a field in the Document schema (`cls._schema`)
         # Example: `default_column_config['VARCHAR'] = {'length': 255}`
         default_column_config: Dict[Type, Dict[str, Any]] = field(default_factory=dict)
+
+    @dataclass
+    class RuntimeConfig(ABC):
+        pass
 
     @property
     def index_name(self):
@@ -191,6 +193,14 @@ class BaseDocIndex(ABC, Generic[TSchema]):
         """Return the number of indexed documents"""
         ...
 
+    @property
+    def _is_index_empty(self) -> bool:
+        """
+        Check if index is empty by comparing the number of documents to zero.
+        :return: True if the index is empty, False otherwise.
+        """
+        return self.num_docs() == 0
+
     @abstractmethod
     def _del_items(self, doc_ids: Sequence[str]):
         """Delete Documents from the index.
@@ -226,6 +236,16 @@ class BaseDocIndex(ABC, Generic[TSchema]):
         :param args: positional arguments to pass to the query
         :param kwargs: keyword arguments to pass to the query
         :return: the result of the query
+        """
+        ...
+
+    @abstractmethod
+    def _doc_exists(self, doc_id: str) -> bool:
+        """
+        Checks if a given document exists in the index.
+
+        :param doc_id: The id of a document to check.
+        :return: True if the document exists in the index, False otherwise.
         """
         ...
 
@@ -361,7 +381,9 @@ class BaseDocIndex(ABC, Generic[TSchema]):
         for field_name, type_, _ in self._flatten_schema(
             cast(Type[BaseDoc], self._schema)
         ):
-            if issubclass(type_, AnyDocArray) and isinstance(doc_sequence[0], Dict):
+            if safe_issubclass(type_, AnyDocArray) and isinstance(
+                doc_sequence[0], Dict
+            ):
                 for doc in doc_sequence:
                     self._get_subindex_doclist(doc, field_name)  # type: ignore
 
@@ -399,6 +421,21 @@ class BaseDocIndex(ABC, Generic[TSchema]):
                         del self._subindices[field_name][nested_docs_id]
         # delete data
         self._del_items(key)
+
+    def __contains__(self, item: BaseDoc) -> bool:
+        """
+        Checks if a given document exists in the index.
+
+        :param item: The document to check.
+            It must be an instance of BaseDoc or its subclass.
+        :return: True if the document exists in the index, False otherwise.
+        """
+        if safe_issubclass(type(item), BaseDoc):
+            return self._doc_exists(str(item.id))
+        else:
+            raise TypeError(
+                f"item must be an instance of BaseDoc or its subclass, not '{type(item).__name__}'"
+            )
 
     def configure(self, runtime_config=None, **kwargs):
         """
@@ -533,7 +570,7 @@ class BaseDocIndex(ABC, Generic[TSchema]):
         if search_field:
             if '__' in search_field:
                 fields = search_field.split('__')
-                if issubclass(self._schema._get_field_type(fields[0]), AnyDocArray):  # type: ignore
+                if safe_issubclass(self._schema._get_field_annotation(fields[0]), AnyDocArray):  # type: ignore
                     return self._subindices[fields[0]].find_batched(
                         queries,
                         search_field='__'.join(fields[1:]),
@@ -553,8 +590,11 @@ class BaseDocIndex(ABC, Generic[TSchema]):
         da_list, scores = self._find_batched(
             query_vec_np, search_field=search_field, limit=limit, **kwargs
         )
-
-        if len(da_list) > 0 and isinstance(da_list[0], List):
+        if (
+            len(da_list) > 0
+            and isinstance(da_list[0], List)
+            and not isinstance(da_list[0], DocList)
+        ):
             da_list = [self._dict_list_to_docarray(docs) for docs in da_list]
 
         return FindResultBatched(documents=da_list, scores=scores)  # type: ignore
@@ -574,7 +614,7 @@ class BaseDocIndex(ABC, Generic[TSchema]):
         self._logger.debug(f'Executing `filter` for the query {filter_query}')
         docs = self._filter(filter_query, limit=limit, **kwargs)
 
-        if isinstance(docs, List):
+        if isinstance(docs, List) and not isinstance(docs, DocList):
             docs = self._dict_list_to_docarray(docs)
 
         return docs
@@ -652,7 +692,7 @@ class BaseDocIndex(ABC, Generic[TSchema]):
             query_text, search_field=search_field, limit=limit, **kwargs
         )
 
-        if isinstance(docs, List):
+        if isinstance(docs, List) and not isinstance(docs, DocList):
             docs = self._dict_list_to_docarray(docs)
 
         return FindResult(documents=docs, scores=scores)
@@ -795,7 +835,7 @@ class BaseDocIndex(ABC, Generic[TSchema]):
             # do nothing
             # enables use in static contexts with type vars, e.g. as type annotation
             return Generic.__class_getitem__.__func__(cls, item)
-        if not issubclass(item, BaseDoc):
+        if not safe_issubclass(item, BaseDoc):
             raise ValueError(
                 f'{cls.__name__}[item] `item` should be a Document not a {item} '
             )
@@ -828,8 +868,8 @@ class BaseDocIndex(ABC, Generic[TSchema]):
         :return: A list of column names, types, and fields
         """
         names_types_fields: List[Tuple[str, Type, 'ModelField']] = []
-        for field_name, field_ in schema.__fields__.items():
-            t_ = schema._get_field_type(field_name)
+        for field_name, field_ in schema._docarray_fields().items():
+            t_ = schema._get_field_annotation(field_name)
             inner_prefix = name_prefix + field_name + '__'
 
             if is_union_type(t_):
@@ -845,7 +885,7 @@ class BaseDocIndex(ABC, Generic[TSchema]):
                     # treat as if it was a single non-optional type
                     for t_arg in union_args:
                         if t_arg is not type(None):
-                            if issubclass(t_arg, BaseDoc):
+                            if safe_issubclass(t_arg, BaseDoc):
                                 names_types_fields.extend(
                                     cls._flatten_schema(t_arg, name_prefix=inner_prefix)
                                 )
@@ -885,31 +925,39 @@ class BaseDocIndex(ABC, Generic[TSchema]):
                 )
             else:
                 column_infos[field_name] = self._create_single_column(field_, type_)
+
         return column_infos
 
     def _create_single_column(self, field: 'ModelField', type_: Type) -> _ColumnInfo:
-        custom_config = field.field_info.extra
+        custom_config = (
+            field.json_schema_extra if is_pydantic_v2 else field.field_info.extra
+        )
+        if custom_config is None:
+            custom_config = dict()
+
         if 'col_type' in custom_config.keys():
             db_type = custom_config['col_type']
             custom_config.pop('col_type')
-            if db_type not in self._runtime_config.default_column_config.keys():
+            if db_type not in self._db_config.default_column_config.keys():
                 raise ValueError(
                     f'The given col_type is not a valid db type: {db_type}'
                 )
         else:
             db_type = self.python_type_to_db_type(type_)
 
-        config = self._runtime_config.default_column_config[db_type].copy()
+        config = self._db_config.default_column_config[db_type].copy()
         config.update(custom_config)
         # parse n_dim from parametrized tensor type
+
+        field_type = field.annotation if is_pydantic_v2 else field.type_
         if (
-            hasattr(field.type_, '__docarray_target_shape__')
-            and field.type_.__docarray_target_shape__
+            hasattr(field_type, '__docarray_target_shape__')
+            and field_type.__docarray_target_shape__
         ):
-            if len(field.type_.__docarray_target_shape__) == 1:
-                n_dim = field.type_.__docarray_target_shape__[0]
+            if len(field_type.__docarray_target_shape__) == 1:
+                n_dim = field_type.__docarray_target_shape__[0]
             else:
-                n_dim = field.type_.__docarray_target_shape__
+                n_dim = field_type.__docarray_target_shape__
         else:
             n_dim = None
         return _ColumnInfo(
@@ -962,7 +1010,7 @@ class BaseDocIndex(ABC, Generic[TSchema]):
                 # see schema translation ideas in the design doc
                 names_compatible = reference_names == input_names
                 types_compatible = all(
-                    (issubclass(t2, t1))
+                    (safe_issubclass(t2, t1))
                     for (t1, t2) in zip(reference_types, input_types)
                 )
                 if names_compatible and types_compatible:
@@ -972,12 +1020,15 @@ class BaseDocIndex(ABC, Generic[TSchema]):
         for i in range(len(docs)):
             # validate the data
             try:
-                out_docs.append(cast(Type[BaseDoc], self._schema).parse_obj(docs[i]))
-            except (ValueError, ValidationError):
+                out_docs.append(
+                    cast(Type[BaseDoc], self._schema).parse_obj(dict(docs[i]))
+                )
+            except (ValueError, ValidationError) as e:
                 raise ValueError(
                     'The schema of the input Documents is not compatible with the schema of the Document Index.'
                     ' Ensure that the field names of your data match the field names of the Document Index schema,'
                     ' and that the types of your data match the types of the Document Index schema.'
+                    f'original error {e}'
                 )
 
         return DocList[BaseDoc].construct(out_docs)
@@ -1036,10 +1087,10 @@ class BaseDocIndex(ABC, Generic[TSchema]):
         :param schema: The schema of the Document object
         :return: A Document object
         """
-        for field_name, _ in schema.__fields__.items():
-            t_ = schema._get_field_type(field_name)
+        for field_name, _ in schema._docarray_fields().items():
+            t_ = schema._get_field_annotation(field_name)
 
-            if not is_union_type(t_) and issubclass(t_, AnyDocArray):
+            if not is_union_type(t_) and safe_issubclass(t_, AnyDocArray):
                 self._get_subindex_doclist(doc_dict, field_name)
 
             if is_optional_type(t_):
@@ -1047,7 +1098,7 @@ class BaseDocIndex(ABC, Generic[TSchema]):
                     if t_arg is not type(None):
                         t_ = t_arg
 
-            if not is_union_type(t_) and issubclass(t_, BaseDoc):
+            if not is_union_type(t_) and safe_issubclass(t_, BaseDoc):
                 inner_dict = {}
 
                 fields = [
@@ -1120,8 +1171,8 @@ class BaseDocIndex(ABC, Generic[TSchema]):
     ) -> FindResult:
         """Find documents in the subindex and return subindex docs and scores."""
         fields = subindex.split('__')
-        if not subindex or not issubclass(
-            self._schema._get_field_type(fields[0]), AnyDocArray  # type: ignore
+        if not subindex or not safe_issubclass(
+            self._schema._get_field_annotation(fields[0]), AnyDocArray  # type: ignore
         ):
             raise ValueError(f'subindex {subindex} is not valid')
 
@@ -1162,3 +1213,21 @@ class BaseDocIndex(ABC, Generic[TSchema]):
                 id, fields[0], '__'.join(fields[1:])
             )
             return self._get_root_doc_id(cur_root_id, root, '')
+
+    def subindex_contains(self, item: BaseDoc) -> bool:
+        """Checks if a given BaseDoc item is contained in the index or any of its subindices.
+
+        :param item: the given BaseDoc
+        :return: if the given BaseDoc item is contained in the index/subindices
+        """
+        if self._is_index_empty:
+            return False
+
+        if safe_issubclass(type(item), BaseDoc):
+            return self.__contains__(item) or any(
+                index.subindex_contains(item) for index in self._subindices.values()
+            )
+        else:
+            raise TypeError(
+                f"item must be an instance of BaseDoc or its subclass, not '{type(item).__name__}'"
+            )
