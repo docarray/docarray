@@ -111,8 +111,8 @@ class MyDocument(BaseDoc):
     image_url: ImageUrl  # could also be VideoUrl, AudioUrl, etc.
     image_tensor: Optional[
         TorchTensor[1704, 2272, 3]
-    ]  # could also be NdArray or TensorflowTensor
-    embedding: Optional[TorchTensor]
+    ] = None  # could also be NdArray or TensorflowTensor
+    embedding: Optional[TorchTensor] = None
 ```
 
 So not only can you define the types of your data, you can even **specify the shape of your tensors!**
@@ -643,8 +643,8 @@ import tensorflow as tf
 
 
 class Podcast(BaseDoc):
-    audio_tensor: Optional[AudioTensorFlowTensor]
-    embedding: Optional[AudioTensorFlowTensor]
+    audio_tensor: Optional[AudioTensorFlowTensor] = None
+    embedding: Optional[AudioTensorFlowTensor] = None
 
 
 class MyPodcastModel(tf.keras.Model):
@@ -712,6 +712,7 @@ async def create_item(doc: InputDoc) -> OutputDoc:
         embedding_clip=model_img(doc.img.tensor), embedding_bert=model_text(doc.text)
     )
     return doc
+
 
 input_doc = InputDoc(text='', img=ImageDoc(tensor=np.random.random((3, 224, 224))))
 
