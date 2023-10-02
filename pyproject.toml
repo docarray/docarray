@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "docarray"
-version = '0.38.0'
+version = '0.39.0'
 description='The data structure for multimodal data'
 readme = 'README.md'
 authors=['DocArray']
