@@ -94,7 +94,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-version: [3.8]
+        python-version: [3.9]
         pydantic-version: ["pydantic-v2", "pydantic-v1"]
         test-path: [tests/integrations, tests/units, tests/documentation]
     steps:
@@ -112,6 +112,11 @@ jobs:
           ./scripts/install_pydantic_v2.sh ${{ matrix.pydantic-version }}
           poetry run pip uninstall -y torch
           poetry run pip install torch
+#         Issue https://github.com/docarray/docarray/issues/1821 occurs with a numpy version
+#         that is only supported in pyton 3.9 and up.
+#         Poetry cannot lock to that version because we support python 3.8.
+#         Therefore, we install this version manually to test for the error in the CI.
+          poetry run pip install numpy==1.26.1
           sudo apt-get update
           sudo apt-get install --no-install-recommends ffmpeg
           
