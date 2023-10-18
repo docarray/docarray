@@ -1,4 +1,4 @@
-from typing import Any, List, Optional, Type, Union
+from typing import Any, List, Optional, Type, Union, get_args
 
 from rich.highlighter import RegexHighlighter
 from rich.theme import Theme
@@ -83,7 +83,7 @@ class DocumentSummary:
 
                 if is_union_type(field_type) or is_optional_type(field_type):
                     sub_tree = Tree(node_name, highlight=True)
-                    for arg in field_type.__args__:
+                    for arg in get_args(field_type):
                         if safe_issubclass(arg, BaseDoc):
                             sub_tree.add(
                                 DocumentSummary._get_schema(
