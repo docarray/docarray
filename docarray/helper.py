@@ -15,7 +15,23 @@ from typing import (
     Union,
 )
 
+import numpy as np
+
 from docarray.utils._internal._typing import safe_issubclass
+from docarray.utils._internal.misc import (
+    is_jax_available,
+    is_tf_available,
+    is_torch_available,
+)
+
+if is_torch_available():
+    import torch
+
+if is_jax_available():
+    import jax
+
+if is_tf_available():
+    import tensorflow as tf
 
 if TYPE_CHECKING:
     from docarray import BaseDoc
@@ -54,6 +70,35 @@ def _access_path_to_dict(access_path: str, value) -> Dict[str, Any]:
     return result
 
 
+def _is_none_like(val: Any) -> bool:
+    """
+    :param val: any value
+    :return: true iff `val` equals to `None`, `'None'` or `''`
+    """
+    # Convoluted implementation, but fixes https://github.com/docarray/docarray/issues/1821
+
+    # tensor-like types can have unexpected (= broadcast) `==`/`in` semantics,
+    # so treat separately
+    is_np_arr = isinstance(val, np.ndarray)
+    if is_np_arr:
+        return False
+
+    is_torch_tens = is_torch_available() and isinstance(val, torch.Tensor)
+    if is_torch_tens:
+        return False
+
+    is_tf_tens = is_tf_available() and isinstance(val, tf.Tensor)
+    if is_tf_tens:
+        return False
+
+    is_jax_arr = is_jax_available() and isinstance(val, jax.numpy.ndarray)
+    if is_jax_arr:
+        return False
+
+    # "normal" case
+    return val in ['', 'None', None]
+
+
 def _access_path_dict_to_nested_dict(access_path2val: Dict[str, Any]) -> Dict[Any, Any]:
     """
     Convert a dict, where the keys are access paths ("__"-separated) to a nested dictionary.
@@ -76,7 +121,7 @@ def _access_path_dict_to_nested_dict(access_path2val: Dict[str, Any]) -> Dict[An
     for access_path, value in access_path2val.items():
         field2val = _access_path_to_dict(
             access_path=access_path,
-            value=value if value not in ['', 'None'] else None,
+            value=None if _is_none_like(value) else value,
         )
         _update_nested_dicts(to_update=nested_dict, update_with=field2val)
     return nested_dict
