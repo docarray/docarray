@@ -135,7 +135,6 @@ class IOMixinDocVec(IOMixinDocList):
         json_columns: Dict[str, Any],
         tensor_type: Type[AbstractTensor] = NdArray,
     ) -> T:
-
         tensor_cols = json_columns['tensor_columns']
         doc_cols = json_columns['doc_columns']
         docs_vec_cols = json_columns['docs_vec_columns']

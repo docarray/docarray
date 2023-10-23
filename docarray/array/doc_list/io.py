@@ -383,7 +383,6 @@ class IOMixinDocList(Iterable[T_doc]):
         file: Union[StringIO, TextIOWrapper],
         dialect: Union[str, csv.Dialect],
     ) -> 'T':
-
         rows = csv.DictReader(file, dialect=dialect)
 
         doc_type = cls.doc_type
@@ -659,7 +658,9 @@ class IOMixinDocList(Iterable[T_doc]):
                     start_pos = end_doc_pos
 
                     # variable length bytes doc
-                    load_protocol: ProtocolType = protocol or cast(ProtocolType, 'protobuf')
+                    load_protocol: ProtocolType = protocol or cast(
+                        ProtocolType, 'protobuf'
+                    )
                     doc = cls.doc_type.from_bytes(
                         d[start_doc_pos:end_doc_pos],
                         protocol=load_protocol,
@@ -745,7 +746,9 @@ class IOMixinDocList(Iterable[T_doc]):
         file: Union[str, bytes, pathlib.Path, io.BufferedReader, _LazyRequestReader],
         protocol: ProtocolType,
         compress: Optional[str] = None,
-    ) -> Tuple[Union[nullcontext, io.BufferedReader], Optional[ProtocolType], Optional[str]]:
+    ) -> Tuple[
+        Union[nullcontext, io.BufferedReader], Optional[ProtocolType], Optional[str]
+    ]:
         load_protocol: Optional[ProtocolType] = protocol
         load_compress: Optional[str] = compress
         file_ctx: Union[nullcontext, io.BufferedReader]

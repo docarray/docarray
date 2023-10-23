@@ -52,7 +52,10 @@ INSTALL_INSTRUCTIONS = {
     'pymilvus': '"docarray[milvus]"',
 }
 
-ProtocolType = Literal['protobuf', 'pickle', 'json', 'json-array', 'protobuf-array', 'pickle-array']
+ProtocolType = Literal[
+    'protobuf', 'pickle', 'json', 'json-array', 'protobuf-array', 'pickle-array'
+]
+
 
 def import_library(
     package: str, raise_error: bool = True

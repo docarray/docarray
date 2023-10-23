@@ -329,7 +329,6 @@ class IOMixin(Iterable[Tuple[str, Any]]):
                 return_field = getattr(value, content_key)
 
             elif content_key in arg_to_container.keys():
-
                 if field_name and field_name in cls._docarray_fields():
                     field_type = cls._get_field_inner_type(field_name)
                 else:
@@ -347,7 +346,6 @@ class IOMixin(Iterable[Tuple[str, Any]]):
                 deser_dict: Dict[str, Any] = dict()
 
                 if field_name and field_name in cls._docarray_fields():
-
                     if is_pydantic_v2:
                         dict_args = get_args(
                             cls._docarray_fields()[field_name].annotation
