@@ -13,6 +13,8 @@ if TYPE_CHECKING:
 
     import requests
 
+    from docarray.utils._internal.misc import ProtocolType
+
 CACHING_REQUEST_READER_CHUNK_SIZE = 2**20
 
 
@@ -112,12 +114,12 @@ T_Elem = TypeVar('T_Elem')
 class Streamable(Protocol):
     """A protocol for streamable objects."""
 
-    def to_bytes(self, protocol: str, compress: Optional[str]) -> bytes:
+    def to_bytes(self, protocol: ProtocolType, compress: Optional[str]) -> bytes:
         ...
 
     @classmethod
     def from_bytes(
-        cls: Type[T_Elem], bytes: bytes, protocol: str, compress: Optional[str]
+        cls: Type[T_Elem], bytes: bytes, protocol: ProtocolType, compress: Optional[str]
     ) -> 'T_Elem':
         ...
 
@@ -133,7 +135,7 @@ class ReadableBytes(Protocol):
 def _to_binary_stream(
     iterator: Iterator['Streamable'],
     total: Optional[int] = None,
-    protocol: str = 'protobuf',
+    protocol: ProtocolType = 'protobuf',
     compress: Optional[str] = None,
     show_progress: bool = False,
 ) -> Iterator[bytes]:
@@ -170,7 +172,7 @@ def _from_binary_stream(
     cls: Type[T],
     stream: ReadableBytes,
     total: Optional[int] = None,
-    protocol: str = 'protobuf',
+    protocol: ProtocolType = 'protobuf',
     compress: Optional[str] = None,
     show_progress: bool = False,
 ) -> Iterator['T']:

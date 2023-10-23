@@ -36,7 +36,7 @@ from docarray.helper import (
     _dict_to_access_paths,
 )
 from docarray.utils._internal.compress import _decompress_bytes, _get_compress_ctx
-from docarray.utils._internal.misc import import_library
+from docarray.utils._internal.misc import import_library, ProtocolType
 
 if TYPE_CHECKING:
     import pandas as pd
@@ -57,9 +57,9 @@ ALLOWED_COMPRESSIONS = {'lz4', 'bz2', 'lzma', 'zlib', 'gzip'}
 
 def _protocol_and_compress_from_file_path(
     file_path: Union[pathlib.Path, str],
-    default_protocol: Optional[str] = None,
+    default_protocol: Optional[ProtocolType] = None,
     default_compress: Optional[str] = None,
-) -> Tuple[Optional[str], Optional[str]]:
+) -> Tuple[Optional[ProtocolType], Optional[str]]:
     """Extract protocol and compression algorithm from a string, use defaults if not found.
     :param file_path: path of a file.
     :param default_protocol: default serialization protocol used in case not found.
@@ -79,7 +79,7 @@ def _protocol_and_compress_from_file_path(
     file_extensions = [e.replace('.', '') for e in pathlib.Path(file_path).suffixes]
     for extension in file_extensions:
         if extension in ALLOWED_PROTOCOLS:
-            protocol = extension
+            protocol = cast(ProtocolType, extension)
         elif extension in ALLOWED_COMPRESSIONS:
             compress = extension
 
@@ -135,7 +135,7 @@ class IOMixinDocList(Iterable[T_doc]):
     def from_bytes(
         cls: Type[T],
         data: bytes,
-        protocol: str = 'protobuf-array',
+        protocol: ProtocolType = 'protobuf-array',
         compress: Optional[str] = None,
         show_progress: bool = False,
     ) -> T:
@@ -157,7 +157,7 @@ class IOMixinDocList(Iterable[T_doc]):
     def _write_bytes(
         self,
         bf: BinaryIO,
-        protocol: str = 'protobuf-array',
+        protocol: ProtocolType = 'protobuf-array',
         compress: Optional[str] = None,
         show_progress: bool = False,
     ) -> None:
@@ -201,7 +201,7 @@ class IOMixinDocList(Iterable[T_doc]):
 
     def _to_binary_stream(
         self,
-        protocol: str = 'protobuf',
+        protocol: ProtocolType = 'protobuf',
         compress: Optional[str] = None,
         show_progress: bool = False,
     ) -> Iterator[bytes]:
@@ -241,7 +241,7 @@ class IOMixinDocList(Iterable[T_doc]):
 
     def to_bytes(
         self,
-        protocol: str = 'protobuf-array',
+        protocol: ProtocolType = 'protobuf-array',
         compress: Optional[str] = None,
         file_ctx: Optional[BinaryIO] = None,
         show_progress: bool = False,
@@ -273,7 +273,7 @@ class IOMixinDocList(Iterable[T_doc]):
     def from_base64(
         cls: Type[T],
         data: str,
-        protocol: str = 'protobuf-array',
+        protocol: ProtocolType = 'protobuf-array',
         compress: Optional[str] = None,
         show_progress: bool = False,
     ) -> T:
@@ -294,7 +294,7 @@ class IOMixinDocList(Iterable[T_doc]):
 
     def to_base64(
         self,
-        protocol: str = 'protobuf-array',
+        protocol: ProtocolType = 'protobuf-array',
         compress: Optional[str] = None,
         show_progress: bool = False,
     ) -> str:
@@ -576,7 +576,7 @@ class IOMixinDocList(Iterable[T_doc]):
     def _load_binary_all(
         cls: Type[T],
         file_ctx: Union[ContextManager[io.BufferedReader], ContextManager[bytes]],
-        protocol: Optional[str],
+        protocol: Optional[ProtocolType],
         compress: Optional[str],
         show_progress: bool,
         tensor_type: Optional[Type['AbstractTensor']] = None,
@@ -659,7 +659,7 @@ class IOMixinDocList(Iterable[T_doc]):
                     start_pos = end_doc_pos
 
                     # variable length bytes doc
-                    load_protocol: str = protocol or 'protobuf'
+                    load_protocol: ProtocolType = protocol or cast(ProtocolType, 'protobuf')
                     doc = cls.doc_type.from_bytes(
                         d[start_doc_pos:end_doc_pos],
                         protocol=load_protocol,
@@ -680,7 +680,7 @@ class IOMixinDocList(Iterable[T_doc]):
     def _load_binary_stream(
         cls: Type[T],
         file_ctx: ContextManager[io.BufferedReader],
-        protocol: str = 'protobuf',
+        protocol: ProtocolType = 'protobuf',
         compress: Optional[str] = None,
         show_progress: bool = False,
     ) -> Generator['T_doc', None, None]:
@@ -728,7 +728,7 @@ class IOMixinDocList(Iterable[T_doc]):
                     len_current_doc_in_bytes = int.from_bytes(
                         f.read(4), 'big', signed=False
                     )
-                    load_protocol: str = protocol
+                    load_protocol: ProtocolType = protocol
                     yield cls.doc_type.from_bytes(
                         f.read(len_current_doc_in_bytes),
                         protocol=load_protocol,
@@ -743,10 +743,10 @@ class IOMixinDocList(Iterable[T_doc]):
     @staticmethod
     def _get_file_context(
         file: Union[str, bytes, pathlib.Path, io.BufferedReader, _LazyRequestReader],
-        protocol: str,
+        protocol: ProtocolType,
         compress: Optional[str] = None,
-    ) -> Tuple[Union[nullcontext, io.BufferedReader], Optional[str], Optional[str]]:
-        load_protocol: Optional[str] = protocol
+    ) -> Tuple[Union[nullcontext, io.BufferedReader], Optional[ProtocolType], Optional[str]]:
+        load_protocol: Optional[ProtocolType] = protocol
         load_compress: Optional[str] = compress
         file_ctx: Union[nullcontext, io.BufferedReader]
         if isinstance(file, (io.BufferedReader, _LazyRequestReader, bytes)):
@@ -765,7 +765,7 @@ class IOMixinDocList(Iterable[T_doc]):
     def load_binary(
         cls: Type[T],
         file: Union[str, bytes, pathlib.Path, io.BufferedReader, _LazyRequestReader],
-        protocol: str = 'protobuf-array',
+        protocol: ProtocolType = 'protobuf-array',
         compress: Optional[str] = None,
         show_progress: bool = False,
         streaming: bool = False,
@@ -814,7 +814,7 @@ class IOMixinDocList(Iterable[T_doc]):
     def save_binary(
         self,
         file: Union[str, pathlib.Path],
-        protocol: str = 'protobuf-array',
+        protocol: ProtocolType = 'protobuf-array',
         compress: Optional[str] = None,
         show_progress: bool = False,
     ) -> None:
