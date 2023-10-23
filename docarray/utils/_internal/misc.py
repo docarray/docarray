@@ -2,7 +2,7 @@ import importlib
 import os
 import re
 import types
-from typing import Any, Optional
+from typing import Any, Optional, Literal
 
 import numpy as np
 
@@ -52,6 +52,7 @@ INSTALL_INSTRUCTIONS = {
     'pymilvus': '"docarray[milvus]"',
 }
 
+ProtocolType = Literal['protobuf', 'pickle']
 
 def import_library(
     package: str, raise_error: bool = True
