@@ -26,7 +26,7 @@ from docarray.typing import NdArray
 from docarray.typing.proto_register import _PROTO_TYPE_NAME_TO_CLASS
 from docarray.utils._internal._typing import safe_issubclass
 from docarray.utils._internal.compress import _compress_bytes, _decompress_bytes
-from docarray.utils._internal.misc import import_library
+from docarray.utils._internal.misc import ProtocolType, import_library
 from docarray.utils._internal.pydantic import is_pydantic_v2
 
 if TYPE_CHECKING:
@@ -36,7 +36,6 @@ if TYPE_CHECKING:
 
     from docarray.proto import DocProto, NodeProto
     from docarray.typing import TensorFlowTensor, TorchTensor
-    from docarray.utils._internal.misc import ProtocolType
 
 else:
     tf = import_library('tensorflow', raise_error=False)
