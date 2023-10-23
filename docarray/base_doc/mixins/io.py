@@ -336,7 +336,7 @@ class IOMixin(Iterable[Tuple[str, Any]]):
                     field_type = None
 
                 if isinstance(field_type, GenericAlias):
-                    field_type = field_type.__args__[0]
+                    field_type = get_args(field_type)[0]
 
                 return_field = arg_to_container[content_key](
                     cls._get_content_from_node_proto(node, field_type=field_type)

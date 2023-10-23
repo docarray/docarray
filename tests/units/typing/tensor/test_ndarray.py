@@ -200,9 +200,9 @@ def test_parametrized_instance():
 def test_parametrized_equality():
     t1 = parse_obj_as(NdArray[128], np.zeros(128))
     t2 = parse_obj_as(NdArray[128], np.zeros(128))
-    t3 = parse_obj_as(NdArray[256], np.zeros(256))
+    t3 = parse_obj_as(NdArray[128], np.ones(128))
     assert (t1 == t2).all()
-    assert not t1 == t3
+    assert not (t1 == t3).any()
 
 
 def test_parametrized_operations():

@@ -12,6 +12,7 @@
 
 
 
+
 <a name=release-note-0-30-0></a>
 ## Release Note (`0.30.0`)
 
@@ -631,4 +632,61 @@
  - [[```7ec88b46```](https://github.com/jina-ai/docarray/commit/7ec88b46e44b52d0400d1495e56387f367aabd2f)] __-__ update minor (#1781) (*Joan Fontanals*)
  - [[```cc2339db```](https://github.com/jina-ai/docarray/commit/cc2339db44626e622f3b2f354d0c5f8d8a0b20ea)] __-__ remove pydantic ref from issue template (#1767) (*samsja*)
  - [[```d5cb02fb```](https://github.com/jina-ai/docarray/commit/d5cb02fbd5cc7392fb92f30c1e7ea436507eb892)] __-__ __version__: the next version will be 0.37.2 (*Jina Dev Bot*)
+
+<a name=release-note-0-39-0></a>
+## Release Note (`0.39.0`)
+
+> Release time: 2023-10-02 13:06:02
+
+
+
+🙇 We'd like to thank all contributors for this new release! In particular,
+ Joan Fontanals,  samsja,  lvzi,  Puneeth K,  Jina Dev Bot,  🙇
+
+
+### 🆕 New Features
+
+ - [[```83d2236a```](https://github.com/jina-ai/docarray/commit/83d2236a356bd108e686abae20a06c7fbc12899f)] __-__ enable dynamic doc with Pydantic v2 (#1795) (*Joan Fontanals*)
+ - [[```2a1cc9e4```](https://github.com/jina-ai/docarray/commit/2a1cc9e4c975cef50760c8a459d4be30a4da4116)] __-__ add BaseDocWithoutId (#1803) (*samsja*)
+ - [[```8fba9e45```](https://github.com/jina-ai/docarray/commit/8fba9e45f995f2d65efbea2c837f2f70dfe3e858)] __-__ remove JAC (#1791) (*Joan Fontanals*)
+ - [[```715252a7```](https://github.com/jina-ai/docarray/commit/715252a72177e83cb81736106f34d0ab2960ce56)] __-__ hybrid pydantic support for both v1 and v2 (#1652) (*samsja*)
+
+### 🐞 Bug fixes
+
+ - [[```c2b08fa5```](https://github.com/jina-ai/docarray/commit/c2b08fa5cd9fab30fc4a1fe61d1373e943912fe7)] __-__ docstring tests with pydantic v2 (#1816) (*samsja*)
+ - [[```3da3603b```](https://github.com/jina-ai/docarray/commit/3da3603b6a0f69016504fcbb2cd303d68cf764ec)] __-__ allow config extension in pydantic v2 (#1814) (*samsja*)
+ - [[```4a1bc26a```](https://github.com/jina-ai/docarray/commit/4a1bc26a15dd02bbefa5607519f992a283bae975)] __-__ allow nested model dump via docvec (#1808) (*samsja*)
+ - [[```26d776dd```](https://github.com/jina-ai/docarray/commit/26d776dd4b49ee17d92b9c97b0af9ff4ab5a4cdc)] __-__ validate before (#1806) (*samsja*)
+ - [[```7209b784```](https://github.com/jina-ai/docarray/commit/7209b7849a2f9afd8cb98e01f80591d30ba28ec7)] __-__ fix double subscriptable error (#1800) (*Joan Fontanals*)
+ - [[```2937e253```](https://github.com/jina-ai/docarray/commit/2937e253f8a946872a310b93de5c706279eb5adb)] __-__ make DocList compatible with BaseDocWithoutId (#1805) (*samsja*)
+ - [[```0148e99c```](https://github.com/jina-ai/docarray/commit/0148e99c47ae9e1fc02c5bfc2ee717afa0633748)] __-__ milvus connection para missing (#1802) (*lvzi*)
+ - [[```2f3b85e3```](https://github.com/jina-ai/docarray/commit/2f3b85e333446cfa9b8c4877c4ccf9ae49cae660)] __-__ raise exception when type of DocList is object (#1794) (*Puneeth K*)
+
+### 🧼 Code Refactoring
+
+ - [[```3718a747```](https://github.com/jina-ai/docarray/commit/3718a747c806b87e331903b73747d864ace42725)] __-__ add is_index_empty API (#1801) (*Joan Fontanals*)
+
+### 📗 Documentation
+
+ - [[```061bd81a```](https://github.com/jina-ai/docarray/commit/061bd81aa3307f13281c1c51b0ef79761cd7c5a5)] __-__ fix documentation for pydantic v2 (#1815) (*samsja*)
+ - [[```d0b99909```](https://github.com/jina-ai/docarray/commit/d0b99909052d1640670764015e4e385319fdc776)] __-__ adding field descriptions to predefined mesh 3D document (#1789) (*Puneeth K*)
+ - [[```18d3afce```](https://github.com/jina-ai/docarray/commit/18d3afceb1a9206c1b6f9184e7d720f4f09510c9)] __-__ adding field descriptions to predefined point cloud 3D document (#1792) (*Puneeth K*)
+ - [[```4ef49394```](https://github.com/jina-ai/docarray/commit/4ef493943d1ee73613b51800980239a30fe5ae73)] __-__ adding field descriptions to predefined video document (#1775) (*Puneeth K*)
+ - [[```68cc1423```](https://github.com/jina-ai/docarray/commit/68cc1423058c18d27f13cae3bd307fba5d6e9aaa)] __-__ adding field descriptions to predefined text document (#1770) (*Puneeth K*)
+ - [[```441db26d```](https://github.com/jina-ai/docarray/commit/441db26dc3e58d72b44595131b42aa411c98774d)] __-__ adding field descriptions to predefined image document (#1772) (*Puneeth K*)
+ - [[```35d2138c```](https://github.com/jina-ai/docarray/commit/35d2138c2d7d246b6de87de829dd870d05fc54bf)] __-__ adding field descriptions to predefined audio document (#1774) (*Puneeth K*)
+
+### 🏁 Unit Test and CICD
+
+ - [[```9a6b1e64```](https://github.com/jina-ai/docarray/commit/9a6b1e646e1ce5c97b81413f83b0b5a12a2c4732)] __-__ move the pydantic check inside test (#1812) (*Joan Fontanals*)
+ - [[```92de15e6```](https://github.com/jina-ai/docarray/commit/92de15e6a6b42d4afe34b744e0c4f1ae581861bc)] __-__ remove skip of s3 (#1811) (*Joan Fontanals*)
+ - [[```bfac0939```](https://github.com/jina-ai/docarray/commit/bfac09399a514073bcde6c72535942623ecc0e84)] __-__ remove skips (#1809) (*Joan Fontanals*)
+ - [[```dce39075```](https://github.com/jina-ai/docarray/commit/dce3907560b987b9c5fc956c7ccf0cf38405d798)] __-__ fix test (#1807) (*Joan Fontanals*)
+ - [[```8f32866e```](https://github.com/jina-ai/docarray/commit/8f32866e1cd3aa139a88cfca2beaa502656dc76b)] __-__ remove skipif for pydantic (#1796) (*Joan Fontanals*)
+
+### 🍹 Other Improvements
+
+ - [[```7693cf7c```](https://github.com/jina-ai/docarray/commit/7693cf7c27b94d616bae37a183cc9c734bc285ee)] __-__ update version to 0.39.0 (#1818) (*Joan Fontanals*)
+ - [[```a4fdb77d```](https://github.com/jina-ai/docarray/commit/a4fdb77db92af2e49b8a9680950439f9ca5c1870)] __-__ fix failing test (#1793) (*Joan Fontanals*)
+ - [[```805a9825```](https://github.com/jina-ai/docarray/commit/805a9825fd59848bb205461e9da71934395c0768)] __-__ __version__: the next version will be 0.38.1 (*Jina Dev Bot*)
 
