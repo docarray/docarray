@@ -136,7 +136,8 @@ def test_union_type_error():
 
 
 @pytest.mark.parametrize('tensor_type', [NdArray, TorchTensor])
-def test_from_to_pandas_tensor_type(tensor_type):
+@pytest.mark.parametrize('tensor_len', [0, 5])
+def test_from_to_pandas_tensor_type(tensor_type, tensor_len):
     class MyDoc(BaseDoc):
         embedding: tensor_type
         text: str
@@ -145,9 +146,13 @@ def test_from_to_pandas_tensor_type(tensor_type):
     da = DocVec[MyDoc](
         [
             MyDoc(
-                embedding=[1, 2, 3, 4, 5], text='hello', image=ImageDoc(url='aux.png')
+                embedding=list(range(tensor_len)),
+                text='hello',
+                image=ImageDoc(url='aux.png'),
             ),
-            MyDoc(embedding=[5, 4, 3, 2, 1], text='hello world', image=ImageDoc()),
+            MyDoc(
+                embedding=list(range(tensor_len)), text='hello world', image=ImageDoc()
+            ),
         ],
         tensor_type=tensor_type,
     )

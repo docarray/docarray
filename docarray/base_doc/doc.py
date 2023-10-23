@@ -22,7 +22,7 @@ import orjson
 import typing_extensions
 from pydantic import BaseModel, Field
 from pydantic.fields import FieldInfo
-from typing_inspect import is_optional_type
+from typing_inspect import get_args, is_optional_type
 
 from docarray.utils._internal.pydantic import is_pydantic_v2
 
@@ -185,7 +185,7 @@ class BaseDocWithoutId(BaseModel, IOMixin, UpdateMixin, BaseNode):
             if is_optional_type(
                 annotation
             ):  # this is equivalent to `outer_type_` in pydantic v1
-                return annotation.__args__[0]
+                return get_args(annotation)[0]
             else:
                 return annotation
         else:
@@ -205,12 +205,12 @@ class BaseDocWithoutId(BaseModel, IOMixin, UpdateMixin, BaseNode):
             if is_optional_type(
                 annotation
             ):  # this is equivalent to `outer_type_` in pydantic v1
-                return annotation.__args__[0]
+                return get_args(annotation)[0]
             elif annotation == Tuple:
-                if len(annotation.__args__) == 0:
+                if len(get_args(annotation)) == 0:
                     return Any
                 else:
-                    annotation.__args__[0]
+                    get_args(annotation)[0]
             else:
                 return annotation
         else:
