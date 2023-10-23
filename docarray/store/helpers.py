@@ -6,14 +6,13 @@ from typing import Dict, Iterable, Iterator, NoReturn, Optional, Sequence, Type,
 from rich import filesize
 from typing_extensions import TYPE_CHECKING, Protocol
 
+from docarray.utils._internal.misc import ProtocolType
 from docarray.utils._internal.progress_bar import _get_progressbar
 
 if TYPE_CHECKING:
     from pathlib import Path
 
     import requests
-
-    from docarray.utils._internal.misc import ProtocolType
 
 CACHING_REQUEST_READER_CHUNK_SIZE = 2**20
 
