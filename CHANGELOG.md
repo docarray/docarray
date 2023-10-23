@@ -13,6 +13,7 @@
 
 
 
+
 <a name=release-note-0-30-0></a>
 ## Release Note (`0.30.0`)
 
@@ -689,4 +690,25 @@
  - [[```7693cf7c```](https://github.com/jina-ai/docarray/commit/7693cf7c27b94d616bae37a183cc9c734bc285ee)] __-__ update version to 0.39.0 (#1818) (*Joan Fontanals*)
  - [[```a4fdb77d```](https://github.com/jina-ai/docarray/commit/a4fdb77db92af2e49b8a9680950439f9ca5c1870)] __-__ fix failing test (#1793) (*Joan Fontanals*)
  - [[```805a9825```](https://github.com/jina-ai/docarray/commit/805a9825fd59848bb205461e9da71934395c0768)] __-__ __version__: the next version will be 0.38.1 (*Jina Dev Bot*)
+
+<a name=release-note-0-39-1></a>
+## Release Note (`0.39.1`)
+
+> Release time: 2023-10-23 08:56:38
+
+
+
+🙇 We'd like to thank all contributors for this new release! In particular,
+ Joan Fontanals,  Johannes Messner,  dependabot[bot],  Jina Dev Bot,  🙇
+
+
+### 🐞 Bug fixes
+
+ - [[```98d1f1f0```](https://github.com/jina-ai/docarray/commit/98d1f1f0a61851883c9598ce17d8f58594939c26)] __-__ from_dataframe with numpy==1.26.1 and type handling in python 3.9 (#1823) (*Johannes Messner*)
+
+### 🍹 Other Improvements
+
+ - [[```6094854a```](https://github.com/jina-ai/docarray/commit/6094854a5c113d58e55b98f778624766ac1c82f6)] __-__ update version before patch release (#1826) (*Joan Fontanals*)
+ - [[```7479f59a```](https://github.com/jina-ai/docarray/commit/7479f59a69616256cf61679a5a3246f376c22af0)] __-__ __deps__: bump pillow from 9.3.0 to 10.0.1 (#1819) (*dependabot[bot]*)
+ - [[```08bfa9cf```](https://github.com/jina-ai/docarray/commit/08bfa9cfae4d23bed2cd794f67fc5581a0f33133)] __-__ __version__: the next version will be 0.39.1 (*Jina Dev Bot*)
 
