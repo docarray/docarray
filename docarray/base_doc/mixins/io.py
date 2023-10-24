@@ -26,7 +26,7 @@ from docarray.typing import NdArray
 from docarray.typing.proto_register import _PROTO_TYPE_NAME_TO_CLASS
 from docarray.utils._internal._typing import safe_issubclass
 from docarray.utils._internal.compress import _compress_bytes, _decompress_bytes
-from docarray.utils._internal.misc import import_library
+from docarray.utils._internal.misc import ProtocolType, import_library
 from docarray.utils._internal.pydantic import is_pydantic_v2
 
 if TYPE_CHECKING:
@@ -36,7 +36,6 @@ if TYPE_CHECKING:
 
     from docarray.proto import DocProto, NodeProto
     from docarray.typing import TensorFlowTensor, TorchTensor
-
 
 else:
     tf = import_library('tensorflow', raise_error=False)
@@ -150,7 +149,7 @@ class IOMixin(Iterable[Tuple[str, Any]]):
         return self.to_bytes()
 
     def to_bytes(
-        self, protocol: str = 'protobuf', compress: Optional[str] = None
+        self, protocol: ProtocolType = 'protobuf', compress: Optional[str] = None
     ) -> bytes:
         """Serialize itself into bytes.
 
@@ -177,7 +176,7 @@ class IOMixin(Iterable[Tuple[str, Any]]):
     def from_bytes(
         cls: Type[T],
         data: bytes,
-        protocol: str = 'protobuf',
+        protocol: ProtocolType = 'protobuf',
         compress: Optional[str] = None,
     ) -> T:
         """Build Document object from binary bytes
@@ -203,7 +202,7 @@ class IOMixin(Iterable[Tuple[str, Any]]):
             )
 
     def to_base64(
-        self, protocol: str = 'protobuf', compress: Optional[str] = None
+        self, protocol: ProtocolType = 'protobuf', compress: Optional[str] = None
     ) -> str:
         """Serialize a Document object into as base64 string
 
@@ -329,7 +328,6 @@ class IOMixin(Iterable[Tuple[str, Any]]):
                 return_field = getattr(value, content_key)
 
             elif content_key in arg_to_container.keys():
-
                 if field_name and field_name in cls._docarray_fields():
                     field_type = cls._get_field_inner_type(field_name)
                 else:
@@ -347,7 +345,6 @@ class IOMixin(Iterable[Tuple[str, Any]]):
                 deser_dict: Dict[str, Any] = dict()
 
                 if field_name and field_name in cls._docarray_fields():
-
                     if is_pydantic_v2:
                         dict_args = get_args(
                             cls._docarray_fields()[field_name].annotation

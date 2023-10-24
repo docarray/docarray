@@ -2,7 +2,7 @@ import importlib
 import os
 import re
 import types
-from typing import Any, Optional
+from typing import Any, Optional, Literal
 
 import numpy as np
 
@@ -51,6 +51,10 @@ INSTALL_INSTRUCTIONS = {
     'redis': '"docarray[redis]"',
     'pymilvus': '"docarray[milvus]"',
 }
+
+ProtocolType = Literal[
+    'protobuf', 'pickle', 'json', 'json-array', 'protobuf-array', 'pickle-array'
+]
 
 
 def import_library(

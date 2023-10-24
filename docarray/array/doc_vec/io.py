@@ -31,6 +31,7 @@ from docarray.base_doc.mixins.io import _type_to_protobuf
 from docarray.typing import NdArray
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
 from docarray.utils._internal.pydantic import is_pydantic_v2
+from docarray.utils._internal.misc import ProtocolType
 
 if TYPE_CHECKING:
     import csv
@@ -134,7 +135,6 @@ class IOMixinDocVec(IOMixinDocList):
         json_columns: Dict[str, Any],
         tensor_type: Type[AbstractTensor] = NdArray,
     ) -> T:
-
         tensor_cols = json_columns['tensor_columns']
         doc_cols = json_columns['doc_columns']
         docs_vec_cols = json_columns['docs_vec_columns']
@@ -351,7 +351,7 @@ class IOMixinDocVec(IOMixinDocList):
     def from_base64(
         cls: Type[T],
         data: str,
-        protocol: str = 'protobuf-array',
+        protocol: ProtocolType = 'protobuf-array',
         compress: Optional[str] = None,
         show_progress: bool = False,
         tensor_type: Type['AbstractTensor'] = NdArray,
@@ -377,7 +377,7 @@ class IOMixinDocVec(IOMixinDocList):
     def from_bytes(
         cls: Type[T],
         data: bytes,
-        protocol: str = 'protobuf-array',
+        protocol: ProtocolType = 'protobuf-array',
         compress: Optional[str] = None,
         show_progress: bool = False,
         tensor_type: Type['AbstractTensor'] = NdArray,
@@ -454,7 +454,7 @@ class IOMixinDocVec(IOMixinDocList):
     def load_binary(
         cls: Type[T],
         file: Union[str, bytes, pathlib.Path, io.BufferedReader, _LazyRequestReader],
-        protocol: str = 'protobuf-array',
+        protocol: ProtocolType = 'protobuf-array',
         compress: Optional[str] = None,
         show_progress: bool = False,
         streaming: bool = False,
