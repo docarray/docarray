@@ -343,6 +343,7 @@ class DocList(
         if (
             isinstance(item, object)
             and not is_typevar(item)
+            and not isinstance(item, type)
             and not isinstance(item, str)
             and item is not Any
         ):
