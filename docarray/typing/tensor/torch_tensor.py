@@ -292,6 +292,16 @@ class TorchTensor(
             torch.Tensor if t in docarray_torch_tensors else t for t in types
         )
         return super().__torch_function__(func, types_, args, kwargs)
+    
+    def __deepcopy__(self, memo):
+        """
+        Custom implementation of deepcopy for TorchTensor to avoid storage sharing issues.
+        """
+        # Create a new tensor with the same data and properties
+        new_tensor = self.clone()  
+        # Set the class to the custom TorchTensor class
+        new_tensor.__class__ = self.__class__  
+        return new_tensor
 
     @classmethod
     def _docarray_from_ndarray(cls: Type[T], value: np.ndarray) -> T:
