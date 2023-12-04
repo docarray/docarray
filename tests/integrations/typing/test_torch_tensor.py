@@ -28,6 +28,7 @@ def test_set_torch_embedding():
     assert isinstance(d.embedding, torch.Tensor)
     assert (d.embedding == torch.zeros((128,))).all()
 
+
 def test_torchtensor_deepcopy():
     # Setup
     original_tensor_float = TorchTensor(torch.rand(10))
