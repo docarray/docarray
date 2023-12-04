@@ -210,7 +210,7 @@ Commits need to be signed. Indeed, the DocArray repo enforces the [Developer Cer
 To sign your commits you need to [use the `-s` argument](https://docs.github.com/en/authentication/managing-commit-signature-verification/signing-commits) when committing:
 
 ```
-git commit -m -s 'feat: add a new feature'
+git commit -S -m 'feat: add a new feature'
 ```
 
 #### What if I mess up?
