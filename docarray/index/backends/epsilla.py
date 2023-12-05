@@ -62,12 +62,7 @@ class EpsillaDocumentIndex(BaseDocIndex, Generic[TSchema]):
             )
 
             if status_code != HTTPStatus.OK:
-                # Epsilla returns HTTP 500 when multiple clients connect to the same db
-                # Bug filed at https://github.com/epsilla-cloud/vectordb/issues/93
-                if status_code == HTTPStatus.INTERNAL_SERVER_ERROR and (
-                    "Database catalog file is already loaded" in response["message"]
-                    or "DB already exists" in response["message"]
-                ):
+                if status_code == HTTPStatus.CONFLICT:
                     self._logger.info(f'{self._db_config.db_name} already loaded.')
                 else:
                     raise IOError(
@@ -278,7 +273,7 @@ class EpsillaDocumentIndex(BaseDocIndex, Generic[TSchema]):
             missing_attributes = [
                 attr
                 for attr in ["protocol", "host", "port", "db_path", "db_name"]
-                if getattr(self, attr, None) is not None
+                if getattr(self, attr, None) is None
             ]
 
             if missing_attributes:
@@ -290,7 +285,7 @@ class EpsillaDocumentIndex(BaseDocIndex, Generic[TSchema]):
             missing_attributes_cloud = [
                 attr
                 for attr in ["cloud_project_id", "cloud_db_id", "api_key"]
-                if getattr(self, attr, None) is not None
+                if getattr(self, attr, None) is None
             ]
 
             if missing_attributes_cloud:
