@@ -1,5 +1,6 @@
 import copy
 from dataclasses import dataclass, field
+from http import HTTPStatus
 from typing import (
     Any,
     Dict,
@@ -60,10 +61,12 @@ class EpsillaDocumentIndex(BaseDocIndex, Generic[TSchema]):
                 db_path=self._db_config.db_path,
             )
 
-            if status_code != 200:
-                if status_code == 500 and (
-                    "already loaded" in response["message"]
-                    or "already exists" in response["message"]
+            if status_code != HTTPStatus.OK:
+                # Epsilla returns HTTP 500 when multiple clients connect to the same db
+                # Bug filed at https://github.com/epsilla-cloud/vectordb/issues/93
+                if status_code == HTTPStatus.INTERNAL_SERVER_ERROR and (
+                    "Database catalog file is already loaded" in response["message"]
+                    or "DB already exists" in response["message"]
                 ):
                     self._logger.info(f'{self._db_config.db_name} already loaded.')
                 else:
@@ -74,7 +77,7 @@ class EpsillaDocumentIndex(BaseDocIndex, Generic[TSchema]):
             self._db.use_db(self._db_config.db_name)
 
             status_code, response = self._db.list_tables()
-            if status_code != 200:
+            if status_code != HTTPStatus.OK:
                 raise IOError(
                     f"Failed to list tables. "
                     f"Error code: {status_code}. Error message: {response}."
@@ -90,7 +93,7 @@ class EpsillaDocumentIndex(BaseDocIndex, Generic[TSchema]):
             self._db = self._client.vectordb(self._db_config.cloud_db_id)
 
             status_code, response = self._db.list_tables()
-            if status_code != 200:
+            if status_code != HTTPStatus.OK:
                 raise IOError(
                     f"Failed to list tables. "
                     f"Error code: {status_code}. Error message: {response}."
@@ -163,7 +166,7 @@ class EpsillaDocumentIndex(BaseDocIndex, Generic[TSchema]):
             table_name=self._table_name,
             table_fields=table_fields,
         )
-        if status_code != 200:
+        if status_code != HTTPStatus.OK:
             raise IOError(
                 f"Failed to create table {self._table_name}. "
                 f"Error code: {status_code}. Error message: {response}."
@@ -351,7 +354,7 @@ class EpsillaDocumentIndex(BaseDocIndex, Generic[TSchema]):
             table_name=self._table_name, records=normalized_rows
         )
 
-        if status_code != 200:
+        if status_code != HTTPStatus.OK:
             raise IOError(
                 f"Failed to insert documents. "
                 f"Error code: {status_code}. Error message: {response}."
@@ -365,7 +368,7 @@ class EpsillaDocumentIndex(BaseDocIndex, Generic[TSchema]):
             table_name=self._table_name,
             primary_keys=list(doc_ids),
         )
-        if status_code != 200:
+        if status_code != HTTPStatus.OK:
             raise IOError(
                 f"Failed to get documents with ids {doc_ids}. "
                 f"Error code: {status_code}. Error message: {response}."
@@ -379,7 +382,7 @@ class EpsillaDocumentIndex(BaseDocIndex, Generic[TSchema]):
             table_name=self._table_name,
             primary_keys=list(doc_ids),
         )
-        if status_code != 200:
+        if status_code != HTTPStatus.OK:
             raise IOError(
                 f"Failed to get documents with ids {doc_ids}. "
                 f"Error code: {status_code}. Error message: {response}."
@@ -451,7 +454,7 @@ class EpsillaDocumentIndex(BaseDocIndex, Generic[TSchema]):
                 with_distance=True,
             )
 
-            if status_code != 200:
+            if status_code != HTTPStatus.OK:
                 raise IOError(
                     f"Failed to find documents with query {query}. "
                     f"Error code: {status_code}. Error message: {response}."
@@ -496,7 +499,7 @@ class EpsillaDocumentIndex(BaseDocIndex, Generic[TSchema]):
                 filter=filter_query,
             )
 
-            if status_code != 200:
+            if status_code != HTTPStatus.OK:
                 raise IOError(
                     f"Failed to find documents with filter {filter_query}. "
                     f"Error code: {status_code}. Error message: {response}."
