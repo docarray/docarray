@@ -125,16 +125,16 @@ class EpsillaDocumentIndex(BaseDocIndex, Generic[TSchema]):
         """Use _column_infos to create a table in the database."""
         table_fields = []
 
-        primaryKeys = []
+        primary_keys = []
         for column_name, column_info in self._column_infos.items():
             if column_info.docarray_type == ID:
-                primaryKeys.append(column_name)
+                primary_keys.append(column_name)
 
         # when there is a nested schema, we may have multiple "ID" fields. We use the presence of "__"
         # to determine if the field is nested or not
-        if len(primaryKeys) > 1:
-            sorted_pkeys = sorted(primaryKeys, key=lambda x: x.count("__"))
-            primaryKeys = sorted_pkeys[:1]
+        if len(primary_keys) > 1:
+            sorted_pkeys = sorted(primary_keys, key=lambda x: x.count("__"))
+            primary_keys = sorted_pkeys[:1]
 
         for column_name, column_info in self._column_infos.items():
             dim = (
@@ -147,7 +147,7 @@ class EpsillaDocumentIndex(BaseDocIndex, Generic[TSchema]):
                     {
                         'name': column_name,
                         'dataType': column_info.db_type,
-                        'primaryKey': column_name in primaryKeys,
+                        'primaryKey': column_name in primary_keys,
                     }
                 )
             else:
@@ -272,14 +272,28 @@ class EpsillaDocumentIndex(BaseDocIndex, Generic[TSchema]):
                 self.validate_cloud_config()
 
         def validate_self_hosted_config(self):
-            if not all(
-                [self.protocol, self.host, self.port, self.db_path, self.db_name]
-            ):
-                raise ValueError("Missing required attributes for self-hosted version.")
+            missing_attributes = [
+                attr
+                for attr in ["protocol", "host", "port", "db_path", "db_name"]
+                if getattr(self, attr, None) is not None
+            ]
+
+            if missing_attributes:
+                raise ValueError(
+                    f"Missing required attributes for self-hosted version: {', '.join(missing_attributes)}"
+                )
 
         def validate_cloud_config(self):
-            if not all([self.cloud_project_id, self.cloud_db_id, self.api_key]):
-                raise ValueError("Missing required attributes for cloud version.")
+            missing_attributes_cloud = [
+                attr
+                for attr in ["cloud_project_id", "cloud_db_id", "api_key"]
+                if getattr(self, attr, None) is not None
+            ]
+
+            if missing_attributes_cloud:
+                raise ValueError(
+                    f"Missing required attributes for cloud version: {', '.join(missing_attributes_cloud)}"
+                )
 
     @dataclass
     class RuntimeConfig(BaseDocIndex.RuntimeConfig):
