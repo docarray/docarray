@@ -358,6 +358,15 @@ class EpsillaDocumentIndex(BaseDocIndex, Generic[TSchema]):
     def num_docs(self) -> int:
         raise NotImplementedError
 
+    @property
+    def _is_index_empty(self) -> bool:
+        """
+        Check if index is empty by comparing the number of documents to zero.
+        :return: True if the index is empty, False otherwise.
+        """
+        # Overriding this method because Epsilla does not have a count API for num_docs
+        return self._filter("", limit=1) == 0
+
     def _del_items(self, doc_ids: Sequence[str]):
         status_code, response = self._db.delete(
             table_name=self._table_name,
