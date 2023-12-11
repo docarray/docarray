@@ -245,10 +245,10 @@ def test_find_empty_index(tmp_index_name):
             ),
         ]
     )
-    docs, scores = empty_index.find_batched(queries, limit=1, search_field="tens")
+    docs_list, scores = empty_index.find_batched(queries, limit=10, search_field="tens")
 
-    assert len(docs) == 0
-    assert len(scores) == 0
+    for docs in docs_list:
+        assert len(docs) == 0
 
 
 def test_simple_usage(tmp_index_name):
