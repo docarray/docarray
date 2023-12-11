@@ -229,7 +229,24 @@ def test_find_empty_index(tmp_index_name):
     )
     query = SimpleDoc(tens=np.random.rand(10))
 
+    # find
     docs, scores = empty_index.find(query, limit=5, search_field="tens")
+    assert len(docs) == 0
+    assert len(scores) == 0
+
+    # find_batched
+    queries = DocList[SimpleDoc](
+        [
+            SimpleDoc(
+                tens=np.array([0.1, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0])
+            ),
+            SimpleDoc(
+                tens=np.array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.1])
+            ),
+        ]
+    )
+    docs, scores = empty_index.find_batched(queries, limit=1, search_field="tens")
+
     assert len(docs) == 0
     assert len(scores) == 0
 
@@ -259,6 +276,9 @@ def test_filter_range(tmp_index_name):  # noqa: F811
     index = EpsillaDocumentIndex[SimpleSchema](
         **epsilla_config, table_name=tmp_index_name
     )
+
+    docs = index.filter("number > 8", limit=5)
+    assert len(docs) == 0
 
     index_docs = [
         SimpleSchema(

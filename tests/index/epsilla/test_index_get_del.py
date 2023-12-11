@@ -84,6 +84,13 @@ def test_index_torch(tmp_index_name):
     assert index_len(index) == 10
 
 
+def test_del_from_empty(ten_simple_docs, tmp_index_name):  # noqa: F811
+    index = EpsillaDocumentIndex[SimpleDoc](**epsilla_config, table_name=tmp_index_name)
+    assert index_len(index) == 0
+    del index[ten_simple_docs[0].id]
+    assert index_len(index) == 0
+
+
 def test_del_single(ten_simple_docs, tmp_index_name):  # noqa: F811
     index = EpsillaDocumentIndex[SimpleDoc](**epsilla_config, table_name=tmp_index_name)
     index.index(ten_simple_docs)

@@ -18,6 +18,9 @@ def test_configure_dim():
     index = EpsillaDocumentIndex[Schema1](**epsilla_config)
 
     docs = [Schema1(tens=np.random.random((10,))) for _ in range(10)]
+
+    assert len(index.find(docs[0], limit=30, search_field="tens")[0]) == 0
+
     index.index(docs)
 
     doc_found = index.find(docs[0], limit=1, search_field="tens")[0][0]
