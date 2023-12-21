@@ -100,6 +100,7 @@ nav:
           - user_guide/storing/docindex.md
           - user_guide/storing/index_in_memory.md
           - user_guide/storing/index_hnswlib.md
+          - user_guide/storing/index_epsilla.md
           - user_guide/storing/index_weaviate.md
           - user_guide/storing/index_elastic.md
           - user_guide/storing/index_qdrant.md
