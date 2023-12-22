@@ -570,6 +570,8 @@
         
           
         
+          
+        
       
       
         <label class="md-nav__link" for="__nav_2_4_2" id="__nav_2_4_2_label" tabindex="0">
@@ -709,6 +711,20 @@
     <li class="md-nav__item">
       <a href="../index_hnswlib/" class="md-nav__link">
         Hnswlib Document Index
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../index_epsilla/" class="md-nav__link">
+        Epsilla Document Index
       </a>
     </li>
   
@@ -1497,6 +1513,8 @@
         
           
         
+          
+        
       
       
         <label class="md-nav__link" for="__nav_6_4_2" id="__nav_6_4_2_label" tabindex="0">
@@ -1533,6 +1551,20 @@
     <li class="md-nav__item">
       <a href="../../../API_reference/doc_index/backends/elastic7/" class="md-nav__link">
         ElasticV7DocIndex
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../API_reference/doc_index/backends/epsilla/" class="md-nav__link">
+        EpsillaDocumentIndex
       </a>
     </li>
   
@@ -2238,6 +2270,7 @@ In fact, you can think of Document Index as an <strong><a href="https://sqlmodel
 <li><a href="https://weaviate.io/">Weaviate</a>  |  <a href="../index_weaviate/">Docs</a></li>
 <li><a href="https://qdrant.tech/">Qdrant</a>  |  <a href="../index_qdrant/">Docs</a></li>
 <li><a href="https://www.elastic.co/elasticsearch/">Elasticsearch</a> v7 and v8  |  <a href="../index_elastic/">Docs</a></li>
+<li><a href="https://epsilla.com/">Epsilla</a>  |  <a href="../index_epsilla/">Docs</a></li>
 <li><a href="https://redis.com/">Redis</a>  |  <a href="../index_redis/">Docs</a></li>
 <li><a href="https://milvus.io/">Milvus</a>  |  <a href="../index_milvus/">Docs</a></li>
 <li><a href="https://github.com/nmslib/hnswlib">HNSWlib</a>  |  <a href="../index_hnswlib/">Docs</a></li>
@@ -2265,15 +2298,17 @@ prices ranging from 0 to 9, and randomly generated embeddings.
 </span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="kn">from</span> <span class="nn">docarray.typing</span> <span class="kn">import</span> <span class="n">NdArray</span>
 </span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 </span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>
-</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="k">class</span> <span class="nc">MyDoc</span><span class="p">(</span><span class="n">BaseDoc</span><span class="p">):</span>
-</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>    <span class="n">title</span><span class="p">:</span> <span class="nb">str</span>
-</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>    <span class="n">price</span><span class="p">:</span> <span class="nb">int</span>
-</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>    <span class="n">embedding</span><span class="p">:</span> <span class="n">NdArray</span><span class="p">[</span><span class="mi">128</span><span class="p">]</span>
-</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>
-</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="n">docs</span> <span class="o">=</span> <span class="n">DocList</span><span class="p">[</span><span class="n">MyDoc</span><span class="p">](</span>
-</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>    <span class="n">MyDoc</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="sa">f</span><span class="s2">"title #</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span> <span class="n">price</span><span class="o">=</span><span class="n">i</span><span class="p">,</span> <span class="n">embedding</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">128</span><span class="p">))</span>
-</span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
-</span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a><span class="p">)</span>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="k">class</span> <span class="nc">MyDoc</span><span class="p">(</span><span class="n">BaseDoc</span><span class="p">):</span>
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>    <span class="n">title</span><span class="p">:</span> <span class="nb">str</span>
+</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>    <span class="n">price</span><span class="p">:</span> <span class="nb">int</span>
+</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>    <span class="n">embedding</span><span class="p">:</span> <span class="n">NdArray</span><span class="p">[</span><span class="mi">128</span><span class="p">]</span>
+</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>
+</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>
+</span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a><span class="n">docs</span> <span class="o">=</span> <span class="n">DocList</span><span class="p">[</span><span class="n">MyDoc</span><span class="p">](</span>
+</span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a>    <span class="n">MyDoc</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="sa">f</span><span class="s2">"title #</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span> <span class="n">price</span><span class="o">=</span><span class="n">i</span><span class="p">,</span> <span class="n">embedding</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">128</span><span class="p">))</span>
+</span><span id="__span-0-15"><a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a>    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+</span><span id="__span-0-16"><a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a><span class="p">)</span>
 </span></code></pre></div>
 <h3 id="initialize-the-document-index-and-add-data">Initialize the Document Index and add data</h3>
 <p>Here we initialize an <code>InMemoryExactNNIndex</code> instance with the document schema we defined previously, and add the created documents to this index.
@@ -2309,6 +2344,7 @@ To learn more and get the most out of <code>DocArray</code>, take a look at the 
 <li><a href="https://weaviate.io/">Weaviate</a>  |  <a href="../index_weaviate/">Docs</a></li>
 <li><a href="https://qdrant.tech/">Qdrant</a>  |  <a href="../index_qdrant/">Docs</a></li>
 <li><a href="https://www.elastic.co/elasticsearch/">Elasticsearch</a> v7 and v8  |  <a href="../index_elastic/">Docs</a></li>
+<li><a href="https://epsilla.com/">Epsilla</a>  |  <a href="../index_epsilla/">Docs</a></li>
 <li><a href="https://redis.com/">Redis</a>  |  <a href="../index_redis/">Docs</a></li>
 <li><a href="https://milvus.io/">Milvus</a>  |  <a href="../index_milvus/">Docs</a></li>
 <li><a href="https://github.com/nmslib/hnswlib">HNSWlib</a>  |  <a href="../index_hnswlib/">Docs</a></li>
