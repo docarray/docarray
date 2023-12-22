@@ -1,3 +1,4 @@
+import sys
 import random
 from abc import abstractmethod
 from typing import (
@@ -29,6 +30,9 @@ if TYPE_CHECKING:
     from docarray.proto import DocListProto, NodeProto
     from docarray.typing.tensor.abstract_tensor import AbstractTensor
 
+if sys.version_info >= (3, 12):
+    from types import GenericAlias
+
 T = TypeVar('T', bound='AnyDocArray')
 T_doc = TypeVar('T_doc', bound=BaseDocWithoutId)
 IndexIterType = Union[slice, Iterable[int], Iterable[bool], None]
@@ -51,8 +55,12 @@ class AnyDocArray(Sequence[T_doc], Generic[T_doc], AbstractType):
     @classmethod
     def __class_getitem__(cls, item: Union[Type[BaseDocWithoutId], TypeVar, str]):
         if not isinstance(item, type):
-            return Generic.__class_getitem__.__func__(cls, item)  # type: ignore
-            # this do nothing that checking that item is valid type var or str
+            if sys.version_info < (3, 12):
+                return Generic.__class_getitem__.__func__(cls, item)  # type: ignore
+                # this do nothing that checking that item is valid type var or str
+                # Keep the approach in #1147 to be compatible with lower versions of Python.
+            else:
+                return GenericAlias(cls, item)  # type: ignore
         if not safe_issubclass(item, BaseDocWithoutId):
             raise ValueError(
                 f'{cls.__name__}[item] item should be a Document not a {item} '
