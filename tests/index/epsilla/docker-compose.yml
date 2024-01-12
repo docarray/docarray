@@ -1,0 +1,12 @@
+version: '3.5'
+
+services:
+  standalone:
+    container_name: epsilla
+    image: epsilla/vectordb
+    ports:
+      - "8888:8888"
+
+networks:
+  default:
+    name: epsilla

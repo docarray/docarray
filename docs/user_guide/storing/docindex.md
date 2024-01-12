@@ -37,6 +37,7 @@ Currently, DocArray supports the following vector databases:
 - [Weaviate](https://weaviate.io/)  |  [Docs](index_weaviate.md)
 - [Qdrant](https://qdrant.tech/)  |  [Docs](index_qdrant.md)
 - [Elasticsearch](https://www.elastic.co/elasticsearch/) v7 and v8  |  [Docs](index_elastic.md)
+- [Epsilla](https://epsilla.com/)  |  [Docs](index_epsilla.md)
 - [Redis](https://redis.com/)  |  [Docs](index_redis.md)
 - [Milvus](https://milvus.io/)  |  [Docs](index_milvus.md)
 - [HNSWlib](https://github.com/nmslib/hnswlib)  |  [Docs](index_hnswlib.md)
@@ -67,10 +68,12 @@ from docarray.index import InMemoryExactNNIndex
 from docarray.typing import NdArray
 import numpy as np
 
+
 class MyDoc(BaseDoc):
     title: str
     price: int
     embedding: NdArray[128]
+
 
 docs = DocList[MyDoc](
     MyDoc(title=f"title #{i}", price=i, embedding=np.random.rand(128))
@@ -120,6 +123,7 @@ To learn more and get the most out of `DocArray`, take a look at the detailed gu
 - [Weaviate](https://weaviate.io/)  |  [Docs](index_weaviate.md)
 - [Qdrant](https://qdrant.tech/)  |  [Docs](index_qdrant.md)
 - [Elasticsearch](https://www.elastic.co/elasticsearch/) v7 and v8  |  [Docs](index_elastic.md)
+- [Epsilla](https://epsilla.com/)  |  [Docs](index_epsilla.md)
 - [Redis](https://redis.com/)  |  [Docs](index_redis.md)
 - [Milvus](https://milvus.io/)  |  [Docs](index_milvus.md)
 - [HNSWlib](https://github.com/nmslib/hnswlib)  |  [Docs](index_hnswlib.md)

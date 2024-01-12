@@ -1,5 +1,6 @@
 import numpy as np
 import pytest
+from typing import Dict, List
 
 from docarray import BaseDoc, DocList
 from docarray.base_doc import AnyDoc
@@ -111,3 +112,41 @@ def test_union_type_error():
     docs_basic = DocList[BasisUnion]([BasisUnion(ud="hello")])
     docs_copy = DocList[BasisUnion].from_protobuf(docs_basic.to_protobuf())
     assert docs_copy == docs_basic
+
+
+class MySimpleDoc(BaseDoc):
+    title: str
+
+
+class MyComplexDoc(BaseDoc):
+    content_dict_doclist: Dict[str, DocList[MySimpleDoc]]
+    content_dict_list: Dict[str, List[MySimpleDoc]]
+    aux_dict: Dict[str, int]
+
+
+def test_to_from_proto_complex():
+    da = DocList[MyComplexDoc](
+        [
+            MyComplexDoc(
+                content_dict_doclist={
+                    'test1': DocList[MySimpleDoc](
+                        [MySimpleDoc(title='123'), MySimpleDoc(title='456')]
+                    )
+                },
+                content_dict_list={
+                    'test1': [MySimpleDoc(title='123'), MySimpleDoc(title='456')]
+                },
+                aux_dict={'a': 0},
+            )
+        ]
+    )
+    da2 = DocList[MyComplexDoc].from_protobuf(da.to_protobuf())
+    assert len(da2) == 1
+    d2 = da2[0]
+    assert d2.aux_dict == {'a': 0}
+    assert len(d2.content_dict_doclist['test1']) == 2
+    assert d2.content_dict_doclist['test1'][0].title == '123'
+    assert d2.content_dict_doclist['test1'][1].title == '456'
+    assert len(d2.content_dict_list['test1']) == 2
+    assert d2.content_dict_list['test1'][0].title == '123'
+    assert d2.content_dict_list['test1'][1].title == '456'
