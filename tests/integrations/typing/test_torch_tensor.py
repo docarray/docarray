@@ -40,6 +40,6 @@ def test_torchtensor_deepcopy():
 
     # Verify
     assert torch.equal(original_tensor_float, copied_tensor_float)
-    assert original_tensor_float is not copied_tensor_float
+    assert original_tensor_float.data_ptr() != copied_tensor_float.data_ptr()
     assert torch.equal(original_tensor_int, copied_tensor_int)
-    assert original_tensor_int is not copied_tensor_int
+    assert original_tensor_int.data_ptr() != copied_tensor_int.data_ptr()

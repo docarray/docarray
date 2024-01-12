@@ -285,7 +285,6 @@ class IOMixin(Iterable[Tuple[str, Any]]):
         )
 
         return_field: Any
-
         if docarray_type in content_type_dict:
             return_field = content_type_dict[docarray_type].from_protobuf(
                 getattr(value, content_key)
@@ -308,13 +307,18 @@ class IOMixin(Iterable[Tuple[str, Any]]):
                     f'{field_type} is not supported for proto deserialization'
                 )
         elif content_key == 'doc_array':
-            if field_name is None:
+            if field_type is not None and field_name is None:
+                return_field = field_type.from_protobuf(getattr(value, content_key))
+            elif field_name is not None:
+                return_field = cls._get_field_annotation_array(
+                    field_name
+                ).from_protobuf(
+                    getattr(value, content_key)
+                )  # we get to the parent class
+            else:
                 raise ValueError(
-                    'field_name cannot be None when trying to deserialize a BaseDoc'
+                    'field_name and field_type cannot be None when trying to deserialize a DocArray'
                 )
-            return_field = cls._get_field_annotation_array(field_name).from_protobuf(
-                getattr(value, content_key)
-            )  # we get to the parent class
         elif content_key is None:
             return_field = None
         elif docarray_type is None:
@@ -330,8 +334,6 @@ class IOMixin(Iterable[Tuple[str, Any]]):
             elif content_key in arg_to_container.keys():
                 if field_name and field_name in cls._docarray_fields():
                     field_type = cls._get_field_inner_type(field_name)
-                else:
-                    field_type = None
 
                 if isinstance(field_type, GenericAlias):
                     field_type = get_args(field_type)[0]

@@ -14,6 +14,7 @@
 
 
 
+
 <a name=release-note-0-30-0></a>
 ## Release Note (`0.30.0`)
 
@@ -711,4 +712,37 @@
  - [[```6094854a```](https://github.com/jina-ai/docarray/commit/6094854a5c113d58e55b98f778624766ac1c82f6)] __-__ update version before patch release (#1826) (*Joan Fontanals*)
  - [[```7479f59a```](https://github.com/jina-ai/docarray/commit/7479f59a69616256cf61679a5a3246f376c22af0)] __-__ __deps__: bump pillow from 9.3.0 to 10.0.1 (#1819) (*dependabot[bot]*)
  - [[```08bfa9cf```](https://github.com/jina-ai/docarray/commit/08bfa9cfae4d23bed2cd794f67fc5581a0f33133)] __-__ __version__: the next version will be 0.39.1 (*Jina Dev Bot*)
+
+<a name=release-note-0-40-0></a>
+## Release Note (`0.40.0`)
+
+> Release time: 2023-12-22 12:12:15
+
+
+
+🙇 We'd like to thank all contributors for this new release! In particular,
+ 954,  Joan Fontanals,  Tony Yang,  Naymul Islam,  Ben Shaver,  Jina Dev Bot,  🙇
+
+
+### 🆕 New Features
+
+ - [[```ff00b604```](https://github.com/jina-ai/docarray/commit/ff00b6049f5f50bae4786f310907424b45791104)] __-__ __index__: add epsilla connector (#1835) (*Tony Yang*)
+ - [[```522811f4```](https://github.com/jina-ai/docarray/commit/522811f4b47e1c0f30fe13bb84c7625e349d0656)] __-__ use literal in type hints (#1827) (*Ben Shaver*)
+
+### 🐞 Bug fixes
+
+ - [[```1f86e263```](https://github.com/jina-ai/docarray/commit/1f86e263effaeab61f9c9e42becd37622595cd96)] __-__ error type hints in Python3.12 (#1147) (#1840) (*954*)
+ - [[```21e107bd```](https://github.com/jina-ai/docarray/commit/21e107bdaaae319c728c141a076d44738b7ec32e)] __-__ fix issue serializing deserializing complex schemas (#1836) (*Joan Fontanals*)
+ - [[```3cfa0b8f```](https://github.com/jina-ai/docarray/commit/3cfa0b8ff877d95cef0637f7f177499f0a9c6cfd)] __-__ fix storage issue in torchtensor class (#1833) (*Naymul Islam*)
+
+### 📗 Documentation
+
+ - [[```a2421a6a```](https://github.com/jina-ai/docarray/commit/a2421a6a86e4e42a10771e7070be7932caeb1d33)] __-__ __epsilla__: add epsilla integration guide (#1838) (*Tony Yang*)
+ - [[```82918fe7```](https://github.com/jina-ai/docarray/commit/82918fe7b6207ac112e096f88cccc71d80fc0afe)] __-__ fix sign commit commad in docs (#1834) (*Naymul Islam*)
+
+### 🍹 Other Improvements
+
+ - [[```0e183ff0```](https://github.com/jina-ai/docarray/commit/0e183ff0d48555b56fa34989513ac4fb53135626)] __-__ upgrade version (#1841) (*Joan Fontanals*)
+ - [[```8de3e175```](https://github.com/jina-ai/docarray/commit/8de3e1757bdb23b509ad2630219c3c26605308f0)] __-__ refactor test of the torchtensor (#1837) (*Naymul Islam*)
+ - [[```d5d928b8```](https://github.com/jina-ai/docarray/commit/d5d928b82f36a3279277c07bed44fd22bb0bba34)] __-__ __version__: the next version will be 0.39.2 (*Jina Dev Bot*)
 

@@ -10,16 +10,18 @@ from docarray.utils._internal.misc import (
 if TYPE_CHECKING:
     from docarray.index.backends.elastic import ElasticDocIndex  # noqa: F401
     from docarray.index.backends.elasticv7 import ElasticV7DocIndex  # noqa: F401
+    from docarray.index.backends.epsilla import EpsillaDocumentIndex  # noqa: F401
     from docarray.index.backends.hnswlib import HnswDocumentIndex  # noqa: F401
-    from docarray.index.backends.qdrant import QdrantDocumentIndex  # noqa: F401
-    from docarray.index.backends.weaviate import WeaviateDocumentIndex  # noqa: F401
-    from docarray.index.backends.redis import RedisDocumentIndex  # noqa: F401
     from docarray.index.backends.milvus import MilvusDocumentIndex  # noqa: F401
+    from docarray.index.backends.qdrant import QdrantDocumentIndex  # noqa: F401
+    from docarray.index.backends.redis import RedisDocumentIndex  # noqa: F401
+    from docarray.index.backends.weaviate import WeaviateDocumentIndex  # noqa: F401
 
 __all__ = [
     'InMemoryExactNNIndex',
     'ElasticDocIndex',
     'ElasticV7DocIndex',
+    'EpsillaDocumentIndex',
     'QdrantDocumentIndex',
     'WeaviateDocumentIndex',
     'RedisDocumentIndex',
@@ -38,6 +40,9 @@ def __getattr__(name: str):
     elif name == 'ElasticV7DocIndex':
         import_library('elasticsearch', raise_error=True)
         import docarray.index.backends.elasticv7 as lib
+    elif name == 'EpsillaDocumentIndex':
+        import_library('pyepsilla', raise_error=True)
+        import docarray.index.backends.epsilla as lib
     elif name == 'QdrantDocumentIndex':
         import_library('qdrant_client', raise_error=True)
         import docarray.index.backends.qdrant as lib
