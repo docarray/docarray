@@ -641,7 +641,7 @@ class HnswDocumentIndex(BaseDocIndex, Generic[TSchema]):
         queries: np.ndarray,
         limit: int,
         search_field: str = '',
-        hashed_ids: Optional[Set[str]] = None,
+        hashed_ids: Optional[Set[int]] = None,
     ) -> _FindResultBatched:
         """
         Executes a search and filter operation on the database.
