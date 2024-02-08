@@ -18,6 +18,8 @@ from typing import (
     TypeVar,
     Union,
     cast,
+    get_origin,
+    get_args,
 )
 
 import numpy as np
@@ -42,7 +44,6 @@ else:
 
 TSchema = TypeVar('TSchema', bound=BaseDoc)
 T = TypeVar('T', bound='WeaviateDocumentIndex')
-
 
 DEFAULT_BATCH_CONFIG = {
     "batch_size": 20,
@@ -210,6 +211,8 @@ class WeaviateDocumentIndex(BaseDocIndex, Generic[TSchema]):
                 self.bytes_columns.append(column_name)
             if column_info.db_type == 'number[]':
                 self.nonembedding_array_columns.append(column_name)
+            if column_info.db_type == 'text[]':
+                self.nonembedding_array_columns.append(column_name)
             prop = {
                 "name": column_name
                 if column_name != 'id'
@@ -253,6 +256,8 @@ class WeaviateDocumentIndex(BaseDocIndex, Generic[TSchema]):
                 'number': {},
                 'boolean': {},
                 'number[]': {},
+                'int[]': {},
+                'text[]': {},
                 'blob': {},
             }
         )
@@ -716,6 +721,23 @@ class WeaviateDocumentIndex(BaseDocIndex, Generic[TSchema]):
             np.ndarray: 'number[]',
             bytes: 'blob',
         }
+
+        if get_origin(python_type) == list:
+            py_weaviate_list_type_map = {
+                int: 'int[]',
+                float: 'number[]',
+                str: 'text[]',
+            }
+
+            container_type = None
+            args = get_args(python_type)
+            if args:
+                container_type = args[0]
+            if (
+                container_type is not None
+                and container_type in py_weaviate_list_type_map
+            ):
+                return py_weaviate_list_type_map[container_type]
 
         for py_type, weaviate_type in py_weaviate_type_map.items():
             if safe_issubclass(python_type, py_type):
