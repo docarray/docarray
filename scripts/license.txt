@@ -13,15 +13,3 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-from docarray import BaseDoc
-from docarray.typing import ImageUrl
-
-
-def test_set_image_url():
-    class MyDocument(BaseDoc):
-        image_url: ImageUrl
-
-    d = MyDocument(image_url="https://jina.ai/img.png")
-
-    assert isinstance(d.image_url, ImageUrl)
-    assert d.image_url == "https://jina.ai/img.png"
