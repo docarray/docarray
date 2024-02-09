@@ -1,0 +1,51 @@
+name: Add License to Python Files
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  add-license:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v3
+        with:
+          python-version: 3.10
+
+      - name: Run add_license.sh and check for changes
+        id: add_license
+        run: |
+          chmod +x scripts/add_license.sh
+          CHANGES=$(git status --porcelain)
+          ./scripts/add_license.sh
+          NEW_CHANGES=$(git status --porcelain)
+          echo "::set-output name=changes::${NEW_CHANGES}"
+
+      - name: Commit changes if there are modifications
+        run: |
+          if [[ -n "${{ steps.add_license.outputs.changes }}" ]]; then
+            git config --local user.email "dev-bot@jina.ai"
+            git config --local user.name "Jina Dev Bot"
+            git add .
+            git commit -m "chore: add license to Python files"
+            git push
+          else
+            echo "No changes detected, skipping commit."
+          fi
+        if: steps.add_license.outputs.changes != ''
+
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v3
+        with:
+          title: "Add license to Python files"
+          branch: "add-license"
+          commit-message: "chore: add license to Python files"
+          base: "main"
+          labels: "auto-merge"
+          token: ${{ secrets.JINA_DEV_BOT }}
+        if: steps.add_license.outputs.changes != ''
