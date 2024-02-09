@@ -761,7 +761,10 @@ class BaseDocIndex(ABC, Generic[TSchema]):
                 leaf_doc: BaseDoc = doc
                 for f in fields[:-1]:
                     leaf_doc = getattr(leaf_doc, f)
-                leaf_vals.append(getattr(leaf_doc, fields[-1]))
+                if leaf_doc is None:
+                    leaf_vals.append(None)
+                else:
+                    leaf_vals.append(getattr(leaf_doc, fields[-1]))
             else:
                 leaf_vals.append(getattr(doc, col_name))
         return leaf_vals
@@ -819,12 +822,13 @@ class BaseDocIndex(ABC, Generic[TSchema]):
             if safe_issubclass(type_, AnyDocArray):
                 for doc in docs:
                     _list = getattr(doc, field_name)
-                    for i, nested_doc in enumerate(_list):
-                        nested_doc = self._subindices[field_name]._schema(  # type: ignore
-                            **nested_doc.__dict__
-                        )
-                        nested_doc.parent_id = doc.id
-                        _list[i] = nested_doc
+                    if _list is not None:
+                        for i, nested_doc in enumerate(_list):
+                            nested_doc = self._subindices[field_name]._schema(  # type: ignore
+                                **nested_doc.__dict__
+                            )
+                            nested_doc.parent_id = doc.id
+                            _list[i] = nested_doc
 
     ##################################################
     # Behind-the-scenes magic                        #
@@ -1078,19 +1082,23 @@ class BaseDocIndex(ABC, Generic[TSchema]):
         raise ValueError(f'Unsupported input type for {type(self)}: {type(val)}')
 
     def _convert_dict_to_doc(
-        self, doc_dict: Dict[str, Any], schema: Type[BaseDoc], inner=False
+        self, doc_dict: Dict[str, Any], schema: Type[BaseDoc], inner=False, include_lists=True
     ) -> BaseDoc:
         """
         Convert a dict to a Document object.
 
         :param doc_dict: A dict that contains all the flattened fields of a Document, the field names are the keys and follow the pattern {field_name} or {field_name}__{nested_name}
         :param schema: The schema of the Document object
+        :param inner:
+        :param include_lists: when True, we'll go fetch lists from subindex. This being optional let's us load inner
+                                objects that are already stored within the same index. We will still fill up object
+                                typed fields if they are available without going to subindex.
         :return: A Document object
         """
         for field_name, _ in schema._docarray_fields().items():
             t_ = schema._get_field_annotation(field_name)
 
-            if not is_union_type(t_) and safe_issubclass(t_, AnyDocArray):
+            if not is_union_type(t_) and safe_issubclass(t_, AnyDocArray) and include_lists:
                 self._get_subindex_doclist(doc_dict, field_name)
 
             if is_optional_type(t_):
@@ -1139,8 +1147,11 @@ class BaseDocIndex(ABC, Generic[TSchema]):
         """
         for col_name, col in self._column_infos.items():
             if safe_issubclass(col.docarray_type, AnyDocArray):
+                col_data = column_to_data[col_name]
+                if col_data is None:
+                    continue
                 docs = [
-                    doc for doc_list in column_to_data[col_name] for doc in doc_list
+                    doc for doc_list in col_data for doc in (doc_list if doc_list is not None else [])
                 ]
                 self._subindices[col_name].index(docs)
                 column_to_data.pop(col_name, None)

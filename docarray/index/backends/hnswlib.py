@@ -442,7 +442,7 @@ class HnswDocumentIndex(BaseDocIndex, Generic[TSchema]):
             raise ValueError(
                 'The Document id is None. To use DocumentIndex it needs to be set.'
             )
-        return int(hashlib.sha256(doc_id.encode('utf-8')).hexdigest(), 16) % 10**18
+        return int(hashlib.sha256(str(doc_id).encode('utf-8')).hexdigest(), 16) % 10**18
 
     def _load_index(self, col_name: str, col: '_ColumnInfo') -> hnswlib.Index:
         """Load an existing HNSW index from disk."""
