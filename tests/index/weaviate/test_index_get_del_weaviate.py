@@ -6,6 +6,7 @@ import logging
 import numpy as np
 import pytest
 from pydantic import Field
+from typing import List
 
 from docarray import BaseDoc
 from docarray.documents import ImageDoc, TextDoc
@@ -31,6 +32,9 @@ class SimpleDoc(BaseDoc):
 class Document(BaseDoc):
     embedding: NdArray[2] = Field(dim=2, is_embedding=True)
     text: str = Field()
+    texts: List[str] = Field()
+    integers: List[int] = Field()
+    floats: List[float] = Field()
 
 
 class NestedDocument(BaseDoc):
@@ -50,7 +54,14 @@ def documents():
 
     # create the docs by enumerating from 1 and use that as the id
     docs = [
-        Document(id=str(i), embedding=embedding, text=text)
+        Document(
+            id=str(i),
+            embedding=embedding,
+            text=text,
+            texts=[f'text{i}_0', f'text{i}_1'],
+            integers=[i, i],
+            floats=[1.5 * i, 2.5 * i],
+        )
         for i, (embedding, text) in enumerate(zip(embeddings, texts))
     ]
 
@@ -170,6 +181,8 @@ def test_find_batched(weaviate_client, caplog):
         ({"path": ["text"], "operator": "Equal", "valueText": "lorem ipsum"}, 1),
         ({"path": ["text"], "operator": "Equal", "valueText": "foo"}, 0),
         ({"path": ["id"], "operator": "Equal", "valueString": "1"}, 1),
+        ({"path": ["texts"], "operator": "ContainsAny", "valueString": "text"}, 3),
+        ({"path": ["texts"], "operator": "ContainsAny", "valueString": "text1_"}, 1),
     ],
 )
 def test_filter(test_index, filter_query, expected_num_docs):
