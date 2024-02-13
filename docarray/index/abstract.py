@@ -761,9 +761,7 @@ class BaseDocIndex(ABC, Generic[TSchema]):
                 leaf_doc: BaseDoc = doc
                 for f in fields[:-1]:
                     leaf_doc = getattr(leaf_doc, f)
-                if leaf_doc is None:
-                    leaf_vals.append(None)
-                else:
+                if leaf_doc is not None:
                     leaf_vals.append(getattr(leaf_doc, fields[-1]))
             else:
                 leaf_vals.append(getattr(doc, col_name))
@@ -802,6 +800,7 @@ class BaseDocIndex(ABC, Generic[TSchema]):
                     self._get_values_by_column([doc], col_name)[0],
                     allow_passthrough=True,
                 )
+                if len(self._get_values_by_column([doc], col_name)) > 0 else self._to_numpy(None, allow_passthrough=True)
                 for doc in docs_seq
             )
 
@@ -1148,8 +1147,6 @@ class BaseDocIndex(ABC, Generic[TSchema]):
         for col_name, col in self._column_infos.items():
             if safe_issubclass(col.docarray_type, AnyDocArray):
                 col_data = column_to_data[col_name]
-                if col_data is None:
-                    continue
                 docs = [
                     doc for doc_list in col_data for doc in (doc_list if doc_list is not None else [])
                 ]
