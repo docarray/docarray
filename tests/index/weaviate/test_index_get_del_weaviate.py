@@ -32,9 +32,9 @@ class SimpleDoc(BaseDoc):
 class Document(BaseDoc):
     embedding: NdArray[2] = Field(dim=2, is_embedding=True)
     text: str = Field()
-    texts: List[str] = Field()
-    integers: List[int] = Field()
-    floats: List[float] = Field()
+    texts: List[str] = Field(default=[])
+    # integers: List[int] = Field(default=[])
+    floats: List[float] = Field(default=[])
 
 
 class NestedDocument(BaseDoc):
@@ -181,8 +181,8 @@ def test_find_batched(weaviate_client, caplog):
         ({"path": ["text"], "operator": "Equal", "valueText": "lorem ipsum"}, 1),
         ({"path": ["text"], "operator": "Equal", "valueText": "foo"}, 0),
         ({"path": ["id"], "operator": "Equal", "valueString": "1"}, 1),
-        ({"path": ["texts"], "operator": "ContainsAny", "valueString": "text"}, 3),
-        ({"path": ["texts"], "operator": "ContainsAny", "valueString": "text1_"}, 1),
+        ({"path": ["texts"], "operator": "ContainsAny", "valueText": ["text"]}, 3),
+        ({"path": ["texts"], "operator": "ContainsAny", "valueText": ["text1_"]}, 1),
     ],
 )
 def test_filter(test_index, filter_query, expected_num_docs):
