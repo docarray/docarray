@@ -178,7 +178,7 @@ class BaseDocWithoutId(BaseModel, IOMixin, UpdateMixin, BaseNode):
         :param field: name of the field
         :return:
         """
-
+        print('_get_field_annsotation23', is_pydantic_v2, field, cls._docarray_fields()[field].outer_type_)
         if is_pydantic_v2:
             annotation = cls._docarray_fields()[field].annotation
 
@@ -198,7 +198,7 @@ class BaseDocWithoutId(BaseModel, IOMixin, UpdateMixin, BaseNode):
         :param field: name of the field
         :return:
         """
-
+        print('_get_field_inner_type-is_pydantic_v2', field, is_pydantic_v2)
         if is_pydantic_v2:
             annotation = cls._docarray_fields()[field].annotation
 
@@ -539,6 +539,7 @@ class BaseDocWithoutId(BaseModel, IOMixin, UpdateMixin, BaseNode):
         :param allow_pickle: allow pickle protocol
         :return: a document
         """
+        print('parse_raw', b)
         return super(BaseDocWithoutId, cls).parse_raw(
             b,
             content_type=content_type,
@@ -569,6 +570,7 @@ class BaseDocWithoutId(BaseModel, IOMixin, UpdateMixin, BaseNode):
             exclude = dict(**exclude)
             exclude.update({field: ... for field in docarray_exclude_fields})
 
+        print('docarray_exclude_fields', docarray_exclude_fields)
         return (
             exclude,
             original_exclude,
