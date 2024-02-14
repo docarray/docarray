@@ -178,6 +178,7 @@ class BaseDocWithoutId(BaseModel, IOMixin, UpdateMixin, BaseNode):
         :param field: name of the field
         :return:
         """
+
         if is_pydantic_v2:
             annotation = cls._docarray_fields()[field].annotation
 
@@ -197,6 +198,7 @@ class BaseDocWithoutId(BaseModel, IOMixin, UpdateMixin, BaseNode):
         :param field: name of the field
         :return:
         """
+
         if is_pydantic_v2:
             annotation = cls._docarray_fields()[field].annotation
 
