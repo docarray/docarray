@@ -67,7 +67,8 @@ def create_pure_python_type_model(model: BaseModel) -> BaseDoc:
         try:
             if safe_issubclass(field, DocList):
                 t: Any = field.doc_type
-                fields[field_name] = (List[t], field_info)
+                t_aux = create_pure_python_type_model(t)
+                fields[field_name] = (List[t_aux], field_info)
             else:
                 fields[field_name] = (field, field_info)
         except TypeError:

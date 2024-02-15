@@ -285,3 +285,33 @@ def test_create_with_field_info():
         new_custom_doc_model.schema().get('description')
         == 'Here I have the description of the class'
     )
+
+
+def test_dynamic_class_creation_multiple_doclist_nested():
+    from docarray import BaseDoc, DocList
+
+    class MyTextDoc(BaseDoc):
+        text: str
+
+    class QuoteFile(BaseDoc):
+        texts: DocList[MyTextDoc]
+
+    class SearchResult(BaseDoc):
+        results: DocList[QuoteFile] = None
+
+    models_created_by_name = {}
+    SearchResult_aux = create_pure_python_type_model(SearchResult)
+    _ = create_base_doc_from_schema(
+        SearchResult_aux.schema(), 'SearchResult', models_created_by_name
+    )
+    QuoteFile_reconstructed_in_gateway_from_Search_results = models_created_by_name[
+        'QuoteFile'
+    ]
+    textlist = DocList[models_created_by_name['MyTextDoc']](
+        [models_created_by_name['MyTextDoc'](id='11', text='hey')]
+    )
+
+    reconstructed_in_gateway_from_Search_results = (
+        QuoteFile_reconstructed_in_gateway_from_Search_results(id='0', texts=textlist)
+    )
+    assert reconstructed_in_gateway_from_Search_results.texts[0].text == 'hey'
