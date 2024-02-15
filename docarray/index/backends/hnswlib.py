@@ -251,6 +251,8 @@ class HnswDocumentIndex(BaseDocIndex, Generic[TSchema]):
         for col_name, index in self._hnsw_indices.items():
             data = column_to_data[col_name]
             data_np = [self._to_numpy(arr) for arr in data]
+            if len(data_np) < 1:
+                continue
             data_stacked = np.stack(data_np)
             num_docs_to_index = len(hashed_ids)
             index_max_elements = index.get_max_elements()
