@@ -250,7 +250,7 @@ class HnswDocumentIndex(BaseDocIndex, Generic[TSchema]):
         # could be improved by processing in parallel
         for col_name, index in self._hnsw_indices.items():
             data = column_to_data[col_name]
-            data_np = [self._to_numpy(arr) for arr in data]
+            data_np = [self._to_numpy(arr) for arr in data if arr is not None]
             if len(data_np) < 1:
                 continue
             data_stacked = np.stack(data_np)
