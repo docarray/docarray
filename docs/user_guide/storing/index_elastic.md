@@ -126,67 +126,6 @@ class SimpleDoc(BaseDoc):
 doc_index = ElasticDocIndex[SimpleDoc](hosts='http://localhost:9200')
 ```
 
-### Using a predefined document as schema
-
-DocArray offers a number of predefined documents, like [ImageDoc][docarray.documents.ImageDoc] and [TextDoc][docarray.documents.TextDoc].
-If you try to use these directly as a schema for a Document Index, you will get unexpected behavior:
-Depending on the backend, an exception will be raised, or no vector index for ANN lookup will be built.
-
-The reason for this is that predefined documents don't hold information about the dimensionality of their `.embedding`
-field. But this is crucial information for any vector database to work properly!
-
-You can work around this problem by subclassing the predefined document and adding the dimensionality information:
-
-=== "Using type hint"
-    ```python
-    from docarray.documents import TextDoc
-    from docarray.typing import NdArray
-    from docarray.index import ElasticDocIndex
-
-
-    class MyDoc(TextDoc):
-        embedding: NdArray[128]
-
-
-    db = ElasticDocIndex[MyDoc](index_name='test_db')
-    ```
-
-=== "Using Field()"
-    ```python
-    from docarray.documents import TextDoc
-    from docarray.typing import AnyTensor
-    from docarray.index import ElasticDocIndex
-    from pydantic import Field
-
-
-    class MyDoc(TextDoc):
-        embedding: AnyTensor = Field(dim=128)
-
-
-    db = ElasticDocIndex[MyDoc](index_name='test_db3')
-    ```
-
-Once you have defined the schema of your Document Index in this way, the data that you index can be either the predefined Document type or your custom Document type.
-
-The [next section](#index) goes into more detail about data indexing, but note that if you have some `TextDoc`s, `ImageDoc`s etc. that you want to index, you _don't_ need to cast them to `MyDoc`:
-
-```python
-from docarray import DocList
-
-# data of type TextDoc
-data = DocList[TextDoc](
-    [
-        TextDoc(text='hello world', embedding=np.random.rand(128)),
-        TextDoc(text='hello world', embedding=np.random.rand(128)),
-        TextDoc(text='hello world', embedding=np.random.rand(128)),
-    ]
-)
-
-# you can index this into Document Index of type MyDoc
-db.index(data)
-```
-
-
 ## Index
 
 Now that you have a Document Index, you can add data to it, using the [`index()`][docarray.index.abstract.BaseDocIndex.index] method.
