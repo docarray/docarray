@@ -43,8 +43,8 @@ jobs:
           pip install poetry
           ./scripts/release.sh final "${{ github.event.inputs.release_reason }}" "${{github.actor}}"
         env:
-          PYPI_USERNAME: ${{ secrets.TWINE_USERNAME }}
-          PYPI_PASSWORD: ${{ secrets.TWINE_PASSWORD }}
+          TWINE_USERNAME: __token__
+          TWINE_PASSWORD: ${{ secrets.PYPI_TOKEN }}
           JINA_SLACK_WEBHOOK: ${{ secrets.JINA_SLACK_WEBHOOK }}
       - if: failure()
         run: echo "nothing to release"
