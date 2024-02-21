@@ -528,7 +528,10 @@ class HnswDocumentIndex(BaseDocIndex, Generic[TSchema]):
         )  # doc_ids do not come back in the same order
         embeddings: OrderedDict[str, list] = OrderedDict()
         for col_name, index in self._hnsw_indices.items():
-            embeddings[col_name] = index.get_items([row[0] for row in rows])
+            try:
+                embeddings[col_name] = index.get_items([row[0] for row in rows])
+            except Exception as e:
+                self._logger.error('Could not fetch items from HNSWLib Indexer SQLite index: {}'.format(str(e)))
 
         schema = self.out_schema if out else self._schema
         docs = DocList.__class_getitem__(cast(Type[BaseDoc], schema))()
