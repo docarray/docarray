@@ -16,7 +16,9 @@ from typing import (
     Union,
     cast,
     overload,
-    Tuple
+    Tuple,
+    get_args,
+    get_origin,
 )
 
 import numpy as np
@@ -46,17 +48,16 @@ UNUSABLE_ERROR_MSG = (
 )
 
 
-class AnyDocArray(Sequence[T_doc], Generic[T_doc], AbstractType):
+class AnyDocArray(AbstractType, Sequence[T_doc], Generic[T_doc]):
     doc_type: Type[BaseDocWithoutId]
     __typed_da__: Dict[Type['AnyDocArray'], Dict[Type[BaseDocWithoutId], Type]] = {}
-    # __origin__: Type['AnyDocArray'] = cls  # add this
-    # __args__: Tuple[Any, ...] = (item,)  # add this
 
     def __repr__(self):
         return f'<{self.__class__.__name__} (length={len(self)})>'
 
     @classmethod
     def __class_getitem__(cls, item: Union[Type[BaseDocWithoutId], TypeVar, str]):
+        print(f' hey here {item}')
         if not isinstance(item, type):
             if sys.version_info < (3, 12):
                 return Generic.__class_getitem__.__func__(cls, item)  # type: ignore
@@ -75,8 +76,10 @@ class AnyDocArray(Sequence[T_doc], Generic[T_doc], AbstractType):
         if item not in cls.__typed_da__[cls]:
             # Promote to global scope so multiprocessing can pickle it
             global _DocArrayTyped
-            class _DocArrayTyped(cls):  # type: ignore
+            class _DocArrayTyped(cls, Generic[T_doc]):  # type: ignore
                 doc_type: Type[BaseDocWithoutId] = cast(Type[BaseDocWithoutId], item)
+                # __origin__: Type['AnyDocArray'] = cls  # add this
+                # __args__: Tuple[Any, ...] = (item,)  # add this
 
             for field in _DocArrayTyped.doc_type._docarray_fields().keys():
 
@@ -109,6 +112,10 @@ class AnyDocArray(Sequence[T_doc], Generic[T_doc], AbstractType):
 
             cls.__typed_da__[cls][item] = _DocArrayTyped
 
+        print(f'return {cls.__typed_da__[cls][item]}')
+        a = get_args(cls.__typed_da__[cls][item])
+        print(f'a {a}')
+        print(f'get_origin {get_origin(cls.__typed_da__[cls][item])}')
         return cls.__typed_da__[cls][item]
 
     @overload
