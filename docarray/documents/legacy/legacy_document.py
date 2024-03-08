@@ -15,7 +15,7 @@
 # limitations under the License.
 from __future__ import annotations
 
-from typing import Any, Dict, Optional
+from typing import Any, Dict, Optional, List, Union
 
 from docarray import BaseDoc, DocList
 from docarray.typing import AnyEmbedding, AnyTensor
@@ -50,8 +50,8 @@ class LegacyDocument(BaseDoc):
     """
 
     tensor: Optional[AnyTensor] = None
-    chunks: Optional[DocList[LegacyDocument]] = None
-    matches: Optional[DocList[LegacyDocument]] = None
+    chunks: Optional[Union[DocList[LegacyDocument], List[LegacyDocument]]] = None
+    matches: Optional[Union[DocList[LegacyDocument], List[LegacyDocument]]] = None
     blob: Optional[bytes] = None
     text: Optional[str] = None
     url: Optional[str] = None

@@ -12,6 +12,8 @@ from typing import (
     Union,
     cast,
     overload,
+    Callable,
+    get_args
 )
 
 from pydantic import parse_obj_as
@@ -357,8 +359,8 @@ class DocList(
 
         @classmethod
         def __get_pydantic_core_schema__(
-            cls, _source_type: Any, _handler: GetCoreSchemaHandler
+            cls, source: Any, handler: Callable[[Any], core_schema.CoreSchema]
         ) -> core_schema.CoreSchema:
-            return core_schema.general_plain_validator_function(
-                cls.validate,
-            )
+            return core_schema.with_info_after_validator_function(
+                function=cls.validate,
+                schema=core_schema.list_schema(core_schema.any_schema()))

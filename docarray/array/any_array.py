@@ -16,6 +16,7 @@ from typing import (
     Union,
     cast,
     overload,
+    Tuple
 )
 
 import numpy as np
@@ -48,6 +49,8 @@ UNUSABLE_ERROR_MSG = (
 class AnyDocArray(Sequence[T_doc], Generic[T_doc], AbstractType):
     doc_type: Type[BaseDocWithoutId]
     __typed_da__: Dict[Type['AnyDocArray'], Dict[Type[BaseDocWithoutId], Type]] = {}
+    # __origin__: Type['AnyDocArray'] = cls  # add this
+    # __args__: Tuple[Any, ...] = (item,)  # add this
 
     def __repr__(self):
         return f'<{self.__class__.__name__} (length={len(self)})>'
@@ -72,7 +75,6 @@ class AnyDocArray(Sequence[T_doc], Generic[T_doc], AbstractType):
         if item not in cls.__typed_da__[cls]:
             # Promote to global scope so multiprocessing can pickle it
             global _DocArrayTyped
-
             class _DocArrayTyped(cls):  # type: ignore
                 doc_type: Type[BaseDocWithoutId] = cast(Type[BaseDocWithoutId], item)
 
