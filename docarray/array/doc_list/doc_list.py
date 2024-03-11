@@ -13,7 +13,6 @@ from typing import (
     cast,
     overload,
     Callable,
-    get_args,
 )
 
 from pydantic import parse_obj_as
@@ -358,14 +357,16 @@ class DocList(
             cls, source: Any, handler: Callable[[Any], core_schema.CoreSchema]
         ) -> core_schema.CoreSchema:
             instance_schema = core_schema.is_instance_schema(cls)
-
-            args = get_args(source)
+            args = getattr(source, '__args__', None)
             if args:
                 sequence_t_schema = handler(Sequence[args[0]])
             else:
                 sequence_t_schema = handler(Sequence)
 
+            def validate_fn(v, info):
+                return cls(v)
+
             non_instance_schema = core_schema.with_info_after_validator_function(
-                lambda v, i: DocList(v), sequence_t_schema
+                validate_fn, sequence_t_schema
             )
             return core_schema.union_schema([instance_schema, non_instance_schema])

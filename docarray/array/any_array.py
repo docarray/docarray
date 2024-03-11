@@ -34,11 +34,6 @@ if TYPE_CHECKING:
 
 if sys.version_info >= (3, 12):
     from types import GenericAlias
-else:
-    try:
-        from typing import GenericAlias
-    except ImportError:
-        from typing import _GenericAlias as GenericAlias
 
 T = TypeVar('T', bound='AnyDocArray')
 T_doc = TypeVar('T_doc', bound=BaseDocWithoutId)
@@ -80,7 +75,7 @@ class AnyDocArray(Sequence[T_doc], Generic[T_doc], AbstractType):
             # Promote to global scope so multiprocessing can pickle it
             global _DocArrayTyped
 
-            class _DocArrayTyped(cls, Generic[T_doc]):  # type: ignore
+            class _DocArrayTyped(cls):  # type: ignore
                 doc_type: Type[BaseDocWithoutId] = cast(Type[BaseDocWithoutId], item)
                 if is_pydantic_v2:
                     __origin__: Type['AnyDocArray'] = cls  # add this
@@ -114,15 +109,8 @@ class AnyDocArray(Sequence[T_doc], Generic[T_doc], AbstractType):
             change_cls_name(
                 _DocArrayTyped, f'{cls.__name__}[{item.__name__}]', globals()
             )
-            if is_pydantic_v2:
-                if sys.version_info < (3, 12):
-                    cls.__typed_da__[cls][item] = Generic.__class_getitem__.__func__(_DocArrayTyped, item)  # type: ignore
-                    # this do nothing that checking that item is valid type var or str
-                    # Keep the approach in #1147 to be compatible with lower versions of Python.
-                else:
-                    cls.__typed_da__[cls][item] = GenericAlias(_DocArrayTyped, item)
-            else:
-                cls.__typed_da__[cls][item] = _DocArrayTyped
+
+            cls.__typed_da__[cls][item] = _DocArrayTyped
 
         return cls.__typed_da__[cls][item]
 
