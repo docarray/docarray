@@ -17,8 +17,6 @@ from typing import (
     cast,
     overload,
     Tuple,
-    get_args,
-    get_origin,
 )
 
 import numpy as np
@@ -28,6 +26,7 @@ from docarray.display.document_array_summary import DocArraySummary
 from docarray.exceptions.exceptions import UnusableObjectError
 from docarray.typing.abstract_type import AbstractType
 from docarray.utils._internal._typing import change_cls_name, safe_issubclass
+from docarray.utils._internal.pydantic import is_pydantic_v2
 
 if TYPE_CHECKING:
     from docarray.proto import DocListProto, NodeProto
@@ -35,6 +34,11 @@ if TYPE_CHECKING:
 
 if sys.version_info >= (3, 12):
     from types import GenericAlias
+else:
+    try:
+        from typing import GenericAlias
+    except:
+        from typing import _GenericAlias as GenericAlias
 
 T = TypeVar('T', bound='AnyDocArray')
 T_doc = TypeVar('T_doc', bound=BaseDocWithoutId)
@@ -48,7 +52,7 @@ UNUSABLE_ERROR_MSG = (
 )
 
 
-class AnyDocArray(AbstractType, Sequence[T_doc], Generic[T_doc]):
+class AnyDocArray(Sequence[T_doc], Generic[T_doc], AbstractType):
     doc_type: Type[BaseDocWithoutId]
     __typed_da__: Dict[Type['AnyDocArray'], Dict[Type[BaseDocWithoutId], Type]] = {}
 
@@ -57,7 +61,6 @@ class AnyDocArray(AbstractType, Sequence[T_doc], Generic[T_doc]):
 
     @classmethod
     def __class_getitem__(cls, item: Union[Type[BaseDocWithoutId], TypeVar, str]):
-        print(f' hey here {item}')
         if not isinstance(item, type):
             if sys.version_info < (3, 12):
                 return Generic.__class_getitem__.__func__(cls, item)  # type: ignore
@@ -76,10 +79,12 @@ class AnyDocArray(AbstractType, Sequence[T_doc], Generic[T_doc]):
         if item not in cls.__typed_da__[cls]:
             # Promote to global scope so multiprocessing can pickle it
             global _DocArrayTyped
+
             class _DocArrayTyped(cls, Generic[T_doc]):  # type: ignore
                 doc_type: Type[BaseDocWithoutId] = cast(Type[BaseDocWithoutId], item)
-                # __origin__: Type['AnyDocArray'] = cls  # add this
-                # __args__: Tuple[Any, ...] = (item,)  # add this
+                if is_pydantic_v2:
+                    __origin__: Type['AnyDocArray'] = cls  # add this
+                    __args__: Tuple[Any, ...] = (item,)  # add this
 
             for field in _DocArrayTyped.doc_type._docarray_fields().keys():
 
@@ -109,13 +114,16 @@ class AnyDocArray(AbstractType, Sequence[T_doc], Generic[T_doc]):
             change_cls_name(
                 _DocArrayTyped, f'{cls.__name__}[{item.__name__}]', globals()
             )
+            if is_pydantic_v2:
+                if sys.version_info < (3, 12):
+                    cls.__typed_da__[cls][item] = Generic.__class_getitem__.__func__(_DocArrayTyped, item)  # type: ignore
+                    # this do nothing that checking that item is valid type var or str
+                    # Keep the approach in #1147 to be compatible with lower versions of Python.
+                else:
+                    cls.__typed_da__[cls][item] = GenericAlias(_DocArrayTyped, item)
+            else:
+                cls.__typed_da__[cls][item] = _DocArrayTyped
 
-            cls.__typed_da__[cls][item] = _DocArrayTyped
-
-        print(f'return {cls.__typed_da__[cls][item]}')
-        a = get_args(cls.__typed_da__[cls][item])
-        print(f'a {a}')
-        print(f'get_origin {get_origin(cls.__typed_da__[cls][item])}')
         return cls.__typed_da__[cls][item]
 
     @overload

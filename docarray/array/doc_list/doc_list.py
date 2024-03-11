@@ -14,7 +14,6 @@ from typing import (
     overload,
     Callable,
     get_args,
-    Generic
 )
 
 from pydantic import parse_obj_as
@@ -31,7 +30,6 @@ from docarray.typing import NdArray
 from docarray.utils._internal.pydantic import is_pydantic_v2
 
 if is_pydantic_v2:
-    from pydantic import GetCoreSchemaHandler
     from pydantic_core import core_schema
 
 from docarray.utils._internal._typing import safe_issubclass
@@ -48,11 +46,7 @@ T_doc = TypeVar('T_doc', bound=BaseDocWithoutId)
 
 
 class DocList(
-    ListAdvancedIndexing[T_doc],
-    PushPullMixin,
-    IOMixinDocList,
-    AnyDocArray[T_doc],
-    Generic[T_doc]
+    ListAdvancedIndexing[T_doc], PushPullMixin, IOMixinDocList, AnyDocArray[T_doc]
 ):
     """
      DocList is a container of Documents.
@@ -363,32 +357,15 @@ class DocList(
         def __get_pydantic_core_schema__(
             cls, source: Any, handler: Callable[[Any], core_schema.CoreSchema]
         ) -> core_schema.CoreSchema:
-            def get_args_2(tp):
-                """Get type arguments with all substitutions performed.
-
-                For unions, basic simplifications used by Union constructor are performed.
-                Examples::
-                    get_args(Dict[str, int]) == (str, int)
-                    get_args(int) == ()
-                    get_args(Union[int, Union[T, int], str][int]) == (int, str)
-                    get_args(Union[int, Tuple[T, int]][str]) == (int, Tuple[str, int])
-                    get_args(Callable[[], T][int]) == ([], int)
-                """
-                from typing import _GenericAlias, get_origin
-                import collections
-                if isinstance(tp, _GenericAlias):
-                    res = tp.__args__
-                    if get_origin(tp) is collections.abc.Callable and res[0] is not Ellipsis:
-                        res = (list(res[:-1]), res[-1])
-                    return res
-                else:
-                    print(f'IN ELSE')
-                return ()
-
             instance_schema = core_schema.is_instance_schema(cls)
-            print(f'instance_schema {instance_schema} and {handler}')
-            args = get_args_2(DocList[BaseDocWithoutId])
-            print(f' args {args}')
-            return core_schema.with_info_after_validator_function(
-                function=cls.validate,
-                schema=core_schema.list_schema(core_schema.any_schema()))
+
+            args = get_args(source)
+            if args:
+                sequence_t_schema = handler(Sequence[args[0]])
+            else:
+                sequence_t_schema = handler(Sequence)
+
+            non_instance_schema = core_schema.with_info_after_validator_function(
+                lambda v, i: DocList(v), sequence_t_schema
+            )
+            return core_schema.union_schema([instance_schema, non_instance_schema])
