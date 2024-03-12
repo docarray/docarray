@@ -486,6 +486,8 @@ def test_validate_list_dict():
         dict(url=f'http://url.com/foo_{i}.png', tensor=NdArray(i)) for i in [2, 0, 1]
     ]
 
+    # docs = DocList[Image]([Image(url=image['url'], tensor=image['tensor']) for image in images])
+
     docs = parse_obj_as(DocList[Image], images)
 
     assert docs.url == [

@@ -364,7 +364,8 @@ class DocList(
                 sequence_t_schema = handler(Sequence)
 
             def validate_fn(v, info):
-                return cls(v)
+                # input has already been validated
+                return cls(v, validate_input_docs=False)
 
             non_instance_schema = core_schema.with_info_after_validator_function(
                 validate_fn, sequence_t_schema

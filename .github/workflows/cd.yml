@@ -21,7 +21,7 @@ jobs:
       - name: Pre-release (.devN)
         run: |
           git fetch --depth=1 origin +refs/tags/*:refs/tags/*
-          pip install poetry
+          pip install poetry==1.7.1
           ./scripts/release.sh
         env:
           PYPI_USERNAME: ${{ secrets.TWINE_USERNAME }}

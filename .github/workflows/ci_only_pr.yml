@@ -43,7 +43,7 @@ jobs:
         run: |
           npm i -g netlify-cli
           python -m pip install --upgrade pip
-          python -m pip install poetry
+          python -m pip install poetry==1.7.1
           python -m poetry config virtualenvs.create false && python -m poetry install --no-interaction --no-ansi --all-extras
 
           cd docs
