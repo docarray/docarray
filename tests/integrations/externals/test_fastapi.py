@@ -139,29 +139,50 @@ async def test_docarray():
 
 
 @pytest.mark.asyncio
-@pytest.mark.skipif(not is_pydantic_v2, reason='Behavior is only available for Pydantic V2')
+@pytest.mark.skipif(
+    not is_pydantic_v2, reason='Behavior is only available for Pydantic V2'
+)
 async def test_doclist_directly():
     from fastapi import Body
+
     doc = ImageDoc(tensor=np.zeros((3, 224, 224)))
     docs = DocList[ImageDoc]([doc, doc])
 
     app = FastAPI()
 
     @app.post("/doc/", response_class=DocArrayResponse)
-    async def func_embed_false(fastapi_docs: DocList[ImageDoc] = Body(embed=False)) -> DocList[ImageDoc]:
+    async def func_embed_false(
+        fastapi_docs: DocList[ImageDoc] = Body(embed=False),
+    ) -> DocList[ImageDoc]:
+        return fastapi_docs
+
+    @app.post("/doc_default/", response_class=DocArrayResponse)
+    async def func_default(fastapi_docs: DocList[ImageDoc]) -> DocList[ImageDoc]:
         return fastapi_docs
 
     @app.post("/doc_embed/", response_class=DocArrayResponse)
-    async def func_embed_true(fastapi_docs: DocList[ImageDoc] = Body(embed=True)) -> DocList[ImageDoc]:
+    async def func_embed_true(
+        fastapi_docs: DocList[ImageDoc] = Body(embed=True),
+    ) -> DocList[ImageDoc]:
         return fastapi_docs
 
     async with AsyncClient(app=app, base_url="http://test") as ac:
         response = await ac.post("/doc/", data=docs.to_json())
-        response_embed = await ac.post("/doc_embed/", json={'fastapi_docs': [{'tensor': doc.tensor.tolist()}, {'tensor': doc.tensor.tolist()}]})
+        response_default = await ac.post("/doc_default/", data=docs.to_json())
+        response_embed = await ac.post(
+            "/doc_embed/",
+            json={
+                'fastapi_docs': [
+                    {'tensor': doc.tensor.tolist()},
+                    {'tensor': doc.tensor.tolist()},
+                ]
+            },
+        )
         resp_doc = await ac.get("/docs")
         resp_redoc = await ac.get("/redoc")
 
     assert response.status_code == 200
+    assert response_default.status_code == 200
     assert response_embed.status_code == 200
     assert resp_doc.status_code == 200
     assert resp_redoc.status_code == 200
@@ -169,6 +190,10 @@ async def test_doclist_directly():
     docs = DocList[ImageDoc].from_json(response.content.decode())
     assert len(docs) == 2
     assert docs[0].tensor.shape == (3, 224, 224)
+
+    docs_default = DocList[ImageDoc].from_json(response_default.content.decode())
+    assert len(docs_default) == 2
+    assert docs_default[0].tensor.shape == (3, 224, 224)
 
     docs_embed = DocList[ImageDoc].from_json(response_embed.content.decode())
     assert len(docs_embed) == 2

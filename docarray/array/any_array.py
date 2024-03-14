@@ -75,11 +75,8 @@ class AnyDocArray(Sequence[T_doc], Generic[T_doc], AbstractType):
             # Promote to global scope so multiprocessing can pickle it
             global _DocArrayTyped
 
-            class _DocArrayTyped(cls):  # type: ignore
+            class _DocArrayTyped(cls, Generic[T_doc]):  # type: ignore
                 doc_type: Type[BaseDocWithoutId] = cast(Type[BaseDocWithoutId], item)
-                if is_pydantic_v2:
-                    __origin__: Type['AnyDocArray'] = cls  # add this
-                    __args__: Tuple[Any, ...] = (item,)  # add this
 
             for field in _DocArrayTyped.doc_type._docarray_fields().keys():
 
@@ -104,13 +101,18 @@ class AnyDocArray(Sequence[T_doc], Generic[T_doc], AbstractType):
                 setattr(_DocArrayTyped, field, _property_generator(field))
                 # this generates property on the fly based on the schema of the item
 
-            # The global scope and qualname need to refer to this class a unique name.
-            # Otherwise, creating another _DocArrayTyped will overwrite this one.
+            # # The global scope and qualname need to refer to this class a unique name.
+            # # Otherwise, creating another _DocArrayTyped will overwrite this one.
             change_cls_name(
-                _DocArrayTyped, f'{cls.__name__}[{item.__name__}]', globals()
+                _DocArrayTyped, f'{cls.__name__}', globals()
             )
 
-            cls.__typed_da__[cls][item] = _DocArrayTyped
+            if sys.version_info < (3, 12):
+                cls.__typed_da__[cls][item] = Generic.__class_getitem__.__func__(_DocArrayTyped, item)  # type: ignore
+                # this do nothing that checking that item is valid type var or str
+                # Keep the approach in #1147 to be compatible with lower versions of Python.
+            else:
+                cls.__typed_da__[cls][item] = GenericAlias(_DocArrayTyped, item)  # type: ignore
 
         return cls.__typed_da__[cls][item]
 
