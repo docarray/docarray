@@ -16,7 +16,6 @@ from typing import (
     Union,
     cast,
     overload,
-    Tuple,
 )
 
 import numpy as np
@@ -103,17 +102,19 @@ class AnyDocArray(Sequence[T_doc], Generic[T_doc], AbstractType):
 
             # # The global scope and qualname need to refer to this class a unique name.
             # # Otherwise, creating another _DocArrayTyped will overwrite this one.
-            change_cls_name(
-                _DocArrayTyped, f'{cls.__name__}', globals()
-            )
-
-            if sys.version_info < (3, 12):
-                cls.__typed_da__[cls][item] = Generic.__class_getitem__.__func__(_DocArrayTyped, item)  # type: ignore
-                # this do nothing that checking that item is valid type var or str
-                # Keep the approach in #1147 to be compatible with lower versions of Python.
+            if not is_pydantic_v2:
+                change_cls_name(_DocArrayTyped, f'{cls.__name__}[{item}]', globals())
+                cls.__typed_da__[cls][item] = _DocArrayTyped
             else:
-                cls.__typed_da__[cls][item] = GenericAlias(_DocArrayTyped, item)  # type: ignore
-
+                change_cls_name(_DocArrayTyped, f'{cls.__name__}', globals())
+                if sys.version_info < (3, 12):
+                    cls.__typed_da__[cls][item] = Generic.__class_getitem__.__func__(
+                        _DocArrayTyped, item
+                    )  # type: ignore
+                    # this do nothing that checking that item is valid type var or str
+                    # Keep the approach in #1147 to be compatible with lower versions of Python.
+                else:
+                    cls.__typed_da__[cls][item] = GenericAlias(_DocArrayTyped, item)  # type: ignore
         return cls.__typed_da__[cls][item]
 
     @overload
