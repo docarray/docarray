@@ -323,3 +323,29 @@ def test_dynamic_class_creation_multiple_doclist_nested():
         QuoteFile_reconstructed_in_gateway_from_Search_results(id='0', texts=textlist)
     )
     assert reconstructed_in_gateway_from_Search_results.texts[0].text == 'hey'
+
+
+def test_create_pure_python_model_with_multiple_doclists_of_same_type():
+    from docarray import DocList, BaseDoc
+
+    class MyTextDoc(BaseDoc):
+        text: str
+
+    class QuoteFile(BaseDoc):
+        texts: DocList[MyTextDoc]
+
+    class QuoteFileType(BaseDoc):
+        """
+        QuoteFileType class.
+        """
+
+        id: str = (
+            None  # same as name, compatibility reasons for a generic, shared `id` field
+        )
+        name: str = None
+        total_count: int = None
+        docs: DocList[QuoteFile] = None
+        chunks: DocList[QuoteFile] = None
+
+    new_model = create_pure_python_type_model(QuoteFileType)
+    new_model.schema()
