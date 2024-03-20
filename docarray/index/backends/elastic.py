@@ -432,6 +432,8 @@ class ElasticDocIndex(BaseDocIndex, Generic[TSchema]):
         es_rows = self._client_mget(doc_ids)['docs']
 
         for row in es_rows:
+            if len(row) < 1:
+                continue
             if row['found']:
                 doc_dict = row['_source']
                 accumulated_docs.append(doc_dict)
@@ -565,7 +567,7 @@ class ElasticDocIndex(BaseDocIndex, Generic[TSchema]):
         resp = self._client_search(
             query={'term': {'parent_id': id}}, fields=['id'], _source=False
         )
-        ids = [hit['fields']['id'][0] for hit in resp['hits']['hits']]
+        ids = [hit['fields']['id'][0] if 'fields' in hit and 'id' in hit['fields'] else hit['_id'] for hit in resp['hits']['hits']]
         return ids
 
     ###############################################
