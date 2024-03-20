@@ -220,8 +220,7 @@ class MongoAtlasDocumentIndex(BaseDocIndex, Generic[TSchema]):
 
         :param doc_ids: ids to delete from the Document Store
         """
-        ids = [bson.objectid.ObjectId(id_) for id_ in doc_ids]
-        mg_filter = {"_id": {"$in": ids}}
+        mg_filter = {"_id": {"$in": doc_ids}}
         self._doc_collection.delete_many(mg_filter)
 
     def _get_items(
@@ -491,7 +490,7 @@ class MongoAtlasDocumentIndex(BaseDocIndex, Generic[TSchema]):
             {"$text": {"$search": query}}, {"score": {"$meta": "textScore"}}
         ).limit(limit) as cursor:
             for mongo_doc in cursor:
-                doc = self._mongo_to_docs(mongo_doc)
+                doc = self._mongo_to_doc(mongo_doc)
                 documents.append(doc)
                 scores.append(mongo_doc['score'])
 
