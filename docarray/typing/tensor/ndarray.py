@@ -31,10 +31,8 @@ if tf_available:
     from docarray.typing.tensor.tensorflow_tensor import TensorFlowTensor  # noqa: F401
 
 if TYPE_CHECKING:
-
     from docarray.computation.numpy_backend import NumpyCompBackend
     from docarray.proto import NdArrayProto
-
 
 T = TypeVar('T', bound='NdArray')
 ShapeT = TypeVar('ShapeT')
@@ -150,12 +148,12 @@ class NdArray(np.ndarray, AbstractTensor, Generic[ShapeT]):
             return cast(T, value.view(cls.__unparametrizedcls__))
         return value.view(cls)
 
-    def _docarray_to_json_compatible(self) -> np.ndarray:
+    def _docarray_to_json_compatible(self):
         """
         Convert `NdArray` into a json compatible object
         :return: a representation of the tensor compatible with orjson
         """
-        return self.unwrap()
+        return self.unwrap().tolist()
 
     def unwrap(self) -> np.ndarray:
         """
