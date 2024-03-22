@@ -24,7 +24,7 @@ from pymongo import MongoClient
 
 from docarray import BaseDoc, DocList
 from docarray.index.abstract import BaseDocIndex, _raise_not_supported
-from docarray.index.backends.helper import _collect_query_args_required_args
+from docarray.index.backends.helper import _collect_query_required_args
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
 from docarray.utils._internal._typing import safe_issubclass
 from docarray.utils.find import FindResult, _FindResult, _FindResultBatched
@@ -135,9 +135,9 @@ class MongoAtlasDocumentIndex(BaseDocIndex, Generic[TSchema]):
                 limit=limit,
             )
 
-        find = _collect_query_args_required_args('find', {'search_field', 'query'})
-        filter = _collect_query_args_required_args('filter', {'query'})
-        text_search = _collect_query_args_required_args(
+        find = _collect_query_required_args('find', {'search_field', 'query'})
+        filter = _collect_query_required_args('filter', {'query'})
+        text_search = _collect_query_required_args(
             'text_search', {'search_field', 'query'}
         )
         find_batched = _raise_not_supported('find_batched')

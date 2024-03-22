@@ -20,7 +20,7 @@ def _collect_query_args(method_name: str):  # TODO: use partialmethod instead
     return inner
 
 
-def _collect_query_args_required_args(method_name: str, required_args: Set[str] = None):
+def _collect_query_required_args(method_name: str, required_args: Set[str] = None):
     if required_args is None:
         required_args = set()
 
