@@ -1,27 +1,14 @@
-import time
-from typing import Callable
-
 import numpy as np
 from pydantic import Field
 
 from docarray import BaseDoc
 from docarray.index import MongoAtlasDocumentIndex
 from docarray.typing import NdArray
-from tests.index.mongo_atlas.fixtures import *  # noqa
+
+from .fixtures import *  # noqa
+from .helpers import assert_when_ready
 
 N_DIM = 10
-
-
-def assert_when_ready(callable: Callable, tries: int = 5, interval: float = 1):
-    for _ in range(tries):
-        try:
-            callable()
-        except AssertionError:
-            time.sleep(interval)
-        else:
-            return
-
-    raise AssertionError("Condition not met after multiple attempts")
 
 
 def test_find_simple_schema(simple_index_with_docs, simple_schema):

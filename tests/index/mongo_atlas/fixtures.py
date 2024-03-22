@@ -78,7 +78,7 @@ def random_simple_documents(simple_schema):
 
 
 @pytest.fixture
-def simple_index_with_docs(simple_index, random_simple_documents):
+def simple_index_with_docs(clean_database, simple_index, random_simple_documents):
     simple_index.index(random_simple_documents)
     yield simple_index, random_simple_documents
     simple_index._doc_collection.delete_many({})
