@@ -1,4 +1,4 @@
-from typing import Any, Dict, List, Tuple, Type, cast
+from typing import Any, Dict, List, Set, Tuple, Type, cast
 
 from docarray import BaseDoc, DocList
 from docarray.index.abstract import BaseDocIndex
@@ -14,6 +14,30 @@ def _collect_query_args(method_name: str):  # TODO: use partialmethod instead
                 f'`{type(self)}.{method_name}`.'
                 f' Use keyword arguments instead.'
             )
+        updated_query = self._queries + [(method_name, kwargs)]
+        return type(self)(updated_query)
+
+    return inner
+
+
+def _collect_query_args_required_args(method_name: str, required_args: Set[str] = None):
+    if required_args is None:
+        required_args = set()
+
+    def inner(self, *args, **kwargs):
+        if args:
+            raise ValueError(
+                f"Positional arguments are not supported for "
+                f"`{type(self)}.{method_name}`. "
+                f"Use keyword arguments instead."
+            )
+
+        missing_args = required_args - set(kwargs.keys())
+        if missing_args:
+            raise TypeError(
+                f"`{type(self)}.{method_name}` is missing required argument(s): {', '.join(missing_args)}"
+            )
+
         updated_query = self._queries + [(method_name, kwargs)]
         return type(self)(updated_query)
 

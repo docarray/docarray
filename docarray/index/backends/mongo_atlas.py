@@ -24,7 +24,7 @@ from pymongo import MongoClient
 
 from docarray import BaseDoc, DocList
 from docarray.index.abstract import BaseDocIndex, _raise_not_supported
-from docarray.index.backends.helper import _collect_query_args
+from docarray.index.backends.helper import _collect_query_args_required_args
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
 from docarray.utils._internal._typing import safe_issubclass
 from docarray.utils.find import FindResult, _FindResult, _FindResultBatched
@@ -88,19 +88,58 @@ class MongoAtlasDocumentIndex(BaseDocIndex, Generic[TSchema]):
         # https://pymongo.readthedocs.io/en/stable/api/pymongo/collection.html#pymongo.collection.Collection.list_search_indexes
         pass
 
+    @dataclass
+    class Query:
+        """Dataclass describing a query."""
+
+        vector_field: Optional[str]
+        vector_query: Optional[np.ndarray]
+        filters: Optional[List[Any]]  # TODO: define a type
+        text_searches: Optional[List[Any]]  # TODO: define a type
+        limit: int
+
     class QueryBuilder(BaseDocIndex.QueryBuilder):
         def __init__(self, query: Optional[List[Tuple[str, Dict]]] = None):
             super().__init__()
             # list of tuples (method name, kwargs)
             self._queries: List[Tuple[str, Dict]] = query or []
 
-        def build(self, *args, **kwargs) -> Any:
+        def build(self, limit: int) -> Any:
             """Build the query object."""
-            return self._queries
+            search_field = None
+            vectors = []
+            filters = []
+            text_searches = []
+            for method, kwargs in self._queries:
+                if method == 'find':
+                    if search_field and kwargs['search_field'] != search_field:
+                        raise ValueError(
+                            f'Trying to call .find for search_field = {search_field}, but '
+                            f'previously {self._vector_search_field} was used. Only a single '
+                            f'field might be used in chained calls.'
+                        )
 
-        find = _collect_query_args('find')
-        filter = _collect_query_args('filter')
-        text_search = _collect_query_args('text_search')
+                    search_field = kwargs['search_field']
+                    vectors.append(kwargs["query"])
+
+                elif method == 'filter':
+                    filters.append(kwargs)
+                else:
+                    text_searches.append(kwargs)
+
+            vector = np.average(vectors, axis=0)
+            return MongoAtlasDocumentIndex.Query(
+                vector_query=vector,
+                filters=filters,
+                text_searches=text_searches,
+                limit=limit,
+            )
+
+        find = _collect_query_args_required_args('find', {'search_field', 'query'})
+        filter = _collect_query_args_required_args('filter', {'query'})
+        text_search = _collect_query_args_required_args(
+            'text_search', {'search_field', 'query'}
+        )
         find_batched = _raise_not_supported('find_batched')
         filter_batched = _raise_not_supported('filter_batched')
         text_search_batched = _raise_not_supported('text_search')
@@ -263,25 +302,23 @@ class MongoAtlasDocumentIndex(BaseDocIndex, Generic[TSchema]):
 
         pipeline: List[Dict[str, Any]] = []
 
-        for ind, (operator, value) in enumerate(query):
-            match operator:
-                case 'find':
-                    pipeline.append(
-                        self._get_vector_search_stage(pipeline_index=ind, **value)
-                    )
-                case 'filter':
-                    pipeline.append(
-                        self._get_vector_filter_query_stage(pipeline_index=ind, **value)
-                    )
-                case 'text_search':
-                    pipeline.append(
-                        self._get_text_search_stage(pipeline_index=ind, **value)
-                    )
-                case _:
-                    raise ValueError(f"Unknown operator {operator}")
+        for filter_ in query.filters:
+            pipeline.append(self._compute_filter_query(**filter_))
 
-        if any(oper == 'find' for oper, _ in query):
+        for filter_ in query.text_searches:
+            pipeline.append(self._compute_text_search_query(**filter_))
+
+        if query.vector_field and query.vector_query:
+            pipeline.append(
+                self._compute_vector_search(
+                    query=query.vector_field,
+                    search_field=query.vector_field,
+                    limit=query.limit,
+                )
+            )
             pipeline.append({'$project': self._project_fields()})
+
+        pipeline.append({"$limit": query.limit})
 
         with self._doc_collection.aggregate(pipeline) as cursor:
             docs, scores = self._mongo_to_docs(cursor)
@@ -289,12 +326,11 @@ class MongoAtlasDocumentIndex(BaseDocIndex, Generic[TSchema]):
         docs = self._dict_list_to_docarray(docs)
         return FindResult(documents=docs, scores=scores)
 
-    def _get_vector_search_stage(
+    def _compute_vector_search(
         self,
         query: np.ndarray,
-        limit: int = None,
-        search_field: str = '',
-        pipeline_index: int = 0,
+        search_field: str,
+        limit: int,
     ) -> Dict[str, Any]:
 
         index_name = self._get_column_index(search_field)
@@ -315,24 +351,23 @@ class MongoAtlasDocumentIndex(BaseDocIndex, Generic[TSchema]):
             }
         }
 
-    def _get_vector_filter_query_stage(
-        self, filter_query: Any, limit: int = None, pipeline_index: int = 0
+    def _compute_filter_query(
+        self,
+        filter_query: Any,
+        limit: int = None,
     ) -> Dict[str, Any]:
         return {'$match': {**filter_query, 'limit': limit}}
 
-    def _get_text_search_stage(
+    def _compute_text_search_query(
         self,
         query: str,
-        limit: int = None,
         search_field: str = '',
-        pipeline_index: int = 0,
     ) -> Dict[str, Any]:
         return {
             '$text': {
                 '$search': {
                     'query': query,
                     'path': search_field,
-                    'limit': limit,
                 }
             }
         }
