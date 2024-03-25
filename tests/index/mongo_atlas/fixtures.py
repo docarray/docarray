@@ -20,7 +20,7 @@ def mongo_env_var(var: str):
     return env_var
 
 
-@pytest.fixture
+@pytest.fixture(scope='session')
 def mongo_fixture_env():
     uri = mongo_env_var("MONGODB_URI")
     database = mongo_env_var("DATABASE_NAME")
