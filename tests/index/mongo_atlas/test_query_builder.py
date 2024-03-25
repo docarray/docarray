@@ -46,7 +46,7 @@ def test_multiple_find_different_field_raises_error(simple_index):  # noqa: F811
         )
 
 
-def test_filter_passes_qdrant_filter(simple_index):  # noqa: F811
+def test_filter_passes_filter(simple_index):  # noqa: F811
     index = simple_index
 
     filter = {"number": {"$lt": 1}}
@@ -58,17 +58,12 @@ def test_filter_passes_qdrant_filter(simple_index):  # noqa: F811
     assert query.limit == 11
 
 
-def test_text_search_creates_qdrant_filter(simple_index):  # noqa: F811
+def test_text_search_filter(simple_index):  # noqa: F811
     index = simple_index
 
     kwargs = dict(query='lorem ipsum', search_field='text')
-    query = index.build_query().text_search(**kwargs).build(3)  # type: ignore[attr-defined]
-
-    assert query.vector_field is None
-    assert query.vector_query is None
-    assert query.filters == []
-    assert query.text_searches == [kwargs]
-    assert query.limit == 3
+    with pytest.raises(NotImplementedError):
+        index.build_query().text_search(**kwargs).build(3)  # type: ignore[attr-defined]
 
 
 def test_query_builder_execute_query_find_filter(
