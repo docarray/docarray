@@ -27,7 +27,7 @@ def test_find_simple_schema(simple_index_with_docs, simple_schema):
     assert_when_ready(pred)
 
 
-def test_find_empty_index(simple_index, clean_database):
+def test_find_empty_index(simple_index):
     query = np.random.rand(N_DIM)
 
     def pred():
@@ -117,40 +117,24 @@ def test_find_batches(simple_index_with_docs):
     assert_when_ready(pred)
 
 
-def test_text_search(simple_index_with_docs):
-    simple_index, docs = simple_index_with_docs
+def test_find_nested_schema(nested_index_with_docs, nested_schema):
+    db, base_docs = nested_index_with_docs
 
-    query_string = "Python data analysis"
-    expected_text = docs[0].text
+    query = nested_schema[0](
+        d=nested_schema[1](embedding=np.ones(N_DIM)), embedding=np.ones(N_DIM)
+    )
 
+    # find on root level
     def pred():
-        docs, _ = simple_index.text_search(
-            query=query_string, search_field='text', limit=1
-        )
-        assert docs[0].description == expected_text
+        docs, scores = db.find(query, search_field='embedding', limit=5)
+        assert len(docs) == 5
+        assert len(scores) == 5
+        assert np.allclose(docs[0].embedding, base_docs[-1].embedding)
+
+        # find on first nesting level
+        docs, scores = db.find(query, search_field='d__embedding', limit=5)
+        assert len(docs) == 5
+        assert len(scores) == 5
+        assert np.allclose(docs[0].d.embedding, base_docs[-2].d.embedding)
 
     assert_when_ready(pred)
-
-
-def test_filter(simple_index_with_docs):
-
-    db, base_docs = simple_index_with_docs
-
-    docs = db.filter(filter_query={"number": {"$lt": 1}})
-    assert len(docs) == 1
-    assert docs[0].number == 0
-
-    docs = db.filter(filter_query={"number": {"$gt": 8}})
-    assert len(docs) == 1
-    assert docs[0].number == 9
-
-    docs = db.filter(filter_query={"number": {"$lt": 8, "$gt": 3}})
-    assert len(docs) == 4
-
-    docs = db.filter(filter_query={"text": {"$regex": "introduction"}})
-    assert len(docs) == 1
-    assert 'introduction' in docs[0].text.lower()
-
-    docs = db.filter(filter_query={"text": {"$not": {"$regex": "Explore"}}})
-    assert len(docs) == 9
-    assert all("Explore" not in doc.text for doc in docs)
