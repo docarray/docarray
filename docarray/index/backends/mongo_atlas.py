@@ -23,7 +23,7 @@ import numpy as np
 from pymongo import MongoClient
 
 from docarray import BaseDoc, DocList
-from docarray.index.abstract import BaseDocIndex, _raise_not_supported
+from docarray.index.abstract import BaseDocIndex, _raise_not_composable
 from docarray.index.backends.helper import _collect_query_required_args
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
 from docarray.utils._internal._typing import safe_issubclass
@@ -33,6 +33,7 @@ from docarray.utils.find import FindResult, _FindResult, _FindResultBatched
 
 
 MAX_CANDIDATES = 10_000
+OVERSAMPLING_FACTOR = 10
 TSchema = TypeVar('TSchema', bound=BaseDoc)
 
 
@@ -44,6 +45,8 @@ class MongoAtlasDocumentIndex(BaseDocIndex, Generic[TSchema]):
 
     @property
     def _collection(self):
+        if self._is_subindex:
+            return self._ori_schema.__name__
         return self._db_config.collection_name or self._schema.__name__
 
     @property
@@ -74,7 +77,6 @@ class MongoAtlasDocumentIndex(BaseDocIndex, Generic[TSchema]):
 
     def _create_indexes(self):
         """Create a new index in the MongoDB database if it doesn't already exist."""
-        pass
 
     def _check_index_exists(self, index_name: str) -> bool:
         """
@@ -83,10 +85,6 @@ class MongoAtlasDocumentIndex(BaseDocIndex, Generic[TSchema]):
         :param index_name: The name of the index.
         :return: True if the index exists, False otherwise.
         """
-        # TODO: Check if the index search exist.
-        # For more information see
-        # https://pymongo.readthedocs.io/en/stable/api/pymongo/collection.html#pymongo.collection.Collection.list_search_indexes
-        pass
 
     @dataclass
     class Query:
@@ -114,8 +112,8 @@ class MongoAtlasDocumentIndex(BaseDocIndex, Generic[TSchema]):
                 if method == 'find':
                     if search_field and kwargs['search_field'] != search_field:
                         raise ValueError(
-                            f'Trying to call .find for search_field = {search_field}, but '
-                            f'previously {self._vector_search_field} was used. Only a single '
+                            f'Trying to call .find for search_field = {kwargs["search_field"]}, but '
+                            f'previously {search_field} was used. Only a single '
                             f'field might be used in chained calls.'
                         )
 
@@ -127,8 +125,9 @@ class MongoAtlasDocumentIndex(BaseDocIndex, Generic[TSchema]):
                 else:
                     text_searches.append(kwargs)
 
-            vector = np.average(vectors, axis=0)
+            vector = np.average(vectors, axis=0) if vectors else None
             return MongoAtlasDocumentIndex.Query(
+                vector_field=search_field,
                 vector_query=vector,
                 filters=filters,
                 text_searches=text_searches,
@@ -137,12 +136,11 @@ class MongoAtlasDocumentIndex(BaseDocIndex, Generic[TSchema]):
 
         find = _collect_query_required_args('find', {'search_field', 'query'})
         filter = _collect_query_required_args('filter', {'query'})
-        text_search = _collect_query_required_args(
-            'text_search', {'search_field', 'query'}
-        )
-        find_batched = _raise_not_supported('find_batched')
-        filter_batched = _raise_not_supported('filter_batched')
-        text_search_batched = _raise_not_supported('text_search')
+        # it is included in filter method.
+        text_search = _raise_not_composable('text_search')
+        find_batched = _raise_not_composable('find_batched')
+        filter_batched = _raise_not_composable('filter_batched')
+        text_search_batched = _raise_not_composable('text_search_batched')
 
     @dataclass
     class DBConfig(BaseDocIndex.DBConfig):
@@ -157,7 +155,7 @@ class MongoAtlasDocumentIndex(BaseDocIndex, Generic[TSchema]):
                     bson.BSONARR: {
                         'algorithm': 'KNN',
                         'distance': 'COSINE',
-                        'oversample_factor': 10,
+                        'oversample_factor': OVERSAMPLING_FACTOR,
                         'max_candidates': MAX_CANDIDATES,
                     },
                 },
@@ -300,25 +298,26 @@ class MongoAtlasDocumentIndex(BaseDocIndex, Generic[TSchema]):
         :return: the result of the query
         """
 
-        pipeline: List[Dict[str, Any]] = []
+        filters: List[Dict[str, Any]] = []
 
         for filter_ in query.filters:
-            pipeline.append(self._compute_filter_query(**filter_))
+            filters.append(self._compute_filter_query(**filter_))
 
         for filter_ in query.text_searches:
-            pipeline.append(self._compute_text_search_query(**filter_))
+            filters.append(self._compute_text_search_query(**filter_))
 
-        if query.vector_field and query.vector_query:
-            pipeline.append(
+        if query.vector_field:
+            pipeline = [
                 self._compute_vector_search(
-                    query=query.vector_field,
+                    query=query.vector_query,
                     search_field=query.vector_field,
                     limit=query.limit,
-                )
-            )
-            pipeline.append({'$project': self._project_fields()})
-
-        pipeline.append({"$limit": query.limit})
+                    filters=filters,
+                ),
+                {'$project': self._project_fields()},
+            ]
+        else:
+            pipeline = [{"$match": {"$and": filters}}, {"$limit": query.limit}]
 
         with self._doc_collection.aggregate(pipeline) as cursor:
             docs, scores = self._mongo_to_docs(cursor)
@@ -331,15 +330,13 @@ class MongoAtlasDocumentIndex(BaseDocIndex, Generic[TSchema]):
         query: np.ndarray,
         search_field: str,
         limit: int,
+        filters: List[Dict[str, Any]] = [],
     ) -> Dict[str, Any]:
 
         index_name = self._get_column_index(search_field)
         oversampling_factor = self._get_oversampling_factor(search_field)
         max_candidates = self._get_max_candidates(search_field)
         query = query.astype(np.float64).tolist()
-
-        if limit is None:
-            limit = max_candidates
 
         return {
             '$vectorSearch': {
@@ -348,15 +345,15 @@ class MongoAtlasDocumentIndex(BaseDocIndex, Generic[TSchema]):
                 'queryVector': query,
                 'numCandidates': min(limit * oversampling_factor, max_candidates),
                 'limit': limit,
+                'filter': {"$and": filters} if filters else None,
             }
         }
 
     def _compute_filter_query(
         self,
-        filter_query: Any,
-        limit: int = None,
+        query: Any,
     ) -> Dict[str, Any]:
-        return {'$match': {**filter_query, 'limit': limit}}
+        return query
 
     def _compute_text_search_query(
         self,
@@ -364,11 +361,8 @@ class MongoAtlasDocumentIndex(BaseDocIndex, Generic[TSchema]):
         search_field: str = '',
     ) -> Dict[str, Any]:
         return {
-            '$text': {
-                '$search': {
-                    'query': query,
-                    'path': search_field,
-                }
+            search_field: {
+                '$in': query,
             }
         }
 
@@ -420,22 +414,6 @@ class MongoAtlasDocumentIndex(BaseDocIndex, Generic[TSchema]):
             documents, scores = self._mongo_to_docs(cursor)
 
         return _FindResult(documents=documents, scores=scores)
-
-        """
-       with self._doc_collection.aggregate(pipeline) as cursor:
-            scores = []
-            docs = []
-            for match in cursor:
-                scores.append(match["score"])
-                docs.append(
-                    {
-                        key: value
-                        for key, value in match.items()
-                        if key not in ("score", "_id")
-                    }
-                )
-        return _FindResult(documents=docs, scores=scores)
-        """
 
     def _find_batched(
         self, queries: np.ndarray, limit: int, search_field: str = ''
@@ -524,11 +502,9 @@ class MongoAtlasDocumentIndex(BaseDocIndex, Generic[TSchema]):
         """
         # NOTE: in standard implementations,
         # `search_field` is equal to the column name to search on
-        self._doc_collection.create_index({search_field: "text"})
-
         with self._doc_collection.find(
-            {"$text": {"$search": query}}, {"score": {"$meta": "textScore"}}
-        ).limit(limit) as cursor:
+            {search_field: {'$regex': query}}, limit=limit
+        ) as cursor:
             documents, scores = self._mongo_to_docs(cursor)
 
         return _FindResult(documents=documents, scores=scores)
@@ -556,3 +532,14 @@ class MongoAtlasDocumentIndex(BaseDocIndex, Generic[TSchema]):
             documents.append(results.documents)
             scores.append(results.scores)
         return _FindResultBatched(documents=documents, scores=scores)
+
+    def _filter_by_parent_id(self, id: str) -> Optional[List[str]]:
+        """Filter the ids of the subindex documents given id of root document.
+
+        :param id: the root document id to filter by
+        :return: a list of ids of the subindex documents
+        """
+        with self._doc_collection.find(
+            {"parent_id": id}, projection={"_id": 1}
+        ) as cursor:
+            return [doc["_id"] for doc in cursor]
