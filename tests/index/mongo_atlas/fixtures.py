@@ -24,8 +24,7 @@ def mongo_env_var(var: str):
 def mongo_fixture_env():
     uri = mongo_env_var("MONGODB_URI")
     database = mongo_env_var("DATABASE_NAME")
-    collection_name = mongo_env_var("COLLECTION_NAME")
-    return uri, database, collection_name
+    return uri, database
 
 
 @pytest.fixture
@@ -52,36 +51,22 @@ def nested_schema():
 
 @pytest.fixture
 def simple_index(mongo_fixture_env, simple_schema):
-    uri, database, collection_name = mongo_fixture_env
+    uri, database = mongo_fixture_env
     index = MongoAtlasDocumentIndex[simple_schema](
         mongo_connection_uri=uri,
         database_name=database,
-        collection_name=collection_name,
     )
     return index
 
 
 @pytest.fixture
 def nested_index(mongo_fixture_env, nested_schema):
-    uri, database, collection_name = mongo_fixture_env
+    uri, database = mongo_fixture_env
     index = MongoAtlasDocumentIndex[nested_schema[0]](
         mongo_connection_uri=uri,
         database_name=database,
-        collection_name=collection_name,
     )
     return index
-
-
-@pytest.fixture
-def db_collection(simple_index):
-    return simple_index._doc_collection
-
-
-@pytest.fixture
-def clean_database(db_collection):
-    db_collection.delete_many({})
-    yield
-    db_collection.delete_many({})
 
 
 @pytest.fixture

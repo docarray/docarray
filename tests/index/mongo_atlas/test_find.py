@@ -54,18 +54,19 @@ def test_find_limit_larger_than_index(simple_index_with_docs, simple_schema):
     assert_when_ready(pred)
 
 
-def test_find_flat_schema(mongo_fixture_env, clean_database):
+def test_find_flat_schema(mongo_fixture_env):
     class FlatSchema(BaseDoc):
         embedding1: NdArray = Field(dim=N_DIM, index_name="vector_index_1")
         # the dim and N_DIM are setted different on propouse. to check the correct handling of n_dim
         embedding2: NdArray[50] = Field(dim=N_DIM, index_name="vector_index_2")
 
-    uri, database_name, collection_name = mongo_fixture_env
+    uri, database_name = mongo_fixture_env
     index = MongoAtlasDocumentIndex[FlatSchema](
         mongo_connection_uri=uri,
         database_name=database_name,
-        collection_name=collection_name,
     )
+
+    index._doc_collection.delete_many({})
 
     index_docs = [
         FlatSchema(embedding1=np.random.rand(N_DIM), embedding2=np.random.rand(50))

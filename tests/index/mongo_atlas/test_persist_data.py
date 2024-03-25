@@ -4,20 +4,21 @@ from .fixtures import *  # noqa
 from .helpers import assert_when_ready
 
 
-def create_index(uri, database, collection_name, schema):
+def create_index(uri, database, schema):
     return MongoAtlasDocumentIndex[schema](
         mongo_connection_uri=uri,
         database_name=database,
-        collection_name=collection_name,
     )
 
 
-def test_persist(
-    clean_database, mongo_fixture_env, simple_schema, random_simple_documents
-):
+def test_persist(mongo_fixture_env, simple_schema, random_simple_documents):
     index = create_index(*mongo_fixture_env, simple_schema)
+    index._doc_collection.delete_many({})
 
-    assert index.num_docs() == 0
+    def cleaned_database():
+        assert index.num_docs() == 0
+
+    assert_when_ready(cleaned_database)
 
     index.index(random_simple_documents)
 

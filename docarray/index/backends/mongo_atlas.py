@@ -47,7 +47,7 @@ class MongoAtlasDocumentIndex(BaseDocIndex, Generic[TSchema]):
     def _collection(self):
         if self._is_subindex:
             return self._ori_schema.__name__
-        return self._db_config.collection_name or self._schema.__name__
+        return self._schema.__name__
 
     @property
     def _database_name(self):
@@ -146,7 +146,6 @@ class MongoAtlasDocumentIndex(BaseDocIndex, Generic[TSchema]):
     class DBConfig(BaseDocIndex.DBConfig):
         mongo_connection_uri: str = 'localhost'
         index_name: Optional[str] = None
-        collection_name: Optional[str] = None
         database_name: Optional[str] = "default"
         default_column_config: Dict[Type, Dict[str, Any]] = field(
             default_factory=lambda: defaultdict(
