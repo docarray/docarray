@@ -39,9 +39,32 @@ def simple_schema():
 
 
 @pytest.fixture
+def nested_schema():
+    class SimpleDoc(BaseDoc):
+        embedding: NdArray[N_DIM] = Field(dim=N_DIM, index_name="vector_index_1")
+
+    class NestedDoc(BaseDoc):
+        d: SimpleDoc
+        embedding: NdArray[N_DIM] = Field(dim=N_DIM, index_name="vector_index")
+
+    return NestedDoc, SimpleDoc
+
+
+@pytest.fixture
 def simple_index(mongo_fixture_env, simple_schema):
     uri, database, collection_name = mongo_fixture_env
     index = MongoAtlasDocumentIndex[simple_schema](
+        mongo_connection_uri=uri,
+        database_name=database,
+        collection_name=collection_name,
+    )
+    return index
+
+
+@pytest.fixture
+def nested_index(mongo_fixture_env, nested_schema):
+    uri, database, collection_name = mongo_fixture_env
+    index = MongoAtlasDocumentIndex[nested_schema[0]](
         mongo_connection_uri=uri,
         database_name=database,
         collection_name=collection_name,
@@ -78,7 +101,46 @@ def random_simple_documents(simple_schema):
 
 
 @pytest.fixture
-def simple_index_with_docs(clean_database, simple_index, random_simple_documents):
+def nested_documents(nested_schema):
+    docs = [
+        nested_schema[0](
+            d=nested_schema[1](embedding=np.random.rand(N_DIM)),
+            embedding=np.random.rand(N_DIM),
+        )
+        for _ in range(10)
+    ]
+    docs.append(
+        nested_schema[0](
+            d=nested_schema[1](embedding=np.zeros(N_DIM)),
+            embedding=np.ones(N_DIM),
+        )
+    )
+    docs.append(
+        nested_schema[0](
+            d=nested_schema[1](embedding=np.ones(N_DIM)),
+            embedding=np.zeros(N_DIM),
+        )
+    )
+    docs.append(
+        nested_schema[0](
+            d=nested_schema[1](embedding=np.zeros(N_DIM)),
+            embedding=np.ones(N_DIM),
+        )
+    )
+    return docs
+
+
+@pytest.fixture
+def simple_index_with_docs(simple_index, random_simple_documents):
+    simple_index._doc_collection.delete_many({})
     simple_index.index(random_simple_documents)
     yield simple_index, random_simple_documents
     simple_index._doc_collection.delete_many({})
+
+
+@pytest.fixture
+def nested_index_with_docs(nested_index, nested_documents):
+    nested_index._doc_collection.delete_many({})
+    nested_index.index(nested_documents)
+    yield nested_index, nested_documents
+    nested_index._doc_collection.delete_many({})
