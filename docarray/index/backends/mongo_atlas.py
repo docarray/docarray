@@ -46,8 +46,20 @@ class MongoAtlasDocumentIndex(BaseDocIndex, Generic[TSchema]):
     @property
     def _collection(self):
         if self._is_subindex:
-            return self._ori_schema.__name__
-        return self._schema.__name__
+            return self._db_config.index_name
+
+        if not self._schema:
+            raise ValueError(
+                'A MongoAtlasDocumentIndex must be typed with a Document type.'
+                'To do so, use the syntax: MongoAtlasDocumentIndex[DocumentType]'
+            )
+
+        return self._schema.__name__.lower()
+
+    @property
+    def index_name(self):
+        """Return the name of the index in the database."""
+        return self._collection
 
     @property
     def _database_name(self):
