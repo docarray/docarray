@@ -1,8 +1,8 @@
-from .fixtures import *  # noqa
+from .fixtures import simple_index_with_docs, simple_schema  # noqa: F401
 from .helpers import assert_when_ready
 
 
-def test_text_search(simple_index_with_docs):
+def test_text_search(simple_index_with_docs):  # noqa: F811
     simple_index, docs = simple_index_with_docs
 
     query_string = "Python is a valuable skill"

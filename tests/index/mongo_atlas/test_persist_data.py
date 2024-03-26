@@ -1,6 +1,10 @@
 from docarray.index import MongoAtlasDocumentIndex
 
-from .fixtures import *  # noqa
+from .fixtures import (  # noqa: F401
+    mongo_fixture_env,
+    random_simple_documents,
+    simple_schema,
+)
 from .helpers import assert_when_ready
 
 
@@ -11,7 +15,9 @@ def create_index(uri, database, schema):
     )
 
 
-def test_persist(mongo_fixture_env, simple_schema, random_simple_documents):
+def test_persist(
+    mongo_fixture_env, simple_schema, random_simple_documents  # noqa: F811
+):
     index = create_index(*mongo_fixture_env, simple_schema)
     index._doc_collection.delete_many({})
 

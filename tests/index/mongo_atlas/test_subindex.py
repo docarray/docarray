@@ -6,7 +6,7 @@ from docarray import BaseDoc, DocList
 from docarray.index import MongoAtlasDocumentIndex
 from docarray.typing import NdArray
 
-from .fixtures import *  # noqa
+from .fixtures import mongo_fixture_env  # noqa: F401
 
 pytestmark = [pytest.mark.slow, pytest.mark.index]
 
@@ -35,7 +35,7 @@ def clean_subindex(index):
 
 
 @pytest.fixture(scope='session')
-def index(mongo_fixture_env):
+def index(mongo_fixture_env):  # noqa: F811
     uri, database = mongo_fixture_env
     index = MongoAtlasDocumentIndex[MyDoc](
         mongo_connection_uri=uri,
@@ -138,7 +138,7 @@ def test_subindex_get(index):
     assert np.allclose(doc.my_tens, np.ones(30) * 2)
 
 
-def test_subindex_contain(index, mongo_fixture_env):
+def test_subindex_contain(index, mongo_fixture_env):  # noqa: F811
     # Checks for individual simple_docs within list_docs
 
     doc = index['0']
@@ -236,7 +236,7 @@ def test_subindex_del(index):
     assert index._subindices['list_docs']._subindices['docs'].num_docs() == 4
 
 
-def test_subindex_collections(mongo_fixture_env):
+def test_subindex_collections(mongo_fixture_env):  # noqa: F811
     uri, database = mongo_fixture_env
     from typing import Optional
 

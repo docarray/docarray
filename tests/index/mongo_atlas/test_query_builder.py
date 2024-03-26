@@ -1,11 +1,11 @@
 import numpy as np
 import pytest
 
-from .fixtures import *  # noqa
+from .fixtures import simple_index, simple_index_with_docs  # noqa: F401
 from .helpers import assert_when_ready
 
 
-def test_find_uses_provided_vector(simple_index):
+def test_find_uses_provided_vector(simple_index):  # noqa: F811
     index = simple_index
 
     query = (

@@ -1,7 +1,7 @@
-from .fixtures import *  # noqa
+from .fixtures import simple_index_with_docs  # noqa: F401
 
 
-def test_filter(simple_index_with_docs):
+def test_filter(simple_index_with_docs):  # noqa: F811
 
     db, base_docs = simple_index_with_docs
 

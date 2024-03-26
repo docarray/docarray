@@ -1,13 +1,13 @@
 import numpy as np
 import pytest
 
-from .fixtures import *  # noqa
+from .fixtures import simple_index_with_docs, simple_schema  # noqa: F401
 from .helpers import assert_when_ready
 
 N_DIM = 10
 
 
-def test_num_docs(simple_index_with_docs, simple_schema):
+def test_num_docs(simple_index_with_docs, simple_schema):  # noqa: F811
     index, docs = simple_index_with_docs
     query = np.ones(N_DIM)
 
@@ -48,7 +48,7 @@ def test_num_docs(simple_index_with_docs, simple_schema):
     assert_when_ready(check_ramaining_ids)
 
 
-def test_get_single(simple_index_with_docs):
+def test_get_single(simple_index_with_docs):  # noqa: F811
 
     index, docs = simple_index_with_docs
 
@@ -62,7 +62,7 @@ def test_get_single(simple_index_with_docs):
         index['An id that does not exist']
 
 
-def test_get_multiple(simple_index_with_docs):
+def test_get_multiple(simple_index_with_docs):  # noqa: F811
     index, docs = simple_index_with_docs
 
     # get the odd documents
@@ -71,7 +71,7 @@ def test_get_multiple(simple_index_with_docs):
     assert set(doc.id for doc in docs_to_get) == set(doc.id for doc in retrieved_docs)
 
 
-def test_del_single(simple_index_with_docs):
+def test_del_single(simple_index_with_docs):  # noqa: F811
     index, docs = simple_index_with_docs
     del index[docs[1].id]
 
@@ -84,7 +84,7 @@ def test_del_single(simple_index_with_docs):
         index[docs[1].id]
 
 
-def test_del_multiple(simple_index_with_docs):
+def test_del_multiple(simple_index_with_docs):  # noqa: F811
     index, docs = simple_index_with_docs
 
     # get the odd documents
@@ -100,7 +100,7 @@ def test_del_multiple(simple_index_with_docs):
             assert np.allclose(index[doc.id].embedding, doc.embedding)
 
 
-def test_contains(simple_index_with_docs, simple_schema):
+def test_contains(simple_index_with_docs, simple_schema):  # noqa: F811
     index, docs = simple_index_with_docs
 
     for doc in docs:

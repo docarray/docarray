@@ -6,15 +6,22 @@ from docarray import BaseDoc
 from docarray.index import MongoAtlasDocumentIndex
 from docarray.typing import NdArray
 
-from .fixtures import *  # noqa
+from .fixtures import (  # noqa: F401
+    mongo_fixture_env,
+    nested_index_with_docs,
+    nested_schema,
+    simple_index,
+    simple_index_with_docs,
+    simple_schema,
+)
 from .helpers import assert_when_ready
 
 N_DIM = 10
 
 
-def test_find_simple_schema(simple_index_with_docs, simple_schema):
+def test_find_simple_schema(simple_index_with_docs, simple_schema):  # noqa: F811
 
-    simple_index, random_simple_documents = simple_index_with_docs
+    simple_index, random_simple_documents = simple_index_with_docs  # noqa: F811
     query = np.ones(N_DIM)
     closest_document = simple_schema(embedding=query, text="other", number=10)
     simple_index.index(closest_document)
@@ -28,7 +35,7 @@ def test_find_simple_schema(simple_index_with_docs, simple_schema):
     assert_when_ready(pred)
 
 
-def test_find_empty_index(simple_index):
+def test_find_empty_index(simple_index):  # noqa: F811
     query = np.random.rand(N_DIM)
 
     def pred():
@@ -39,8 +46,10 @@ def test_find_empty_index(simple_index):
     assert_when_ready(pred)
 
 
-def test_find_limit_larger_than_index(simple_index_with_docs, simple_schema):
-    simple_index, random_simple_documents = simple_index_with_docs
+def test_find_limit_larger_than_index(
+    simple_index_with_docs, simple_schema  # noqa: F811
+):
+    simple_index, random_simple_documents = simple_index_with_docs  # noqa: F811
 
     query = np.ones(N_DIM)
     new_doc = simple_schema(embedding=query, text="other", number=10)
@@ -55,7 +64,7 @@ def test_find_limit_larger_than_index(simple_index_with_docs, simple_schema):
     assert_when_ready(pred)
 
 
-def test_find_flat_schema(mongo_fixture_env):
+def test_find_flat_schema(mongo_fixture_env):  # noqa: F811
     class FlatSchema(BaseDoc):
         embedding1: NdArray = Field(dim=N_DIM, index_name="vector_index_1")
         # the dim and N_DIM are setted different on propouse. to check the correct handling of n_dim
@@ -102,9 +111,9 @@ def test_find_flat_schema(mongo_fixture_env):
     assert_when_ready(pred2)
 
 
-def test_find_batches(simple_index_with_docs):
+def test_find_batches(simple_index_with_docs):  # noqa: F811
 
-    simple_index, docs = simple_index_with_docs
+    simple_index, docs = simple_index_with_docs  # noqa: F811
     queries = np.array([np.random.rand(10) for _ in range(3)])
 
     def pred():
@@ -119,7 +128,7 @@ def test_find_batches(simple_index_with_docs):
     assert_when_ready(pred)
 
 
-def test_find_nested_schema(nested_index_with_docs, nested_schema):
+def test_find_nested_schema(nested_index_with_docs, nested_schema):  # noqa: F811
     db, base_docs = nested_index_with_docs
 
     query = nested_schema[0](
@@ -142,7 +151,7 @@ def test_find_nested_schema(nested_index_with_docs, nested_schema):
     assert_when_ready(pred)
 
 
-def test_find_schema_without_index(mongo_fixture_env):
+def test_find_schema_without_index(mongo_fixture_env):  # noqa: F811
     class Schema(BaseDoc):
         vec: NdArray = Field(dim=N_DIM)
 
