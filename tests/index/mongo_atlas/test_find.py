@@ -1,4 +1,5 @@
 import numpy as np
+import pytest
 from pydantic import Field
 
 from docarray import BaseDoc
@@ -77,12 +78,12 @@ def test_find_flat_schema(mongo_fixture_env):
     index_docs.append(FlatSchema(embedding1=np.ones(N_DIM), embedding2=np.zeros(50)))
     index.index(index_docs)
 
-    query = (np.ones(N_DIM), np.ones(50))
+    queries = (np.ones(N_DIM), np.ones(50))
 
     def pred1():
 
         # find on embedding1
-        docs, scores = index.find(query[0], search_field='embedding1', limit=5)
+        docs, scores = index.find(queries[0], search_field='embedding1', limit=5)
         assert len(docs) == 5
         assert len(scores) == 5
         assert np.allclose(docs[0].embedding1, index_docs[-1].embedding1)
@@ -92,7 +93,7 @@ def test_find_flat_schema(mongo_fixture_env):
 
     def pred2():
         # find on embedding2
-        docs, scores = index.find(query[1], search_field='embedding2', limit=5)
+        docs, scores = index.find(queries[1], search_field='embedding2', limit=5)
         assert len(docs) == 5
         assert len(scores) == 5
         assert np.allclose(docs[0].embedding1, index_docs[-2].embedding1)
@@ -139,3 +140,17 @@ def test_find_nested_schema(nested_index_with_docs, nested_schema):
         assert np.allclose(docs[0].d.embedding, base_docs[-2].d.embedding)
 
     assert_when_ready(pred)
+
+
+def test_find_schema_without_index(mongo_fixture_env):
+    class Schema(BaseDoc):
+        vec: NdArray = Field(dim=N_DIM)
+
+    uri, database_name = mongo_fixture_env
+    index = MongoAtlasDocumentIndex[Schema](
+        mongo_connection_uri=uri,
+        database_name=database_name,
+    )
+    query = np.ones(N_DIM)
+    with pytest.raises(ValueError):
+        index.find(query, search_field='vec', limit=2)

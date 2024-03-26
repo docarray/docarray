@@ -457,7 +457,7 @@ class MongoAtlasDocumentIndex(BaseDocIndex, Generic[TSchema]):
         """
         try:
             return self._column_infos[column_name].config["index_name"]
-        except IndexError:
+        except KeyError:
             raise ValueError(
                 f'The column {column_name} for MongoAtlasDocumentIndex Vector should be associated '
                 'with an Atlas vector index.'
