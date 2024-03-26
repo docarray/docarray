@@ -455,7 +455,13 @@ class MongoAtlasDocumentIndex(BaseDocIndex, Generic[TSchema]):
         Returns:
             Optional[str]: The index name associated with the specified column name, or None if not found.
         """
-        return self._column_infos[column_name].config.get("index_name")
+        try:
+            return self._column_infos[column_name].config["index_name"]
+        except IndexError:
+            raise ValueError(
+                f'The column {column_name} for MongoAtlasDocumentIndex Vector should be associated '
+                'with an Atlas vector index.'
+            )
 
     def _project_fields(self) -> dict:
         """
