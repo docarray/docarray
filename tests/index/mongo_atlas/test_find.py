@@ -6,14 +6,7 @@ from docarray import BaseDoc
 from docarray.index import MongoAtlasDocumentIndex
 from docarray.typing import NdArray
 
-from .fixtures import (  # noqa: F401
-    mongo_fixture_env,
-    nested_index_with_docs,
-    nested_schema,
-    simple_index,
-    simple_index_with_docs,
-    simple_schema,
-)
+from .fixtures import *  # noqa: F403
 from .helpers import assert_when_ready
 
 N_DIM = 10

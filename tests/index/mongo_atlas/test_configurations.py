@@ -1,5 +1,4 @@
-from tests.index.mongo_atlas.fixtures import simple_index_with_docs  # noqa: F401
-
+from .fixtures import *  # noqa: F403
 from .helpers import assert_when_ready
 
 
@@ -14,5 +13,5 @@ def test_num_docs(simple_index_with_docs):  # noqa: F811
 
 
 # Currently, pymongo cannot create atlas vector search indexes.
-def test_configure_index(simple_index):
+def test_configure_index(simple_index):  # noqa: F811
     pass

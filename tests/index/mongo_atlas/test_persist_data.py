@@ -1,10 +1,6 @@
 from docarray.index import MongoAtlasDocumentIndex
 
-from .fixtures import (  # noqa: F401
-    mongo_fixture_env,
-    random_simple_documents,
-    simple_schema,
-)
+from .fixtures import *  # noqa: F403
 from .helpers import assert_when_ready
 
 

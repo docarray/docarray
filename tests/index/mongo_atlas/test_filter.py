@@ -1,4 +1,4 @@
-from .fixtures import simple_index_with_docs  # noqa: F401
+from .fixtures import *  # noqa: F403
 
 
 def test_filter(simple_index_with_docs):  # noqa: F811

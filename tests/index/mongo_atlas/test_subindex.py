@@ -6,7 +6,7 @@ from docarray import BaseDoc, DocList
 from docarray.index import MongoAtlasDocumentIndex
 from docarray.typing import NdArray
 
-from .fixtures import mongo_fixture_env  # noqa: F401
+from .fixtures import *  # noqa: F403
 
 pytestmark = [pytest.mark.slow, pytest.mark.index]
 

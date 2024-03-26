@@ -1,4 +1,4 @@
-from .fixtures import simple_index_with_docs, simple_schema  # noqa: F401
+from .fixtures import *  # noqa: F403
 from .helpers import assert_when_ready
 
 
