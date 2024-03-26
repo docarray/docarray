@@ -12,7 +12,7 @@ pytestmark = [pytest.mark.slow, pytest.mark.index]
 
 
 class SimpleDoc(BaseDoc):
-    simple_tens: NdArray[10] = Field(space='l2')
+    simple_tens: NdArray[10] = Field(index_name='vector_index')
     simple_text: str
 
 
@@ -171,6 +171,63 @@ def test_subindex_contain(index, mongo_fixture_env):
     assert (empty_doc in empty_index) is False
 
 
+def test_find_empty_subindex(index):
+    query = np.ones((30,))
+    with pytest.raises(ValueError):
+        index.find_subindex(query, subindex='', search_field='my_tens', limit=5)
+
+
+def test_find_subindex_sublevel(index):
+    query = np.ones((10,))
+
+    root_docs, docs, scores = index.find_subindex(
+        query, subindex='docs', search_field='simple_tens', limit=4
+    )
+    assert isinstance(root_docs[0], MyDoc)
+    assert isinstance(docs[0], SimpleDoc)
+    assert len(scores) == 4
+    assert sum(score == 1.0 for score in scores) == 2
+
+    for root_doc, doc, score in zip(root_docs, docs, scores):
+        assert root_doc.id == f'{doc.id.split("-")[1]}'
+
+        if score == 1.0:
+            assert np.allclose(doc.simple_tens, np.ones(10))
+        else:
+            assert np.allclose(doc.simple_tens, np.ones(10) * 2)
+
+
+def test_find_subindex_subsublevel(index):
+    # sub sub level
+    query = np.ones((10,))
+    root_docs, docs, scores = index.find_subindex(
+        query, subindex='list_docs__docs', search_field='simple_tens', limit=2
+    )
+    assert len(docs) == 2
+    assert isinstance(root_docs[0], MyDoc)
+    assert isinstance(docs[0], SimpleDoc)
+    for root_doc, doc, score in zip(root_docs, docs, scores):
+        assert np.allclose(doc.simple_tens, np.ones(10))
+        assert root_doc.id == f'{doc.id.split("-")[2]}'
+        assert score == 1.0
+
+
+def test_subindex_filter(index):
+    query = {"simple_doc__simple_text": {"$eq": "hello 1"}}
+    docs = index.filter_subindex(query, subindex='list_docs', limit=4)
+    assert len(docs) == 2
+    assert isinstance(docs[0], ListDoc)
+    for doc in docs:
+        assert doc.id.split('-')[-1] == '1'
+
+    query = {"simple_text": {"$eq": "hello 0"}}
+    docs = index.filter_subindex(query, subindex='list_docs__docs', limit=5)
+    assert len(docs) == 4
+    assert isinstance(docs[0], SimpleDoc)
+    for doc in docs:
+        assert doc.id.split('-')[-1] == '0'
+
+
 def test_subindex_del(index):
     del index['0']
     assert index.num_docs() == 1
@@ -179,49 +236,35 @@ def test_subindex_del(index):
     assert index._subindices['list_docs']._subindices['docs'].num_docs() == 4
 
 
-def test_find_subindex(index):
-    # root level
-    query = np.ones((30,))
-    with pytest.raises(ValueError):
-        _, _ = index.find_subindex(query, subindex='', search_field='my_tens', limit=5)
+def test_subindex_collections(mongo_fixture_env):
+    uri, database = mongo_fixture_env
+    from typing import Optional
 
-    # sub level
-    query = np.ones((10,))
-    root_docs, docs, scores = index.find_subindex(
-        query, subindex='docs', search_field='simple_tens', limit=5
+    from pydantic import Field
+
+    from docarray.typing.tensor import AnyTensor
+
+    class MetaPathDoc(BaseDoc):
+        path_id: str
+        level: int
+        text: str
+        embedding: Optional[AnyTensor] = Field(space='cosine', dim=128)
+
+    class MetaCategoryDoc(BaseDoc):
+        node_id: Optional[str]
+        node_name: Optional[str]
+        name: Optional[str]
+        product_type_definitions: Optional[str]
+        leaf: bool
+        paths: Optional[DocList[MetaPathDoc]]
+        embedding: Optional[AnyTensor] = Field(space='cosine', dim=128)
+        channel: str
+        lang: str
+
+    doc_index = MongoAtlasDocumentIndex[MetaCategoryDoc](
+        mongo_connection_uri=uri,
+        database_name=database,
     )
-    assert isinstance(root_docs[0], MyDoc)
-    assert isinstance(docs[0], SimpleDoc)
-    for root_doc, doc, score in zip(root_docs, docs, scores):
-        assert np.allclose(doc.simple_tens, np.ones(10))
-        assert root_doc.id == f'{doc.id.split("-")[1]}'
-        assert score == 0.0
 
-    # sub sub level
-    query = np.ones((10,))
-    root_docs, docs, scores = index.find_subindex(
-        query, subindex='list_docs__docs', search_field='simple_tens', limit=5
-    )
-    assert len(docs) == 2
-    assert isinstance(root_docs[0], MyDoc)
-    assert isinstance(docs[0], SimpleDoc)
-    for root_doc, doc, score in zip(root_docs, docs, scores):
-        assert np.allclose(doc.simple_tens, np.ones(10))
-        assert root_doc.id == f'{doc.id.split("-")[2]}'
-        assert score == 0.0
-
-
-def test_subindex_filter(index):
-    query = {}
-    docs = index.filter_subindex(query, subindex='list_docs', limit=5)
-    assert len(docs) == 5
-    assert isinstance(docs[0], ListDoc)
-    for doc in docs:
-        assert doc.id.split('-')[-1] == '0'
-
-    query = {}
-    docs = index.filter_subindex(query, subindex='list_docs__docs', limit=5)
-    assert len(docs) == 5
-    assert isinstance(docs[0], SimpleDoc)
-    for doc in docs:
-        assert doc.id.split('-')[-1] == '0'
+    assert doc_index._subindices["paths"].index_name == 'metacategorydoc__paths'
+    assert doc_index._subindices["paths"]._collection == 'metacategorydoc__paths'
