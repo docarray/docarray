@@ -83,7 +83,7 @@ milvus = ["pymilvus"]
 redis = ['redis']
 jax = ["jaxlib","jax"]
 epsilla = ["pyepsilla"]
-mongo = ["mongo"]
+mongo = ["pymongo"]
 
 # all
 full = ["protobuf", "lz4", "pandas", "pillow", "types-pillow", "av", "pydub", "trimesh", "jax"]
