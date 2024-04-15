@@ -34,18 +34,6 @@ def test_multiple_find_returns_averaged_vector(simple_index):  # noqa: F811
     assert query.limit == 5
 
 
-def test_multiple_find_different_field_raises_error(simple_index):  # noqa: F811
-    index = simple_index
-
-    with pytest.raises(ValueError):
-        (
-            index.build_query()  # type: ignore[attr-defined]
-            .find(query=np.ones(10), search_field='embedding_1')
-            .find(query=np.zeros(10), search_field='embedding_2')
-            .build(2)
-        )
-
-
 def test_filter_passes_filter(simple_index):  # noqa: F811
     index = simple_index
 
@@ -92,7 +80,7 @@ def test_query_builder_execute_query_find_filter(
     assert_when_ready(pred)
 
 
-def test_query_builder_execute_only_find_filter(
+def test_query_builder_execute_only_filter(
     simple_index_with_docs,  # noqa: F811
 ):
     index, docs = simple_index_with_docs
@@ -112,5 +100,52 @@ def test_query_builder_execute_only_find_filter(
 
         assert len(docs.documents) == 2
         assert set(docs.documents.number) == {6, 7}
+
+    assert_when_ready(pred)
+
+
+def test_query_builder_execute_only_filter_text(
+    simple_index_with_docs,  # noqa: F811
+):
+    index, docs = simple_index_with_docs
+
+    filter_query1 = {"number": {"$eq": 0}}
+
+    query = (
+        index.build_query()  # type: ignore[attr-defined]
+        .text_search(query="Python is a valuable skill", search_field='text')
+        .filter(query=filter_query1)
+        .build(limit=5)
+    )
+
+    def pred():
+        docs = index.execute_query(query)
+
+        assert len(docs.documents) == 1
+        assert set(docs.documents.number) == {0}
+
+    assert_when_ready(pred)
+
+
+def test_query_builder_hybrid_search(
+    simple_index_with_docs,  # noqa: F811
+):
+    find_query = np.ones(10)
+    # filter_query1 = {"number": {"$gt": 0}}
+    index, docs = simple_index_with_docs
+
+    query = (
+        index.build_query()  # type: ignore[attr-defined]
+        .find(query=find_query, search_field='embedding')
+        .text_search(query="Python is a valuable skill", search_field='text')
+        # .filter(query=filter_query1)
+        .build(limit=10)
+    )
+
+    def pred():
+        docs = index.execute_query(query)
+
+        assert len(docs.documents) == 10
+        assert set(docs.documents.number) == {0, 1, 2, 3, 4, 5, 6, 7, 8, 9}
 
     assert_when_ready(pred)

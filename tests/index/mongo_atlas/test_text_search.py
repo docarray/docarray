@@ -9,10 +9,12 @@ def test_text_search(simple_index_with_docs):  # noqa: F811
     expected_text = docs[0].text
 
     def pred():
-        docs, _ = simple_index.text_search(
+        docs, scores = simple_index.text_search(
             query=query_string, search_field='text', limit=1
         )
+        assert len(docs) == 1
         assert docs[0].text == expected_text
+        assert scores[0] > 0
 
     assert_when_ready(pred)
 

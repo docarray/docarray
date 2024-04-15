@@ -27,7 +27,7 @@ from docarray.index.abstract import BaseDocIndex, _raise_not_composable
 from docarray.index.backends.helper import _collect_query_required_args
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
 from docarray.utils._internal._typing import safe_issubclass
-from docarray.utils.find import FindResult, _FindResult, _FindResultBatched
+from docarray.utils.find import _FindResult, _FindResultBatched
 
 # from pymongo.driver_info import DriverInfo
 
@@ -102,10 +102,9 @@ class MongoAtlasDocumentIndex(BaseDocIndex, Generic[TSchema]):
     class Query:
         """Dataclass describing a query."""
 
-        vector_field: Optional[str]
-        vector_query: Optional[np.ndarray]
-        filters: Optional[List[Any]]  # TODO: define a type
-        text_searches: Optional[List[Any]]  # TODO: define a type
+        vector_fields: Optional[Dict[str, np.ndarray]]
+        filters: Optional[List[Any]]
+        text_searches: Optional[List[Any]]
         limit: int
 
     class QueryBuilder(BaseDocIndex.QueryBuilder):
@@ -116,31 +115,26 @@ class MongoAtlasDocumentIndex(BaseDocIndex, Generic[TSchema]):
 
         def build(self, limit: int) -> Any:
             """Build the query object."""
-            search_field = None
-            vectors = []
-            filters = []
-            text_searches = []
+            search_fields: Dict[str, np.ndarray] = defaultdict(list)
+            filters: List[Any] = []
+            text_searches: List[Any] = []
             for method, kwargs in self._queries:
                 if method == 'find':
-                    if search_field and kwargs['search_field'] != search_field:
-                        raise ValueError(
-                            f'Trying to call .find for search_field = {kwargs["search_field"]}, but '
-                            f'previously {search_field} was used. Only a single '
-                            f'field might be used in chained calls.'
-                        )
-
                     search_field = kwargs['search_field']
-                    vectors.append(kwargs["query"])
+                    search_fields[search_field].append(kwargs["query"])
 
                 elif method == 'filter':
                     filters.append(kwargs)
                 else:
                     text_searches.append(kwargs)
 
-            vector = np.average(vectors, axis=0) if vectors else None
+            vector_fields = {
+                field: np.average(vectors, axis=0)
+                for field, vectors in search_fields.items()
+            }
+
             return MongoAtlasDocumentIndex.Query(
-                vector_field=search_field,
-                vector_query=vector,
+                vector_fields=vector_fields,
                 filters=filters,
                 text_searches=text_searches,
                 limit=limit,
@@ -148,8 +142,10 @@ class MongoAtlasDocumentIndex(BaseDocIndex, Generic[TSchema]):
 
         find = _collect_query_required_args('find', {'search_field', 'query'})
         filter = _collect_query_required_args('filter', {'query'})
-        # it is included in filter method.
-        text_search = _raise_not_composable('text_search')
+        text_search = _collect_query_required_args(
+            'text_search', {'search_field', 'query'}
+        )
+
         find_batched = _raise_not_composable('find_batched')
         filter_batched = _raise_not_composable('filter_batched')
         text_search_batched = _raise_not_composable('text_search_batched')
@@ -168,6 +164,15 @@ class MongoAtlasDocumentIndex(BaseDocIndex, Generic[TSchema]):
                         'distance': 'COSINE',
                         'oversample_factor': OVERSAMPLING_FACTOR,
                         'max_candidates': MAX_CANDIDATES,
+                        'indexed': False,
+                        'index_name': None,
+                        'penalty': 1,
+                    },
+                    bson.BSONSTR: {
+                        'indexed': False,
+                        'index_name': None,
+                        'operator': 'phrase',
+                        'penalty': 10,
                     },
                 },
             )
@@ -293,7 +298,104 @@ class MongoAtlasDocumentIndex(BaseDocIndex, Generic[TSchema]):
             raise KeyError(f'No document with id {doc_ids} found')
         return docs
 
-    def execute_query(self, query: Any, *args, **kwargs) -> Any:
+    @staticmethod
+    def _get_score_field_by_search_field(search_field: str):
+        return f"{search_field}_score"
+
+    def _compute_reciprocal_rank(self, search_field: str):
+        penalty = self._column_infos[search_field].config["penalty"]
+        projection_fields = {
+            key: f"$docs.{key}" for key in self._column_infos.keys() if key != "id"
+        }
+        projection_fields["_id"] = "$docs._id"
+
+        return [
+            {"$group": {"_id": None, "docs": {"$push": "$$ROOT"}}},
+            {"$unwind": {"path": "$docs", "includeArrayIndex": "rank"}},
+            {
+                "$addFields": {
+                    self._get_score_field_by_search_field(search_field): {
+                        "$divide": [1.0, {"$add": ["$rank", penalty, 1]}]
+                    }
+                }
+            },
+            {'$project': projection_fields},
+        ]
+
+    def _add_stage_to_pipeline(self, pipeline: List[Any], stage: Dict[str, Any]):
+        if pipeline:
+            pipeline.append(
+                {"$unionWith": {"coll": self._collection, "pipeline": stage}}
+            )
+        else:
+            pipeline.extend(stage)
+        return pipeline
+
+    def _build_final_pipeline(self, pipeline, scores_field, limit):
+        doc_fields = self._column_infos.keys()
+        grouped_fields = {
+            key: {"$first": f"${key}"} for key in doc_fields if key != "_id"
+        }
+        best_score = {score: {'$max': f'${score}'} for score in scores_field}
+        final_pipeline = [
+            {"$group": {"_id": "$_id", **grouped_fields, **best_score}},
+            {
+                "$project": {
+                    **{field: 1 for field in doc_fields},
+                    **{score: {"$ifNull": [f"${score}", 0]} for score in scores_field},
+                }
+            },
+            {
+                "$project": {
+                    "score": {"$add": [f"${score}" for score in scores_field]},
+                    **{field: 1 for field in doc_fields},
+                }
+            },
+            {"$sort": {"score": -1}},
+            {"$limit": limit},
+        ]
+        return pipeline + final_pipeline
+
+    def _hybrid_search(
+        self,
+        vector_queries: Dict[str, Any],
+        text_queries: List[Dict[str, Any]],
+        filters: Dict[str, Any],
+        limit: int,
+    ):
+
+        result_pipeline = []
+        scores_field = []
+        for search_field, query in vector_queries.items():
+            vector_stage = self._vector_stage_search(
+                query=query,
+                search_field=search_field,
+                limit=limit,
+                filters=filters,
+            )
+            pipeline = [vector_stage, *self._compute_reciprocal_rank(search_field)]
+            self._add_stage_to_pipeline(result_pipeline, pipeline)
+            scores_field.append(self._get_score_field_by_search_field(search_field))
+
+        for kwargs in text_queries:
+            text_stage = self._text_stage_step(**kwargs)
+            reciprocal_rank_stage = self._compute_reciprocal_rank(
+                kwargs["search_field"]
+            )
+            stage_pipeline = [
+                text_stage,
+                {"$match": {"$and": filters} if filters else {}},
+                {"$limit": limit},
+                *reciprocal_rank_stage,
+            ]
+            self._add_stage_to_pipeline(result_pipeline, stage_pipeline)
+            scores_field.append(
+                self._get_score_field_by_search_field(kwargs["search_field"])
+            )
+
+        return self._build_final_pipeline(result_pipeline, scores_field, limit)
+
+    def execute_query(self, query: Any, *args, **kwargs) -> _FindResult:
         """
         Execute a query on the database.
 
@@ -309,34 +411,59 @@ class MongoAtlasDocumentIndex(BaseDocIndex, Generic[TSchema]):
         :return: the result of the query
         """
 
+        pipeline: List[Dict[str, Any]] = []
         filters: List[Dict[str, Any]] = []
 
+        # Regular filter search.
         for filter_ in query.filters:
-            filters.append(self._compute_filter_query(**filter_))
+            filters.append(self._filter_query(**filter_))
 
-        for filter_ in query.text_searches:
-            filters.append(self._compute_text_search_query(**filter_))
-
-        if query.vector_field:
-            pipeline = [
-                self._compute_vector_search(
-                    query=query.vector_query,
-                    search_field=query.vector_field,
-                    limit=query.limit,
-                    filters=filters,
-                ),
-                {'$project': self._project_fields()},
-            ]
+        # check if hybrid search is needed.
+        if len(query.vector_fields) + len(query.text_searches) > 1:
+            pipeline = self._hybrid_search(
+                query.vector_fields, query.text_searches, filters, query.limit
+            )
         else:
-            pipeline = [{"$match": {"$and": filters}}, {"$limit": query.limit}]
+            # it is a simple text with filters.
+            if query.text_searches:
+                text_stage = self._text_stage_step(**query.text_searches[0])
+                pipeline = [
+                    text_stage,
+                    {"$match": {"$and": filters} if filters else {}},
+                    {
+                        '$project': self._project_fields(
+                            extra_fields={"score": {'$meta': 'searchScore'}}
+                        )
+                    },
+                    {"$limit": query.limit},
+                ]
+            # it is a simple vector search with filters
+            elif query.vector_fields:
+                field, vector_query = list(query.vector_fields.items())[0]
+                pipeline = [
+                    self._vector_stage_search(
+                        query=vector_query,
+                        search_field=field,
+                        limit=query.limit,
+                        filters=filters,
+                    ),
+                    {
+                        '$project': self._project_fields(
+                            extra_fields={"score": {'$meta': 'vectorSearchScore'}}
+                        )
+                    },
+                ]
+            # it is only a filter search
+            else:
+                pipeline = [{"$match": {"$and": filters}}]
 
         with self._doc_collection.aggregate(pipeline) as cursor:
             docs, scores = self._mongo_to_docs(cursor)
 
         docs = self._dict_list_to_docarray(docs)
-        return FindResult(documents=docs, scores=scores)
+        return _FindResult(documents=docs, scores=scores)
 
-    def _compute_vector_search(
+    def _vector_stage_search(
         self,
         query: np.ndarray,
         search_field: str,
@@ -344,7 +471,7 @@ class MongoAtlasDocumentIndex(BaseDocIndex, Generic[TSchema]):
         filters: List[Dict[str, Any]] = [],
     ) -> Dict[str, Any]:
 
-        index_name = self._get_column_index(search_field)
+        index_name = self._get_column_db_index(search_field)
         oversampling_factor = self._get_oversampling_factor(search_field)
         max_candidates = self._get_max_candidates(search_field)
         query = query.astype(np.float64).tolist()
@@ -360,20 +487,23 @@ class MongoAtlasDocumentIndex(BaseDocIndex, Generic[TSchema]):
             }
         }
 
-    def _compute_filter_query(
+    def _filter_query(
         self,
         query: Any,
     ) -> Dict[str, Any]:
         return query
 
-    def _compute_text_search_query(
+    def _text_stage_step(
         self,
         query: str,
-        search_field: str = '',
+        search_field: str,
     ) -> Dict[str, Any]:
+        operator = self._column_infos[search_field].config["operator"]
+        index = self._get_column_db_index(search_field)
         return {
-            search_field: {
-                '$in': query,
+            "$search": {
+                "index": index,
+                operator: {"query": query, "path": search_field},
             }
         }
 
@@ -402,23 +532,16 @@ class MongoAtlasDocumentIndex(BaseDocIndex, Generic[TSchema]):
         """
         # NOTE: in standard implementations,
         # `search_field` is equal to the column name to search on
-        query = query.astype(np.float64).tolist()
-        index_name = self._get_column_index(search_field)
 
-        oversampling_factor = self._get_oversampling_factor(search_field)
-        max_candidates = self._get_max_candidates(search_field)
+        vector_search_stage = self._vector_stage_search(query, search_field, limit)
 
         pipeline = [
+            vector_search_stage,
             {
-                '$vectorSearch': {
-                    'index': index_name,
-                    'path': search_field,
-                    'queryVector': query,
-                    'numCandidates': min(limit * oversampling_factor, max_candidates),
-                    'limit': limit,
-                }
+                '$project': self._project_fields(
+                    score_meta={'$meta': 'vectorSearchScore'}
+                )
             },
-            {'$project': self._project_fields()},
         ]
 
         with self._doc_collection.aggregate(pipeline) as cursor:
@@ -445,7 +568,7 @@ class MongoAtlasDocumentIndex(BaseDocIndex, Generic[TSchema]):
 
         return _FindResultBatched(documents=docs, scores=scores)
 
-    def _get_column_index(self, column_name: str) -> Optional[str]:
+    def _get_column_db_index(self, column_name: str) -> Optional[str]:
         """
         Retrieve the index name associated with the specified column name.
 
@@ -455,15 +578,34 @@ class MongoAtlasDocumentIndex(BaseDocIndex, Generic[TSchema]):
         Returns:
             Optional[str]: The index name associated with the specified column name, or None if not found.
         """
-        try:
-            return self._column_infos[column_name].config["index_name"]
-        except KeyError:
+        index_name = self._column_infos[column_name].config.get("index_name")
+
+        is_vector_index = safe_issubclass(
+            self._column_infos[column_name].docarray_type, AbstractTensor
+        )
+        is_text_index = safe_issubclass(
+            self._column_infos[column_name].docarray_type, str
+        )
+
+        if index_name is None or not isinstance(index_name, str):
+            if is_vector_index:
+                raise ValueError(
+                    f'The column {column_name} for MongoAtlasDocumentIndex should be associated '
+                    'with an Atlas Vector Index.'
+                )
+            elif is_text_index:
+                raise ValueError(
+                    f'The column {column_name} for MongoAtlasDocumentIndex should be associated '
+                    'with an Atlas Index.'
+                )
+        if not (is_vector_index or is_text_index):
             raise ValueError(
-                f'The column {column_name} for MongoAtlasDocumentIndex Vector should be associated '
-                'with an Atlas vector index.'
+                f'The column {column_name} for MongoAtlasDocumentIndex cannot be associated to an index'
             )
 
-    def _project_fields(self) -> dict:
+        return index_name
+
+    def _project_fields(self, extra_fields: Dict[str, Any] = None) -> dict:
         """
         Create a projection dictionary to include all fields defined in the column information.
 
@@ -471,8 +613,11 @@ class MongoAtlasDocumentIndex(BaseDocIndex, Generic[TSchema]):
             dict: A dictionary where each field key from the column information is mapped to the value 1,
                 indicating that the field should be included in the projection.
         """
-        fields = {key: 1 for key in self._column_infos.keys() if key != "_id"}
-        fields["score"] = {'$meta': 'vectorSearchScore'}
+
+        fields = {key: 1 for key in self._column_infos.keys() if key != "id"}
+        fields["_id"] = 1
+        if extra_fields:
+            fields.update(extra_fields)
         return fields
 
     def _filter(
@@ -517,11 +662,19 @@ class MongoAtlasDocumentIndex(BaseDocIndex, Generic[TSchema]):
         :param search_field: name of the field to search on
         :return: a named tuple containing `documents` and `scores`
         """
-        # NOTE: in standard implementations,
-        # `search_field` is equal to the column name to search on
-        with self._doc_collection.find(
-            {search_field: {'$regex': query}}, limit=limit
-        ) as cursor:
+        text_stage = self._text_stage_step(query=query, search_field=search_field)
+
+        pipeline = [
+            text_stage,
+            {
+                '$project': self._project_fields(
+                    score_meta={'score': {'$meta': 'searchScore'}}
+                )
+            },
+            {"$limit": limit},
+        ]
+
+        with self._doc_collection.aggregate(pipeline) as cursor:
             documents, scores = self._mongo_to_docs(cursor)
 
         return _FindResult(documents=documents, scores=scores)

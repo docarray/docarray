@@ -30,7 +30,7 @@ def mongo_fixture_env():
 @pytest.fixture
 def simple_schema():
     class SimpleSchema(BaseDoc):
-        text: str
+        text: str = Field(index_name='text_index')
         number: int
         embedding: NdArray[10] = Field(dim=10, index_name="vector_index")
 
