@@ -304,19 +304,19 @@ class MongoAtlasDocumentIndex(BaseDocIndex, Generic[TSchema]):
 
     def _compute_reciprocal_rank(self, search_field: str):
         penalty = self._column_infos[search_field].config["penalty"]
+        score_field = self._get_score_field_by_search_field(search_field)
         projection_fields = {
             key: f"$docs.{key}" for key in self._column_infos.keys() if key != "id"
         }
         projection_fields["_id"] = "$docs._id"
+        projection_fields[score_field] = 1
 
         return [
             {"$group": {"_id": None, "docs": {"$push": "$$ROOT"}}},
             {"$unwind": {"path": "$docs", "includeArrayIndex": "rank"}},
             {
                 "$addFields": {
-                    self._get_score_field_by_search_field(search_field): {
-                        "$divide": [1.0, {"$add": ["$rank", penalty, 1]}]
-                    }
+                    score_field: {"$divide": [1.0, {"$add": ["$rank", penalty, 1]}]}
                 }
             },
             {'$project': projection_fields},
