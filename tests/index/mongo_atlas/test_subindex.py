@@ -7,6 +7,7 @@ from docarray.index import MongoAtlasDocumentIndex
 from docarray.typing import NdArray
 
 from .fixtures import *  # noqa: F403
+from .helpers import assert_when_ready
 
 pytestmark = [pytest.mark.slow, pytest.mark.index]
 
@@ -180,21 +181,25 @@ def test_find_empty_subindex(index):
 def test_find_subindex_sublevel(index):
     query = np.ones((10,))
 
-    root_docs, docs, scores = index.find_subindex(
-        query, subindex='docs', search_field='simple_tens', limit=4
-    )
-    assert isinstance(root_docs[0], MyDoc)
-    assert isinstance(docs[0], SimpleDoc)
-    assert len(scores) == 4
-    assert sum(score == 1.0 for score in scores) == 2
+    def pred():
+        root_docs, docs, scores = index.find_subindex(
+            query, subindex='docs', search_field='simple_tens', limit=4
+        )
+        assert len(root_docs) == 4
+        assert isinstance(root_docs[0], MyDoc)
+        assert isinstance(docs[0], SimpleDoc)
+        assert len(scores) == 4
+        assert sum(score == 1.0 for score in scores) == 2
 
-    for root_doc, doc, score in zip(root_docs, docs, scores):
-        assert root_doc.id == f'{doc.id.split("-")[1]}'
+        for root_doc, doc, score in zip(root_docs, docs, scores):
+            assert root_doc.id == f'{doc.id.split("-")[1]}'
 
-        if score == 1.0:
-            assert np.allclose(doc.simple_tens, np.ones(10))
-        else:
-            assert np.allclose(doc.simple_tens, np.ones(10) * 2)
+            if score == 1.0:
+                assert np.allclose(doc.simple_tens, np.ones(10))
+            else:
+                assert np.allclose(doc.simple_tens, np.ones(10) * 2)
+
+    assert_when_ready(pred)
 
 
 def test_find_subindex_subsublevel(index):

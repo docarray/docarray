@@ -24,13 +24,17 @@ def test_text_search_batched(simple_index_with_docs, simple_schema):  # noqa: F8
     index, docs = simple_index_with_docs
 
     queries = ['processing with Python', 'tips', 'for']
-    docs, scores = index.text_search_batched(queries, search_field='text', limit=5)
 
-    assert len(docs) == 3
-    assert len(docs[0]) == 1
-    assert len(docs[1]) == 1
-    assert len(docs[2]) == 2
-    assert len(scores) == 3
-    assert len(scores[0]) == 1
-    assert len(scores[1]) == 1
-    assert len(scores[2]) == 2
+    def pred():
+        docs, scores = index.text_search_batched(queries, search_field='text', limit=5)
+
+        assert len(docs) == 3
+        assert len(docs[0]) == 1
+        assert len(docs[1]) == 1
+        assert len(docs[2]) == 2
+        assert len(scores) == 3
+        assert len(scores[0]) == 1
+        assert len(scores[1]) == 1
+        assert len(scores[2]) == 2
+
+    assert_when_ready(pred)

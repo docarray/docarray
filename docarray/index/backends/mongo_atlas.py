@@ -539,7 +539,7 @@ class MongoAtlasDocumentIndex(BaseDocIndex, Generic[TSchema]):
             vector_search_stage,
             {
                 '$project': self._project_fields(
-                    score_meta={'$meta': 'vectorSearchScore'}
+                    extra_fields={"score": {'$meta': 'vectorSearchScore'}}
                 )
             },
         ]
@@ -668,7 +668,7 @@ class MongoAtlasDocumentIndex(BaseDocIndex, Generic[TSchema]):
             text_stage,
             {
                 '$project': self._project_fields(
-                    score_meta={'score': {'$meta': 'searchScore'}}
+                    extra_fields={'score': {'$meta': 'searchScore'}}
                 )
             },
             {"$limit": limit},
