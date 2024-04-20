@@ -12,7 +12,6 @@ from typing import (
     List,
     Optional,
     Sequence,
-    Tuple,
     Type,
     TypeVar,
     Union,
@@ -24,7 +23,6 @@ from pymongo import MongoClient
 
 from docarray import BaseDoc, DocList
 from docarray.index.abstract import BaseDocIndex, _raise_not_composable
-from docarray.index.backends.helper import _collect_query_required_args
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
 from docarray.utils._internal._typing import safe_issubclass
 from docarray.utils.find import _FindResult, _FindResultBatched
@@ -98,57 +96,29 @@ class MongoAtlasDocumentIndex(BaseDocIndex, Generic[TSchema]):
         :return: True if the index exists, False otherwise.
         """
 
-    @dataclass
-    class Query:
-        """Dataclass describing a query."""
-
-        vector_fields: Optional[Dict[str, np.ndarray]]
-        filters: Optional[List[Any]]
-        text_searches: Optional[List[Any]]
-        limit: int
-
     class QueryBuilder(BaseDocIndex.QueryBuilder):
-        def __init__(self, query: Optional[List[Tuple[str, Dict]]] = None):
-            super().__init__()
-            # list of tuples (method name, kwargs)
-            self._queries: List[Tuple[str, Dict]] = query or []
+        ...
 
-        def build(self, limit: int) -> Any:
-            """Build the query object."""
-            search_fields: Dict[str, np.ndarray] = defaultdict(list)
-            filters: List[Any] = []
-            text_searches: List[Any] = []
-            for method, kwargs in self._queries:
-                if method == 'find':
-                    search_field = kwargs['search_field']
-                    search_fields[search_field].append(kwargs["query"])
-
-                elif method == 'filter':
-                    filters.append(kwargs)
-                else:
-                    text_searches.append(kwargs)
-
-            vector_fields = {
-                field: np.average(vectors, axis=0)
-                for field, vectors in search_fields.items()
-            }
-
-            return MongoAtlasDocumentIndex.Query(
-                vector_fields=vector_fields,
-                filters=filters,
-                text_searches=text_searches,
-                limit=limit,
-            )
-
-        find = _collect_query_required_args('find', {'search_field', 'query'})
-        filter = _collect_query_required_args('filter', {'query'})
-        text_search = _collect_query_required_args(
-            'text_search', {'search_field', 'query'}
-        )
-
+        find = _raise_not_composable('find')
+        filter = _raise_not_composable('filter')
+        text_search = _raise_not_composable('text_search')
         find_batched = _raise_not_composable('find_batched')
         filter_batched = _raise_not_composable('filter_batched')
         text_search_batched = _raise_not_composable('text_search_batched')
+
+    def execute_query(self, query: Any, *args, **kwargs) -> _FindResult:
+        """
+        Execute a query on the database.
+        Can take two kinds of inputs:
+        1. A native query of the underlying database. This is meant as a passthrough so that you
+        can enjoy any functionality that is not available through the Document index API.
+        2. The output of this Document index' `QueryBuilder.build()` method.
+        :param query: the query to execute
+        :param args: positional arguments to pass to the query
+        :param kwargs: keyword arguments to pass to the query
+        :return: the result of the query
+        """
+        ...
 
     @dataclass
     class DBConfig(BaseDocIndex.DBConfig):
@@ -160,7 +130,6 @@ class MongoAtlasDocumentIndex(BaseDocIndex, Generic[TSchema]):
                 dict,
                 {
                     bson.BSONARR: {
-                        'algorithm': 'KNN',
                         'distance': 'COSINE',
                         'oversample_factor': OVERSAMPLING_FACTOR,
                         'max_candidates': MAX_CANDIDATES,
@@ -297,171 +266,6 @@ class MongoAtlasDocumentIndex(BaseDocIndex, Generic[TSchema]):
         if not docs:
             raise KeyError(f'No document with id {doc_ids} found')
         return docs
-
-    @staticmethod
-    def _get_score_field_by_search_field(search_field: str):
-        return f"{search_field}_score"
-
-    def _compute_reciprocal_rank(self, search_field: str):
-        penalty = self._column_infos[search_field].config["penalty"]
-        score_field = self._get_score_field_by_search_field(search_field)
-        projection_fields = {
-            key: f"$docs.{key}" for key in self._column_infos.keys() if key != "id"
-        }
-        projection_fields["_id"] = "$docs._id"
-        projection_fields[score_field] = 1
-
-        return [
-            {"$group": {"_id": None, "docs": {"$push": "$$ROOT"}}},
-            {"$unwind": {"path": "$docs", "includeArrayIndex": "rank"}},
-            {
-                "$addFields": {
-                    score_field: {"$divide": [1.0, {"$add": ["$rank", penalty, 1]}]}
-                }
-            },
-            {'$project': projection_fields},
-        ]
-
-    def _add_stage_to_pipeline(self, pipeline: List[Any], stage: Dict[str, Any]):
-        if pipeline:
-            pipeline.append(
-                {"$unionWith": {"coll": self._collection, "pipeline": stage}}
-            )
-        else:
-            pipeline.extend(stage)
-        return pipeline
-
-    def _build_final_pipeline(self, pipeline, scores_field, limit):
-        doc_fields = self._column_infos.keys()
-        grouped_fields = {
-            key: {"$first": f"${key}"} for key in doc_fields if key != "_id"
-        }
-        best_score = {score: {'$max': f'${score}'} for score in scores_field}
-        final_pipeline = [
-            {"$group": {"_id": "$_id", **grouped_fields, **best_score}},
-            {
-                "$project": {
-                    **{field: 1 for field in doc_fields},
-                    **{score: {"$ifNull": [f"${score}", 0]} for score in scores_field},
-                }
-            },
-            {
-                "$project": {
-                    "score": {"$add": [f"${score}" for score in scores_field]},
-                    **{field: 1 for field in doc_fields},
-                }
-            },
-            {"$sort": {"score": -1}},
-            {"$limit": limit},
-        ]
-        return pipeline + final_pipeline
-
-    def _hybrid_search(
-        self,
-        vector_queries: Dict[str, Any],
-        text_queries: List[Dict[str, Any]],
-        filters: Dict[str, Any],
-        limit: int,
-    ):
-
-        result_pipeline = []
-        scores_field = []
-        for search_field, query in vector_queries.items():
-            vector_stage = self._vector_stage_search(
-                query=query,
-                search_field=search_field,
-                limit=limit,
-                filters=filters,
-            )
-            pipeline = [vector_stage, *self._compute_reciprocal_rank(search_field)]
-            self._add_stage_to_pipeline(result_pipeline, pipeline)
-            scores_field.append(self._get_score_field_by_search_field(search_field))
-
-        for kwargs in text_queries:
-            text_stage = self._text_stage_step(**kwargs)
-            reciprocal_rank_stage = self._compute_reciprocal_rank(
-                kwargs["search_field"]
-            )
-            stage_pipeline = [
-                text_stage,
-                {"$match": {"$and": filters} if filters else {}},
-                {"$limit": limit},
-                *reciprocal_rank_stage,
-            ]
-            self._add_stage_to_pipeline(result_pipeline, stage_pipeline)
-            scores_field.append(
-                self._get_score_field_by_search_field(kwargs["search_field"])
-            )
-
-        return self._build_final_pipeline(result_pipeline, scores_field, limit)
-
-    def execute_query(self, query: Any, *args, **kwargs) -> _FindResult:
-        """
-        Execute a query on the database.
-
-        Can take two kinds of inputs:
-
-        1. A native query of the underlying database. This is meant as a passthrough so that you
-        can enjoy any functionality that is not available through the Document index API.
-        2. The output of this Document index' `QueryBuilder.build()` method.
-
-        :param query: the query to execute
-        :param args: positional arguments to pass to the query
-        :param kwargs: keyword arguments to pass to the query
-        :return: the result of the query
-        """
-
-        pipeline: List[Dict[str, Any]] = []
-        filters: List[Dict[str, Any]] = []
-
-        # Regular filter search.
-        for filter_ in query.filters:
-            filters.append(self._filter_query(**filter_))
-
-        # check if hybrid search is needed.
-        if len(query.vector_fields) + len(query.text_searches) > 1:
-            pipeline = self._hybrid_search(
-                query.vector_fields, query.text_searches, filters, query.limit
-            )
-        else:
-            # it is a simple text with filters.
-            if query.text_searches:
-                text_stage = self._text_stage_step(**query.text_searches[0])
-                pipeline = [
-                    text_stage,
-                    {"$match": {"$and": filters} if filters else {}},
-                    {
-                        '$project': self._project_fields(
-                            extra_fields={"score": {'$meta': 'searchScore'}}
-                        )
-                    },
-                    {"$limit": query.limit},
-                ]
-            # it is a simple vector search with filters
-            elif query.vector_fields:
-                field, vector_query = list(query.vector_fields.items())[0]
-                pipeline = [
-                    self._vector_stage_search(
-                        query=vector_query,
-                        search_field=field,
-                        limit=query.limit,
-                        filters=filters,
-                    ),
-                    {
-                        '$project': self._project_fields(
-                            extra_fields={"score": {'$meta': 'vectorSearchScore'}}
-                        )
-                    },
-                ]
-            # it is only a filter search
-            else:
-                pipeline = [{"$match": {"$and": filters}}]
-
-        with self._doc_collection.aggregate(pipeline) as cursor:
-            docs, scores = self._mongo_to_docs(cursor)
-
-        docs = self._dict_list_to_docarray(docs)
-        return _FindResult(documents=docs, scores=scores)
 
     def _vector_stage_search(
         self,
