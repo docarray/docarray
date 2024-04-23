@@ -1,13 +1,12 @@
 import numpy as np
 import pytest
 
-from .fixtures import *  # noqa: F403
-from .helpers import assert_when_ready
+from . import SimpleSchema, assert_when_ready
 
 N_DIM = 10
 
 
-def test_num_docs(simple_index_with_docs, simple_schema):  # noqa: F811
+def test_num_docs(simple_index_with_docs):  # noqa: F811
     index, docs = simple_index_with_docs
     query = np.ones(N_DIM)
 
@@ -27,7 +26,7 @@ def test_num_docs(simple_index_with_docs, simple_schema):  # noqa: F811
 
     assert_when_ready(check_n_elements(7))
 
-    elems = [simple_schema(embedding=query, text="other", number=10) for _ in range(3)]
+    elems = [SimpleSchema(embedding=query, text="other", number=10) for _ in range(3)]
     index.index(elems)
 
     assert_when_ready(check_n_elements(10))
@@ -100,11 +99,11 @@ def test_del_multiple(simple_index_with_docs):  # noqa: F811
             assert np.allclose(index[doc.id].embedding, doc.embedding)
 
 
-def test_contains(simple_index_with_docs, simple_schema):  # noqa: F811
+def test_contains(simple_index_with_docs):  # noqa: F811
     index, docs = simple_index_with_docs
 
     for doc in docs:
         assert doc in index
 
-    other_doc = simple_schema(embedding=[1.0] * N_DIM, text="other", number=10)
+    other_doc = SimpleSchema(embedding=[1.0] * N_DIM, text="other", number=10)
     assert other_doc not in index

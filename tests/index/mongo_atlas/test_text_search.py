@@ -1,5 +1,4 @@
-from .fixtures import *  # noqa: F403
-from .helpers import assert_when_ready
+from . import assert_when_ready
 
 
 def test_text_search(simple_index_with_docs):  # noqa: F811
@@ -19,7 +18,7 @@ def test_text_search(simple_index_with_docs):  # noqa: F811
     assert_when_ready(pred)
 
 
-def test_text_search_batched(simple_index_with_docs, simple_schema):  # noqa: F811
+def test_text_search_batched(simple_index_with_docs):  # noqa: F811
 
     index, docs = simple_index_with_docs
 

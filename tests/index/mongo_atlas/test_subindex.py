@@ -1,3 +1,5 @@
+from typing import Optional
+
 import numpy as np
 import pytest
 from pydantic import Field
@@ -5,11 +7,30 @@ from pydantic import Field
 from docarray import BaseDoc, DocList
 from docarray.index import MongoAtlasDocumentIndex
 from docarray.typing import NdArray
+from docarray.typing.tensor import AnyTensor
 
-from .fixtures import *  # noqa: F403
-from .helpers import assert_when_ready
+from . import assert_when_ready
 
 pytestmark = [pytest.mark.slow, pytest.mark.index]
+
+
+class MetaPathDoc(BaseDoc):
+    path_id: str
+    level: int
+    text: str
+    embedding: Optional[AnyTensor] = Field(space='cosine', dim=128)
+
+
+class MetaCategoryDoc(BaseDoc):
+    node_id: Optional[str]
+    node_name: Optional[str]
+    name: Optional[str]
+    product_type_definitions: Optional[str]
+    leaf: bool
+    paths: Optional[DocList[MetaPathDoc]]
+    embedding: Optional[AnyTensor] = Field(space='cosine', dim=128)
+    channel: str
+    lang: str
 
 
 class SimpleDoc(BaseDoc):
@@ -36,12 +57,8 @@ def clean_subindex(index):
 
 
 @pytest.fixture(scope='session')
-def index(mongo_fixture_env):  # noqa: F811
-    uri, database = mongo_fixture_env
-    index = MongoAtlasDocumentIndex[MyDoc](
-        mongo_connection_uri=uri,
-        database_name=database,
-    )
+def index(mongodb_index_config):  # noqa: F811
+    index = MongoAtlasDocumentIndex[MyDoc](**mongodb_index_config)
     clean_subindex(index)
 
     my_docs = [
@@ -139,7 +156,7 @@ def test_subindex_get(index):
     assert np.allclose(doc.my_tens, np.ones(30) * 2)
 
 
-def test_subindex_contain(index, mongo_fixture_env):  # noqa: F811
+def test_subindex_contain(index, mongodb_index_config):  # noqa: F811
     # Checks for individual simple_docs within list_docs
 
     doc = index['0']
@@ -164,11 +181,7 @@ def test_subindex_contain(index, mongo_fixture_env):  # noqa: F811
     assert index.subindex_contains(empty_doc) is False
 
     # Empty index
-    uri, database = mongo_fixture_env
-    empty_index = MongoAtlasDocumentIndex[MyDoc](
-        mongo_connection_uri=uri,
-        database_name="random_database",
-    )
+    empty_index = MongoAtlasDocumentIndex[MyDoc](**mongodb_index_config)
     assert (empty_doc in empty_index) is False
 
 
@@ -204,33 +217,39 @@ def test_find_subindex_sublevel(index):
 
 def test_find_subindex_subsublevel(index):
     # sub sub level
-    query = np.ones((10,))
-    root_docs, docs, scores = index.find_subindex(
-        query, subindex='list_docs__docs', search_field='simple_tens', limit=2
-    )
-    assert len(docs) == 2
-    assert isinstance(root_docs[0], MyDoc)
-    assert isinstance(docs[0], SimpleDoc)
-    for root_doc, doc, score in zip(root_docs, docs, scores):
-        assert np.allclose(doc.simple_tens, np.ones(10))
-        assert root_doc.id == f'{doc.id.split("-")[2]}'
-        assert score == 1.0
+    def predicate():
+        query = np.ones((10,))
+        root_docs, docs, scores = index.find_subindex(
+            query, subindex='list_docs__docs', search_field='simple_tens', limit=2
+        )
+        assert len(docs) == 2
+        assert isinstance(root_docs[0], MyDoc)
+        assert isinstance(docs[0], SimpleDoc)
+        for root_doc, doc, score in zip(root_docs, docs, scores):
+            assert np.allclose(doc.simple_tens, np.ones(10))
+            assert root_doc.id == f'{doc.id.split("-")[2]}'
+            assert score == 1.0
+
+    assert_when_ready(predicate)
 
 
 def test_subindex_filter(index):
-    query = {"simple_doc__simple_text": {"$eq": "hello 1"}}
-    docs = index.filter_subindex(query, subindex='list_docs', limit=4)
-    assert len(docs) == 2
-    assert isinstance(docs[0], ListDoc)
-    for doc in docs:
-        assert doc.id.split('-')[-1] == '1'
+    def predicate():
+        query = {"simple_doc__simple_text": {"$eq": "hello 1"}}
+        docs = index.filter_subindex(query, subindex='list_docs', limit=4)
+        assert len(docs) == 2
+        assert isinstance(docs[0], ListDoc)
+        for doc in docs:
+            assert doc.id.split('-')[-1] == '1'
 
-    query = {"simple_text": {"$eq": "hello 0"}}
-    docs = index.filter_subindex(query, subindex='list_docs__docs', limit=5)
-    assert len(docs) == 4
-    assert isinstance(docs[0], SimpleDoc)
-    for doc in docs:
-        assert doc.id.split('-')[-1] == '0'
+        query = {"simple_text": {"$eq": "hello 0"}}
+        docs = index.filter_subindex(query, subindex='list_docs__docs', limit=5)
+        assert len(docs) == 4
+        assert isinstance(docs[0], SimpleDoc)
+        for doc in docs:
+            assert doc.id.split('-')[-1] == '0'
+
+    assert_when_ready(predicate)
 
 
 def test_subindex_del(index):
@@ -241,35 +260,8 @@ def test_subindex_del(index):
     assert index._subindices['list_docs']._subindices['docs'].num_docs() == 4
 
 
-def test_subindex_collections(mongo_fixture_env):  # noqa: F811
-    uri, database = mongo_fixture_env
-    from typing import Optional
-
-    from pydantic import Field
-
-    from docarray.typing.tensor import AnyTensor
-
-    class MetaPathDoc(BaseDoc):
-        path_id: str
-        level: int
-        text: str
-        embedding: Optional[AnyTensor] = Field(space='cosine', dim=128)
-
-    class MetaCategoryDoc(BaseDoc):
-        node_id: Optional[str]
-        node_name: Optional[str]
-        name: Optional[str]
-        product_type_definitions: Optional[str]
-        leaf: bool
-        paths: Optional[DocList[MetaPathDoc]]
-        embedding: Optional[AnyTensor] = Field(space='cosine', dim=128)
-        channel: str
-        lang: str
-
-    doc_index = MongoAtlasDocumentIndex[MetaCategoryDoc](
-        mongo_connection_uri=uri,
-        database_name=database,
-    )
+def test_subindex_collections(mongodb_index_config):  # noqa: F811
+    doc_index = MongoAtlasDocumentIndex[MetaCategoryDoc](**mongodb_index_config)
 
     assert doc_index._subindices["paths"].index_name == 'metacategorydoc__paths'
     assert doc_index._subindices["paths"]._collection == 'metacategorydoc__paths'

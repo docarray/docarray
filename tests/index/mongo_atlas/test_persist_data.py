@@ -1,20 +1,10 @@
 from docarray.index import MongoAtlasDocumentIndex
 
-from .fixtures import *  # noqa: F403
-from .helpers import assert_when_ready
+from . import SimpleSchema, assert_when_ready
 
 
-def create_index(uri, database, schema):
-    return MongoAtlasDocumentIndex[schema](
-        mongo_connection_uri=uri,
-        database_name=database,
-    )
-
-
-def test_persist(
-    mongo_fixture_env, simple_schema, random_simple_documents  # noqa: F811
-):
-    index = create_index(*mongo_fixture_env, simple_schema)
+def test_persist(mongodb_index_config, random_simple_documents):  # noqa: F811
+    index = MongoAtlasDocumentIndex[SimpleSchema](**mongodb_index_config)
     index._doc_collection.delete_many({})
 
     def cleaned_database():
@@ -45,7 +35,8 @@ def test_persist(
     ).documents[0]
     del index
 
-    index = create_index(*mongo_fixture_env, simple_schema)
+    index = MongoAtlasDocumentIndex[SimpleSchema](**mongodb_index_config)
+
     doc_after = index.find(
         random_simple_documents[0].embedding, search_field='embedding', limit=1
     ).documents[0]

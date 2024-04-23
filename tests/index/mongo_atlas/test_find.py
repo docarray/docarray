@@ -6,24 +6,25 @@ from docarray import BaseDoc
 from docarray.index import MongoAtlasDocumentIndex
 from docarray.typing import NdArray
 
-from .fixtures import *  # noqa: F403
-from .helpers import assert_when_ready
+from . import NestedDoc, SimpleDoc, SimpleSchema, assert_when_ready
 
 N_DIM = 10
 
 
-def test_find_simple_schema(simple_index_with_docs, simple_schema):  # noqa: F811
+def test_find_simple_schema(simple_index_with_docs):  # noqa: F811
 
     simple_index, random_simple_documents = simple_index_with_docs  # noqa: F811
     query = np.ones(N_DIM)
-    closest_document = simple_schema(embedding=query, text="other", number=10)
-    simple_index.index(closest_document)
+
+    # Insert one doc that identically matches query's embedding
+    expected_matching_document = SimpleSchema(embedding=query, text="other", number=10)
+    simple_index.index(expected_matching_document)
 
     def pred():
         docs, scores = simple_index.find(query, search_field='embedding', limit=5)
         assert len(docs) == 5
         assert len(scores) == 5
-        assert np.allclose(docs[0].embedding, closest_document.embedding)
+        assert np.allclose(docs[0].embedding, expected_matching_document.embedding)
 
     assert_when_ready(pred)
 
@@ -39,13 +40,11 @@ def test_find_empty_index(simple_index):  # noqa: F811
     assert_when_ready(pred)
 
 
-def test_find_limit_larger_than_index(
-    simple_index_with_docs, simple_schema  # noqa: F811
-):
+def test_find_limit_larger_than_index(simple_index_with_docs):  # noqa: F811
     simple_index, random_simple_documents = simple_index_with_docs  # noqa: F811
 
     query = np.ones(N_DIM)
-    new_doc = simple_schema(embedding=query, text="other", number=10)
+    new_doc = SimpleSchema(embedding=query, text="other", number=10)
 
     simple_index.index(new_doc)
 
@@ -57,17 +56,13 @@ def test_find_limit_larger_than_index(
     assert_when_ready(pred)
 
 
-def test_find_flat_schema(mongo_fixture_env):  # noqa: F811
+def test_find_flat_schema(mongodb_index_config):  # noqa: F811
     class FlatSchema(BaseDoc):
         embedding1: NdArray = Field(dim=N_DIM, index_name="vector_index_1")
         # the dim and N_DIM are setted different on propouse. to check the correct handling of n_dim
         embedding2: NdArray[50] = Field(dim=N_DIM, index_name="vector_index_2")
 
-    uri, database_name = mongo_fixture_env
-    index = MongoAtlasDocumentIndex[FlatSchema](
-        mongo_connection_uri=uri,
-        database_name=database_name,
-    )
+    index = MongoAtlasDocumentIndex[FlatSchema](**mongodb_index_config)
 
     index._doc_collection.delete_many({})
 
@@ -80,12 +75,11 @@ def test_find_flat_schema(mongo_fixture_env):  # noqa: F811
     index_docs.append(FlatSchema(embedding1=np.ones(N_DIM), embedding2=np.zeros(50)))
     index.index(index_docs)
 
-    queries = (np.ones(N_DIM), np.ones(50))
-
     def pred1():
 
         # find on embedding1
-        docs, scores = index.find(queries[0], search_field='embedding1', limit=5)
+        query = np.ones(N_DIM)
+        docs, scores = index.find(query, search_field='embedding1', limit=5)
         assert len(docs) == 5
         assert len(scores) == 5
         assert np.allclose(docs[0].embedding1, index_docs[-1].embedding1)
@@ -95,7 +89,8 @@ def test_find_flat_schema(mongo_fixture_env):  # noqa: F811
 
     def pred2():
         # find on embedding2
-        docs, scores = index.find(queries[1], search_field='embedding2', limit=5)
+        query = np.ones(50)
+        docs, scores = index.find(query, search_field='embedding2', limit=5)
         assert len(docs) == 5
         assert len(scores) == 5
         assert np.allclose(docs[0].embedding1, index_docs[-2].embedding1)
@@ -121,12 +116,10 @@ def test_find_batches(simple_index_with_docs):  # noqa: F811
     assert_when_ready(pred)
 
 
-def test_find_nested_schema(nested_index_with_docs, nested_schema):  # noqa: F811
+def test_find_nested_schema(nested_index_with_docs):  # noqa: F811
     db, base_docs = nested_index_with_docs
 
-    query = nested_schema[0](
-        d=nested_schema[1](embedding=np.ones(N_DIM)), embedding=np.ones(N_DIM)
-    )
+    query = NestedDoc(d=SimpleDoc(embedding=np.ones(N_DIM)), embedding=np.ones(N_DIM))
 
     # find on root level
     def pred():
@@ -144,15 +137,11 @@ def test_find_nested_schema(nested_index_with_docs, nested_schema):  # noqa: F81
     assert_when_ready(pred)
 
 
-def test_find_schema_without_index(mongo_fixture_env):  # noqa: F811
+def test_find_schema_without_index(mongodb_index_config):  # noqa: F811
     class Schema(BaseDoc):
         vec: NdArray = Field(dim=N_DIM)
 
-    uri, database_name = mongo_fixture_env
-    index = MongoAtlasDocumentIndex[Schema](
-        mongo_connection_uri=uri,
-        database_name=database_name,
-    )
+    index = MongoAtlasDocumentIndex[Schema](**mongodb_index_config)
     query = np.ones(N_DIM)
     with pytest.raises(ValueError):
         index.find(query, search_field='vec', limit=2)
