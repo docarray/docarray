@@ -12,7 +12,7 @@ from . import NestedDoc, SimpleDoc, SimpleSchema
 def mongodb_index_config():
     return {
         "mongo_connection_uri": os.environ["MONGODB_URI"],
-        "database_name": os.environ["DATABASE_NAME"],
+        "database_name": os.environ["MONGODB_DATABASE"],
     }
 
 
