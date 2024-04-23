@@ -3,33 +3,29 @@ import os
 import numpy as np
 import pytest
 
-from docarray.index import MongoAtlasDocumentIndex
+from docarray.index import MongoDBAtlasDocumentIndex
 
 from . import NestedDoc, SimpleDoc, SimpleSchema
-
-
-def mongo_env_var(var: str):
-    return os.environ[var]
 
 
 @pytest.fixture(scope='session')
 def mongodb_index_config():
     return {
-        "mongo_connection_uri": mongo_env_var("MONGODB_URI"),
-        "database_name": mongo_env_var("DATABASE_NAME"),
+        "mongo_connection_uri": os.environ["MONGODB_URI"],
+        "database_name": os.environ["DATABASE_NAME"],
     }
 
 
 @pytest.fixture
 def simple_index(mongodb_index_config):
 
-    index = MongoAtlasDocumentIndex[SimpleSchema](**mongodb_index_config)
+    index = MongoDBAtlasDocumentIndex[SimpleSchema](**mongodb_index_config)
     return index
 
 
 @pytest.fixture
 def nested_index(mongodb_index_config):
-    index = MongoAtlasDocumentIndex[NestedDoc](**mongodb_index_config)
+    index = MongoDBAtlasDocumentIndex[NestedDoc](**mongodb_index_config)
     return index
 
 

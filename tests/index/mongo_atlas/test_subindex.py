@@ -5,7 +5,7 @@ import pytest
 from pydantic import Field
 
 from docarray import BaseDoc, DocList
-from docarray.index import MongoAtlasDocumentIndex
+from docarray.index import MongoDBAtlasDocumentIndex
 from docarray.typing import NdArray
 from docarray.typing.tensor import AnyTensor
 
@@ -58,7 +58,7 @@ def clean_subindex(index):
 
 @pytest.fixture(scope='session')
 def index(mongodb_index_config):  # noqa: F811
-    index = MongoAtlasDocumentIndex[MyDoc](**mongodb_index_config)
+    index = MongoDBAtlasDocumentIndex[MyDoc](**mongodb_index_config)
     clean_subindex(index)
 
     my_docs = [
@@ -109,10 +109,10 @@ def index(mongodb_index_config):  # noqa: F811
 
 
 def test_subindex_init(index):
-    assert isinstance(index._subindices['docs'], MongoAtlasDocumentIndex)
-    assert isinstance(index._subindices['list_docs'], MongoAtlasDocumentIndex)
+    assert isinstance(index._subindices['docs'], MongoDBAtlasDocumentIndex)
+    assert isinstance(index._subindices['list_docs'], MongoDBAtlasDocumentIndex)
     assert isinstance(
-        index._subindices['list_docs']._subindices['docs'], MongoAtlasDocumentIndex
+        index._subindices['list_docs']._subindices['docs'], MongoDBAtlasDocumentIndex
     )
 
 
@@ -181,7 +181,7 @@ def test_subindex_contain(index, mongodb_index_config):  # noqa: F811
     assert index.subindex_contains(empty_doc) is False
 
     # Empty index
-    empty_index = MongoAtlasDocumentIndex[MyDoc](**mongodb_index_config)
+    empty_index = MongoDBAtlasDocumentIndex[MyDoc](**mongodb_index_config)
     assert (empty_doc in empty_index) is False
 
 
@@ -261,7 +261,7 @@ def test_subindex_del(index):
 
 
 def test_subindex_collections(mongodb_index_config):  # noqa: F811
-    doc_index = MongoAtlasDocumentIndex[MetaCategoryDoc](**mongodb_index_config)
+    doc_index = MongoDBAtlasDocumentIndex[MetaCategoryDoc](**mongodb_index_config)
 
     assert doc_index._subindices["paths"].index_name == 'metacategorydoc__paths'
     assert doc_index._subindices["paths"]._collection == 'metacategorydoc__paths'

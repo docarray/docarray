@@ -14,7 +14,7 @@ if TYPE_CHECKING:
     from docarray.index.backends.hnswlib import HnswDocumentIndex  # noqa: F401
     from docarray.index.backends.milvus import MilvusDocumentIndex  # noqa: F401
     from docarray.index.backends.mongodb_atlas import (  # noqa: F401
-        MongoAtlasDocumentIndex,
+        MongoDBAtlasDocumentIndex,
     )
     from docarray.index.backends.qdrant import QdrantDocumentIndex  # noqa: F401
     from docarray.index.backends.redis import RedisDocumentIndex  # noqa: F401
@@ -29,7 +29,7 @@ __all__ = [
     'WeaviateDocumentIndex',
     'RedisDocumentIndex',
     'MilvusDocumentIndex',
-    'MongoAtlasDocumentIndex',
+    'MongoDBAtlasDocumentIndex',
 ]
 
 
@@ -59,9 +59,9 @@ def __getattr__(name: str):
     elif name == 'RedisDocumentIndex':
         import_library('redis', raise_error=True)
         import docarray.index.backends.redis as lib
-    elif name == 'MongoAtlasDocumentIndex':
+    elif name == 'MongoDBAtlasDocumentIndex':
         import_library('pymongo', raise_error=True)
-        import docarray.index.backends.mongo_atlas as lib
+        import docarray.index.backends.mongodb_atlas as lib
     else:
         raise ImportError(
             f'cannot import name \'{name}\' from \'{_get_path_from_docarray_root_level(__file__)}\''

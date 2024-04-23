@@ -905,7 +905,7 @@ from docarray.index import (
     QdrantDocumentIndex,
     ElasticDocIndex,
     RedisDocumentIndex,
-    MongoAtlasDocumentIndex,
+    MongoDBAtlasDocumentIndex,
 )
 
 # Select a suitable backend and initialize it with data

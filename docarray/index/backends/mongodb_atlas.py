@@ -35,7 +35,7 @@ OVERSAMPLING_FACTOR = 10
 TSchema = TypeVar('TSchema', bound=BaseDoc)
 
 
-class MongoAtlasDocumentIndex(BaseDocIndex, Generic[TSchema]):
+class MongoDBAtlasDocumentIndex(BaseDocIndex, Generic[TSchema]):
     def __init__(self, db_config=None, **kwargs):
         super().__init__(db_config=db_config, **kwargs)
         self._create_indexes()
@@ -48,8 +48,8 @@ class MongoAtlasDocumentIndex(BaseDocIndex, Generic[TSchema]):
 
         if not self._schema:
             raise ValueError(
-                'A MongoAtlasDocumentIndex must be typed with a Document type.'
-                'To do so, use the syntax: MongoAtlasDocumentIndex[DocumentType]'
+                'A MongoDBAtlasDocumentIndex must be typed with a Document type.'
+                'To do so, use the syntax: MongoDBAtlasDocumentIndex[DocumentType]'
             )
 
         return self._schema.__name__.lower()
@@ -201,7 +201,7 @@ class MongoAtlasDocumentIndex(BaseDocIndex, Generic[TSchema]):
         docs = []
         scores = []
         for mongo_doc in mongo_docs:
-            doc, score = MongoAtlasDocumentIndex._mongo_to_doc(mongo_doc)
+            doc, score = MongoDBAtlasDocumentIndex._mongo_to_doc(mongo_doc)
             docs.append(doc)
             scores.append(score)
 
@@ -394,17 +394,17 @@ class MongoAtlasDocumentIndex(BaseDocIndex, Generic[TSchema]):
         if index_name is None or not isinstance(index_name, str):
             if is_vector_index:
                 raise ValueError(
-                    f'The column {column_name} for MongoAtlasDocumentIndex should be associated '
+                    f'The column {column_name} for MongoDBAtlasDocumentIndex should be associated '
                     'with an Atlas Vector Index.'
                 )
             elif is_text_index:
                 raise ValueError(
-                    f'The column {column_name} for MongoAtlasDocumentIndex should be associated '
+                    f'The column {column_name} for MongoDBAtlasDocumentIndex should be associated '
                     'with an Atlas Index.'
                 )
         if not (is_vector_index or is_text_index):
             raise ValueError(
-                f'The column {column_name} for MongoAtlasDocumentIndex cannot be associated to an index'
+                f'The column {column_name} for MongoDBAtlasDocumentIndex cannot be associated to an index'
             )
 
         return index_name

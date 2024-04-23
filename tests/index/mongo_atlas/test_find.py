@@ -3,7 +3,7 @@ import pytest
 from pydantic import Field
 
 from docarray import BaseDoc
-from docarray.index import MongoAtlasDocumentIndex
+from docarray.index import MongoDBAtlasDocumentIndex
 from docarray.typing import NdArray
 
 from . import NestedDoc, SimpleDoc, SimpleSchema, assert_when_ready
@@ -62,7 +62,7 @@ def test_find_flat_schema(mongodb_index_config):  # noqa: F811
         # the dim and N_DIM are setted different on propouse. to check the correct handling of n_dim
         embedding2: NdArray[50] = Field(dim=N_DIM, index_name="vector_index_2")
 
-    index = MongoAtlasDocumentIndex[FlatSchema](**mongodb_index_config)
+    index = MongoDBAtlasDocumentIndex[FlatSchema](**mongodb_index_config)
 
     index._doc_collection.delete_many({})
 
@@ -141,7 +141,7 @@ def test_find_schema_without_index(mongodb_index_config):  # noqa: F811
     class Schema(BaseDoc):
         vec: NdArray = Field(dim=N_DIM)
 
-    index = MongoAtlasDocumentIndex[Schema](**mongodb_index_config)
+    index = MongoDBAtlasDocumentIndex[Schema](**mongodb_index_config)
     query = np.ones(N_DIM)
     with pytest.raises(ValueError):
         index.find(query, search_field='vec', limit=2)
