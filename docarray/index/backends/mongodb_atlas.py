@@ -1,9 +1,9 @@
 import collections
+import logging
 from collections import defaultdict
 from dataclasses import dataclass, field
 from functools import cached_property
 
-# from importlib.metadata import version
 from typing import (
     Any,
     Dict,
@@ -27,9 +27,6 @@ from docarray.typing.tensor.abstract_tensor import AbstractTensor
 from docarray.utils._internal._typing import safe_issubclass
 from docarray.utils.find import _FindResult, _FindResultBatched
 
-# from pymongo.driver_info import DriverInfo
-
-
 MAX_CANDIDATES = 10_000
 OVERSAMPLING_FACTOR = 10
 TSchema = TypeVar('TSchema', bound=BaseDoc)
@@ -38,6 +35,7 @@ TSchema = TypeVar('TSchema', bound=BaseDoc)
 class MongoDBAtlasDocumentIndex(BaseDocIndex, Generic[TSchema]):
     def __init__(self, db_config=None, **kwargs):
         super().__init__(db_config=db_config, **kwargs)
+        self._logger = logging.getLogger(__name__)
         self._create_indexes()
         self._logger.info(f'{self.__class__.__name__} has been initialized')
 
@@ -87,14 +85,10 @@ class MongoDBAtlasDocumentIndex(BaseDocIndex, Generic[TSchema]):
 
     def _create_indexes(self):
         """Create a new index in the MongoDB database if it doesn't already exist."""
-
-    def _check_index_exists(self, index_name: str) -> bool:
-        """
-        Check if an index exists in the MongoDB Atlas database.
-
-        :param index_name: The name of the index.
-        :return: True if the index exists, False otherwise.
-        """
+        self._logger.warning("Search Indexes in MongoDB Atlas must be created manually. "
+            "Currently, client-side creation of vector indexes is not allowed on free clusters."
+            "Please follow instructions in docs/API_reference/doc_index/backends/mongodb.md"
+        )
 
     class QueryBuilder(BaseDocIndex.QueryBuilder):
         ...
@@ -124,7 +118,7 @@ class MongoDBAtlasDocumentIndex(BaseDocIndex, Generic[TSchema]):
     class DBConfig(BaseDocIndex.DBConfig):
         mongo_connection_uri: str = 'localhost'
         index_name: Optional[str] = None
-        database_name: Optional[str] = "default"
+        database_name: Optional[str] = "db"
         default_column_config: Dict[Type, Dict[str, Any]] = field(
             default_factory=lambda: defaultdict(
                 dict,
@@ -190,14 +184,14 @@ class MongoDBAtlasDocumentIndex(BaseDocIndex, Generic[TSchema]):
         return [self._doc_to_mongo(doc) for doc in docs]
 
     @staticmethod
-    def _mongo_to_doc(mongo_doc: dict) -> dict:
+    def _mongo_to_doc(mongo_doc: dict) -> tuple[dict, float]:
         result = mongo_doc.copy()
         result["id"] = result.pop("_id")
         score = result.pop("score", None)
         return result, score
 
     @staticmethod
-    def _mongo_to_docs(mongo_docs: Generator[Dict, None, None]) -> List[dict]:
+    def _mongo_to_docs(mongo_docs: Generator[Dict, None, None]) -> tuple[list[dict], list[float]]:
         docs = []
         scores = []
         for mongo_doc in mongo_docs:
