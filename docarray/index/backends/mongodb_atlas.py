@@ -15,6 +15,7 @@ from typing import (
     Type,
     TypeVar,
     Union,
+    Tuple,
 )
 
 import bson
@@ -184,7 +185,7 @@ class MongoDBAtlasDocumentIndex(BaseDocIndex, Generic[TSchema]):
         return [self._doc_to_mongo(doc) for doc in docs]
 
     @staticmethod
-    def _mongo_to_doc(mongo_doc: dict) -> tuple[dict, float]:
+    def _mongo_to_doc(mongo_doc: dict) -> Tuple[dict, float]:
         result = mongo_doc.copy()
         result["id"] = result.pop("_id")
         score = result.pop("score", None)
@@ -193,7 +194,7 @@ class MongoDBAtlasDocumentIndex(BaseDocIndex, Generic[TSchema]):
     @staticmethod
     def _mongo_to_docs(
         mongo_docs: Generator[Dict, None, None]
-    ) -> tuple[list[dict], list[float]]:
+    ) -> Tuple[list[dict], list[float]]:
         docs = []
         scores = []
         for mongo_doc in mongo_docs:
@@ -328,7 +329,7 @@ class MongoDBAtlasDocumentIndex(BaseDocIndex, Generic[TSchema]):
         :param query: query vector for KNN/ANN search. Has single axis.
         :param limit: maximum number of documents to return per query
         :param search_field: name of the field to search on
-        :return: a named tuple containing `documents` and `scores`
+        :return: a named NamedTuple containing `documents` and `scores`
         """
         # NOTE: in standard implementations,
         # `search_field` is equal to the column name to search on
@@ -358,7 +359,7 @@ class MongoDBAtlasDocumentIndex(BaseDocIndex, Generic[TSchema]):
             Has shape (batch_size, vector_dim)
         :param limit: maximum number of documents to return
         :param search_field: name of the field to search on
-        :return: a named tuple containing `documents` and `scores`
+        :return: a named NamedTuple containing `documents` and `scores`
         """
         docs, scores = [], []
         for query in queries:
@@ -460,7 +461,7 @@ class MongoDBAtlasDocumentIndex(BaseDocIndex, Generic[TSchema]):
         :param query: The text to search for
         :param limit: maximum number of documents to return
         :param search_field: name of the field to search on
-        :return: a named tuple containing `documents` and `scores`
+        :return: a named Tuple containing `documents` and `scores`
         """
         text_stage = self._text_stage_step(query=query, search_field=search_field)
 
@@ -490,7 +491,7 @@ class MongoDBAtlasDocumentIndex(BaseDocIndex, Generic[TSchema]):
         :param queries: The texts to search for
         :param limit: maximum number of documents to return per query
         :param search_field: name of the field to search on
-        :return: a named tuple containing `documents` and `scores`
+        :return: a named Tuple containing `documents` and `scores`
         """
         # NOTE: in standard implementations,
         # `search_field` is equal to the column name to search on
