@@ -85,7 +85,8 @@ class MongoDBAtlasDocumentIndex(BaseDocIndex, Generic[TSchema]):
 
     def _create_indexes(self):
         """Create a new index in the MongoDB database if it doesn't already exist."""
-        self._logger.warning("Search Indexes in MongoDB Atlas must be created manually. "
+        self._logger.warning(
+            "Search Indexes in MongoDB Atlas must be created manually. "
             "Currently, client-side creation of vector indexes is not allowed on free clusters."
             "Please follow instructions in docs/API_reference/doc_index/backends/mongodb.md"
         )
@@ -142,8 +143,7 @@ class MongoDBAtlasDocumentIndex(BaseDocIndex, Generic[TSchema]):
         )
 
     @dataclass
-    class RuntimeConfig(BaseDocIndex.RuntimeConfig):
-        ...
+    class RuntimeConfig(BaseDocIndex.RuntimeConfig): ...
 
     def python_type_to_db_type(self, python_type: Type) -> Any:
         """Map python type to database type.
@@ -191,7 +191,9 @@ class MongoDBAtlasDocumentIndex(BaseDocIndex, Generic[TSchema]):
         return result, score
 
     @staticmethod
-    def _mongo_to_docs(mongo_docs: Generator[Dict, None, None]) -> tuple[list[dict], list[float]]:
+    def _mongo_to_docs(
+        mongo_docs: Generator[Dict, None, None]
+    ) -> tuple[list[dict], list[float]]:
         docs = []
         scores = []
         for mongo_doc in mongo_docs:
