@@ -144,7 +144,8 @@ class MongoDBAtlasDocumentIndex(BaseDocIndex, Generic[TSchema]):
         )
 
     @dataclass
-    class RuntimeConfig(BaseDocIndex.RuntimeConfig): ...
+    class RuntimeConfig(BaseDocIndex.RuntimeConfig):
+        pass
 
     def python_type_to_db_type(self, python_type: Type) -> Any:
         """Map python type to database type.
