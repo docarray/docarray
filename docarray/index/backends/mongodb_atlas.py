@@ -195,7 +195,7 @@ class MongoDBAtlasDocumentIndex(BaseDocIndex, Generic[TSchema]):
     @staticmethod
     def _mongo_to_docs(
         mongo_docs: Generator[Dict, None, None]
-    ) -> Tuple[list[dict], list[float]]:
+    ) -> Tuple[List[dict], List[float]]:
         docs = []
         scores = []
         for mongo_doc in mongo_docs:
