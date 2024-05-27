@@ -49,11 +49,17 @@ def test_to_json(doc_and_class):
 
     doc, _ = doc_and_class
     js = doc.json()
-    assert json.loads(js)["image_bytes_"] == 'hello'
+    assert (
+        json.loads(js)["image_bytes_"]
+        == ImageBytes(b'hello')._docarray_to_json_compatible()
+    )
     assert json.loads(js)["bytes_"] == 'hello'
 
     to_js = doc.to_json()
-    assert json.loads(to_js)["image_bytes_"] == 'hello'
+    assert (
+        json.loads(to_js)["image_bytes_"]
+        == ImageBytes(b'hello')._docarray_to_json_compatible()
+    )
     assert json.loads(to_js)["bytes_"] == 'hello'
 
 
@@ -64,12 +70,12 @@ def test_doclist_to_json(doc_and_class):
     doc_list = DocList[cls]([doc, doc])
     js = doc_list.to_json()
     for d in json.loads(js):
-        assert d["image_bytes_"] == 'hello'
+        assert d["image_bytes_"] == ImageBytes(b'hello')._docarray_to_json_compatible()
         assert d["bytes_"] == 'hello'
 
     to_js = doc_list.to_json()
     for d in json.loads(to_js):
-        assert d["image_bytes_"] == 'hello'
+        assert d["image_bytes_"] == ImageBytes(b'hello')._docarray_to_json_compatible()
         assert d["bytes_"] == 'hello'
 
 
