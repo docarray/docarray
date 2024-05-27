@@ -1,13 +1,16 @@
 from io import BytesIO
-from typing import TYPE_CHECKING, Optional, Tuple, TypeVar
+from typing import TYPE_CHECKING, Optional, Tuple, TypeVar, Type, Any
 
 import numpy as np
 from pydantic import parse_obj_as
+
 
 from docarray.typing.bytes.base_bytes import BaseBytes
 from docarray.typing.proto_register import _register_proto
 from docarray.typing.tensor.image.image_ndarray import ImageNdArray
 from docarray.utils._internal.misc import import_library
+from docarray.utils._internal.pydantic import bytes_validator
+
 
 if TYPE_CHECKING:
     from PIL import Image as PILImage
@@ -21,6 +24,28 @@ class ImageBytes(BaseBytes):
     """
     Bytes that store an image and that can be load into an image tensor
     """
+
+    @classmethod
+    def _docarray_validate(
+        cls: Type[T],
+        value: Any,
+    ) -> T:
+        if isinstance(value, str):
+            import base64
+
+            return cls(base64.b64decode(value))
+        else:
+            value = bytes_validator(value)
+            return cls(value)
+
+    def _docarray_to_json_compatible(self):
+        """
+        Convert itself into a json compatible object
+        """
+        import base64
+
+        encoded_str = base64.b64encode(self).decode('utf-8')
+        return encoded_str
 
     def load_pil(
         self,
