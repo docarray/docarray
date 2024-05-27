@@ -17,7 +17,7 @@ import numpy as np
 import pytest
 import torch
 
-from docarray.base_doc import BaseDoc
+from docarray import BaseDoc, DocList
 from docarray.base_doc.io.json import orjson_dumps
 from docarray.typing import AnyUrl, NdArray, TorchTensor
 from docarray.typing.bytes.image_bytes import ImageBytes
@@ -45,10 +45,32 @@ def doc_and_class():
 
 
 def test_to_json(doc_and_class):
+    import json
+
     doc, _ = doc_and_class
     js = doc.json()
-    assert js['image_bytes_'] == 'hello'
-    assert js['bytes_'] == 'hello'
+    assert json.loads(js)["image_bytes_"] == 'hello'
+    assert json.loads(js)["bytes_"] == 'hello'
+
+    to_js = doc.to_json()
+    assert json.loads(to_js)["image_bytes_"] == 'hello'
+    assert json.loads(to_js)["bytes_"] == 'hello'
+
+
+def test_doclist_to_json(doc_and_class):
+    import json
+
+    doc, cls = doc_and_class
+    doc_list = DocList[cls]([doc, doc])
+    js = doc_list.to_json()
+    for d in json.loads(js):
+        assert d["image_bytes_"] == 'hello'
+        assert d["bytes_"] == 'hello'
+
+    to_js = doc_list.to_json()
+    for d in json.loads(to_js):
+        assert d["image_bytes_"] == 'hello'
+        assert d["bytes_"] == 'hello'
 
 
 def test_from_json(doc_and_class):
