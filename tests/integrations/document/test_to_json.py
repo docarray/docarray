@@ -20,6 +20,7 @@ import torch
 from docarray.base_doc import BaseDoc
 from docarray.base_doc.io.json import orjson_dumps
 from docarray.typing import AnyUrl, NdArray, TorchTensor
+from docarray.typing.bytes.image_bytes import ImageBytes
 
 
 @pytest.fixture()
@@ -30,6 +31,7 @@ def doc_and_class():
         txt: str
         torch_tensor: TorchTensor
         bytes_: bytes
+        image_bytes_: ImageBytes
 
     doc = Mmdoc(
         img=np.zeros((10)),
@@ -37,13 +39,16 @@ def doc_and_class():
         txt='hello',
         torch_tensor=torch.zeros(10),
         bytes_=b'hello',
+        image_bytes_=b'hello',
     )
     return doc, Mmdoc
 
 
 def test_to_json(doc_and_class):
     doc, _ = doc_and_class
-    doc.json()
+    js = doc.json()
+    assert js['image_bytes_'] == 'hello'
+    assert js['bytes_'] == 'hello'
 
 
 def test_from_json(doc_and_class):

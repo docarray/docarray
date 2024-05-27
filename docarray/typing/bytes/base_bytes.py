@@ -55,6 +55,12 @@ class BaseBytes(bytes, AbstractType):
 
         return NodeProto(blob=self, type=self._proto_type_name)
 
+    def _docarray_to_json_compatible(self):
+        """
+        Convert itself into a json compatible object
+        """
+        return self.decode()
+
     if is_pydantic_v2:
 
         @classmethod
