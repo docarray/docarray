@@ -36,6 +36,7 @@ from docarray.base_doc.io.json import orjson_dumps_and_decode
 from docarray.base_doc.mixins import IOMixin, UpdateMixin
 from docarray.typing import ID
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
+from docarray.typing.bytes.image_bytes import ImageBytes
 from docarray.utils._internal._typing import safe_issubclass
 
 if TYPE_CHECKING:
@@ -79,7 +80,7 @@ class BaseDocWithoutId(BaseModel, IOMixin, UpdateMixin, BaseNode):
         model_config = ConfigDocArray(
             validate_assignment=True,
             _load_extra_fields_from_protobuf=False,
-            json_encoders={AbstractTensor: lambda x: x},
+            json_encoders={AbstractTensor: lambda x: x, ImageBytes: lambda x: x._docarray_to_json_compatible()},
         )
 
     else:
@@ -90,8 +91,7 @@ class BaseDocWithoutId(BaseModel, IOMixin, UpdateMixin, BaseNode):
             # `DocArrayResponse` is able to handle tensors by itself.
             # Therefore, we stop FastAPI from doing any transformations
             # on tensors by setting an identity function as a custom encoder.
-            json_encoders = {AbstractTensor: lambda x: x}
-
+            json_encoders = {AbstractTensor: lambda x: x, ImageBytes: lambda x: x._docarray_to_json_compatible()}
             validate_assignment = True
             _load_extra_fields_from_protobuf = False
 
