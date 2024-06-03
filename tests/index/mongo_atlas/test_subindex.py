@@ -53,7 +53,7 @@ class MyDoc(BaseDoc):
 def clean_subindex(index):
     for subindex in index._subindices.values():
         clean_subindex(subindex)
-    index._doc_collection.delete_many({})
+    index._collection.delete_many({})
 
 
 @pytest.fixture(scope='session')
@@ -262,6 +262,4 @@ def test_subindex_del(index):
 
 def test_subindex_collections(mongodb_index_config):  # noqa: F811
     doc_index = MongoDBAtlasDocumentIndex[MetaCategoryDoc](**mongodb_index_config)
-
     assert doc_index._subindices["paths"].index_name == 'metacategorydoc__paths'
-    assert doc_index._subindices["paths"]._collection == 'metacategorydoc__paths'
