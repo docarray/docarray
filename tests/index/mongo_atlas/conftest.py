@@ -5,6 +5,7 @@ import numpy as np
 import pytest
 
 from docarray.index import MongoDBAtlasDocumentIndex
+
 from . import NestedDoc, SimpleDoc, SimpleSchema
 
 
@@ -19,7 +20,9 @@ def mongodb_index_config():
 @pytest.fixture
 def simple_index(mongodb_index_config):
 
-    index = MongoDBAtlasDocumentIndex[SimpleSchema](index_name="bespoke_name", **mongodb_index_config)
+    index = MongoDBAtlasDocumentIndex[SimpleSchema](
+        index_name="bespoke_name", **mongodb_index_config
+    )
     return index
 
 
@@ -36,7 +39,7 @@ def n_dim():
 
 @pytest.fixture(scope='module')
 def embeddings(n_dim):
-    """ A consistent, reasonable, mock of vector embeddings, in [-1, 1]."""
+    """A consistent, reasonable, mock of vector embeddings, in [-1, 1]."""
     x = np.linspace(-np.pi, np.pi, n_dim)
     y = np.arange(n_dim)
     return np.sin(x[np.newaxis, :] + y[:, np.newaxis])

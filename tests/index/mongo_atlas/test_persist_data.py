@@ -7,7 +7,6 @@ def test_persist(mongodb_index_config, random_simple_documents):  # noqa: F811
     index = MongoDBAtlasDocumentIndex[SimpleSchema](**mongodb_index_config)
     index._collection.delete_many({})
 
-
     def cleaned_database():
         assert index.num_docs() == 0
 

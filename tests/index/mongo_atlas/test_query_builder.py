@@ -19,7 +19,9 @@ def test_missing_required_var_exceptions(simple_index):  # noqa: F811
 
 def test_find_uses_provided_vector(simple_index):  # noqa: F811
     query = (
-        simple_index.build_query().find(query=np.ones(10), search_field='embedding').build(7)
+        simple_index.build_query()
+        .find(query=np.ones(10), search_field='embedding')
+        .build(7)
     )
 
     query_vector = query.vector_fields.pop('embedding')
@@ -129,7 +131,8 @@ def test_execute_text_search_with_filter(
 
 
 def test_find(
-    simple_index_with_docs, n_dim,  # noqa: F811
+    simple_index_with_docs,
+    n_dim,  # noqa: F811
 ):
     index, _ = simple_index_with_docs
     limit = 3
@@ -144,12 +147,11 @@ def test_find(
         res = index.execute_query(query)
         assert len(res.documents) == limit
         assert res.documents.number == [5, 4, 6]
+
     assert_when_ready(trial)
 
 
-def test_hybrid_search(
-    simple_index_with_docs, n_dim  # noqa: F811
-):
+def test_hybrid_search(simple_index_with_docs, n_dim):  # noqa: F811
     find_query = np.ones(n_dim)
     index, docs = simple_index_with_docs
     n_docs = len(docs)
@@ -167,6 +169,7 @@ def test_hybrid_search(
         res = index.execute_query(query)
         assert len(res.documents) == limit
         assert set(res.documents.number) == set(range(n_docs))
+
     assert_when_ready(trial)
 
     # Now that we've successfully executed a query, we know that the search indexes have been built
@@ -204,7 +207,9 @@ def test_hybrid_search(
     query = (
         index.build_query()  # type: ignore[attr-defined]
         # .find(query=find_query, search_field='embedding')
-        .find(query=np.random.standard_normal(find_query.shape), search_field='embedding')
+        .find(
+            query=np.random.standard_normal(find_query.shape), search_field='embedding'
+        )
         .text_search(query="Python is a valuable skill", search_field='text')
         .build(limit=n_docs)
     )
@@ -235,9 +240,7 @@ def test_hybrid_search(
     assert res6.documents.number[0] == 3
 
 
-def test_hybrid_search_multiple_text(
-    simple_index_with_docs, n_dim  # noqa: F811
-):
+def test_hybrid_search_multiple_text(simple_index_with_docs, n_dim):  # noqa: F811
     """Tests disambiguation of scores on multiple text searches on same field."""
 
     index, _ = simple_index_with_docs
@@ -258,14 +261,12 @@ def test_hybrid_search_multiple_text(
     assert_when_ready(trial)
 
 
-def test_hybrid_search_only_text(
-    simple_index_with_docs  # noqa: F811
-):
+def test_hybrid_search_only_text(simple_index_with_docs):  # noqa: F811
     """Query built with two text searches will be a Hybrid Search.
 
-     It will return only two results.
-     In our case, each text matches just one document, hence we will receive two results, each top ranked
-     """
+    It will return only two results.
+    In our case, each text matches just one document, hence we will receive two results, each top ranked
+    """
     index, _ = simple_index_with_docs
     limit = 10
     query = (
@@ -286,9 +287,7 @@ def test_hybrid_search_only_text(
     assert_when_ready(trial)
 
 
-def test_hybrid_search_only_vector(
-    simple_index_with_docs, n_dim  # noqa: F811
-):
+def test_hybrid_search_only_vector(simple_index_with_docs, n_dim):  # noqa: F811
 
     limit = 3
     index, _ = simple_index_with_docs
@@ -303,11 +302,14 @@ def test_hybrid_search_only_vector(
         res = index.execute_query(query)
         assert len(res.documents) == limit
         assert res.documents.number == [5, 4, 6]
+
     assert_when_ready(trial)
 
 
 @pytest.mark.skip
-def test_hybrid_search_vectors_with_different_fields(mongodb_index_config):  # noqa: F811
+def test_hybrid_search_vectors_with_different_fields(
+    mongodb_index_config,
+):  # noqa: F811
     """Hybrid Search involving queries to two different vector indexes.
 
     # TODO - To be added in an upcoming release.
@@ -315,29 +317,36 @@ def test_hybrid_search_vectors_with_different_fields(mongodb_index_config):  # n
 
     from docarray.index.backends.mongodb_atlas import MongoDBAtlasDocumentIndex
     from tests.index.mongo_atlas import FlatSchema
+
     multi_index = MongoDBAtlasDocumentIndex[FlatSchema](**mongodb_index_config)
     multi_index._collection.delete_many({})
 
     n_dim = 25
     n_docs = 5
-    data = [FlatSchema(embedding1=np.random.standard_normal(n_dim),
-                       embedding2=np.random.standard_normal(n_dim)) for _ in range(n_docs)]
+    data = [
+        FlatSchema(
+            embedding1=np.random.standard_normal(n_dim),
+            embedding2=np.random.standard_normal(n_dim),
+        )
+        for _ in range(n_docs)
+    ]
     multi_index.index(data)
     yield multi_index
     multi_index._collection.delete_many({})
 
-
     limit = 3
     query = (
-        flat_multiple_index.build_query()  # type: ignore[attr-defined]
+        multi_index.build_query()  # type: ignore[attr-defined]
         .find(query=np.ones(n_dim), search_field='embedding1')
         .find(query=np.zeros(n_dim), search_field='embedding2')
         .build(limit=limit)
     )
 
     with pytest.raises(NotImplementedError):
+
         def trial():
             res = multi_index.execute_query(query)
             assert len(res.documents) == limit
             assert res.documents.number == [5, 4, 6]
+
         assert_when_ready(trial)
