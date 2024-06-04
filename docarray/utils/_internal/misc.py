@@ -2,7 +2,7 @@ import importlib
 import os
 import re
 import types
-from typing import Any, Optional, Literal
+from typing import Any, Literal, Optional
 
 import numpy as np
 
@@ -50,6 +50,7 @@ INSTALL_INSTRUCTIONS = {
     'botocore': '"docarray[aws]"',
     'redis': '"docarray[redis]"',
     'pymilvus': '"docarray[milvus]"',
+    "pymongo": '"docarray[mongo]"',
 }
 
 ProtocolType = Literal[
