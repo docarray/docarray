@@ -65,7 +65,6 @@ class MongoDBAtlasDocumentIndex(BaseDocIndex, Generic[TSchema]):
     def __init__(self, db_config=None, **kwargs):
         super().__init__(db_config=db_config, **kwargs)
         logger.info(f'{self.__class__.__name__} has been initialized')
-        # TODO -Allow one to specify the Collection name. This is done in DBConfig()
 
     @property
     def index_name(self):
