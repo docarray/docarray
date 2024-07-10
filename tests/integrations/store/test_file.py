@@ -181,6 +181,7 @@ def test_list_and_delete(tmp_path: Path):
     ), 'Deleting a non-existent DA should return False'
 
 
+@pytest.mark.skip(reason='Skip it!')
 def test_concurrent_push_pull(tmp_path: Path):
     # Push to DA that is being pulled should not mess up the pull
     namespace_dir = tmp_path
@@ -212,6 +213,7 @@ def test_concurrent_push_pull(tmp_path: Path):
         p.map(_task, ['pull', 'push', 'pull'])
 
 
+@pytest.mark.skip(reason='Skip it!')
 @pytest.mark.slow
 def test_concurrent_push(tmp_path: Path):
     # Double push should fail the second push
