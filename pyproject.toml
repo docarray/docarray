@@ -165,5 +165,6 @@ markers = [
     "index: marks test using a document index",
     "benchmark: marks slow benchmarking tests",
     "elasticv8: marks test that run with ElasticSearch v8",
-    "jac: need to have access to jac cloud"
+    "jac: need to have access to jac cloud",
+    "atlas: mark tests using MongoDB Atlas",
 ]

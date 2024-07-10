@@ -26,8 +26,7 @@ class NestedDoc(BaseDoc):
 
 class FlatSchema(BaseDoc):
     embedding1: NdArray = Field(dim=N_DIM, index_name="vector_index_1")
-    # the dim and N_DIM are setted different on propouse. to check the correct handling of n_dim
-    embedding2: NdArray[50] = Field(dim=N_DIM, index_name="vector_index_2")
+    embedding2: NdArray = Field(dim=N_DIM, index_name="vector_index_2")
 
 
 def assert_when_ready(callable: Callable, tries: int = 5, interval: float = 2):
@@ -37,10 +36,10 @@ def assert_when_ready(callable: Callable, tries: int = 5, interval: float = 2):
     while True:
         try:
             callable()
-        except AssertionError:
+        except AssertionError as e:
             tries -= 1
             if tries == 0:
-                raise
+                raise RuntimeError("Retries exhausted.") from e
             time.sleep(interval)
         else:
             return
