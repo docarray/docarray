@@ -12,7 +12,7 @@ from tests.integrations.store import gen_text_docs, get_test_da, profile_memory
 
 DA_LEN: int = 2**10
 TOLERANCE_RATIO = 0.5  # Percentage of difference allowed in stream vs non-stream test
-BUCKET: str = 'da-pushpull'
+BUCKET: str = "da-pushpull"
 RANDOM: str = uuid.uuid4().hex[:8]
 
 pytestmark = [pytest.mark.s3]
@@ -22,16 +22,16 @@ pytestmark = [pytest.mark.s3]
 def minio_container():
     file_dir = os.path.dirname(__file__)
     os.system(
-        f"docker-compose -f {os.path.join(file_dir, 'docker-compose.yml')} up -d --remove-orphans minio"
+        f"docker compose -f {os.path.join(file_dir, 'docker-compose.yml')} up -d --remove-orphans minio"
     )
     time.sleep(1)
     yield
     os.system(
-        f"docker-compose -f {os.path.join(file_dir, 'docker-compose.yml')} down --remove-orphans"
+        f"docker compose -f {os.path.join(file_dir, 'docker-compose.yml')} down --remove-orphans"
     )
 
 
-@pytest.fixture(scope='session', autouse=True)
+@pytest.fixture(scope="session", autouse=True)
 def testing_bucket(minio_container):
     import boto3
     from botocore.client import Config
@@ -59,7 +59,7 @@ def testing_bucket(minio_container):
         Config(signature_version="s3v4"),
     )
     # make a bucket
-    s3 = boto3.resource('s3')
+    s3 = boto3.resource("s3")
     s3.create_bucket(Bucket=BUCKET)
 
     yield
@@ -67,15 +67,15 @@ def testing_bucket(minio_container):
     s3.Bucket(BUCKET).delete()
 
 
-@pytest.mark.skip(reason='Skip it!')
+@pytest.mark.skip(reason="Skip it!")
 @pytest.mark.slow
 def test_pushpull_correct(capsys):
-    namespace_dir = f'{BUCKET}/test{RANDOM}/pushpull-correct'
+    namespace_dir = f"{BUCKET}/test{RANDOM}/pushpull-correct"
     da1 = get_test_da(DA_LEN)
 
     # Verbose
-    da1.push(f's3://{namespace_dir}/meow', show_progress=True)
-    da2 = DocList[TextDoc].pull(f's3://{namespace_dir}/meow', show_progress=True)
+    da1.push(f"s3://{namespace_dir}/meow", show_progress=True)
+    da2 = DocList[TextDoc].pull(f"s3://{namespace_dir}/meow", show_progress=True)
     assert len(da1) == len(da2)
     assert all(d1.id == d2.id for d1, d2 in zip(da1, da2))
     assert all(d1.text == d2.text for d1, d2 in zip(da1, da2))
@@ -85,8 +85,8 @@ def test_pushpull_correct(capsys):
     assert len(captured.err) == 0
 
     # Quiet
-    da2.push(f's3://{namespace_dir}/meow')
-    da1 = DocList[TextDoc].pull(f's3://{namespace_dir}/meow')
+    da2.push(f"s3://{namespace_dir}/meow")
+    da1 = DocList[TextDoc].pull(f"s3://{namespace_dir}/meow")
     assert len(da1) == len(da2)
     assert all(d1.id == d2.id for d1, d2 in zip(da1, da2))
     assert all(d1.text == d2.text for d1, d2 in zip(da1, da2))
@@ -96,18 +96,18 @@ def test_pushpull_correct(capsys):
     assert len(captured.err) == 0
 
 
-@pytest.mark.skip(reason='Skip it!')
+@pytest.mark.skip(reason="Skip it!")
 @pytest.mark.slow
 def test_pushpull_stream_correct(capsys):
-    namespace_dir = f'{BUCKET}/test{RANDOM}/pushpull-stream-correct'
+    namespace_dir = f"{BUCKET}/test{RANDOM}/pushpull-stream-correct"
     da1 = get_test_da(DA_LEN)
 
     # Verbosity and correctness
     DocList[TextDoc].push_stream(
-        iter(da1), f's3://{namespace_dir}/meow', show_progress=True
+        iter(da1), f"s3://{namespace_dir}/meow", show_progress=True
     )
     doc_stream2 = DocList[TextDoc].pull_stream(
-        f's3://{namespace_dir}/meow', show_progress=True
+        f"s3://{namespace_dir}/meow", show_progress=True
     )
 
     assert all(d1.id == d2.id for d1, d2 in zip(da1, doc_stream2))
@@ -120,10 +120,10 @@ def test_pushpull_stream_correct(capsys):
 
     # Quiet and chained
     doc_stream = DocList[TextDoc].pull_stream(
-        f's3://{namespace_dir}/meow', show_progress=False
+        f"s3://{namespace_dir}/meow", show_progress=False
     )
     DocList[TextDoc].push_stream(
-        doc_stream, f's3://{namespace_dir}/meow2', show_progress=False
+        doc_stream, f"s3://{namespace_dir}/meow2", show_progress=False
     )
 
     captured = capsys.readouterr()
@@ -132,18 +132,18 @@ def test_pushpull_stream_correct(capsys):
 
 
 # for some reason this test is failing with pydantic v2
-@pytest.mark.skip(reason='Skip it!')
+@pytest.mark.skip(reason="Skip it!")
 @pytest.mark.slow
 def test_pull_stream_vs_pull_full():
-    namespace_dir = f'{BUCKET}/test{RANDOM}/pull-stream-vs-pull-full'
+    namespace_dir = f"{BUCKET}/test{RANDOM}/pull-stream-vs-pull-full"
     DocList[TextDoc].push_stream(
         gen_text_docs(DA_LEN * 1),
-        f's3://{namespace_dir}/meow-short',
+        f"s3://{namespace_dir}/meow-short",
         show_progress=False,
     )
     DocList[TextDoc].push_stream(
         gen_text_docs(DA_LEN * 4),
-        f's3://{namespace_dir}/meow-long',
+        f"s3://{namespace_dir}/meow-long",
         show_progress=False,
     )
 
@@ -158,106 +158,106 @@ def test_pull_stream_vs_pull_full():
         return sum(len(d.text) for d in DocList[TextDoc].pull(url, show_progress=False))
 
     # A warmup is needed to get accurate memory usage comparison
-    _ = get_total_stream(f's3://{namespace_dir}/meow-short')
+    _ = get_total_stream(f"s3://{namespace_dir}/meow-short")
     short_total_stream, (_, short_stream_peak) = get_total_stream(
-        f's3://{namespace_dir}/meow-short'
+        f"s3://{namespace_dir}/meow-short"
     )
     long_total_stream, (_, long_stream_peak) = get_total_stream(
-        f's3://{namespace_dir}/meow-long'
+        f"s3://{namespace_dir}/meow-long"
     )
 
-    _ = get_total_full(f's3://{namespace_dir}/meow-short')
+    _ = get_total_full(f"s3://{namespace_dir}/meow-short")
     short_total_full, (_, short_full_peak) = get_total_full(
-        f's3://{namespace_dir}/meow-short'
+        f"s3://{namespace_dir}/meow-short"
     )
     long_total_full, (_, long_full_peak) = get_total_full(
-        f's3://{namespace_dir}/meow-long'
+        f"s3://{namespace_dir}/meow-long"
     )
 
     assert (
         short_total_stream == short_total_full
-    ), 'Streamed and non-streamed pull should have similar statistics'
+    ), "Streamed and non-streamed pull should have similar statistics"
     assert (
         long_total_stream == long_total_full
-    ), 'Streamed and non-streamed pull should have similar statistics'
+    ), "Streamed and non-streamed pull should have similar statistics"
 
     assert (
         abs(long_stream_peak - short_stream_peak) / short_stream_peak < TOLERANCE_RATIO
-    ), 'Streamed memory usage should not be dependent on the size of the data'
+    ), "Streamed memory usage should not be dependent on the size of the data"
     assert (
         abs(long_full_peak - short_full_peak) / short_full_peak > TOLERANCE_RATIO
-    ), 'Full pull memory usage should be dependent on the size of the data'
+    ), "Full pull memory usage should be dependent on the size of the data"
 
 
-@pytest.mark.skip(reason='Skip it!')
+@pytest.mark.skip(reason="Skip it!")
 @pytest.mark.slow
 def test_list_and_delete():
-    namespace_dir = f'{BUCKET}/test{RANDOM}/list-and-delete'
+    namespace_dir = f"{BUCKET}/test{RANDOM}/list-and-delete"
 
     da_names = S3DocStore.list(namespace_dir, show_table=False)
     assert len(da_names) == 0
 
     DocList[TextDoc].push_stream(
-        gen_text_docs(DA_LEN), f's3://{namespace_dir}/meow', show_progress=False
+        gen_text_docs(DA_LEN), f"s3://{namespace_dir}/meow", show_progress=False
     )
-    da_names = S3DocStore.list(f'{namespace_dir}', show_table=False)
-    assert set(da_names) == {'meow'}
+    da_names = S3DocStore.list(f"{namespace_dir}", show_table=False)
+    assert set(da_names) == {"meow"}
     DocList[TextDoc].push_stream(
-        gen_text_docs(DA_LEN), f's3://{namespace_dir}/woof', show_progress=False
+        gen_text_docs(DA_LEN), f"s3://{namespace_dir}/woof", show_progress=False
     )
-    da_names = S3DocStore.list(f'{namespace_dir}', show_table=False)
-    assert set(da_names) == {'meow', 'woof'}
+    da_names = S3DocStore.list(f"{namespace_dir}", show_table=False)
+    assert set(da_names) == {"meow", "woof"}
 
     assert S3DocStore.delete(
-        f'{namespace_dir}/meow'
-    ), 'Deleting an existing DA should return True'
+        f"{namespace_dir}/meow"
+    ), "Deleting an existing DA should return True"
     da_names = S3DocStore.list(namespace_dir, show_table=False)
-    assert set(da_names) == {'woof'}
+    assert set(da_names) == {"woof"}
 
     with pytest.raises(
         ValueError
     ):  # Deleting a non-existent DA without safety should raise an error
-        S3DocStore.delete(f'{namespace_dir}/meow', missing_ok=False)
+        S3DocStore.delete(f"{namespace_dir}/meow", missing_ok=False)
 
     assert not S3DocStore.delete(
-        f'{namespace_dir}/meow', missing_ok=True
-    ), 'Deleting a non-existent DA should return False'
+        f"{namespace_dir}/meow", missing_ok=True
+    ), "Deleting a non-existent DA should return False"
 
 
-@pytest.mark.skip(reason='Skip it!')
+@pytest.mark.skip(reason="Skip it!")
 @pytest.mark.slow
 def test_concurrent_push_pull():
     # Push to DA that is being pulled should not mess up the pull
-    namespace_dir = f'{BUCKET}/test{RANDOM}/concurrent-push-pull'
+    namespace_dir = f"{BUCKET}/test{RANDOM}/concurrent-push-pull"
 
     DocList[TextDoc].push_stream(
         gen_text_docs(DA_LEN),
-        f's3://{namespace_dir}/da0',
+        f"s3://{namespace_dir}/da0",
         show_progress=False,
     )
 
     global _task
 
     def _task(choice: str):
-        if choice == 'push':
+        if choice == "push":
             DocList[TextDoc].push_stream(
                 gen_text_docs(DA_LEN),
-                f's3://{namespace_dir}/da0',
+                f"s3://{namespace_dir}/da0",
                 show_progress=False,
             )
-        elif choice == 'pull':
+        elif choice == "pull":
             pull_len = sum(
-                1 for _ in DocList[TextDoc].pull_stream(f's3://{namespace_dir}/da0')
+                1 for _ in DocList[TextDoc].pull_stream(f"s3://{namespace_dir}/da0")
             )
             assert pull_len == DA_LEN
         else:
-            raise ValueError(f'Unknown choice {choice}')
+            raise ValueError(f"Unknown choice {choice}")
 
-    with mp.get_context('fork').Pool(3) as p:
-        p.map(_task, ['pull', 'push', 'pull'])
+    with mp.get_context("fork").Pool(3) as p:
+        p.map(_task, ["pull", "push", "pull"])
 
 
-@pytest.mark.skip(reason='Not Applicable')
+@pytest.mark.skip(reason="Not Applicable")
 def test_concurrent_push():
     """
     Amazon S3 does not support object locking for concurrent writers.
