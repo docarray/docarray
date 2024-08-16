@@ -27,13 +27,17 @@ from docarray.typing import NdArray
 from pydantic import Field
 import numpy as np
 
+
 # Define the document schema.
 class MyDoc(BaseDoc):
-    title: str 
+    title: str
     embedding: NdArray[128] = Field(is_embedding=True)
 
+
 # Create dummy documents.
-docs = DocList[MyDoc](MyDoc(title=f'title #{i}', embedding=np.random.rand(128)) for i in range(10))
+docs = DocList[MyDoc](
+    MyDoc(title=f'title #{i}', embedding=np.random.rand(128)) for i in range(10)
+)
 
 # Initialize a new WeaviateDocumentIndex instance and add the documents to the index.
 doc_index = WeaviateDocumentIndex[MyDoc]()
@@ -59,7 +63,7 @@ There are multiple ways to start a Weaviate instance, depending on your use case
 | ----- | ----- | ----- | ----- | 
 | **Weaviate Cloud Services (WCS)** | Development and production | Limited | **Recommended for most users** |
 | **Embedded Weaviate** | Experimentation | Limited | Experimental (as of Apr 2023) |
-| **Docker-Compose** | Development | Yes | **Recommended for development + customizability** |
+| **Docker Compose** | Development | Yes | **Recommended for development + customizability** |
 | **Kubernetes** | Production | Yes |  |
 
 ### Instantiation instructions
@@ -70,7 +74,7 @@ Go to the [WCS console](https://console.weaviate.cloud) and create an instance u
 
 Weaviate instances on WCS come pre-configured, so no further configuration is required.
 
-**Docker-Compose (self-managed)**
+**Docker Compose (self-managed)**
 
 Get a configuration file (`docker-compose.yaml`). You can build it using [this interface](https://weaviate.io/developers/weaviate/installation/docker-compose), or download it directly with:
 
@@ -84,12 +88,12 @@ Where `v<WEAVIATE_VERSION>` is the actual version, such as `v1.18.3`.
 curl -o docker-compose.yml "https://configuration.weaviate.io/v2/docker-compose/docker-compose.yml?modules=standalone&runtime=docker-compose&weaviate_version=v1.18.3"
 ```
 
-**Start up Weaviate with Docker-Compose**
+**Start up Weaviate with Docker Compose**
 
 Then you can start up Weaviate by running from a shell:
 
 ```shell
-docker-compose up -d
+docker compose up -d
 ```
 
 **Shut down Weaviate**
@@ -97,7 +101,7 @@ docker-compose up -d
 Then you can shut down Weaviate by running from a shell:
 
 ```shell
-docker-compose down
+docker compose down
 ```
 
 **Notes**
@@ -107,7 +111,7 @@ Unless data persistence or backups are set up, shutting down the Docker instance
 See documentation on [Persistent volume](https://weaviate.io/developers/weaviate/installation/docker-compose#persistent-volume) and [Backups](https://weaviate.io/developers/weaviate/configuration/backups) to prevent this if persistence is desired.
 
 ```bash
-docker-compose up -d
+docker compose up -d
 ```
 
 **Embedded Weaviate (from the application)**
@@ -192,9 +196,7 @@ dbconfig = WeaviateDocumentIndex.DBConfig(
 ### Create an instance
 Let's connect to a local Weaviate service and instantiate a `WeaviateDocumentIndex` instance:
 ```python
-dbconfig = WeaviateDocumentIndex.DBConfig(
-    host="http://localhost:8080"
-)
+dbconfig = WeaviateDocumentIndex.DBConfig(host="http://localhost:8080")
 doc_index = WeaviateDocumentIndex[MyDoc](db_config=dbconfig)
 ```
 
@@ -378,10 +380,10 @@ the [`find()`][docarray.index.abstract.BaseDocIndex.find] method:
         embedding=np.array([1, 2]),
         file=np.random.rand(100),
     )
-    
+
     # find similar documents
     matches, scores = doc_index.find(query, limit=5)
-    
+
     print(f"{matches=}")
     print(f"{matches.text=}")
     print(f"{scores=}")
@@ -428,10 +430,10 @@ You can also search for multiple documents at once, in a batch, using the [`find
         )
         for i in range(3)
     )
-    
+
     # find similar documents
     matches, scores = doc_index.find_batched(queries, limit=5)
-    
+
     print(f"{matches=}")
     print(f"{matches[0].text=}")
     print(f"{scores=}")
@@ -481,7 +483,9 @@ class Book(BaseDoc):
     embedding: NdArray[10] = Field(is_embedding=True)
 
 
-books = DocList[Book]([Book(price=i * 10, embedding=np.random.rand(10)) for i in range(10)])
+books = DocList[Book](
+    [Book(price=i * 10, embedding=np.random.rand(10)) for i in range(10)]
+)
 book_index = WeaviateDocumentIndex[Book](index_name='tmp_index')
 book_index.index(books)
 
@@ -602,7 +606,7 @@ del doc_index[ids[1:]]  # del by list of ids
 
 **WCS instances come pre-configured**, and as such additional settings are not configurable outside of those chosen at creation, such as whether to enable authentication.
 
-For other cases, such as **Docker-Compose deployment**, its settings can be modified through the configuration file, such as the `docker-compose.yaml` file. 
+For other cases, such as **Docker Compose deployment**, its settings can be modified through the configuration file, such as the `docker-compose.yaml` file. 
 
 Some of the more commonly used settings include:
 
