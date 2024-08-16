@@ -45,13 +45,17 @@ from docarray.index import ElasticDocIndex  # or ElasticV7DocIndex
 from docarray.typing import NdArray
 import numpy as np
 
+
 # Define the document schema.
 class MyDoc(BaseDoc):
-    title: str 
+    title: str
     embedding: NdArray[128]
 
+
 # Create dummy documents.
-docs = DocList[MyDoc](MyDoc(title=f'title #{i}', embedding=np.random.rand(128)) for i in range(10))
+docs = DocList[MyDoc](
+    MyDoc(title=f'title #{i}', embedding=np.random.rand(128)) for i in range(10)
+)
 
 # Initialize a new ElasticDocIndex instance and add the documents to the index.
 doc_index = ElasticDocIndex[MyDoc](index_name='my_index')
@@ -67,7 +71,7 @@ retrieved_docs = doc_index.find(query, search_field='embedding', limit=10)
 ## Initialize
 
 
-You can use docker-compose to create a local Elasticsearch service with the following `docker-compose.yml`.
+You can use docker compose to create a local Elasticsearch service with the following `docker-compose.yml`.
 
 ```yaml
 version: "3.3"
@@ -91,7 +95,7 @@ networks:
 Run the following command in the folder of the above `docker-compose.yml` to start the service:
 
 ```bash
-docker-compose up
+docker compose up
 ```
 
 ### Schema definition
@@ -225,9 +229,7 @@ You can also search for multiple documents at once, in a batch, using the [`find
 
     ```python
     # create some query Documents
-    queries = DocList[SimpleDoc](
-        SimpleDoc(tensor=np.random.rand(128)) for i in range(3)
-    )
+    queries = DocList[SimpleDoc](SimpleDoc(tensor=np.random.rand(128)) for i in range(3))
 
     # find similar documents
     matches, scores = doc_index.find_batched(queries, search_field='tensor', limit=5)

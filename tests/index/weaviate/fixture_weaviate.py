@@ -24,16 +24,16 @@ HOST = "http://localhost:8080"
 
 
 cur_dir = os.path.dirname(os.path.abspath(__file__))
-weaviate_yml = os.path.abspath(os.path.join(cur_dir, 'docker-compose.yml'))
+weaviate_yml = os.path.abspath(os.path.join(cur_dir, "docker-compose.yml"))
 
 
-@pytest.fixture(scope='session', autouse=True)
+@pytest.fixture(scope="session", autouse=True)
 def start_storage():
-    os.system(f"docker-compose -f {weaviate_yml} up -d --remove-orphans")
+    os.system(f"docker compose -f {weaviate_yml} up -d --remove-orphans")
     _wait_for_weaviate()
 
     yield
-    os.system(f"docker-compose -f {weaviate_yml} down --remove-orphans")
+    os.system(f"docker compose -f {weaviate_yml} down --remove-orphans")
 
 
 def _wait_for_weaviate():
