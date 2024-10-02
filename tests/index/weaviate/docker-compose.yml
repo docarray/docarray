@@ -1,4 +1,4 @@
-version: '3.8'
+version: '3.3'
 
 services:
   
@@ -10,7 +10,7 @@ services:
     - '8080'
     - --scheme
     - http
-  image: semitechnologies/weaviate:1.18.3
+  image: semitechnologies/weaviate:1.21.1
   ports:
     - "8080:8080"
   restart: on-failure:0
