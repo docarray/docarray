@@ -22,7 +22,10 @@ RESERVED_KEYS = [
 ]
 
 
-def create_pure_python_type_model(model: BaseModel) -> BaseDoc:
+def create_pure_python_type_model(
+    model: BaseModel,
+    cached_models: Optional[Dict[str, Any]] = None,
+) -> BaseDoc:
     """
     Take a Pydantic model and cast DocList fields into List fields.
 
@@ -44,16 +47,18 @@ def create_pure_python_type_model(model: BaseModel) -> BaseDoc:
         texts: DocList[TextDoc]
 
 
-    MyDocCorrected = create_new_model_cast_doclist_to_list(CustomDoc)
+    MyDocCorrected = create_pure_python_type_model(CustomDoc)
     ```
 
     ---
     :param model: The input model
+    :param cached_models: A set of names of models that have been converted to their pure python type model
     :return: A new subclass of BaseDoc, where every DocList type in the schema is replaced by List.
     """
     fields: Dict[str, Any] = {}
     import copy
 
+    cached_models = cached_models or {}
     fields_copy = copy.deepcopy(model.__fields__)
     annotations_copy = copy.deepcopy(model.__annotations__)
     for field_name, field in annotations_copy.items():
@@ -67,14 +72,23 @@ def create_pure_python_type_model(model: BaseModel) -> BaseDoc:
         try:
             if safe_issubclass(field, DocList):
                 t: Any = field.doc_type
-                t_aux = create_pure_python_type_model(t)
-                fields[field_name] = (List[t_aux], field_info)
+                if t.__name__ in cached_models:
+                    fields[field_name] = (List[cached_models[t.__name__]], field_info)
+                else:
+                    t_aux = create_pure_python_type_model(t, cached_models)
+                    cached_models[t.__name__] = t_aux
+                    fields[field_name] = (List[t_aux], field_info)
             else:
                 fields[field_name] = (field, field_info)
         except TypeError:
             fields[field_name] = (field, field_info)
 
-    return create_model(model.__name__, __base__=model, __doc__=model.__doc__, **fields)
+    new_model = create_model(
+        model.__name__, __base__=model, __doc__=model.__doc__, **fields
+    )
+    cached_models[model.__name__] = new_model
+
+    return new_model
 
 
 def _get_field_annotation_from_schema(
