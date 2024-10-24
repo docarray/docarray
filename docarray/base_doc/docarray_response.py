@@ -33,7 +33,7 @@ class DocArrayResponse(JSONResponse):
     ---
 
     ```python
-    from docarray.documets import Text
+    from docarray.documents import Text
     from docarray.base_doc import DocResponse
 
 
