@@ -426,7 +426,7 @@ class HnswDocumentIndex(BaseDocIndex, Generic[TSchema]):
         Get the number of documents.
         """
         if self._num_docs == 0:
-            hnsw_count = self.get_current_count()
+            hnsw_count = self._hnsw_indices.get_current_count()
             if hnsw_count == 0:
                 self._num_docs = self._get_num_docs_sqlite()
             else:
