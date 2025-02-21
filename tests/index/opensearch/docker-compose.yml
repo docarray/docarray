@@ -1,0 +1,13 @@
+version: "3.3"
+services:
+  opensearch:
+    image: opensearchproject/opensearch:latest
+    environment:
+      # - xpack.security.enabled=false
+      - plugins.security.ssl.http.enabled=false
+      - discovery.type=single-node
+      - ES_JAVA_OPTS=-Xmx1024m
+      - plugins.security.disabled=true
+      - OPENSEARCH_INITIAL_ADMIN_PASSWORD=vV911:PknTd@
+    ports:
+      - "9200:9200"
