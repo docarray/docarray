@@ -119,7 +119,7 @@ jobs:
       - name: Test
         id: test
         run: |
-          poetry run pytest -m "not (tensorflow or benchmark or index or jax)" --cov=docarray --cov-report=xml ${{ matrix.test-path }} --ignore=tests/integrations/store/test_jac.py
+          poetry run pytest -m "not (tensorflow or benchmark or index or jax)" --cov=docarray --cov-report=xml -v -s ${{ matrix.test-path }} --ignore=tests/integrations/store/test_jac.py
           echo "flag it as docarray for codeoverage"
           echo "codecov_flag=docarray" >> $GITHUB_OUTPUT
         timeout-minutes: 30
@@ -167,7 +167,7 @@ jobs:
       - name: Test
         id: test
         run: |
-          poetry run pytest -m 'proto' --cov=docarray --cov-report=xml tests
+          poetry run pytest -m 'proto' --cov=docarray --cov-report=xml -v -s tests
           echo "flag it as docarray for codeoverage"
           echo "codecov_flag=docarray" >> $GITHUB_OUTPUT
         timeout-minutes: 30
@@ -217,7 +217,7 @@ jobs:
       - name: Test
         id: test
         run: |
-          poetry run pytest -m 'index and not elasticv8' --cov=docarray --cov-report=xml tests/index/${{ matrix.db_test_folder }}
+          poetry run pytest -m 'index and not elasticv8' --cov=docarray --cov-report=xml -v -s tests/index/${{ matrix.db_test_folder }}
           echo "flag it as docarray for codeoverage"
           echo "codecov_flag=docarray" >> $GITHUB_OUTPUT
         timeout-minutes: 30
@@ -267,7 +267,7 @@ jobs:
       - name: Test
         id: test
         run: |
-          poetry run pytest -m 'index and elasticv8' --cov=docarray --cov-report=xml tests
+          poetry run pytest -m 'index and elasticv8' --cov=docarray --cov-report=xml -v -s tests
           echo "flag it as docarray for codeoverage"
           echo "codecov_flag=docarray" >> $GITHUB_OUTPUT
         timeout-minutes: 30
@@ -316,7 +316,7 @@ jobs:
       - name: Test
         id: test
         run: |
-          poetry run pytest -m 'tensorflow' --cov=docarray --cov-report=xml tests
+          poetry run pytest -m 'tensorflow' --cov=docarray --cov-report=xml -v -s tests
           echo "flag it as docarray for codeoverage"
           echo "codecov_flag=docarray" >> $GITHUB_OUTPUT
         timeout-minutes: 30
@@ -362,7 +362,7 @@ jobs:
       - name: Test
         id: test
         run: |
-          poetry run pytest -m 'jax' --cov=docarray --cov-report=xml tests
+          poetry run pytest -m 'jax' --cov=docarray --cov-report=xml -v -s tests
           echo "flag it as docarray for codeoverage"
           echo "codecov_flag=docarray" >> $GITHUB_OUTPUT
         timeout-minutes: 30
@@ -406,7 +406,7 @@ jobs:
       - name: Test
         id: test
         run: |
-          poetry run pytest -m 'benchmark' --cov=docarray --cov-report=xml tests
+          poetry run pytest -m 'benchmark' --cov=docarray --cov-report=xml -v -s tests
           echo "flag it as docarray for codeoverage"
           echo "codecov_flag=docarray" >> $GITHUB_OUTPUT
         timeout-minutes: 30

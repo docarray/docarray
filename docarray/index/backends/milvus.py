@@ -192,7 +192,7 @@ class MilvusDocumentIndex(BaseDocIndex, Generic[TSchema]):
             AbstractTensor: DataType.FLOAT_VECTOR,
         }
 
-        if issubclass(python_type, ID):
+        if safe_issubclass(python_type, ID):
             return DataType.VARCHAR
 
         for py_type, db_type in type_map.items():
@@ -665,7 +665,7 @@ class MilvusDocumentIndex(BaseDocIndex, Generic[TSchema]):
         if search_field:
             if '__' in search_field:
                 fields = search_field.split('__')
-                if issubclass(self._schema._get_field_annotation(fields[0]), AnyDocArray):  # type: ignore
+                if safe_issubclass(self._schema._get_field_annotation(fields[0]), AnyDocArray):  # type: ignore
                     return self._subindices[fields[0]].find_batched(
                         queries,
                         search_field='__'.join(fields[1:]),

@@ -27,13 +27,17 @@ from docarray.typing import NdArray
 from pydantic import Field
 import numpy as np
 
+
 # Define the document schema.
 class MyDoc(BaseDoc):
-    title: str 
+    title: str
     embedding: NdArray[128] = Field(is_embedding=True)
 
+
 # Create dummy documents.
-docs = DocList[MyDoc](MyDoc(title=f'title #{i}', embedding=np.random.rand(128)) for i in range(10))
+docs = DocList[MyDoc](
+    MyDoc(title=f'title #{i}', embedding=np.random.rand(128)) for i in range(10)
+)
 
 # Initialize a new MilvusDocumentIndex instance and add the documents to the index.
 doc_index = MilvusDocumentIndex[MyDoc](index_name='tmp_index_1')
@@ -55,7 +59,7 @@ wget https://github.com/milvus-io/milvus/releases/download/v2.2.11/milvus-standa
 
 And start Milvus by running:
 ```shell
-sudo docker-compose up -d
+sudo docker compose up -d
 ```
 
 Learn more on [Milvus documentation](https://milvus.io/docs/install_standalone-docker.md).
@@ -142,9 +146,11 @@ Now that you have a Document Index, you can add data to it, using the [`index()`
 import numpy as np
 from docarray import DocList
 
+
 class MyDoc(BaseDoc):
-    title: str 
+    title: str
     embedding: NdArray[128] = Field(is_embedding=True)
+
 
 doc_index = MilvusDocumentIndex[MyDoc](index_name='tmp_index_5')
 
@@ -273,7 +279,9 @@ class Book(BaseDoc):
     embedding: NdArray[10] = Field(is_embedding=True)
 
 
-books = DocList[Book]([Book(price=i * 10, embedding=np.random.rand(10)) for i in range(10)])
+books = DocList[Book](
+    [Book(price=i * 10, embedding=np.random.rand(10)) for i in range(10)]
+)
 book_index = MilvusDocumentIndex[Book](index_name='tmp_index_6')
 book_index.index(books)
 
@@ -312,8 +320,11 @@ class SimpleSchema(BaseDoc):
     price: int
     embedding: NdArray[128] = Field(is_embedding=True)
 
+
 # Create dummy documents.
-docs = DocList[SimpleSchema](SimpleSchema(price=i, embedding=np.random.rand(128)) for i in range(10))
+docs = DocList[SimpleSchema](
+    SimpleSchema(price=i, embedding=np.random.rand(128)) for i in range(10)
+)
 
 doc_index = MilvusDocumentIndex[SimpleSchema](index_name='tmp_index_7')
 doc_index.index(docs)
@@ -407,7 +418,9 @@ You can pass any of the above as keyword arguments to the `__init__()` method or
 
 ```python
 class SimpleDoc(BaseDoc):
-    tensor: NdArray[128] = Field(is_embedding=True, index_type='IVF_FLAT', metric_type='L2')
+    tensor: NdArray[128] = Field(
+        is_embedding=True, index_type='IVF_FLAT', metric_type='L2'
+    )
 
 
 doc_index = MilvusDocumentIndex[SimpleDoc](index_name='tmp_index_10')
