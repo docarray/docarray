@@ -100,8 +100,8 @@ class EpsillaDocumentIndex(BaseDocIndex, Generic[TSchema]):
     def _validate_column_info(self):
         vector_columns = []
         for info in self._column_infos.values():
-            for type in [list, np.ndarray, AbstractTensor]:
-                if safe_issubclass(info.docarray_type, type) and info.config.get(
+            for t in [list, np.ndarray, AbstractTensor]:
+                if safe_issubclass(info.docarray_type, t) and info.config.get(
                     'is_embedding', False
                 ):
                     # check that dimension is present
