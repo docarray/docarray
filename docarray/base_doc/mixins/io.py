@@ -160,8 +160,6 @@ class IOMixin(Iterable[Tuple[str, Any]]):
         :return: the binary serialization in bytes
         """
         if protocol == 'pickle':
-            import pickle
-
             bstr = pickle.dumps(self)
         elif protocol == 'protobuf':
             bstr = self.to_protobuf().SerializePartialToString()
@@ -188,8 +186,6 @@ class IOMixin(Iterable[Tuple[str, Any]]):
         """
         bstr = _decompress_bytes(data, algorithm=compress)
         if protocol == 'pickle':
-            import pickle
-
             return pickle.loads(bstr)
         elif protocol == 'protobuf':
             from docarray.proto import DocProto
