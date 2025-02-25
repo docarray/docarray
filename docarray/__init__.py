@@ -21,6 +21,41 @@ from docarray.array import DocList, DocVec
 from docarray.base_doc.doc import BaseDoc
 from docarray.utils._internal.misc import _get_path_from_docarray_root_level
 
+
+def unpickle_doclist(doc_type, b):
+    return DocList[doc_type].from_bytes(b, protocol="protobuf")
+
+
+# Register the pickle functions
+def register_serializers():
+    import copyreg
+    from functools import partial
+
+    unpickle_doc_fn = partial(BaseDoc.from_bytes, protocol="protobuf")
+
+    def pickle_doc(doc):
+        b = doc.to_bytes(protocol='protobuf')
+        return unpickle_doc_fn, (doc.__class__, b)
+
+    # Register BaseDoc serialization
+    copyreg.pickle(BaseDoc, pickle_doc)
+
+    # For DocList, we need to hook into __reduce__ since it's a generic
+
+    def pickle_doclist(doc_list):
+        b = doc_list.to_bytes(protocol='protobuf')
+        doc_type = doc_list.doc_type
+        return unpickle_doclist, (doc_type, b)
+
+    # Replace DocList.__reduce__ with a method that returns the correct format
+    def doclist_reduce(self):
+        return pickle_doclist(self)
+
+    DocList.__reduce__ = doclist_reduce
+
+
+register_serializers()
+
 __all__ = ['BaseDoc', 'DocList', 'DocVec']
 
 logger = logging.getLogger('docarray')
