@@ -61,11 +61,13 @@ def safe_issubclass(x: type, a_tuple: type) -> bool:
     :return: A boolean value - 'True' if 'x' is a subclass of 'A_tuple', 'False' otherwise.
              Note that if the origin of 'x' is a list or tuple, the function immediately returns 'False'.
     """
+    origin = get_origin(x) or x
     if (
-        (get_origin(x) in (list, tuple, dict, set, Union))
-        or is_typevar(x)
-        or (type(x) == ForwardRef)
-        or is_typevar(x)
+        (origin in (list, tuple, dict, set, Union))
+        or is_typevar(origin)
+        or (type(origin) == ForwardRef)
+        or is_typevar(origin)
     ):
         return False
-    return issubclass(x, a_tuple)
+
+    return issubclass(origin, a_tuple)
