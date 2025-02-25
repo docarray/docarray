@@ -12,7 +12,7 @@ When you want to use your [`DocList`][docarray.DocList] in another place, you ca
 ## Push & pull
 To use the store [`DocList`][docarray.DocList] on S3, you need to pass an S3 path to the function starting with `'s3://'`.
 
-In the following demo, we use `MinIO` as a local S3 service. You could use the following docker-compose file to start the service in a Docker container.
+In the following demo, we use `MinIO` as a local S3 service. You could use the following docker compose file to start the service in a Docker container.
 
 ```yaml
 version: "3"
@@ -26,7 +26,7 @@ services:
 ```
 Save the above file as `docker-compose.yml` and run the following line in the same folder as the file.
 ```cmd
-docker-compose up
+docker compose up
 ```
 
 ```python

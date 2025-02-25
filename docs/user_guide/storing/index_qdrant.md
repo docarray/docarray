@@ -22,13 +22,17 @@ from docarray.index import QdrantDocumentIndex
 from docarray.typing import NdArray
 import numpy as np
 
+
 # Define the document schema.
 class MyDoc(BaseDoc):
-    title: str 
+    title: str
     embedding: NdArray[128]
 
+
 # Create dummy documents.
-docs = DocList[MyDoc](MyDoc(title=f'title #{i}', embedding=np.random.rand(128)) for i in range(10))
+docs = DocList[MyDoc](
+    MyDoc(title=f'title #{i}', embedding=np.random.rand(128)) for i in range(10)
+)
 
 # Initialize a new QdrantDocumentIndex instance and add the documents to the index.
 doc_index = QdrantDocumentIndex[MyDoc](host='localhost')
@@ -46,7 +50,7 @@ You can initialize [QdrantDocumentIndex][docarray.index.backends.qdrant.QdrantDo
 
 **Connecting to a local Qdrant instance running as a Docker container**
 
-You can use docker-compose to create a local Qdrant service with the following `docker-compose.yml`.
+You can use docker compose to create a local Qdrant service with the following `docker-compose.yml`.
 
 ```yaml
 version: '3.8'
@@ -66,7 +70,7 @@ services:
 Run the following command in the folder of the above `docker-compose.yml` to start the service:
 
 ```bash
-docker-compose up
+docker compose up
 ```
 
 Next, you can create a [QdrantDocumentIndex][docarray.index.backends.qdrant.QdrantDocumentIndex] instance using:
@@ -89,7 +93,7 @@ doc_index = QdrantDocumentIndex[MyDoc](qdrant_config)
 **Connecting to Qdrant Cloud service**
 ```python
 qdrant_config = QdrantDocumentIndex.DBConfig(
-    "https://YOUR-CLUSTER-URL.aws.cloud.qdrant.io", 
+    "https://YOUR-CLUSTER-URL.aws.cloud.qdrant.io",
     api_key="<your-api-key>",
 )
 doc_index = QdrantDocumentIndex[MyDoc](qdrant_config)
@@ -317,9 +321,7 @@ book_index = QdrantDocumentIndex[Book]()
 book_index.index(books)
 
 # filter for books that are cheaper than 29 dollars
-query = rest.Filter(
-        must=[rest.FieldCondition(key='price', range=rest.Range(lt=29))]
-    )
+query = rest.Filter(must=[rest.FieldCondition(key='price', range=rest.Range(lt=29))])
 cheap_books = book_index.filter(filter_query=query)
 
 assert len(cheap_books) == 3
@@ -372,7 +374,9 @@ class SimpleDoc(BaseDoc):
 
 doc_index = QdrantDocumentIndex[SimpleDoc](host='localhost')
 index_docs = [
-    SimpleDoc(id=f'{i}', tens=np.ones(10) * i, num=int(i / 2), text=f'Lorem ipsum {int(i/2)}')
+    SimpleDoc(
+        id=f'{i}', tens=np.ones(10) * i, num=int(i / 2), text=f'Lorem ipsum {int(i/2)}'
+    )
     for i in range(10)
 ]
 doc_index.index(index_docs)
@@ -380,16 +384,16 @@ doc_index.index(index_docs)
 find_query = np.ones(10)
 text_search_query = 'ipsum 1'
 filter_query = rest.Filter(
-        must=[
-            rest.FieldCondition(
-                key='num',
-                range=rest.Range(
-                    gte=1,
-                    lt=5,
-                ),
-            )
-        ]
-    )
+    must=[
+        rest.FieldCondition(
+            key='num',
+            range=rest.Range(
+                gte=1,
+                lt=5,
+            ),
+        )
+    ]
+)
 
 query = (
     doc_index.build_query()
@@ -437,6 +441,8 @@ import numpy as np
 from docarray import BaseDoc, DocList
 from docarray.typing import NdArray
 from docarray.index import QdrantDocumentIndex
+
+
 class MyDoc(BaseDoc):
     text: str
     embedding: NdArray[128]
@@ -445,7 +451,12 @@ class MyDoc(BaseDoc):
 Now, we can instantiate our Index and add some data:
 ```python
 docs = DocList[MyDoc](
-    [MyDoc(embedding=np.random.rand(10), text=f'I am the first version of Document {i}') for i in range(100)]
+    [
+        MyDoc(
+            embedding=np.random.rand(10), text=f'I am the first version of Document {i}'
+        )
+        for i in range(100)
+    ]
 )
 index = QdrantDocumentIndex[MyDoc]()
 index.index(docs)
