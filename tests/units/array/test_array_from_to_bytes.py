@@ -11,7 +11,9 @@ class MyDoc(BaseDoc):
     image: ImageDoc
 
 
-@pytest.mark.parametrize('protocol', ['protobuf-array', 'protobuf'])
+@pytest.mark.parametrize(
+    'protocol', ['pickle-array', 'protobuf-array', 'protobuf', 'pickle']
+)
 @pytest.mark.parametrize('compress', ['lz4', 'bz2', 'lzma', 'zlib', 'gzip', None])
 @pytest.mark.parametrize('show_progress', [False, True])
 @pytest.mark.parametrize('array_cls', [DocList, DocVec])
@@ -41,7 +43,7 @@ def test_from_to_bytes(protocol, compress, show_progress, array_cls):
 
 
 @pytest.mark.parametrize(
-    'protocol', ['protobuf']  # ['pickle-array', 'protobuf-array', 'protobuf', 'pickle']
+    'protocol', ['pickle-array', 'protobuf-array', 'protobuf', 'pickle']
 )
 @pytest.mark.parametrize('compress', ['lz4'])  # , 'bz2', 'lzma', 'zlib', 'gzip', None])
 @pytest.mark.parametrize('show_progress', [False])  # [False, True])
@@ -76,7 +78,7 @@ def test_from_to_base64(protocol, compress, show_progress, array_cls):
 
 
 @pytest.mark.parametrize('tensor_type', [NdArray, TorchTensor])
-@pytest.mark.parametrize('protocol', ['protobuf-array'])
+@pytest.mark.parametrize('protocol', ['protobuf-array', 'pickle-array'])
 def test_from_to_base64_tensor_type(tensor_type, protocol):
     class MyDoc(BaseDoc):
         embedding: tensor_type

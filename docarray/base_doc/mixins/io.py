@@ -159,6 +159,8 @@ class IOMixin(Iterable[Tuple[str, Any]]):
         :param compress: compression algorithm to use
         :return: the binary serialization in bytes
         """
+        import pickle
+
         if protocol == 'pickle':
             bstr = pickle.dumps(self)
         elif protocol == 'protobuf':

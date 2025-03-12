@@ -74,8 +74,19 @@ class AnyDocArray(Sequence[T_doc], Generic[T_doc], AbstractType):
             # Promote to global scope so multiprocessing can pickle it
             global _DocArrayTyped
 
-            class _DocArrayTyped(cls, Generic[T_doc]):  # type: ignore
-                doc_type: Type[BaseDocWithoutId] = cast(Type[BaseDocWithoutId], item)
+            if not is_pydantic_v2:
+
+                class _DocArrayTyped(cls):  # type: ignore
+                    doc_type: Type[BaseDocWithoutId] = cast(
+                        Type[BaseDocWithoutId], item
+                    )
+
+            else:
+
+                class _DocArrayTyped(cls, Generic[T_doc]):  # type: ignore
+                    doc_type: Type[BaseDocWithoutId] = cast(
+                        Type[BaseDocWithoutId], item
+                    )
 
             for field in _DocArrayTyped.doc_type._docarray_fields().keys():
 
@@ -103,7 +114,10 @@ class AnyDocArray(Sequence[T_doc], Generic[T_doc], AbstractType):
             # # The global scope and qualname need to refer to this class a unique name.
             # # Otherwise, creating another _DocArrayTyped will overwrite this one.
             if not is_pydantic_v2:
-                change_cls_name(_DocArrayTyped, f'{cls.__name__}[{item}]', globals())
+                change_cls_name(
+                    _DocArrayTyped, f'{cls.__name__}[{item.__name__}]', globals()
+                )
+
                 cls.__typed_da__[cls][item] = _DocArrayTyped
             else:
                 change_cls_name(_DocArrayTyped, f'{cls.__name__}', globals())

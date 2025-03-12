@@ -30,7 +30,9 @@ class MyDoc(BaseDoc):
 
 
 @pytest.mark.slow
-@pytest.mark.parametrize('protocol', ['protobuf-array', 'protobuf', 'json-array'])
+@pytest.mark.parametrize(
+    'protocol', ['pickle-array', 'protobuf-array', 'protobuf', 'pickle', 'json-array']
+)
 @pytest.mark.parametrize('compress', ['lz4', 'bz2', 'lzma', 'zlib', 'gzip', None])
 @pytest.mark.parametrize('show_progress', [False, True])
 @pytest.mark.parametrize('array_cls', [DocList, DocVec])
@@ -65,7 +67,9 @@ def test_array_save_load_binary(protocol, compress, tmp_path, show_progress, arr
 
 
 @pytest.mark.slow
-@pytest.mark.parametrize('protocol', ['protobuf-array', 'protobuf', 'json-array'])
+@pytest.mark.parametrize(
+    'protocol', ['pickle-array', 'protobuf-array', 'protobuf', 'pickle', 'json-array']
+)
 @pytest.mark.parametrize('compress', ['lz4', 'bz2', 'lzma', 'zlib', 'gzip', None])
 @pytest.mark.parametrize('show_progress', [False, True])
 @pytest.mark.parametrize('to_doc_vec', [True, False])
