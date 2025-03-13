@@ -26,8 +26,9 @@ def test_column_storage_init():
     for name in storage.any_columns['name']:
         assert name == 'hello'
     inner_docs = storage.doc_columns['doc']
-    assert isinstance(inner_docs, DocVec[InnerDoc])
+    assert isinstance(inner_docs, DocVec)
     for i, doc in enumerate(inner_docs):
+        assert isinstance(doc, InnerDoc)
         assert doc.price == i
 
 

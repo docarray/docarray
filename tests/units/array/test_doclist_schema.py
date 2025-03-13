@@ -17,6 +17,6 @@ def test_schema_nested():
     d = DocDocTest(docs=DocList[Doc1Test]([Doc1Test(aux='aux')]))
 
     assert isinstance(d.docs, DocList)
-    for d in d.docs:
-        assert isinstance(d, Doc1Test)
+    for dd in d.docs:
+        assert isinstance(dd, Doc1Test)
     assert d.docs.aux == ['aux']

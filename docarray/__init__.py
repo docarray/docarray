@@ -27,8 +27,8 @@ def unpickle_doclist(doc_type, b):
     return DocList[doc_type].from_bytes(b, protocol="protobuf")
 
 
-def unpickle_docvec(doc_type, b):
-    return DocVec[doc_type].from_bytes(b, protocol="protobuf")
+def unpickle_docvec(doc_type, tensor_type, b):
+    return DocVec[doc_type].from_bytes(b, protocol="protobuf", tensor_type=tensor_type)
 
 
 if is_pydantic_v2:
@@ -64,7 +64,8 @@ if is_pydantic_v2:
         def pickle_docvec(doc_vec):
             b = doc_vec.to_bytes(protocol='protobuf')
             doc_type = doc_vec.doc_type
-            return unpickle_docvec, (doc_type, b)
+            tensor_type = doc_vec.tensor_type
+            return unpickle_docvec, (doc_type, tensor_type, b)
 
         # Replace DocList.__reduce__ with a method that returns the correct format
         def docvec_reduce(self):
