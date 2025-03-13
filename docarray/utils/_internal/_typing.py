@@ -65,7 +65,7 @@ def safe_issubclass(x: type, a_tuple: type) -> bool:
     if origin:  # If x is a generic type like DocList[SomeDoc], get its origin
         x = origin
     if (
-        (get_origin(x) in (list, tuple, dict, set, Union))
+        (origin in (list, tuple, dict, set, Union))
         or is_typevar(x)
         or (type(x) == ForwardRef)
         or is_typevar(x)
