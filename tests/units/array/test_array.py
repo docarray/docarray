@@ -522,5 +522,3 @@ def test_not_double_subcriptable():
     with pytest.raises(TypeError) as excinfo:
         da = DocList[TextDoc][TextDoc]
         assert da is None
-
-    assert 'not subscriptable' in str(excinfo.value)

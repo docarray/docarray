@@ -335,7 +335,9 @@ class DocVec(IOMixinDocVec, AnyDocArray[T_doc]):  # type: ignore
                 return cast(T, value.to_doc_vec())
             else:
                 raise ValueError(f'DocVec[value.doc_type] is not compatible with {cls}')
-        elif isinstance(value, DocList.__class_getitem__(cls.doc_type)):
+        elif not is_pydantic_v2 and isinstance(
+            value, DocList.__class_getitem__(cls.doc_type)
+        ):
             return cast(T, value.to_doc_vec())
         elif isinstance(value, Sequence):
             return cls(value)

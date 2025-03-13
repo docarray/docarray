@@ -467,13 +467,15 @@ def test_docs_validation():
     index = DummyDocIndex[SimpleDoc]()
     in_list = [SimpleDoc(tens=np.random.random((10,)))]
     assert isinstance(index._validate_docs(in_list), DocList)
-    assert isinstance(index._validate_docs(in_list)[0], BaseDoc)
+    for d in index._validate_docs(in_list):
+        assert isinstance(d, BaseDoc)
 
     in_da = DocList[SimpleDoc](in_list)
     assert index._validate_docs(in_da) == in_da
     in_other_list = [OtherSimpleDoc(tens=np.random.random((10,)))]
     assert isinstance(index._validate_docs(in_other_list), DocList)
-    assert isinstance(index._validate_docs(in_other_list)[0], BaseDoc)
+    for d in index._validate_docs(in_other_list):
+        assert isinstance(d, BaseDoc)
     in_other_da = DocList[OtherSimpleDoc](in_other_list)
     assert index._validate_docs(in_other_da) == in_other_da
 
@@ -503,7 +505,8 @@ def test_docs_validation():
         FlatDoc(tens_one=np.random.random((10,)), tens_two=np.random.random((50,)))
     ]
     assert isinstance(index._validate_docs(in_list), DocList)
-    assert isinstance(index._validate_docs(in_list)[0], BaseDoc)
+    for d in index._validate_docs(in_list):
+        assert isinstance(d, BaseDoc)
     in_da = DocList[FlatDoc](
         [FlatDoc(tens_one=np.random.random((10,)), tens_two=np.random.random((50,)))]
     )
@@ -512,7 +515,8 @@ def test_docs_validation():
         OtherFlatDoc(tens_one=np.random.random((10,)), tens_two=np.random.random((50,)))
     ]
     assert isinstance(index._validate_docs(in_other_list), DocList)
-    assert isinstance(index._validate_docs(in_other_list)[0], BaseDoc)
+    for d in index._validate_docs(in_other_list):
+        assert isinstance(d, BaseDoc)
     in_other_da = DocList[OtherFlatDoc](
         [
             OtherFlatDoc(
@@ -532,12 +536,14 @@ def test_docs_validation():
     index = DummyDocIndex[NestedDoc]()
     in_list = [NestedDoc(d=SimpleDoc(tens=np.random.random((10,))))]
     assert isinstance(index._validate_docs(in_list), DocList)
-    assert isinstance(index._validate_docs(in_list)[0], BaseDoc)
+    for d in index._validate_docs(in_list):
+        assert isinstance(d, BaseDoc)
     in_da = DocList[NestedDoc]([NestedDoc(d=SimpleDoc(tens=np.random.random((10,))))])
     assert index._validate_docs(in_da) == in_da
     in_other_list = [OtherNestedDoc(d=OtherSimpleDoc(tens=np.random.random((10,))))]
     assert isinstance(index._validate_docs(in_other_list), DocList)
-    assert isinstance(index._validate_docs(in_other_list)[0], BaseDoc)
+    for d in index._validate_docs(in_other_list):
+        assert isinstance(d, BaseDoc)
     in_other_da = DocList[OtherNestedDoc](
         [OtherNestedDoc(d=OtherSimpleDoc(tens=np.random.random((10,))))]
     )
@@ -565,7 +571,8 @@ def test_docs_validation_unions():
     index = DummyDocIndex[SimpleDoc]()
     in_list = [OptionalDoc(tens=np.random.random((10,)))]
     assert isinstance(index._validate_docs(in_list), DocList)
-    assert isinstance(index._validate_docs(in_list)[0], BaseDoc)
+    for d in index._validate_docs(in_list):
+        assert isinstance(d, BaseDoc)
     in_da = DocList[OptionalDoc](in_list)
     assert index._validate_docs(in_da) == in_da
 
@@ -576,10 +583,12 @@ def test_docs_validation_unions():
     index = DummyDocIndex[SimpleDoc]()
     in_list = [MixedUnionDoc(tens=np.random.random((10,)))]
     assert isinstance(index._validate_docs(in_list), DocList)
-    assert isinstance(index._validate_docs(in_list)[0], BaseDoc)
+    for d in index._validate_docs(in_list):
+        assert isinstance(d, BaseDoc)
     in_da = DocList[MixedUnionDoc](in_list)
     assert isinstance(index._validate_docs(in_da), DocList)
-    assert isinstance(index._validate_docs(in_da)[0], BaseDoc)
+    for d in index._validate_docs(in_da):
+        assert isinstance(d, BaseDoc)
 
     with pytest.raises(ValueError):
         index._validate_docs([MixedUnionDoc(tens='hello')])
@@ -588,14 +597,16 @@ def test_docs_validation_unions():
     index = DummyDocIndex[TensorUnionDoc]()
     in_list = [SimpleDoc(tens=np.random.random((10,)))]
     assert isinstance(index._validate_docs(in_list), DocList)
-    assert isinstance(index._validate_docs(in_list)[0], BaseDoc)
+    for d in index._validate_docs(in_list):
+        assert isinstance(d, BaseDoc)
     in_da = DocList[SimpleDoc](in_list)
     assert index._validate_docs(in_da) == in_da
 
     index = DummyDocIndex[SimpleDoc]()
     in_list = [TensorUnionDoc(tens=np.random.random((10,)))]
     assert isinstance(index._validate_docs(in_list), DocList)
-    assert isinstance(index._validate_docs(in_list)[0], BaseDoc)
+    for d in index._validate_docs(in_list):
+        assert isinstance(d, BaseDoc)
     in_da = DocList[TensorUnionDoc](in_list)
     assert index._validate_docs(in_da) == in_da
 
