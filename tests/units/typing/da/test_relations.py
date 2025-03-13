@@ -13,9 +13,16 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+
+import pytest
 from docarray import BaseDoc, DocList
+from docarray.utils._internal.pydantic import is_pydantic_v2
 
 
+@pytest.mark.skipif(
+    is_pydantic_v2,
+    reason="Subscripted generics cannot be used with class and instance checks",
+)
 def test_instance_and_equivalence():
     class MyDoc(BaseDoc):
         text: str
@@ -28,6 +35,10 @@ def test_instance_and_equivalence():
     assert isinstance(docs, DocList[MyDoc])
 
 
+@pytest.mark.skipif(
+    is_pydantic_v2,
+    reason="Subscripted generics cannot be used with class and instance checks",
+)
 def test_subclassing():
     class MyDoc(BaseDoc):
         text: str

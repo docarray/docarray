@@ -54,8 +54,9 @@ def create_pure_python_type_model(model: BaseModel) -> BaseDoc:
     fields: Dict[str, Any] = {}
     import copy
 
-    fields_copy = copy.deepcopy(model.__fields__)
-    annotations_copy = copy.deepcopy(model.__annotations__)
+    copy_model = copy.deepcopy(model)
+    fields_copy = copy_model.__fields__
+    annotations_copy = copy_model.__annotations__
     for field_name, field in annotations_copy.items():
         if field_name not in fields_copy:
             continue
@@ -65,7 +66,7 @@ def create_pure_python_type_model(model: BaseModel) -> BaseDoc:
         else:
             field_info = fields_copy[field_name].field_info
         try:
-            if safe_issubclass(field, DocList):
+            if safe_issubclass(field, DocList) and not is_pydantic_v2:
                 t: Any = field.doc_type
                 t_aux = create_pure_python_type_model(t)
                 fields[field_name] = (List[t_aux], field_info)
@@ -74,7 +75,9 @@ def create_pure_python_type_model(model: BaseModel) -> BaseDoc:
         except TypeError:
             fields[field_name] = (field, field_info)
 
-    return create_model(model.__name__, __base__=model, __doc__=model.__doc__, **fields)
+    return create_model(
+        copy_model.__name__, __base__=copy_model, __doc__=copy_model.__doc__, **fields
+    )
 
 
 def _get_field_annotation_from_schema(
