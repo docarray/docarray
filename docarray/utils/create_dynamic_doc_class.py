@@ -163,7 +163,10 @@ def _get_field_annotation_from_schema(
         doc_type: Any
         if 'additionalProperties' in field_schema:  # handle Dictionaries
             additional_props = field_schema['additionalProperties']
-            if additional_props.get('type') == 'object':
+            if (
+                isinstance(additional_props, dict)
+                and additional_props.get('type') == 'object'
+            ):
                 doc_type = create_base_doc_from_schema(
                     additional_props, field_name, cached_models=cached_models
                 )
@@ -300,7 +303,9 @@ def create_base_doc_from_schema(
                 if k in FieldInfo.__slots__:
                     field_kwargs[k] = v
                 else:
-                    field_json_schema_extra[k] = v
+                    if k != '$ref' and '#/$defs' not in str(v):
+                        field_json_schema_extra[k] = v
+
             fields[field_name] = (
                 field_type,
                 FieldInfo(
