@@ -113,7 +113,7 @@ def _get_field_annotation_from_schema(
                 ref_name = obj_ref.split('/')[-1]
                 any_of_types.append(
                     create_base_doc_from_schema(
-                        root_schema['definitions'][ref_name],
+                        definitions[ref_name],
                         ref_name,
                         cached_models=cached_models,
                         definitions=definitions,
