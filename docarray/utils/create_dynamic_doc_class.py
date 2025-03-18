@@ -268,6 +268,24 @@ def create_base_doc_from_schema(
     :param definitions: Parameter used when this method is called recursively to reuse root definitions of other schemas.
     :return: A BaseDoc class dynamically created following the `schema`.
     """
+
+    def clean_refs(value):
+        """Recursively remove $ref keys and #/$defs values from a data structure."""
+        if isinstance(value, dict):
+            # Create a new dictionary without $ref keys and without values containing #/$defs
+            cleaned_dict = {}
+            for k, v in value.items():
+                if k == '$ref':
+                    continue
+                cleaned_dict[k] = clean_refs(v)
+            return cleaned_dict
+        elif isinstance(value, list):
+            # Process each item in the list
+            return [clean_refs(item) for item in value]
+        else:
+            # Return primitive values as-is
+            return value
+
     if not definitions:
         definitions = (
             schema.get('definitions', {}) if not is_pydantic_v2 else schema.get('$defs')
@@ -303,8 +321,15 @@ def create_base_doc_from_schema(
                 if k in FieldInfo.__slots__:
                     field_kwargs[k] = v
                 else:
-                    if k != '$ref' and '#/$defs' not in str(v):
-                        field_json_schema_extra[k] = v
+                    if k != '$ref':
+                        if isinstance(v, dict):
+                            cleaned_v = clean_refs(v)
+                            if (
+                                cleaned_v
+                            ):  # Only add if there's something left after cleaning
+                                field_json_schema_extra[k] = cleaned_v
+                        else:
+                            field_json_schema_extra[k] = v
 
             fields[field_name] = (
                 field_type,
