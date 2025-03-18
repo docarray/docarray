@@ -35,20 +35,16 @@ jobs:
     steps:
       - uses: actions/checkout@v3
         with:
-          fetch-depth: 0
-
-      - name: Get changed files
-        id: changed-files-specific
-        uses: tj-actions/changed-files@v41
-        with:
-          files: |
-            README.md
+          fetch-depth: 2
 
       - name: Check if README is modified
         id: step_output
-        if: steps.changed-files-specific.outputs.any_changed == 'true'
         run: |
-          echo "readme_changed=true" >> $GITHUB_OUTPUT
+          if git diff --name-only HEAD^ HEAD | grep -q "README.md"; then
+            echo "readme_changed=true" >> $GITHUB_OUTPUT
+          else
+            echo "readme_changed=false" >> $GITHUB_OUTPUT
+          fi
 
   publish-docarray-org:
     needs: check-readme-modification
