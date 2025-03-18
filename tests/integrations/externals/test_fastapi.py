@@ -345,3 +345,41 @@ async def test_doclist_complex_schema():
     assert docs_embed[0].u == 'a'
     assert docs_embed[0].single_text.text == 'single hey ha'
     assert docs_embed[0].single_text.embedding.shape == (2,)
+
+
+@pytest.mark.asyncio
+@pytest.mark.skipif(
+    not is_pydantic_v2, reason='Behavior is only available for Pydantic V2'
+)
+async def test_simple_directly():
+    app = FastAPI()
+
+    @app.post("/doc_list/", response_class=DocArrayResponse)
+    async def func_doc_list(fastapi_docs: DocList[TextDoc]) -> DocList[TextDoc]:
+        return fastapi_docs
+
+    @app.post("/doc_single/", response_class=DocArrayResponse)
+    async def func_doc_single(fastapi_doc: TextDoc) -> TextDoc:
+        return fastapi_doc
+
+    async with AsyncClient(app=app, base_url="http://test") as ac:
+        response_doc_list = await ac.post(
+            "/doc_list/", data=json.dumps([{"text": "text"}])
+        )
+        response_single = await ac.post(
+            "/doc_single/", data=json.dumps({"text": "text"})
+        )
+        resp_doc = await ac.get("/docs")
+        resp_redoc = await ac.get("/redoc")
+
+    assert response_doc_list.status_code == 200
+    assert response_single.status_code == 200
+    assert resp_doc.status_code == 200
+    assert resp_redoc.status_code == 200
+
+    docs = DocList[TextDoc].from_json(response_doc_list.content.decode())
+    assert len(docs) == 1
+    assert docs[0].text == 'text'
+
+    doc = TextDoc.from_json(response_single.content.decode())
+    assert doc == 'text'

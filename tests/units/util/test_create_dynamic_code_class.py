@@ -331,3 +331,28 @@ def test_dynamic_class_creation_multiple_doclist_nested():
         QuoteFile_reconstructed_in_gateway_from_Search_results(id='0', texts=textlist)
     )
     assert reconstructed_in_gateway_from_Search_results.texts[0].text == 'hey'
+
+
+def test_id_optional():
+    from docarray import BaseDoc
+    import json
+
+    class MyTextDoc(BaseDoc):
+        text: str
+        opt: Optional[str] = None
+
+    MyTextDoc_aux = create_pure_python_type_model(MyTextDoc)
+    td = create_base_doc_from_schema(MyTextDoc_aux.schema(), 'MyTextDoc')
+    print(f'{td.schema()}')
+    direct = MyTextDoc.from_json(json.dumps({"text": "text"}))
+    aux = MyTextDoc_aux.from_json(json.dumps({"text": "text"}))
+    indirect = td.from_json(json.dumps({"text": "text"}))
+    assert direct.text == 'text'
+    assert aux.text == 'text'
+    assert indirect.text == 'text'
+    direct = MyTextDoc(text='hey')
+    aux = MyTextDoc_aux(text='hey')
+    indirect = td(text='hey')
+    assert direct.text == 'hey'
+    assert aux.text == 'hey'
+    assert indirect.text == 'hey'

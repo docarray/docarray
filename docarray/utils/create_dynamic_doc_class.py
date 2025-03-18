@@ -295,6 +295,7 @@ def create_base_doc_from_schema(
     for field_name, field_schema in schema.get('properties', {}).items():
         if field_name == 'id':
             has_id = True
+        # Get the field type
         field_type = _get_field_annotation_from_schema(
             field_schema=field_schema,
             field_name=field_name,
@@ -313,6 +314,9 @@ def create_base_doc_from_schema(
             field_kwargs = {}
             field_json_schema_extra = {}
             for k, v in field_schema.items():
+                if field_name == 'id':
+                    # Skip default_factory for Optional fields and use None
+                    field_kwargs['default'] = None
                 if k in FieldInfo.__slots__:
                     field_kwargs[k] = v
                 else:
