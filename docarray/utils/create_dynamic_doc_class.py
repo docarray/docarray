@@ -83,7 +83,6 @@ def create_pure_python_type_model(model: BaseModel) -> BaseDoc:
 def _get_field_annotation_from_schema(
     field_schema: Dict[str, Any],
     field_name: str,
-    root_schema: Dict[str, Any],
     cached_models: Dict[str, Any],
     is_tensor: bool = False,
     num_recursions: int = 0,
@@ -93,7 +92,6 @@ def _get_field_annotation_from_schema(
     Private method used to extract the corresponding field type from the schema.
     :param field_schema: The schema from which to extract the type
     :param field_name: The name of the field to be created
-    :param root_schema: The schema of the root object, important to get references
     :param cached_models: Parameter used when this method is called recursively to reuse partial nested classes.
     :param is_tensor: Boolean used to tell between tensor and list
     :param num_recursions: Number of recursions to properly handle nested types (Dict, List, etc ..)
@@ -124,7 +122,6 @@ def _get_field_annotation_from_schema(
                     _get_field_annotation_from_schema(
                         any_of_schema,
                         field_name,
-                        root_schema=root_schema,
                         cached_models=cached_models,
                         is_tensor=tensor_shape is not None,
                         num_recursions=0,
@@ -207,7 +204,6 @@ def _get_field_annotation_from_schema(
         ret = _get_field_annotation_from_schema(
             field_schema=field_schema.get('items', {}),
             field_name=field_name,
-            root_schema=root_schema,
             cached_models=cached_models,
             is_tensor=tensor_shape is not None,
             num_recursions=num_recursions + 1,
@@ -302,7 +298,6 @@ def create_base_doc_from_schema(
         field_type = _get_field_annotation_from_schema(
             field_schema=field_schema,
             field_name=field_name,
-            root_schema=schema,
             cached_models=cached_models,
             is_tensor=False,
             num_recursions=0,
