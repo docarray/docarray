@@ -227,6 +227,7 @@ async def test_doclist_complex_schema():
         lu: List[Union[str, int]] = [0, 1, 2]
         tags: Optional[Dict[str, Any]] = None
         nested: Nested1Doc
+        embedding: NdArray
         classvar: ClassVar[str] = 'classvar'
 
     docs = DocList[CustomDoc](
@@ -242,6 +243,7 @@ async def test_doclist_complex_schema():
                 single_text=TextDoc(text='single hey ha', embedding=np.zeros(2)),
                 u='a',
                 lu=[3, 4],
+                embedding=np.random.random((1, 4)),
                 nested=Nested1Doc(nested=Nested2Doc(value='hello world')),
             )
         ]
@@ -291,6 +293,11 @@ async def test_doclist_complex_schema():
     assert response_embed.status_code == 200
     assert resp_doc.status_code == 200
     assert resp_redoc.status_code == 200
+
+    resp_json = json.loads(response_default.content.decode())
+    assert isinstance(resp_json[0]["tensor"], list)
+    assert isinstance(resp_json[0]["embedding"], list)
+    assert isinstance(resp_json[0]["texts"][0]["embedding"], list)
 
     docs_response = DocList[CustomDoc].from_json(response.content.decode())
     assert len(docs_response) == 1

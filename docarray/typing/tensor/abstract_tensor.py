@@ -398,7 +398,7 @@ class AbstractTensor(Generic[TTensor, T], AbstractType, ABC, Sized):
             return core_schema.with_info_plain_validator_function(
                 cls.validate,
                 serialization=core_schema.plain_serializer_function_ser_schema(
-                    function=orjson_dumps,
+                    function=lambda x: x._docarray_to_ndarray().tolist(),
                     return_schema=handler.generate_schema(bytes),
                     when_used="json-unless-none",
                 ),
