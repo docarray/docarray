@@ -352,12 +352,12 @@ class ElasticDocIndex(BaseDocIndex, Generic[TSchema]):
             dict: 'object',
         }
 
-        for type in elastic_py_types.keys():
-            if safe_issubclass(python_type, type):
+        for t in elastic_py_types.keys():
+            if safe_issubclass(python_type, t):
                 self._logger.info(
-                    f'Mapped Python type {python_type} to database type "{elastic_py_types[type]}"'
+                    f'Mapped Python type {python_type} to database type "{elastic_py_types[t]}"'
                 )
-                return elastic_py_types[type]
+                return elastic_py_types[t]
 
         err_msg = f'Unsupported column type for {type(self)}: {python_type}'
         self._logger.error(err_msg)

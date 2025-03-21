@@ -13,6 +13,7 @@ from docarray.index.abstract import BaseDocIndex, _raise_not_composable
 from docarray.typing import ID, ImageBytes, ImageUrl, NdArray
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
 from docarray.utils._internal.misc import torch_imported
+from docarray.utils._internal._typing import safe_issubclass
 
 pytestmark = pytest.mark.index
 
@@ -54,7 +55,7 @@ class DummyDocIndex(BaseDocIndex):
     def __init__(self, db_config=None, **kwargs):
         super().__init__(db_config=db_config, **kwargs)
         for col_name, col in self._column_infos.items():
-            if issubclass(col.docarray_type, AnyDocArray):
+            if safe_issubclass(col.docarray_type, AnyDocArray):
                 sub_db_config = copy.deepcopy(self._db_config)
                 self._subindices[col_name] = self.__class__[col.docarray_type.doc_type](
                     db_config=sub_db_config, subindex=True
@@ -159,7 +160,7 @@ def test_create_columns():
     assert index._column_infos['id'].n_dim is None
     assert index._column_infos['id'].config['hi'] == 'there'
 
-    assert issubclass(index._column_infos['tens'].docarray_type, AbstractTensor)
+    assert safe_issubclass(index._column_infos['tens'].docarray_type, AbstractTensor)
     assert index._column_infos['tens'].db_type == str
     assert index._column_infos['tens'].n_dim == 10
     assert index._column_infos['tens'].config == {'dim': 1000, 'hi': 'there'}
@@ -173,12 +174,16 @@ def test_create_columns():
     assert index._column_infos['id'].n_dim is None
     assert index._column_infos['id'].config['hi'] == 'there'
 
-    assert issubclass(index._column_infos['tens_one'].docarray_type, AbstractTensor)
+    assert safe_issubclass(
+        index._column_infos['tens_one'].docarray_type, AbstractTensor
+    )
     assert index._column_infos['tens_one'].db_type == str
     assert index._column_infos['tens_one'].n_dim is None
     assert index._column_infos['tens_one'].config == {'dim': 10, 'hi': 'there'}
 
-    assert issubclass(index._column_infos['tens_two'].docarray_type, AbstractTensor)
+    assert safe_issubclass(
+        index._column_infos['tens_two'].docarray_type, AbstractTensor
+    )
     assert index._column_infos['tens_two'].db_type == str
     assert index._column_infos['tens_two'].n_dim is None
     assert index._column_infos['tens_two'].config == {'dim': 50, 'hi': 'there'}
@@ -192,7 +197,7 @@ def test_create_columns():
     assert index._column_infos['id'].n_dim is None
     assert index._column_infos['id'].config['hi'] == 'there'
 
-    assert issubclass(index._column_infos['d__tens'].docarray_type, AbstractTensor)
+    assert safe_issubclass(index._column_infos['d__tens'].docarray_type, AbstractTensor)
     assert index._column_infos['d__tens'].db_type == str
     assert index._column_infos['d__tens'].n_dim == 10
     assert index._column_infos['d__tens'].config == {'dim': 1000, 'hi': 'there'}
@@ -206,7 +211,7 @@ def test_create_columns():
         'parent_id',
     ]
 
-    assert issubclass(index._column_infos['d'].docarray_type, AnyDocArray)
+    assert safe_issubclass(index._column_infos['d'].docarray_type, AnyDocArray)
     assert index._column_infos['d'].db_type is None
     assert index._column_infos['d'].n_dim is None
     assert index._column_infos['d'].config == {}
@@ -216,7 +221,7 @@ def test_create_columns():
     assert index._subindices['d']._column_infos['id'].n_dim is None
     assert index._subindices['d']._column_infos['id'].config['hi'] == 'there'
 
-    assert issubclass(
+    assert safe_issubclass(
         index._subindices['d']._column_infos['tens'].docarray_type, AbstractTensor
     )
     assert index._subindices['d']._column_infos['tens'].db_type == str
@@ -245,7 +250,7 @@ def test_create_columns():
         'parent_id',
     ]
 
-    assert issubclass(
+    assert safe_issubclass(
         index._subindices['d_root']._column_infos['d'].docarray_type, AnyDocArray
     )
     assert index._subindices['d_root']._column_infos['d'].db_type is None
@@ -266,7 +271,7 @@ def test_create_columns():
         index._subindices['d_root']._subindices['d']._column_infos['id'].config['hi']
         == 'there'
     )
-    assert issubclass(
+    assert safe_issubclass(
         index._subindices['d_root']
         ._subindices['d']
         ._column_infos['tens']
@@ -461,11 +466,16 @@ def test_docs_validation():
     # SIMPLE
     index = DummyDocIndex[SimpleDoc]()
     in_list = [SimpleDoc(tens=np.random.random((10,)))]
-    assert isinstance(index._validate_docs(in_list), DocList[BaseDoc])
+    assert isinstance(index._validate_docs(in_list), DocList)
+    for d in index._validate_docs(in_list):
+        assert isinstance(d, BaseDoc)
+
     in_da = DocList[SimpleDoc](in_list)
     assert index._validate_docs(in_da) == in_da
     in_other_list = [OtherSimpleDoc(tens=np.random.random((10,)))]
-    assert isinstance(index._validate_docs(in_other_list), DocList[BaseDoc])
+    assert isinstance(index._validate_docs(in_other_list), DocList)
+    for d in index._validate_docs(in_other_list):
+        assert isinstance(d, BaseDoc)
     in_other_da = DocList[OtherSimpleDoc](in_other_list)
     assert index._validate_docs(in_other_da) == in_other_da
 
@@ -494,7 +504,9 @@ def test_docs_validation():
     in_list = [
         FlatDoc(tens_one=np.random.random((10,)), tens_two=np.random.random((50,)))
     ]
-    assert isinstance(index._validate_docs(in_list), DocList[BaseDoc])
+    assert isinstance(index._validate_docs(in_list), DocList)
+    for d in index._validate_docs(in_list):
+        assert isinstance(d, BaseDoc)
     in_da = DocList[FlatDoc](
         [FlatDoc(tens_one=np.random.random((10,)), tens_two=np.random.random((50,)))]
     )
@@ -502,7 +514,9 @@ def test_docs_validation():
     in_other_list = [
         OtherFlatDoc(tens_one=np.random.random((10,)), tens_two=np.random.random((50,)))
     ]
-    assert isinstance(index._validate_docs(in_other_list), DocList[BaseDoc])
+    assert isinstance(index._validate_docs(in_other_list), DocList)
+    for d in index._validate_docs(in_other_list):
+        assert isinstance(d, BaseDoc)
     in_other_da = DocList[OtherFlatDoc](
         [
             OtherFlatDoc(
@@ -521,11 +535,15 @@ def test_docs_validation():
     # NESTED
     index = DummyDocIndex[NestedDoc]()
     in_list = [NestedDoc(d=SimpleDoc(tens=np.random.random((10,))))]
-    assert isinstance(index._validate_docs(in_list), DocList[BaseDoc])
+    assert isinstance(index._validate_docs(in_list), DocList)
+    for d in index._validate_docs(in_list):
+        assert isinstance(d, BaseDoc)
     in_da = DocList[NestedDoc]([NestedDoc(d=SimpleDoc(tens=np.random.random((10,))))])
     assert index._validate_docs(in_da) == in_da
     in_other_list = [OtherNestedDoc(d=OtherSimpleDoc(tens=np.random.random((10,))))]
-    assert isinstance(index._validate_docs(in_other_list), DocList[BaseDoc])
+    assert isinstance(index._validate_docs(in_other_list), DocList)
+    for d in index._validate_docs(in_other_list):
+        assert isinstance(d, BaseDoc)
     in_other_da = DocList[OtherNestedDoc](
         [OtherNestedDoc(d=OtherSimpleDoc(tens=np.random.random((10,))))]
     )
@@ -552,7 +570,9 @@ def test_docs_validation_unions():
     # OPTIONAL
     index = DummyDocIndex[SimpleDoc]()
     in_list = [OptionalDoc(tens=np.random.random((10,)))]
-    assert isinstance(index._validate_docs(in_list), DocList[BaseDoc])
+    assert isinstance(index._validate_docs(in_list), DocList)
+    for d in index._validate_docs(in_list):
+        assert isinstance(d, BaseDoc)
     in_da = DocList[OptionalDoc](in_list)
     assert index._validate_docs(in_da) == in_da
 
@@ -562,9 +582,13 @@ def test_docs_validation_unions():
     # MIXED UNION
     index = DummyDocIndex[SimpleDoc]()
     in_list = [MixedUnionDoc(tens=np.random.random((10,)))]
-    assert isinstance(index._validate_docs(in_list), DocList[BaseDoc])
+    assert isinstance(index._validate_docs(in_list), DocList)
+    for d in index._validate_docs(in_list):
+        assert isinstance(d, BaseDoc)
     in_da = DocList[MixedUnionDoc](in_list)
-    assert isinstance(index._validate_docs(in_da), DocList[BaseDoc])
+    assert isinstance(index._validate_docs(in_da), DocList)
+    for d in index._validate_docs(in_da):
+        assert isinstance(d, BaseDoc)
 
     with pytest.raises(ValueError):
         index._validate_docs([MixedUnionDoc(tens='hello')])
@@ -572,13 +596,17 @@ def test_docs_validation_unions():
     # TENSOR UNION
     index = DummyDocIndex[TensorUnionDoc]()
     in_list = [SimpleDoc(tens=np.random.random((10,)))]
-    assert isinstance(index._validate_docs(in_list), DocList[BaseDoc])
+    assert isinstance(index._validate_docs(in_list), DocList)
+    for d in index._validate_docs(in_list):
+        assert isinstance(d, BaseDoc)
     in_da = DocList[SimpleDoc](in_list)
     assert index._validate_docs(in_da) == in_da
 
     index = DummyDocIndex[SimpleDoc]()
     in_list = [TensorUnionDoc(tens=np.random.random((10,)))]
-    assert isinstance(index._validate_docs(in_list), DocList[BaseDoc])
+    assert isinstance(index._validate_docs(in_list), DocList)
+    for d in index._validate_docs(in_list):
+        assert isinstance(d, BaseDoc)
     in_da = DocList[TensorUnionDoc](in_list)
     assert index._validate_docs(in_da) == in_da
 

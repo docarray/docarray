@@ -20,7 +20,8 @@ def test_optional():
 
     docs.features = [Features(tensor=np.random.random([100])) for _ in range(10)]
     print(docs.features)  # <DocVec[Features] (length=10)>
-    assert isinstance(docs.features, DocVec[Features])
+    assert isinstance(docs.features, DocVec)
+    assert isinstance(docs.features[0], Features)
 
     docs.features.tensor = np.ones((10, 100))
 

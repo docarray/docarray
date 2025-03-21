@@ -110,9 +110,7 @@ class UpdateMixin:
                 if field_name not in FORBIDDEN_FIELDS_TO_UPDATE:
                     field_type = doc._get_field_annotation(field_name)
 
-                    if isinstance(field_type, type) and safe_issubclass(
-                        field_type, DocList
-                    ):
+                    if safe_issubclass(field_type, DocList):
                         nested_docarray_fields.append(field_name)
                     else:
                         origin = get_origin(field_type)

@@ -504,7 +504,9 @@ def test_validate_from_da():
 
     da = parse_obj_as(DocVec[ImageDoc], batch)
 
-    assert isinstance(da, DocVec[ImageDoc])
+    assert isinstance(da, DocVec)
+    for d in da:
+        assert isinstance(d, ImageDoc)
 
 
 def test_validation_column_tensor(batch):
@@ -536,14 +538,18 @@ def test_validation_column_doc(batch_nested_doc):
     batch, Doc, Inner = batch_nested_doc
 
     batch.inner = DocList[Inner]([Inner(hello='hello') for _ in range(10)])
-    assert isinstance(batch.inner, DocVec[Inner])
+    assert isinstance(batch.inner, DocVec)
+    for d in batch.inner:
+        assert isinstance(d, Inner)
 
 
 def test_validation_list_doc(batch_nested_doc):
     batch, Doc, Inner = batch_nested_doc
 
     batch.inner = [Inner(hello='hello') for _ in range(10)]
-    assert isinstance(batch.inner, DocVec[Inner])
+    assert isinstance(batch.inner, DocVec)
+    for d in batch.inner:
+        assert isinstance(d, Inner)
 
 
 def test_validation_col_doc_fail(batch_nested_doc):

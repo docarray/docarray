@@ -45,6 +45,7 @@ def test_create_pydantic_model_from_schema(transformation):
     new_custom_doc_model = create_base_doc_from_schema(
         CustomDocCopy.schema(), 'CustomDoc', {}
     )
+    print(f'new_custom_doc_model {new_custom_doc_model.schema()}')
 
     original_custom_docs = DocList[CustomDoc](
         [
@@ -131,6 +132,7 @@ def test_create_pydantic_model_from_schema(transformation):
     new_textdoc_with_id_model = create_base_doc_from_schema(
         TextDocWithIdCopy.schema(), 'TextDocWithId', {}
     )
+    print(f'new_textdoc_with_id_model {new_textdoc_with_id_model.schema()}')
 
     original_text_doc_with_id = DocList[TextDocWithId](
         [TextDocWithId(ia=f'ID {i}') for i in range(10)]
@@ -207,6 +209,7 @@ def test_create_empty_doc_list_from_schema(transformation):
     new_custom_doc_model = create_base_doc_from_schema(
         CustomDocCopy.schema(), 'CustomDoc'
     )
+    print(f'new_custom_doc_model {new_custom_doc_model.schema()}')
 
     original_custom_docs = DocList[CustomDoc]()
     if transformation == 'proto':
@@ -232,6 +235,7 @@ def test_create_empty_doc_list_from_schema(transformation):
     new_textdoc_with_id_model = create_base_doc_from_schema(
         TextDocWithIdCopy.schema(), 'TextDocWithId', {}
     )
+    print(f'new_textdoc_with_id_model {new_textdoc_with_id_model.schema()}')
 
     original_text_doc_with_id = DocList[TextDocWithId]()
     if transformation == 'proto':
@@ -254,6 +258,9 @@ def test_create_empty_doc_list_from_schema(transformation):
     ResultTestDocCopy = create_pure_python_type_model(ResultTestDoc)
     new_result_test_doc_with_id_model = create_base_doc_from_schema(
         ResultTestDocCopy.schema(), 'ResultTestDoc', {}
+    )
+    print(
+        f'new_result_test_doc_with_id_model {new_result_test_doc_with_id_model.schema()}'
     )
     result_test_docs = DocList[ResultTestDoc]()
 
@@ -309,9 +316,10 @@ def test_dynamic_class_creation_multiple_doclist_nested():
 
     models_created_by_name = {}
     SearchResult_aux = create_pure_python_type_model(SearchResult)
-    _ = create_base_doc_from_schema(
+    m = create_base_doc_from_schema(
         SearchResult_aux.schema(), 'SearchResult', models_created_by_name
     )
+    print(f'm {m.schema()}')
     QuoteFile_reconstructed_in_gateway_from_Search_results = models_created_by_name[
         'QuoteFile'
     ]
@@ -323,3 +331,28 @@ def test_dynamic_class_creation_multiple_doclist_nested():
         QuoteFile_reconstructed_in_gateway_from_Search_results(id='0', texts=textlist)
     )
     assert reconstructed_in_gateway_from_Search_results.texts[0].text == 'hey'
+
+
+def test_id_optional():
+    from docarray import BaseDoc
+    import json
+
+    class MyTextDoc(BaseDoc):
+        text: str
+        opt: Optional[str] = None
+
+    MyTextDoc_aux = create_pure_python_type_model(MyTextDoc)
+    td = create_base_doc_from_schema(MyTextDoc_aux.schema(), 'MyTextDoc')
+    print(f'{td.schema()}')
+    direct = MyTextDoc.from_json(json.dumps({"text": "text"}))
+    aux = MyTextDoc_aux.from_json(json.dumps({"text": "text"}))
+    indirect = td.from_json(json.dumps({"text": "text"}))
+    assert direct.text == 'text'
+    assert aux.text == 'text'
+    assert indirect.text == 'text'
+    direct = MyTextDoc(text='hey')
+    aux = MyTextDoc_aux(text='hey')
+    indirect = td(text='hey')
+    assert direct.text == 'hey'
+    assert aux.text == 'hey'
+    assert indirect.text == 'hey'

@@ -198,7 +198,7 @@ class DocVec(IOMixinDocVec, AnyDocArray[T_doc]):  # type: ignore
                 if safe_issubclass(tensor.__class__, tensor_type):
                     field_type = tensor_type
 
-            if isinstance(field_type, type):
+            if isinstance(field_type, type) or safe_issubclass(field_type, AnyDocArray):
                 if tf_available and safe_issubclass(field_type, TensorFlowTensor):
                     # tf.Tensor does not allow item assignment, therefore the
                     # optimized way
@@ -335,7 +335,9 @@ class DocVec(IOMixinDocVec, AnyDocArray[T_doc]):  # type: ignore
                 return cast(T, value.to_doc_vec())
             else:
                 raise ValueError(f'DocVec[value.doc_type] is not compatible with {cls}')
-        elif isinstance(value, DocList.__class_getitem__(cls.doc_type)):
+        elif not is_pydantic_v2 and isinstance(
+            value, DocList.__class_getitem__(cls.doc_type)
+        ):
             return cast(T, value.to_doc_vec())
         elif isinstance(value, Sequence):
             return cls(value)

@@ -43,11 +43,11 @@ def test_from_to_bytes(protocol, compress, show_progress, array_cls):
 
 
 @pytest.mark.parametrize(
-    'protocol', ['protobuf']  # ['pickle-array', 'protobuf-array', 'protobuf', 'pickle']
+    'protocol', ['pickle-array', 'protobuf-array', 'protobuf', 'pickle']
 )
-@pytest.mark.parametrize('compress', ['lz4'])  # , 'bz2', 'lzma', 'zlib', 'gzip', None])
-@pytest.mark.parametrize('show_progress', [False])  # [False, True])
-@pytest.mark.parametrize('array_cls', [DocVec])  # [DocList, DocVec])
+@pytest.mark.parametrize('compress', ['lz4', 'bz2', 'lzma', 'zlib', 'gzip', None])
+@pytest.mark.parametrize('show_progress', [False, True])  # [False, True])
+@pytest.mark.parametrize('array_cls', [DocList, DocVec])
 def test_from_to_base64(protocol, compress, show_progress, array_cls):
     da = array_cls[MyDoc](
         [
@@ -75,27 +75,35 @@ def test_from_to_base64(protocol, compress, show_progress, array_cls):
 
 
 # test_from_to_base64('protobuf', 'lz4', False, DocVec)
+class MyTensorTypeDocNdArray(BaseDoc):
+    embedding: NdArray
+    text: str
+    image: ImageDoc
 
 
-@pytest.mark.parametrize('tensor_type', [NdArray, TorchTensor])
+class MyTensorTypeDocTorchTensor(BaseDoc):
+    embedding: TorchTensor
+    text: str
+    image: ImageDoc
+
+
+@pytest.mark.parametrize(
+    'doc_type, tensor_type',
+    [(MyTensorTypeDocNdArray, NdArray), (MyTensorTypeDocTorchTensor, TorchTensor)],
+)
 @pytest.mark.parametrize('protocol', ['protobuf-array', 'pickle-array'])
-def test_from_to_base64_tensor_type(tensor_type, protocol):
-    class MyDoc(BaseDoc):
-        embedding: tensor_type
-        text: str
-        image: ImageDoc
-
-    da = DocVec[MyDoc](
+def test_from_to_base64_tensor_type(doc_type, tensor_type, protocol):
+    da = DocVec[doc_type](
         [
-            MyDoc(
+            doc_type(
                 embedding=[1, 2, 3, 4, 5], text='hello', image=ImageDoc(url='aux.png')
             ),
-            MyDoc(embedding=[5, 4, 3, 2, 1], text='hello world', image=ImageDoc()),
+            doc_type(embedding=[5, 4, 3, 2, 1], text='hello world', image=ImageDoc()),
         ],
         tensor_type=tensor_type,
     )
     bytes_da = da.to_base64(protocol=protocol)
-    da2 = DocVec[MyDoc].from_base64(
+    da2 = DocVec[doc_type].from_base64(
         bytes_da, tensor_type=tensor_type, protocol=protocol
     )
     assert da2.tensor_type == tensor_type

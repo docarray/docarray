@@ -29,9 +29,9 @@ def test_map_docs_multiprocessing():
     if os.cpu_count() > 1:
 
         def time_multiprocessing(num_workers: int) -> float:
-            n_docs = 5
+            n_docs = 10
             rng = np.random.RandomState(0)
-            matrices = [rng.random(size=(1000, 1000)) for _ in range(n_docs)]
+            matrices = [rng.random(size=(100, 100)) for _ in range(n_docs)]
             da = DocList[MyMatrix]([MyMatrix(matrix=m) for m in matrices])
             start_time = time()
             list(
@@ -65,7 +65,7 @@ def test_map_docs_batched_multiprocessing():
         def time_multiprocessing(num_workers: int) -> float:
             n_docs = 16
             rng = np.random.RandomState(0)
-            matrices = [rng.random(size=(1000, 1000)) for _ in range(n_docs)]
+            matrices = [rng.random(size=(100, 100)) for _ in range(n_docs)]
             da = DocList[MyMatrix]([MyMatrix(matrix=m) for m in matrices])
             start_time = time()
             list(

@@ -20,6 +20,60 @@ import logging
 from docarray.array import DocList, DocVec
 from docarray.base_doc.doc import BaseDoc
 from docarray.utils._internal.misc import _get_path_from_docarray_root_level
+from docarray.utils._internal.pydantic import is_pydantic_v2
+
+
+def unpickle_doclist(doc_type, b):
+    return DocList[doc_type].from_bytes(b, protocol="protobuf")
+
+
+def unpickle_docvec(doc_type, tensor_type, b):
+    return DocVec[doc_type].from_bytes(b, protocol="protobuf", tensor_type=tensor_type)
+
+
+if is_pydantic_v2:
+    # Register the pickle functions
+    def register_serializers():
+        import copyreg
+        from functools import partial
+
+        unpickle_doc_fn = partial(BaseDoc.from_bytes, protocol="protobuf")
+
+        def pickle_doc(doc):
+            b = doc.to_bytes(protocol='protobuf')
+            return unpickle_doc_fn, (doc.__class__, b)
+
+        # Register BaseDoc serialization
+        copyreg.pickle(BaseDoc, pickle_doc)
+
+        # For DocList, we need to hook into __reduce__ since it's a generic
+
+        def pickle_doclist(doc_list):
+            b = doc_list.to_bytes(protocol='protobuf')
+            doc_type = doc_list.doc_type
+            return unpickle_doclist, (doc_type, b)
+
+        # Replace DocList.__reduce__ with a method that returns the correct format
+        def doclist_reduce(self):
+            return pickle_doclist(self)
+
+        DocList.__reduce__ = doclist_reduce
+
+        # For DocVec, we need to hook into __reduce__ since it's a generic
+
+        def pickle_docvec(doc_vec):
+            b = doc_vec.to_bytes(protocol='protobuf')
+            doc_type = doc_vec.doc_type
+            tensor_type = doc_vec.tensor_type
+            return unpickle_docvec, (doc_type, tensor_type, b)
+
+        # Replace DocList.__reduce__ with a method that returns the correct format
+        def docvec_reduce(self):
+            return pickle_docvec(self)
+
+        DocVec.__reduce__ = docvec_reduce
+
+    register_serializers()
 
 __all__ = ['BaseDoc', 'DocList', 'DocVec']
 
