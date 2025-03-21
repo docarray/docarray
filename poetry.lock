@@ -1914,13 +1914,13 @@ test = ["pre-commit", "pytest", "pytest-asyncio", "websockets (>=10.0)", "ypy-we
 
 [[package]]
 name = "jupyterlab"
-version = "3.6.7"
+version = "3.6.8"
 description = "JupyterLab computational environment"
 optional = false
 python-versions = ">=3.7"
 files = [
-    {file = "jupyterlab-3.6.7-py3-none-any.whl", hash = "sha256:d92d57d402f53922bca5090654843aa08e511290dff29fdb0809eafbbeb6df98"},
-    {file = "jupyterlab-3.6.7.tar.gz", hash = "sha256:2fadeaec161b0d1aec19f17721d8b803aef1d267f89c8b636b703be14f435c8f"},
+    {file = "jupyterlab-3.6.8-py3-none-any.whl", hash = "sha256:891284e75158998e23eb7a23ecc4caaf27b365e41adca374109b1305b9f769db"},
+    {file = "jupyterlab-3.6.8.tar.gz", hash = "sha256:a2477383e23f20009188bd9dac7e6e38dbc54307bc36d716bea6ced450647c97"},
 ]
 
 [package.dependencies]
