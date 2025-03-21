@@ -40,7 +40,7 @@ jobs:
       - run: |
           git fetch --depth=1 origin +refs/tags/*:refs/tags/*
           npm install git-release-notes
-          pip install poetry
+          python -m pip install poetry==1.7.1
           ./scripts/release.sh final "${{ github.event.inputs.release_reason }}" "${{github.actor}}"
         env:
           TWINE_USERNAME: __token__
