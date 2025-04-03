@@ -145,7 +145,7 @@ def _get_field_annotation_from_schema(
         elif num_recursions == 1:
             # This is a hack because AnyTensor is more generic than a simple List and it comes as simple List
             if is_tensor:
-                ret = AnyTensor
+                ret = AnyTensor if tensor_shape is None else AnyTensor[tensor_shape]
             else:
                 ret = List[float]
         else:
