@@ -149,6 +149,27 @@ def test_from_to_json_docvec_tf():
     assert v_after._storage == v._storage
 
 
+@pytest.mark.parametrize('dtype', [np.float16, np.float32, np.float64])
+def test_from_to_json_doclist_different_dtype(dtype):
+    emb = np.random.rand(128).astype(dtype)
+    da = DocList[MyDoc](
+        [
+            MyDoc(embedding=emb, text='hello', image=ImageDoc(url='aux.png')),
+            MyDoc(embedding=emb, text='hello world', image=ImageDoc()),
+        ]
+    )
+    json_da = da.to_json()
+    da2 = DocList[MyDoc].from_json(json_da)
+    assert len(da2) == 2
+    assert len(da) == len(da2)
+    for d1, d2 in zip(da, da2):
+        assert d1.embedding.tolist() == d2.embedding.tolist()
+        assert d1.text == d2.text
+        assert d1.image.url == d2.image.url
+    assert da[1].image.url is None
+    assert da2[1].image.url is None
+
+
 def test_union_type():
     from typing import Union
 
