@@ -1,3 +1,4 @@
+import warnings
 from io import BytesIO
 from typing import TYPE_CHECKING, List, NamedTuple, TypeVar
 
@@ -80,6 +81,11 @@ class VideoBytes(BaseBytes):
 
                     video_frames.append(frame.to_ndarray(format='rgb24'))
 
+        # Pad audio arrays to same shape if sample rates differ
+        if len({arr.shape for arr in audio_frames}) > 1:
+            warnings.warn('Audio frames have different sample rates')
+            audio_frames = self._pad_arrays_to_same_shape(audio_frames)
+
         if len(audio_frames) == 0:
             audio = parse_obj_as(AudioNdArray, np.array(audio_frames))
         else:
@@ -89,3 +95,15 @@ class VideoBytes(BaseBytes):
         indices = parse_obj_as(NdArray, keyframe_indices)
 
         return VideoLoadResult(video=video, audio=audio, key_frame_indices=indices)
+
+    @staticmethod
+    def _pad_arrays_to_same_shape(arrays: List[np.ndarray]) -> List[np.ndarray]:
+        # Calculate the maximum number of samples in any array
+        max_samples = max(arr.shape[1] for arr in arrays)
+
+        # Pad arrays with fewer samples
+        for i, arr in enumerate(arrays):
+            if arr.shape[1] < max_samples:
+                arrays[i] = np.pad(arr, ((0, 0), (0, max_samples - arr.shape[1])))
+
+        return arrays
