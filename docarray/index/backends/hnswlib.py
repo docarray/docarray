@@ -250,7 +250,9 @@ class HnswDocumentIndex(BaseDocIndex, Generic[TSchema]):
         # could be improved by processing in parallel
         for col_name, index in self._hnsw_indices.items():
             data = column_to_data[col_name]
-            data_np = [self._to_numpy(arr) for arr in data]
+            data_np = [self._to_numpy(arr) for arr in data if arr is not None]
+            if len(data_np) < 1:
+                continue
             data_stacked = np.stack(data_np)
             num_docs_to_index = len(hashed_ids)
             index_max_elements = index.get_max_elements()
@@ -442,7 +444,7 @@ class HnswDocumentIndex(BaseDocIndex, Generic[TSchema]):
             raise ValueError(
                 'The Document id is None. To use DocumentIndex it needs to be set.'
             )
-        return int(hashlib.sha256(doc_id.encode('utf-8')).hexdigest(), 16) % 10**18
+        return int(hashlib.sha256(str(doc_id).encode('utf-8')).hexdigest(), 16) % 10**18
 
     def _load_index(self, col_name: str, col: '_ColumnInfo') -> hnswlib.Index:
         """Load an existing HNSW index from disk."""
@@ -526,7 +528,10 @@ class HnswDocumentIndex(BaseDocIndex, Generic[TSchema]):
         )  # doc_ids do not come back in the same order
         embeddings: OrderedDict[str, list] = OrderedDict()
         for col_name, index in self._hnsw_indices.items():
-            embeddings[col_name] = index.get_items([row[0] for row in rows])
+            try:
+                embeddings[col_name] = index.get_items([row[0] for row in rows])
+            except Exception as e:
+                self._logger.error('Could not fetch items from HNSWLib Indexer SQLite index: {}'.format(str(e)))
 
         schema = self.out_schema if out else self._schema
         docs = DocList.__class_getitem__(cast(Type[BaseDoc], schema))()
@@ -622,6 +627,51 @@ class HnswDocumentIndex(BaseDocIndex, Generic[TSchema]):
                 id, fields[0], '__'.join(fields[1:])
             )
             return self._get_root_doc_id(cur_root_id, root, '')
+
+    def _get_root_doc_ids(self, ids: Sequence[str], root: str, sub: str, return_docs: bool = False) -> Union[Sequence[str], DocList]:
+        """Get the root_id given the id of a subindex Document and the root and subindex name for hnswlib.
+
+        :param id: id of the subindex Document
+        :param root: root index name
+        :param sub: subindex name
+        :return: the root_id of the Document
+        """
+        subindex: HnswDocumentIndex = self._subindices[root]
+
+        if not sub:
+            sub_docs = subindex._get_items(ids, out=False)  # type: ignore
+            parent_ids = [sub_doc['parent_id'] if isinstance(sub_doc, dict) else sub_doc.parent_id for sub_doc in sub_docs]
+            if not return_docs:
+                return parent_ids
+            return self._get_items(parent_ids)
+        else:
+            fields = sub.split('__')
+            cur_root_ids = subindex._get_root_doc_ids(
+                ids, fields[0], '__'.join(fields[1:]), return_docs
+            )
+            if isinstance(cur_root_ids, DocList):
+                cur_root_ids = cur_root_ids.id
+            return self._get_root_doc_ids(cur_root_ids, root, '', return_docs)
+
+    def _get_root_docs(self, sub_docs: DocList, root: str, sub: str) -> DocList:
+        """Get the root_id given the id of a subindex Document and the root and subindex name for hnswlib.
+
+        :param id: id of the subindex Document
+        :param root: root index name
+        :param sub: subindex name
+        :return: the root_id of the Document
+        """
+        subindex: HnswDocumentIndex = self._subindices[root]
+
+        if not sub:
+            parent_ids = [sub_doc['parent_id'] if isinstance(sub_doc, dict) else sub_doc.__getattr__('parent_id') for sub_doc in sub_docs]
+            return self._get_items(parent_ids)
+        else:
+            fields = sub.split('__')
+            cur_roots = subindex._get_root_docs(
+                sub_docs.id, fields[0], '__'.join(fields[1:])
+            )
+            return self._get_root_docs(cur_roots, root, '')
 
     def _get_column_names(self) -> List[str]:
         """
