@@ -16,6 +16,7 @@ if TYPE_CHECKING:
     from docarray.index.backends.mongodb_atlas import (  # noqa: F401
         MongoDBAtlasDocumentIndex,
     )
+    from docarray.index.backends.opensearchv2 import OpenSearchDocIndex  # noqa: F401
     from docarray.index.backends.qdrant import QdrantDocumentIndex  # noqa: F401
     from docarray.index.backends.redis import RedisDocumentIndex  # noqa: F401
     from docarray.index.backends.weaviate import WeaviateDocumentIndex  # noqa: F401
@@ -30,6 +31,7 @@ __all__ = [
     'RedisDocumentIndex',
     'MilvusDocumentIndex',
     'MongoDBAtlasDocumentIndex',
+    'OpenSearchDocIndex',
 ]
 
 
@@ -41,6 +43,9 @@ def __getattr__(name: str):
     elif name == 'ElasticDocIndex':
         import_library('elasticsearch', raise_error=True)
         import docarray.index.backends.elastic as lib
+    elif name == 'OpenSearchDocIndex':
+        import_library('elasticsearch', raise_error=True)
+        import docarray.index.backends.opensearchv2 as lib
     elif name == 'ElasticV7DocIndex':
         import_library('elasticsearch', raise_error=True)
         import docarray.index.backends.elasticv7 as lib
