@@ -217,7 +217,7 @@ preprocessing = {"image": VisionPreprocess(), "text": TextPreprocess()}
 ```python
 from docarray.data import MultiModalDataset
 
-dataset = MultiModalDataset[PairTextImage](da=da, preprocessing=preprocessing)
+dataset = MultiModalDataset[PairTextImage](docs=da, preprocessing=preprocessing)
 loader = DataLoader(
     dataset,
     batch_size=128,
