@@ -326,8 +326,13 @@ class BaseDocWithoutId(BaseModel, IOMixin, UpdateMixin, BaseNode):
             from docarray.array.any_array import AnyDocArray
 
             type_ = self._get_field_annotation(field)
-            if isinstance(type_, type) and safe_issubclass(type_, AnyDocArray):
-                doclist_exclude_fields.append(field)
+            if is_pydantic_v2:
+                # Conservative when touching pydantic v1 logic
+                if safe_issubclass(type_, AnyDocArray):
+                    doclist_exclude_fields.append(field)
+            else:
+                if isinstance(type_, type) and safe_issubclass(type_, AnyDocArray):
+                    doclist_exclude_fields.append(field)
 
         original_exclude = exclude
         if exclude is None:
@@ -480,7 +485,6 @@ class BaseDocWithoutId(BaseModel, IOMixin, UpdateMixin, BaseNode):
             warnings: bool = True,
         ) -> Dict[str, Any]:
             def _model_dump(doc):
-
                 (
                     exclude_,
                     original_exclude,

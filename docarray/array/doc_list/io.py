@@ -256,7 +256,6 @@ class IOMixinDocList(Iterable[T_doc]):
         :param show_progress: show progress bar, only works when protocol is `pickle` or `protobuf`
         :return: the binary serialization in bytes or None if file_ctx is passed where to store
         """
-
         with file_ctx or io.BytesIO() as bf:
             self._write_bytes(
                 bf=bf,

@@ -12,6 +12,7 @@ from typing import (
     Union,
     cast,
     overload,
+    Callable,
 )
 
 from pydantic import parse_obj_as
@@ -28,7 +29,6 @@ from docarray.typing import NdArray
 from docarray.utils._internal.pydantic import is_pydantic_v2
 
 if is_pydantic_v2:
-    from pydantic import GetCoreSchemaHandler
     from pydantic_core import core_schema
 
 from docarray.utils._internal._typing import safe_issubclass
@@ -45,10 +45,7 @@ T_doc = TypeVar('T_doc', bound=BaseDocWithoutId)
 
 
 class DocList(
-    ListAdvancedIndexing[T_doc],
-    PushPullMixin,
-    IOMixinDocList,
-    AnyDocArray[T_doc],
+    ListAdvancedIndexing[T_doc], PushPullMixin, IOMixinDocList, AnyDocArray[T_doc]
 ):
     """
      DocList is a container of Documents.
@@ -357,8 +354,20 @@ class DocList(
 
         @classmethod
         def __get_pydantic_core_schema__(
-            cls, _source_type: Any, _handler: GetCoreSchemaHandler
+            cls, source: Any, handler: Callable[[Any], core_schema.CoreSchema]
         ) -> core_schema.CoreSchema:
-            return core_schema.general_plain_validator_function(
-                cls.validate,
+            instance_schema = core_schema.is_instance_schema(cls)
+            args = getattr(source, '__args__', None)
+            if args:
+                sequence_t_schema = handler(Sequence[args[0]])
+            else:
+                sequence_t_schema = handler(Sequence)
+
+            def validate_fn(v, info):
+                # input has already been validated
+                return cls(v, validate_input_docs=False)
+
+            non_instance_schema = core_schema.with_info_after_validator_function(
+                validate_fn, sequence_t_schema
             )
+            return core_schema.union_schema([instance_schema, non_instance_schema])

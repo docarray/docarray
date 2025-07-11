@@ -23,4 +23,9 @@ def test_doc_list():
 
     cls_doc_list = DocList[A]
 
-    assert isinstance(cls_doc_list, type)
+    da = cls_doc_list([A(text='hey here')])
+
+    assert isinstance(da, DocList)
+    for d in da:
+        assert isinstance(d, A)
+        assert not hasattr(d, 'id')

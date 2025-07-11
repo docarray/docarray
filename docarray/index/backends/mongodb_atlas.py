@@ -563,16 +563,18 @@ class MongoDBAtlasDocumentIndex(BaseDocIndex, Generic[TSchema]):
         max_candidates = self._get_max_candidates(search_field)
         query = query.astype(np.float64).tolist()
 
-        return {
+        stage = {
             '$vectorSearch': {
                 'index': search_index_name,
                 'path': search_field,
                 'queryVector': query,
                 'numCandidates': min(limit * oversampling_factor, max_candidates),
                 'limit': limit,
-                'filter': {"$and": filters} if filters else None,
             }
         }
+        if filters:
+            stage['$vectorSearch']['filter'] = {"$and": filters}
+        return stage
 
     def _text_search_stage(
         self,

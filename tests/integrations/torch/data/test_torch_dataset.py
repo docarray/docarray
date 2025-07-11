@@ -60,7 +60,9 @@ def test_torch_dataset(captions_da: DocList[PairTextImage]):
 
     batch_lens = []
     for batch in loader:
-        assert isinstance(batch, DocVec[PairTextImage])
+        assert isinstance(batch, DocVec)
+        for d in batch:
+            assert isinstance(d, PairTextImage)
         batch_lens.append(len(batch))
     assert all(x == BATCH_SIZE for x in batch_lens[:-1])
 
@@ -140,7 +142,9 @@ def test_torch_dl_multiprocessing(captions_da: DocList[PairTextImage]):
 
     batch_lens = []
     for batch in loader:
-        assert isinstance(batch, DocVec[PairTextImage])
+        assert isinstance(batch, DocVec)
+        for d in batch:
+            assert isinstance(d, PairTextImage)
         batch_lens.append(len(batch))
     assert all(x == BATCH_SIZE for x in batch_lens[:-1])
 

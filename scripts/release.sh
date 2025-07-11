@@ -46,7 +46,7 @@ function clean_build {
 
 function pub_pypi {
     clean_build
-    poetry config http-basic.pypi $PYPI_USERNAME $PYPI_PASSWORD
+    poetry config http-basic.pypi $TWINE_USERNAME $TWINE_PASSWORD
     poetry publish --build
     clean_build
 }

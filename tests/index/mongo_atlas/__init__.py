@@ -29,7 +29,7 @@ class FlatSchema(BaseDoc):
     embedding2: NdArray = Field(dim=N_DIM, index_name="vector_index_2")
 
 
-def assert_when_ready(callable: Callable, tries: int = 5, interval: float = 2):
+def assert_when_ready(callable: Callable, tries: int = 10, interval: float = 2):
     """
     Retry callable to account for time taken to change data on the cluster
     """

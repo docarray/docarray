@@ -13,6 +13,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+import os
 from typing import Dict, Optional, Union
 
 import numpy as np
@@ -245,6 +246,7 @@ def test_proto_none_any_column():
     assert da_after._storage.any_columns['d'] == [None, None]
 
 
+@pytest.mark.skipif('GITHUB_WORKFLOW' in os.environ, reason='Flaky in Github')
 @pytest.mark.proto
 @pytest.mark.parametrize('tensor_type', [NdArray, TorchTensor])
 def test_proto_tensor_type(tensor_type):

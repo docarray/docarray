@@ -54,8 +54,9 @@ def create_pure_python_type_model(model: BaseModel) -> BaseDoc:
     fields: Dict[str, Any] = {}
     import copy
 
-    fields_copy = copy.deepcopy(model.__fields__)
-    annotations_copy = copy.deepcopy(model.__annotations__)
+    copy_model = copy.deepcopy(model)
+    fields_copy = copy_model.__fields__
+    annotations_copy = copy_model.__annotations__
     for field_name, field in annotations_copy.items():
         if field_name not in fields_copy:
             continue
@@ -65,7 +66,7 @@ def create_pure_python_type_model(model: BaseModel) -> BaseDoc:
         else:
             field_info = fields_copy[field_name].field_info
         try:
-            if safe_issubclass(field, DocList):
+            if safe_issubclass(field, DocList) and not is_pydantic_v2:
                 t: Any = field.doc_type
                 t_aux = create_pure_python_type_model(t)
                 fields[field_name] = (List[t_aux], field_info)
@@ -74,13 +75,14 @@ def create_pure_python_type_model(model: BaseModel) -> BaseDoc:
         except TypeError:
             fields[field_name] = (field, field_info)
 
-    return create_model(model.__name__, __base__=model, __doc__=model.__doc__, **fields)
+    return create_model(
+        copy_model.__name__, __base__=copy_model, __doc__=copy_model.__doc__, **fields
+    )
 
 
 def _get_field_annotation_from_schema(
     field_schema: Dict[str, Any],
     field_name: str,
-    root_schema: Dict[str, Any],
     cached_models: Dict[str, Any],
     is_tensor: bool = False,
     num_recursions: int = 0,
@@ -90,7 +92,6 @@ def _get_field_annotation_from_schema(
     Private method used to extract the corresponding field type from the schema.
     :param field_schema: The schema from which to extract the type
     :param field_name: The name of the field to be created
-    :param root_schema: The schema of the root object, important to get references
     :param cached_models: Parameter used when this method is called recursively to reuse partial nested classes.
     :param is_tensor: Boolean used to tell between tensor and list
     :param num_recursions: Number of recursions to properly handle nested types (Dict, List, etc ..)
@@ -110,7 +111,7 @@ def _get_field_annotation_from_schema(
                 ref_name = obj_ref.split('/')[-1]
                 any_of_types.append(
                     create_base_doc_from_schema(
-                        root_schema['definitions'][ref_name],
+                        definitions[ref_name],
                         ref_name,
                         cached_models=cached_models,
                         definitions=definitions,
@@ -121,7 +122,6 @@ def _get_field_annotation_from_schema(
                     _get_field_annotation_from_schema(
                         any_of_schema,
                         field_name,
-                        root_schema=root_schema,
                         cached_models=cached_models,
                         is_tensor=tensor_shape is not None,
                         num_recursions=0,
@@ -160,7 +160,10 @@ def _get_field_annotation_from_schema(
         doc_type: Any
         if 'additionalProperties' in field_schema:  # handle Dictionaries
             additional_props = field_schema['additionalProperties']
-            if additional_props.get('type') == 'object':
+            if (
+                isinstance(additional_props, dict)
+                and additional_props.get('type') == 'object'
+            ):
                 doc_type = create_base_doc_from_schema(
                     additional_props, field_name, cached_models=cached_models
                 )
@@ -201,7 +204,6 @@ def _get_field_annotation_from_schema(
         ret = _get_field_annotation_from_schema(
             field_schema=field_schema.get('items', {}),
             field_name=field_name,
-            root_schema=root_schema,
             cached_models=cached_models,
             is_tensor=tensor_shape is not None,
             num_recursions=num_recursions + 1,
@@ -262,6 +264,24 @@ def create_base_doc_from_schema(
     :param definitions: Parameter used when this method is called recursively to reuse root definitions of other schemas.
     :return: A BaseDoc class dynamically created following the `schema`.
     """
+
+    def clean_refs(value):
+        """Recursively remove $ref keys and #/$defs values from a data structure."""
+        if isinstance(value, dict):
+            # Create a new dictionary without $ref keys and without values containing #/$defs
+            cleaned_dict = {}
+            for k, v in value.items():
+                if k == '$ref':
+                    continue
+                cleaned_dict[k] = clean_refs(v)
+            return cleaned_dict
+        elif isinstance(value, list):
+            # Process each item in the list
+            return [clean_refs(item) for item in value]
+        else:
+            # Return primitive values as-is
+            return value
+
     if not definitions:
         definitions = (
             schema.get('definitions', {}) if not is_pydantic_v2 else schema.get('$defs')
@@ -275,10 +295,10 @@ def create_base_doc_from_schema(
     for field_name, field_schema in schema.get('properties', {}).items():
         if field_name == 'id':
             has_id = True
+        # Get the field type
         field_type = _get_field_annotation_from_schema(
             field_schema=field_schema,
             field_name=field_name,
-            root_schema=schema,
             cached_models=cached_models,
             is_tensor=False,
             num_recursions=0,
@@ -294,10 +314,22 @@ def create_base_doc_from_schema(
             field_kwargs = {}
             field_json_schema_extra = {}
             for k, v in field_schema.items():
+                if field_name == 'id':
+                    # Skip default_factory for Optional fields and use None
+                    field_kwargs['default'] = None
                 if k in FieldInfo.__slots__:
                     field_kwargs[k] = v
                 else:
-                    field_json_schema_extra[k] = v
+                    if k != '$ref':
+                        if isinstance(v, dict):
+                            cleaned_v = clean_refs(v)
+                            if (
+                                cleaned_v
+                            ):  # Only add if there's something left after cleaning
+                                field_json_schema_extra[k] = cleaned_v
+                        else:
+                            field_json_schema_extra[k] = v
+
             fields[field_name] = (
                 field_type,
                 FieldInfo(

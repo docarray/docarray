@@ -15,6 +15,7 @@
 
 
 
+
 <a name=release-note-0-30-0></a>
 ## Release Note (`0.30.0`)
 
@@ -745,4 +746,55 @@
  - [[```0e183ff0```](https://github.com/jina-ai/docarray/commit/0e183ff0d48555b56fa34989513ac4fb53135626)] __-__ upgrade version (#1841) (*Joan Fontanals*)
  - [[```8de3e175```](https://github.com/jina-ai/docarray/commit/8de3e1757bdb23b509ad2630219c3c26605308f0)] __-__ refactor test of the torchtensor (#1837) (*Naymul Islam*)
  - [[```d5d928b8```](https://github.com/jina-ai/docarray/commit/d5d928b82f36a3279277c07bed44fd22bb0bba34)] __-__ __version__: the next version will be 0.39.2 (*Jina Dev Bot*)
+
+<a name=release-note-0-40-1></a>
+## Release Note (`0.40.1`)
+
+> Release time: 2025-03-21 08:34:40
+
+
+
+🙇 We'd like to thank all contributors for this new release! In particular,
+ Joan Fontanals,  Emmanuel Ferdman,  Casey Clements,  YuXuan Tay,  dependabot[bot],  James Brown,  Jina Dev Bot,  🙇
+
+
+### 🐞 Bug fixes
+
+ - [[```d98acb71```](https://github.com/jina-ai/docarray/commit/d98acb716e0c336a817f65b62d428ab13cf8ac42)] __-__ fix DocList schema when using Pydantic V2 (#1876) (*Joan Fontanals*)
+ - [[```83ebef60```](https://github.com/jina-ai/docarray/commit/83ebef6087e868517681e59877008f80f1e7f113)] __-__ update license location (#1911) (*Emmanuel Ferdman*)
+ - [[```8f4ba7cd```](https://github.com/jina-ai/docarray/commit/8f4ba7cdf177f3e4ecc838eef659496d6038af03)] __-__ use docker compose (#1905) (*YuXuan Tay*)
+ - [[```febbdc42```](https://github.com/jina-ai/docarray/commit/febbdc4291c4af7ad2058d7feebf6a3169de93e9)] __-__ fix float in dynamic Document creation (#1877) (*Joan Fontanals*)
+ - [[```7c1e18ef```](https://github.com/jina-ai/docarray/commit/7c1e18ef01b09ef3d864b200248c875d0d9ced29)] __-__ fix create pure python class iteratively (#1867) (*Joan Fontanals*)
+
+### 📗 Documentation
+
+ - [[```e4665e91```](https://github.com/jina-ai/docarray/commit/e4665e91b37f97a4a18a80399431d624db8ca453)] __-__ move hint about schemas to common docindex section (#1868) (*Joan Fontanals*)
+ - [[```8da50c92```](https://github.com/jina-ai/docarray/commit/8da50c927c24b981867650399f64d4930bd7c574)] __-__ add code review to contributing.md (#1853) (*Joan Fontanals*)
+
+### 🏁 Unit Test and CICD
+
+ - [[```a162a4b0```](https://github.com/jina-ai/docarray/commit/a162a4b09f4ad8e8c5c117c0c0101541af4c00a1)] __-__ fix release procedure (#1922) (*Joan Fontanals*)
+ - [[```82d7cee7```](https://github.com/jina-ai/docarray/commit/82d7cee71ccdd4d5874985aef0567631424b5bfd)] __-__ fix some ci (#1893) (*Joan Fontanals*)
+ - [[```791e4a04```](https://github.com/jina-ai/docarray/commit/791e4a0473afe9d9bde87733074eef0ce217d198)] __-__ update release procedure (#1869) (*Joan Fontanals*)
+ - [[```aa15b9ef```](https://github.com/jina-ai/docarray/commit/aa15b9eff2f5293849e83291d79bf519994c3503)] __-__ add license (#1861) (*Joan Fontanals*)
+
+### 🍹 Other Improvements
+
+ - [[```b5696b22```](https://github.com/jina-ai/docarray/commit/b5696b227161f087fa32834dcd6c2d212cf82c0e)] __-__ fix poetry in ci (#1921) (*Joan Fontanals*)
+ - [[```d3358105```](https://github.com/jina-ai/docarray/commit/d3358105db645418c3cebfc6acb0f353127364aa)] __-__ update pyproject version (#1919) (*Joan Fontanals*)
+ - [[```40cf2962```](https://github.com/jina-ai/docarray/commit/40cf29622b29be1f32595e26876593bb5f1e03be)] __-__ MongoDB Atlas: Two line change to make our CI builds green (#1910) (*Casey Clements*)
+ - [[```75e0033a```](https://github.com/jina-ai/docarray/commit/75e0033a361a31280709899e94d6f5e14ff4b8ae)] __-__ __deps__: bump setuptools from 65.5.1 to 70.0.0 (#1899) (*dependabot[bot]*)
+ - [[```75a743c9```](https://github.com/jina-ai/docarray/commit/75a743c99dc549eaf4c3ffe01086d09a8f3f3e44)] __-__ __deps-dev__: bump tornado from 6.2 to 6.4.1 (#1894) (*dependabot[bot]*)
+ - [[```f3fa7c23```](https://github.com/jina-ai/docarray/commit/f3fa7c2376da2449e98aff159167bf41467d610c)] __-__ __deps__: bump pydantic from 1.10.8 to 1.10.13 (#1884) (*dependabot[bot]*)
+ - [[```46d50828```](https://github.com/jina-ai/docarray/commit/46d5082844602689de97c904af7c8139980711ed)] __-__ __deps__: bump urllib3 from 1.26.14 to 1.26.19 (#1896) (*dependabot[bot]*)
+ - [[```f0f4236e```](https://github.com/jina-ai/docarray/commit/f0f4236ebf75528e6c5344dc75328ce9cf56cae9)] __-__ __deps__: bump zipp from 3.10.0 to 3.19.1 (#1898) (*dependabot[bot]*)
+ - [[```d65d27ce```](https://github.com/jina-ai/docarray/commit/d65d27ce37f5e7c930b7792fd665ac4da9c6398d)] __-__ __deps__: bump certifi from 2022.9.24 to 2024.7.4 (#1897) (*dependabot[bot]*)
+ - [[```b8b62173```](https://github.com/jina-ai/docarray/commit/b8b621735dbe16c188bf8c1c03cb3f1a22076ae8)] __-__ __deps__: bump authlib from 1.2.0 to 1.3.1 (#1895) (*dependabot[bot]*)
+ - [[```6a972d1c```](https://github.com/jina-ai/docarray/commit/6a972d1c0dcf6d0c2816dea14df37e0039945542)] __-__ __deps__: bump qdrant-client from 1.4.0 to 1.9.0 (#1892) (*dependabot[bot]*)
+ - [[```f71a5e6a```](https://github.com/jina-ai/docarray/commit/f71a5e6af58b77fdeb15ba27abd0b7d40b84fd09)] __-__ __deps__: bump cryptography from 40.0.1 to 42.0.4 (#1872) (*dependabot[bot]*)
+ - [[```065aab44```](https://github.com/jina-ai/docarray/commit/065aab441cd71635ee3711ad862240e967ca3da6)] __-__ __deps__: bump orjson from 3.8.2 to 3.9.15 (#1873) (*dependabot[bot]*)
+ - [[```caf97135```](https://github.com/jina-ai/docarray/commit/caf9713502791a8fbbf0aa53b3ca2db126f18df7)] __-__ add license notice to every file (#1860) (*Joan Fontanals*)
+ - [[```50376358```](https://github.com/jina-ai/docarray/commit/50376358163005e66a76cd0cb40217fd7a4f1252)] __-__ __deps-dev__: bump jupyterlab from 3.5.0 to 3.6.7 (#1848) (*dependabot[bot]*)
+ - [[```104b403b```](https://github.com/jina-ai/docarray/commit/104b403b2b61a485e2cc032a357f46e7dc8044fe)] __-__ __deps__: bump tj-actions/changed-files from 34 to 41 in /.github/workflows (#1844) (*dependabot[bot]*)
+ - [[```f9426a29```](https://github.com/jina-ai/docarray/commit/f9426a29b29580beae8805d2556b4a94ff493edc)] __-__ __version__: the next version will be 0.40.1 (*Jina Dev Bot*)
 

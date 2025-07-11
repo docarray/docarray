@@ -96,4 +96,6 @@ def test_map_docs_batched(n_docs, batch_size, backend):
     assert isinstance(it, Generator)
 
     for batch in it:
-        assert isinstance(batch, DocList[MyImage])
+        assert isinstance(batch, DocList)
+        for d in batch:
+            assert isinstance(d, MyImage)
