@@ -221,7 +221,7 @@ def get_paths(
     size: Optional[int] = None,
     exclude_regex: Optional[str] = None,
 ) -> Generator[str, None, None]:
-    """
+    r"""
     Yield file paths described by `patterns`.
 
     ---
