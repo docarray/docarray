@@ -142,7 +142,10 @@ class JaxArray(AbstractTensor, Generic[ShapeT], metaclass=metaJax):
                 pass  # handled below
         elif isinstance(value, str):
             value = orjson.loads(value)
-
+        # Handle scalar values (int, float, etc.) - wrap in 1D array
+        elif isinstance(value, (int, float, complex, bool, np.number)):
+            arr_from_scalar: jnp.ndarray = jnp.array([value])
+            return cls._docarray_from_native(arr_from_scalar)
         try:
             arr: jnp.ndarray = jnp.ndarray(value)
             return cls._docarray_from_native(arr)

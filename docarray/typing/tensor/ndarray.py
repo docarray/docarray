@@ -137,6 +137,10 @@ class NdArray(np.ndarray, AbstractTensor, Generic[ShapeT]):
                 return cls._docarray_from_native(arr_from_list)
             except Exception:
                 pass  # handled below
+        # Handle scalar values (int, float, etc.) - wrap in 1D array
+        elif isinstance(value, (int, float, complex, bool, np.number)):
+            arr_from_scalar: np.ndarray = np.array([value])
+            return cls._docarray_from_native(arr_from_scalar)
         try:
             arr: np.ndarray = np.ndarray(value)
             return cls._docarray_from_native(arr)
