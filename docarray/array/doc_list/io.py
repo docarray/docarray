@@ -416,7 +416,7 @@ class IOMixinDocList(Iterable[T_doc]):
         Save a `DocList` to a csv file.
         The field names will be stored in the first row. Each row corresponds to the
         information of one Document.
-        Columns for nested fields will be named after the "__"-seperated access paths,
+        Columns for nested fields will be named after the "__"-separated access paths,
         such as `'image__url'` for `image.url`.
 
         :param file_path: path to a csv file.
@@ -524,7 +524,7 @@ class IOMixinDocList(Iterable[T_doc]):
         Save a DocList to a `pandas.DataFrame`.
         The field names will be stored as column names. Each row of the dataframe corresponds
         to the information of one Document.
-        Columns for nested fields will be named after the "__"-seperated access paths,
+        Columns for nested fields will be named after the "__"-separated access paths,
         such as `'image__url'` for `image.url`.
 
         :return: `pandas.DataFrame`
