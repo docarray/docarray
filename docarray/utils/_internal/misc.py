@@ -51,6 +51,7 @@ INSTALL_INSTRUCTIONS = {
     'redis': '"docarray[redis]"',
     'pymilvus': '"docarray[milvus]"',
     "pymongo": '"docarray[mongo]"',
+    "twelvelabs": '"docarray[twelvelabs]"',
 }
 
 ProtocolType = Literal[
