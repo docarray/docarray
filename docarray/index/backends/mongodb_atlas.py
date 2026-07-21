@@ -2,6 +2,7 @@ import collections
 import logging
 from dataclasses import dataclass, field
 from functools import cached_property
+from importlib.metadata import version
 from typing import (
     Any,
     Dict,
@@ -20,6 +21,7 @@ from typing import (
 import bson
 import numpy as np
 from pymongo import MongoClient
+from pymongo.driver_info import DriverInfo
 
 from docarray import BaseDoc, DocList, handler
 from docarray.index.abstract import BaseDocIndex, _raise_not_composable
@@ -115,7 +117,7 @@ class MongoDBAtlasDocumentIndex(BaseDocIndex, Generic[TSchema]):
 
         client = MongoClient(
             atlas_connection_uri,
-            # driver=DriverInfo(name="docarray", version=version("docarray"))
+            driver=DriverInfo(name="DocArray", version=version("docarray")),
         )
         return client
 
@@ -557,7 +559,6 @@ class MongoDBAtlasDocumentIndex(BaseDocIndex, Generic[TSchema]):
         limit: int,
         filters: List[Dict[str, Any]] = None,
     ) -> Dict[str, Any]:
-
         search_index_name = self._get_column_db_index(search_field)
         oversampling_factor = self._get_oversampling_factor(search_field)
         max_candidates = self._get_max_candidates(search_field)
